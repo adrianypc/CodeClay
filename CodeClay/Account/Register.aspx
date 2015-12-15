@@ -36,6 +36,17 @@
                     CssClass="text-danger" Display="Dynamic" ErrorMessage="The password and confirmation password do not match." />
             </div>
         </div>
+        <div class="form-group"></div>
+        <div class="form-group">
+            <asp:Label runat="server" AssociatedControlID="PhoneNumber" CssClass="col-md-2 control-label">Phone Number</asp:Label>
+            <div class="col-md-10">
+                <asp:TextBox runat="server" ID="PhoneNumber" TextMode="Phone" CssClass="form-control" />
+                <asp:RequiredFieldValidator runat="server" ControlToValidate="PhoneNumber"
+                    CssClass="text-danger" ErrorMessage="The phone number field is required." Display="Dynamic" />
+               <asp:RegularExpressionValidator runat="server" ControlToValidate="PhoneNumber" ValidationExpression="^\+(?:[0-9]●?){6,14}[0-9]$" 
+                   CssClass="text-danger" ErrorMessage='phone number should start with "+" sign followed by digit only.' Display="Dynamic" />
+            </div>
+        </div>
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
                 <asp:Button runat="server" OnClick="CreateUser_Click" Text="Register" CssClass="btn btn-default" />
