@@ -1,0 +1,86 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<CodistriGrid>
+  <CiRowFetchAction>
+    <ActionSQL>
+      select  SystemID,
+              LTRIM(RTRIM(CustomerCode)) as CustomerCode,
+              LTRIM(RTRIM(CustomerCode)) as OldCustomerCode,
+              LTRIM(RTRIM(System)) as OldSystem,
+              LTRIM(RTRIM(System)) as System
+      from    tblSystems
+      order by CustomerCode,System
+    </ActionSQL>
+  </CiRowFetchAction>
+  <CiColumn>
+    <ColumnName>SystemID</ColumnName>
+    <Visible>false</Visible>
+  </CiColumn>
+  <CiColumn>
+    <ColumnName>OldCustomerCode</ColumnName>
+    <Visible>false</Visible>
+  </CiColumn>
+  <CiColumn>
+    <ColumnName>OldSystem</ColumnName>
+    <Visible>false</Visible>
+  </CiColumn>
+  <CiColumn>
+    <ColumnName>CustomerCode</ColumnName>
+    <ColumnCaption>Customer</ColumnCaption>
+    <DropdownSQL>
+      select  CustomerCode as CustomerCode,
+              Customer as Customer
+      from    tblCustomers
+      order by CustomerCode
+    </DropdownSQL>
+    <DropdownToFitLargestText>true</DropdownToFitLargestText>
+    <DropdownValueColumn>CustomerCode</DropdownValueColumn>
+    <DropdownDisplayColumn>Customer</DropdownDisplayColumn>
+  </CiColumn>
+  <CiColumn>
+    <ColumnName>System</ColumnName>
+    <ColumnCaption>System</ColumnCaption>
+  </CiColumn>
+  <CiRowUpdateAction>
+    <ValidationSQL>select 'Please select customer.' from tblSingleton where IsNull(@CustomerCode) = true</ValidationSQL>
+    <ValidationSQL>select 'Please enter a system.' from tblSingleton where IsNull(@System) = true</ValidationSQL>
+    <ValidationSQL>select 'Another record already existed for current customer and system.' from tblSystems where CustomerCode = @CustomerCode and System = @System and SystemId &lt;&gt; @SystemID</ValidationSQL>
+    <ValidationSQL>select 'System is already used in Modules.' from tblModules where CustomerCode = @OldCustomerCode and System = @OldSystem and (@OldCustomerCode &lt;&gt; @CustomerCode or @OldSystem &lt;&gt; @System)</ValidationSQL>
+    <ValidationSQL>select 'System is already used in Projects.' from tblProjects where CustomerCode = @OldCustomerCode and System = @OldSystem and (@OldCustomerCode &lt;&gt; @CustomerCode or @OldSystem &lt;&gt; @System)</ValidationSQL>
+    <ActionSQL>
+      update  tblSystems
+      set     CustomerCode  = @CustomerCode,
+	      System	    = @System
+      where   SystemID  = @SystemID
+    </ActionSQL>
+    <ActionSQL>
+      select @CustomerCode as OldCustomerCode,@System as OldSystem from tblSingleton 
+    </ActionSQL>
+  </CiRowUpdateAction>
+  <CiRowInsertAction>
+    <ValidationSQL>select 'Please select customer.' from tblSingleton where IsNull(@CustomerCode) = true</ValidationSQL>
+    <ValidationSQL>select 'Please enter a system.' from tblSingleton where IsNull(@System) = true</ValidationSQL>
+    <ValidationSQL>select 'System already existed for current customer.' from tblSystems where CustomerCode=@CustomerCode and System=@System</ValidationSQL>
+    <ActionSQL>
+      insert
+      into    tblSystems
+      (       CustomerCode,
+              System
+      )
+      values
+      (       @CustomerCode,
+              @System
+      )
+    </ActionSQL>
+    <ActionSQL>
+      select @SystemID=SystemID,@CustomerCode as OldCustomerCode,@System as OldSystem from tblSystems 
+      where CustomerCode = @CustomerCode and System = @System
+    </ActionSQL>
+  </CiRowInsertAction>
+  <CiRowDeleteAction>
+    <ValidationSQL>select 'System is already used in Modules.' from tblModules where CustomerCode = @CustomerCode and System = @System</ValidationSQL>
+    <ValidationSQL>select 'System is already used in Projects.' from tblProjects where CustomerCode = @CustomerCode and System = @System</ValidationSQL>
+    <ActionSQL>
+      delete from tblSystems where SystemId = @SystemID
+    </ActionSQL>
+  </CiRowDeleteAction>
+</CodistriGrid>

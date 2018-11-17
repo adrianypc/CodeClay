@@ -1,0 +1,52 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<XtraReportsLayoutSerializer SerializerVersion="17.1.3.0" Ref="1" ControlType="DevExpress.XtraReports.UI.XtraReport, DevExpress.XtraReports.v17.1, Version=17.1.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" Name="XtraReport" PageWidth="850" PageHeight="1100" Version="17.1" DataMember="tblCategories1" DataSource="#Ref-0">
+  <Extensions>
+    <Item1 Ref="2" Key="DataSerializationExtension" Value="DevExpress.XtraReports.Web.ReportDesigner.DefaultDataSerializer" />
+  </Extensions>
+  <Bands>
+    <Item1 Ref="3" ControlType="TopMarginBand" Name="topMarginBand1" HeightF="100" />
+    <Item2 Ref="4" ControlType="ReportHeaderBand" Name="reportHeaderBand1" HeightF="45">
+      <Controls>
+        <Item1 Ref="5" ControlType="XRLabel" Name="label7" Text="All the categories" SizeF="638,33" LocationFloat="6, 6" StyleName="Title" />
+      </Controls>
+    </Item2>
+    <Item3 Ref="6" ControlType="DetailBand" Name="detailBand1" HeightF="81">
+      <Controls>
+        <Item1 Ref="7" ControlType="XRLabel" Name="label1" Text="Category" SizeF="162,18" LocationFloat="6, 9" StyleName="FieldCaption" />
+        <Item2 Ref="8" ControlType="XRLabel" Name="label2" Text="Category ID" SizeF="162,18" LocationFloat="6, 33" StyleName="FieldCaption" />
+        <Item3 Ref="9" ControlType="XRLabel" Name="label3" Text="Customer Code" SizeF="162,18" LocationFloat="6, 57" StyleName="FieldCaption" />
+        <Item4 Ref="10" ControlType="XRLabel" Name="label4" SizeF="470,18" LocationFloat="174, 9" StyleName="DataField">
+          <DataBindings>
+            <Item1 Ref="11" PropertyName="Text" DataMember="tblCategories1.Category" />
+          </DataBindings>
+        </Item4>
+        <Item5 Ref="12" ControlType="XRLabel" Name="label5" SizeF="470,18" LocationFloat="174, 33" StyleName="DataField">
+          <DataBindings>
+            <Item1 Ref="13" PropertyName="Text" DataMember="tblCategories1.CategoryID" />
+          </DataBindings>
+        </Item5>
+        <Item6 Ref="14" ControlType="XRLabel" Name="label6" SizeF="470,18" LocationFloat="174, 57" StyleName="DataField">
+          <DataBindings>
+            <Item1 Ref="15" PropertyName="Text" DataMember="tblCategories1.CustomerCode" />
+          </DataBindings>
+        </Item6>
+        <Item7 Ref="16" ControlType="XRLine" Name="line1" SizeF="638,2" LocationFloat="6, 3" />
+      </Controls>
+    </Item3>
+    <Item4 Ref="17" ControlType="BottomMarginBand" Name="bottomMarginBand1" HeightF="100">
+      <Controls>
+        <Item1 Ref="18" ControlType="XRPageInfo" Name="pageInfo1" PageInfo="DateTime" SizeF="313,23" LocationFloat="6, 6" StyleName="PageInfo" />
+        <Item2 Ref="19" ControlType="XRPageInfo" Name="pageInfo2" Format="Page {0} of {1}" TextAlignment="TopRight" SizeF="313,23" LocationFloat="331, 6" StyleName="PageInfo" />
+      </Controls>
+    </Item4>
+  </Bands>
+  <StyleSheet>
+    <Item1 Ref="20" Name="Title" BorderStyle="Inset" Font="Times New Roman, 20pt, style=Bold" ForeColor="Maroon" BackColor="Transparent" BorderColor="Black" Sides="None" StringFormat="Near;Near;0;None;Character;Default" BorderWidthSerializable="1" />
+    <Item2 Ref="21" Name="FieldCaption" BorderStyle="Inset" Font="Arial, 10pt, style=Bold" ForeColor="Maroon" BackColor="Transparent" BorderColor="Black" Sides="None" StringFormat="Near;Near;0;None;Character;Default" BorderWidthSerializable="1" />
+    <Item3 Ref="22" Name="PageInfo" BorderStyle="Inset" Font="Times New Roman, 10pt, style=Bold" ForeColor="Black" BackColor="Transparent" BorderColor="Black" Sides="None" StringFormat="Near;Near;0;None;Character;Default" BorderWidthSerializable="1" />
+    <Item4 Ref="23" Name="DataField" BorderStyle="Inset" Padding="2,2,0,0,100" Font="Times New Roman, 10pt" ForeColor="Black" BackColor="Transparent" BorderColor="Black" Sides="None" StringFormat="Near;Near;0;None;Character;Default" BorderWidthSerializable="1" />
+  </StyleSheet>
+  <ObjectStorage>
+    <Item1 Ref="0" ObjectType="DevExpress.DataAccess.Sql.SqlDataSource,DevExpress.DataAccess.v17.1" Name="SqlDataSource" Base64="PFNxbERhdGFTb3VyY2U+PE5hbWU+U3FsRGF0YVNvdXJjZTwvTmFtZT48Q29ubmVjdGlvbiBOYW1lPSJTcWxEYXRhU291cmNlIiBDb25uZWN0aW9uU3RyaW5nPSJQcm92aWRlcj1NaWNyb3NvZnQuSmV0Lk9MRURCLjQuMDtEYXRhIFNvdXJjZT1DOlxVc2Vyc1xjeWhjXzAwMFxEb2N1bWVudHNcVmlzdWFsIFN0dWRpbyAyMDEzXFByb2plY3RzXENvZGVDbGF5XENvZGVDbGF5XFRlc3RTaXRlXENvUkUubWRiOyIgLz48UXVlcnkgVHlwZT0iU2VsZWN0UXVlcnkiIE5hbWU9InRibENhdGVnb3JpZXMxIj48VGFibGVzPjxUYWJsZSBOYW1lPSJ0YmxDYXRlZ29yaWVzIiAvPjwvVGFibGVzPjxDb2x1bW5zPjxBbGxDb2x1bW5zIFRhYmxlPSJ0YmxDYXRlZ29yaWVzIiAvPjwvQ29sdW1ucz48L1F1ZXJ5PjxSZXN1bHRTY2hlbWE+PERhdGFTZXQgTmFtZT0iU3FsRGF0YVNvdXJjZSI+PFZpZXcgTmFtZT0idGJsQ2F0ZWdvcmllczEiPjxGaWVsZCBOYW1lPSJDYXRlZ29yeUlEIiBUeXBlPSJJbnQzMiIgLz48RmllbGQgTmFtZT0iQ3VzdG9tZXJDb2RlIiBUeXBlPSJTdHJpbmciIC8+PEZpZWxkIE5hbWU9IkNhdGVnb3J5IiBUeXBlPSJTdHJpbmciIC8+PC9WaWV3PjwvRGF0YVNldD48L1Jlc3VsdFNjaGVtYT48Q29ubmVjdGlvbk9wdGlvbnMgQ2xvc2VDb25uZWN0aW9uPSJ0cnVlIiBDb21tYW5kVGltZW91dD0iMCIgLz48L1NxbERhdGFTb3VyY2U+" />
+  </ObjectStorage>
+</XtraReportsLayoutSerializer>

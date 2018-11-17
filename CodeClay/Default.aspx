@@ -1,13 +1,75 @@
-﻿<%@ Page Title="Home Page" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="Default.aspx.cs" Inherits="CodeClay._Default" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="Default.aspx.cs" Inherits="CodeClay.Default" MasterPageFile="~/Site.Master"  %>
+<%@ Register Assembly="DevExpress.Web.v18.1, Version=18.1.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" Namespace="DevExpress.Web" TagPrefix="dx" %>
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
+    <script>
+    	var postponedCallbackRequired = false;
+        var iframe;
 
-    <div class="jumbotron">
-        <h1>Code Clay</h1>
-        <p class="lead">Mold your database into a Cloud app that looks like Sharepoint?</p>
-        <p class="lead">You can take all the tables in your database and expose them as lists and form libraries in Code Clay. No more data stored in proprietary blobs, so everything can be queried using SQL and standard reporting tools.</p>
-        <p class="lead">With minimal configuration, you can build a Cloud app with XML files and embedded SQL so meaningful functionality can be created in minutes rather than days.</p>
-        <br />
-        <p><a href="" class="btn btn-primary btn-lg">Learn more &raquo;</a></p>
-    </div>
+        function dxPopup_Init(sender, event) {
+    		iframe = dxPopup.GetContentIFrame();
+
+    		/* the "load" event is fired when the content has been already loaded */
+    		if (iframe) {
+    			ASPxClientUtils.AttachEventToElement(iframe, 'load', iframe_ContentLoaded);
+    		}
+    	}
+
+    	function dxPopup_Shown(sender, event) {
+    		if (dxPopup.IsVisible()) {
+    			dxLoadingPanel.ShowInElement(iframe);
+    		}
+    	}
+
+    	function iframe_ContentLoaded(event) {
+    		dxLoadingPanel.Hide();
+    	}
+
+        function ShowPopup(url) {
+            dxPopup.SetContentUrl(url);
+            dxPopup.Show();
+        }
+
+        function HidePopup() {
+            dxPopup.Hide();
+        }
+
+        function Navigate(puxFile) {
+            if (myCallbackPanel.InCallback()) {
+                postponedCallbackRequired = true;
+            }
+            else {
+                myCallbackPanel.PerformCallback(puxFile);
+            }
+        }
+
+        function myCallbackPanel_EndCallback(sender, event) {
+            if (postponedCallbackRequired) {
+                myCallbackPanel.PerformCallback();
+                postponedCallbackRequired = false;
+            }
+        }
+    </script>
+
+    <asp:Panel ID ="myOuterPanel" runat="server">
+        <dx:ASPxCallbackPanel ID="myCallbackPanel" ClientInstanceName="myCallbackPanel" runat="server" OnCallback="myCallbackPanel_Callback">
+            <ClientSideEvents EndCallback="myCallbackPanel_EndCallback" />
+            <SettingsLoadingPanel Enabled="true" />
+            <PanelCollection>
+                <dx:PanelContent>
+                    <asp:Panel ID ="myInnerPanel" runat="server"></asp:Panel>
+                </dx:PanelContent>
+            </PanelCollection>
+        </dx:ASPxCallbackPanel>
+    </asp:Panel>
+
+    <dx:ASPxLoadingPanel ID="dxLoadingPanel" runat="server" ClientInstanceName="dxLoadingPanel" Theme="Aqua" />
+
+    <dx:ASPxPopupControl ID="dxPopup" ClientInstanceName="dxPopup" runat="server" ContentUrl="javascript:void(0);" CloseAction="CloseButton" CloseOnEscape="true" Modal="True" Theme="Aqua" AllowResize="true"
+        PopupHorizontalAlign="WindowCenter" PopupVerticalAlign="WindowCenter" HeaderText="Popup" AllowDragging="True" PopupAnimationType="None" EnableViewState="False"
+        Height="800" Width="1200">
+        <ClientSideEvents Init="dxPopup_Init" />
+        <ClientSideEvents Shown="dxPopup_Shown" />
+    </dx:ASPxPopupControl>
+
 </asp:Content>

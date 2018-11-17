@@ -1,0 +1,2288 @@
+<?xml version="1.0"?>
+<Reports>
+  <!--Report *** RptInvoice ***-->
+  <Report version="2.5.20052.176">
+    <Name>RptInvoice</Name>
+    <DataSource>
+      <ConnectionString>Provider=Microsoft.Jet.OLEDB.4.0;Data Source=D:\Codistri\Codistri\CoRE.mdb;Persist Security Info=False</ConnectionString>
+      <RecordSource>PARAMETERS @InvoiceNumber string 'INCCL125';
+      SELECT 
+	(MID([TaskCode],2,LEN([TaskCode])-1)) AS TaskCodes, 
+	Category, TaskDescription AS Description, 
+	CompletedDate AS Completed,
+	IIF(IsNull(HoursSold),0,IIF(TaskCode='T002338', HoursSold*75, HoursSold * HourlyRate)) AS Amount,
+	Customer,
+	InvoiceNumber,
+	BillerContact
+      FROM (tblTasks
+      INNER JOIN tblCustomers 
+      ON tblTasks.CustomerCode = tblCustomers.CustomerCode)
+      INNER JOIN tblStaff
+      ON tblTasks.PrimaryDeveloper = tblStaff.StaffCode
+      WHERE InvoiceNumber = @InvoiceNumber
+      order by CompletedDate</RecordSource>
+    </DataSource>
+    <Layout>
+      <Width>480000</Width>
+      <MarginLeft>28.8</MarginLeft>
+      <MarginTop>504</MarginTop>
+      <MarginRight>28.8</MarginRight>
+      <Orientation>1</Orientation>
+    </Layout>
+    <Font>
+      <Name>Arial</Name>
+      <Size>8</Size>
+    </Font>
+    <Groups />
+    <Sections>
+      <Section>
+        <Name>Detail</Name>
+        <Type>0</Type>
+        <Height>300</Height>
+      </Section>
+      <Section>
+        <Name>Header</Name>
+        <Type>1</Type>
+        <Height>4005</Height>
+      </Section>
+      <Section>
+        <Name>Footer</Name>
+        <Type>2</Type>
+        <Height>3165</Height>
+      </Section>
+      <Section>
+        <Name>PageHeader</Name>
+        <Type>3</Type>
+        <Height>15</Height>
+      </Section>
+      <Section>
+        <Name>PageFooter</Name>
+        <Type>4</Type>
+        <Visible>0</Visible>
+      </Section>
+    </Sections>
+    <Fields>
+      <Field>
+        <Name>TaskCodeLbl</Name>
+        <Section>1</Section>
+        <Text>Task.</Text>
+        <Left>2850</Left>
+        <Top>3720</Top>
+        <Width>705</Width>
+        <Height>285</Height>
+        <Align>3</Align>
+        <WordWrap>0</WordWrap>
+        <Font>
+          <Name>Verdana</Name>
+          <Size>7.5</Size>
+        </Font>
+      </Field>
+      <Field>
+        <Name>CategoryLbl</Name>
+        <Section>1</Section>
+        <Text>Category.</Text>
+        <Left>3555</Left>
+        <Top>3720</Top>
+        <Width>1710</Width>
+        <Height>285</Height>
+        <Align>3</Align>
+        <WordWrap>0</WordWrap>
+        <Font>
+          <Name>Verdana</Name>
+          <Size>7.5</Size>
+        </Font>
+      </Field>
+      <Field>
+        <Name>DescriptionLbl</Name>
+        <Section>1</Section>
+        <Text>Description.</Text>
+        <Left>5385</Left>
+        <Top>3720</Top>
+        <Width>3840</Width>
+        <Height>285</Height>
+        <Align>3</Align>
+        <WordWrap>0</WordWrap>
+        <Font>
+          <Name>Verdana</Name>
+          <Size>7.5</Size>
+        </Font>
+      </Field>
+      <Field>
+        <Name>CompletedLbl</Name>
+        <Section>1</Section>
+        <Text>Completed.</Text>
+        <Left>9405</Left>
+        <Top>3720</Top>
+        <Width>990</Width>
+        <Height>285</Height>
+        <Align>3</Align>
+        <WordWrap>0</WordWrap>
+        <Font>
+          <Name>Verdana</Name>
+          <Size>7.5</Size>
+        </Font>
+      </Field>
+      <Field>
+        <Name>AmountLbl</Name>
+        <Section>1</Section>
+        <Text>Amount.</Text>
+        <Left>10545</Left>
+        <Top>3720</Top>
+        <Width>855</Width>
+        <Height>285</Height>
+        <Align>5</Align>
+        <WordWrap>0</WordWrap>
+        <Font>
+          <Name>Verdana</Name>
+          <Size>7.5</Size>
+        </Font>
+      </Field>
+      <Field>
+        <Name>TaskCodeCtl</Name>
+        <Section>0</Section>
+        <Text>Format(TaskCodes,"###0") &amp; "."</Text>
+        <Calculated>-1</Calculated>
+        <Left>2850</Left>
+        <Width>705</Width>
+        <Height>300</Height>
+        <Align>0</Align>
+        <CanGrow>-1</CanGrow>
+        <Font>
+          <Name>Verdana</Name>
+          <Size>7.5</Size>
+        </Font>
+      </Field>
+      <Field>
+        <Name>CategoryCtl</Name>
+        <Section>0</Section>
+        <Text>Category &amp; "."</Text>
+        <Calculated>-1</Calculated>
+        <Left>3555</Left>
+        <Width>1710</Width>
+        <Height>300</Height>
+        <Align>0</Align>
+        <CanGrow>-1</CanGrow>
+        <Font>
+          <Name>Verdana</Name>
+          <Size>7.5</Size>
+        </Font>
+      </Field>
+      <Field>
+        <Name>DescriptionCtl</Name>
+        <Section>0</Section>
+        <Text>Iif(Mid(Description,LEN(Description),1)=".",Description,Description&amp;".")</Text>
+        <Calculated>-1</Calculated>
+        <Left>5385</Left>
+        <Width>3840</Width>
+        <Height>300</Height>
+        <Align>0</Align>
+        <CanGrow>-1</CanGrow>
+        <Font>
+          <Name>Verdana</Name>
+          <Size>7.5</Size>
+        </Font>
+      </Field>
+      <Field>
+        <Name>CompletedCtl</Name>
+        <Section>0</Section>
+        <Text>Format(Completed," d MMM yy") &amp; "."</Text>
+        <Calculated>-1</Calculated>
+        <Left>9405</Left>
+        <Width>990</Width>
+        <Height>300</Height>
+        <Align>0</Align>
+        <Font>
+          <Name>Verdana</Name>
+          <Size>7.5</Size>
+        </Font>
+      </Field>
+      <Field>
+        <Name>AmountCtl</Name>
+        <Section>0</Section>
+        <Text>Format(Amount,"$#,###.00")</Text>
+        <Calculated>-1</Calculated>
+        <Left>10545</Left>
+        <Width>855</Width>
+        <Height>300</Height>
+        <Align>2</Align>
+        <Font>
+          <Name>Verdana</Name>
+          <Size>7.5</Size>
+        </Font>
+      </Field>
+      <Field>
+        <Name>Field2</Name>
+        <Section>1</Section>
+        <Text>Tax invoice.
+</Text>
+        <Left>2850</Left>
+        <Width>1140</Width>
+        <Height>285</Height>
+        <Align>0</Align>
+        <BorderColor>16777215</BorderColor>
+        <Font>
+          <Name>Verdana</Name>
+          <Size>7.5</Size>
+        </Font>
+      </Field>
+      <Field>
+        <Name>Field3</Name>
+        <Section>1</Section>
+        <Text>Format(Now(), "d MMMM yyyy") &amp; "."</Text>
+        <Calculated>-1</Calculated>
+        <Left>2850</Left>
+        <Top>225</Top>
+        <Width>2565</Width>
+        <Height>285</Height>
+        <Align>0</Align>
+        <BorderColor>16777215</BorderColor>
+        <Font>
+          <Name>Verdana</Name>
+          <Size>7.5</Size>
+        </Font>
+      </Field>
+      <Field>
+        <Name>Field4</Name>
+        <Section>1</Section>
+        <Text>Take control over how your
+</Text>
+        <Left>2850</Left>
+        <Top>790</Top>
+        <Width>2565</Width>
+        <Height>285</Height>
+        <Align>0</Align>
+        <BorderColor>16777215</BorderColor>
+        <Font>
+          <Name>Verdana</Name>
+          <Size>7.5</Size>
+        </Font>
+      </Field>
+      <Field>
+        <Name>Field5</Name>
+        <Section>1</Section>
+        <Text>Codistri Pty Limited.
+</Text>
+        <Left>2850</Left>
+        <Top>1660</Top>
+        <Width>2565</Width>
+        <Height>285</Height>
+        <Align>0</Align>
+        <BorderColor>16777215</BorderColor>
+        <Font>
+          <Name>Verdana</Name>
+          <Size>7.5</Size>
+        </Font>
+      </Field>
+      <Field>
+        <Name>Field6</Name>
+        <Section>1</Section>
+        <Text>Telephone.
+</Text>
+        <Left>5385</Left>
+        <Width>1710</Width>
+        <Height>285</Height>
+        <Align>0</Align>
+        <BorderColor>16777215</BorderColor>
+        <Font>
+          <Name>Verdana</Name>
+          <Size>7.5</Size>
+        </Font>
+      </Field>
+      <Field>
+        <Name>Field7</Name>
+        <Section>1</Section>
+        <Text>Facimile.
+</Text>
+        <Left>5385</Left>
+        <Top>790</Top>
+        <Width>1710</Width>
+        <Height>285</Height>
+        <Align>0</Align>
+        <BorderColor>16777215</BorderColor>
+        <Font>
+          <Name>Verdana</Name>
+          <Size>7.5</Size>
+        </Font>
+      </Field>
+      <Field>
+        <Name>Field8</Name>
+        <Section>1</Section>
+        <Text>Email.</Text>
+        <Left>5385</Left>
+        <Top>1435</Top>
+        <Width>855</Width>
+        <Height>285</Height>
+        <Align>0</Align>
+        <BorderColor>16777215</BorderColor>
+        <Font>
+          <Name>Verdana</Name>
+          <Size>7.5</Size>
+        </Font>
+      </Field>
+      <Field>
+        <Name>Field9</Name>
+        <Section>1</Section>
+        <Text>Web site.
+</Text>
+        <Left>5385</Left>
+        <Top>2110</Top>
+        <Width>1710</Width>
+        <Height>285</Height>
+        <Align>0</Align>
+        <BorderColor>16777215</BorderColor>
+        <Font>
+          <Name>Verdana</Name>
+          <Size>7.5</Size>
+        </Font>
+      </Field>
+      <Field>
+        <Name>Field10</Name>
+        <Section>1</Section>
+        <Text>Real world solutions rapidly </Text>
+        <Left>7740</Left>
+        <Top>15</Top>
+        <Width>2565</Width>
+        <Height>285</Height>
+        <Align>0</Align>
+        <BorderColor>16777215</BorderColor>
+        <Font>
+          <Name>Verdana</Name>
+          <Size>7.5</Size>
+        </Font>
+      </Field>
+      <Field>
+        <Name>Field11</Name>
+        <Section>1</Section>
+        <Text>Field force data systems.
+</Text>
+        <Left>7740</Left>
+        <Top>790</Top>
+        <Width>2565</Width>
+        <Height>285</Height>
+        <Align>0</Align>
+        <BorderColor>16777215</BorderColor>
+        <Font>
+          <Name>Verdana</Name>
+          <Size>7.5</Size>
+        </Font>
+      </Field>
+      <Field>
+        <Name>Field12</Name>
+        <Section>1</Section>
+        <Text>Terms.
+</Text>
+        <Left>10515</Left>
+        <Top>790</Top>
+        <Width>705</Width>
+        <Height>285</Height>
+        <Align>0</Align>
+        <BorderColor>16777215</BorderColor>
+        <Font>
+          <Name>Verdana</Name>
+          <Size>7.5</Size>
+        </Font>
+      </Field>
+      <Field>
+        <Name>Field13</Name>
+        <Section>1</Section>
+        <Text>Reference.</Text>
+        <Left>10515</Left>
+        <Top>1435</Top>
+        <Width>1005</Width>
+        <Height>285</Height>
+        <Align>0</Align>
+        <BorderColor>16777215</BorderColor>
+        <Font>
+          <Name>Verdana</Name>
+          <Size>7.5</Size>
+        </Font>
+      </Field>
+      <Field>
+        <Name>Field14</Name>
+        <Section>1</Section>
+        <Text>InvoiceNumber &amp; "."</Text>
+        <Calculated>-1</Calculated>
+        <Left>10515</Left>
+        <Top>1660</Top>
+        <Width>1005</Width>
+        <Height>285</Height>
+        <Align>0</Align>
+        <BorderColor>16777215</BorderColor>
+        <Font>
+          <Name>Verdana</Name>
+          <Size>7.5</Size>
+        </Font>
+      </Field>
+      <Field>
+        <Name>Field15</Name>
+        <Section>1</Section>
+        <Text> [Page] &amp; " of " &amp; [Pages]</Text>
+        <Calculated>-1</Calculated>
+        <Left>10515</Left>
+        <Top>2335</Top>
+        <Width>990</Width>
+        <Height>285</Height>
+        <Align>0</Align>
+        <BorderColor>16777215</BorderColor>
+        <Font>
+          <Name>Verdana</Name>
+          <Size>7.5</Size>
+        </Font>
+      </Field>
+      <Field>
+        <Name>Field16</Name>
+        <Section>1</Section>
+        <Text>BillerContact &amp; "."</Text>
+        <Calculated>-1</Calculated>
+        <Left>2850</Left>
+        <Top>3075</Top>
+        <Width>3990</Width>
+        <Height>285</Height>
+        <Align>0</Align>
+        <BorderColor>16777215</BorderColor>
+        <CanGrow>-1</CanGrow>
+        <Font>
+          <Name>Verdana</Name>
+          <Size>7.5</Size>
+        </Font>
+      </Field>
+      <Field>
+        <Name>Field17</Name>
+        <Section>2</Section>
+        <Text>Subtotal for all Tasks.</Text>
+        <Left>2850</Left>
+        <Top>285</Top>
+        <Width>2280</Width>
+        <Height>285</Height>
+        <Align>0</Align>
+        <Font>
+          <Name>Verdana</Name>
+          <Size>7.5</Size>
+        </Font>
+      </Field>
+      <Field>
+        <Name>Field18</Name>
+        <Section>2</Section>
+        <Text>Tax due on amount.</Text>
+        <Left>2850</Left>
+        <Top>570</Top>
+        <Width>2280</Width>
+        <Height>285</Height>
+        <Align>0</Align>
+        <Font>
+          <Name>Verdana</Name>
+          <Size>7.5</Size>
+        </Font>
+      </Field>
+      <Field>
+        <Name>Field19</Name>
+        <Section>2</Section>
+        <Text>Total now due.</Text>
+        <Left>2850</Left>
+        <Top>1140</Top>
+        <Width>2280</Width>
+        <Height>285</Height>
+        <Align>0</Align>
+        <Font>
+          <Name>Verdana</Name>
+          <Size>7.5</Size>
+        </Font>
+      </Field>
+      <Field>
+        <Name>Field20</Name>
+        <Section>2</Section>
+        <Text>ABN.
+13 099 277 139.</Text>
+        <Left>2850</Left>
+        <Top>1560</Top>
+        <Width>2280</Width>
+        <Height>570</Height>
+        <Align>0</Align>
+        <Font>
+          <Name>Verdana</Name>
+          <Size>7.5</Size>
+        </Font>
+      </Field>
+      <Field>
+        <Name>Field21</Name>
+        <Section>2</Section>
+        <Text>Electronic transfer details.
+St George Bank, BSB 112 879, Account 054 235 420.</Text>
+        <Left>2850</Left>
+        <Top>2280</Top>
+        <Width>4275</Width>
+        <Height>570</Height>
+        <Align>0</Align>
+        <Font>
+          <Name>Verdana</Name>
+          <Size>7.5</Size>
+        </Font>
+      </Field>
+      <Field>
+        <Name>TotalAmountCtl</Name>
+        <Section>2</Section>
+        <Text>Format(SUM(Amount),"$#,###.00")</Text>
+        <Calculated>-1</Calculated>
+        <Left>10260</Left>
+        <Top>285</Top>
+        <Width>1140</Width>
+        <Height>285</Height>
+        <Align>2</Align>
+        <Font>
+          <Name>Verdana</Name>
+          <Size>7.5</Size>
+        </Font>
+      </Field>
+      <Field>
+        <Name>TaxCtl</Name>
+        <Section>2</Section>
+        <Text>Format(Sum(Amount)*0.10,"$#,###.00")</Text>
+        <Calculated>-1</Calculated>
+        <Left>10260</Left>
+        <Top>570</Top>
+        <Width>1140</Width>
+        <Height>285</Height>
+        <Align>2</Align>
+        <Font>
+          <Name>Verdana</Name>
+          <Size>7.5</Size>
+        </Font>
+      </Field>
+      <Field>
+        <Name>GrandTotalCtl</Name>
+        <Section>2</Section>
+        <Text>Format(SUM(Amount)+(SUM(Amount)*0.10),"$#,###.00")</Text>
+        <Calculated>-1</Calculated>
+        <Left>10260</Left>
+        <Top>1140</Top>
+        <Width>1140</Width>
+        <Height>285</Height>
+        <Align>2</Align>
+        <Font>
+          <Name>Verdana</Name>
+          <Size>7.5</Size>
+        </Font>
+      </Field>
+      <Field>
+        <Name>Field22</Name>
+        <Section>1</Section>
+        <Text>Customer &amp; "."</Text>
+        <Calculated>-1</Calculated>
+        <RTF>-1</RTF>
+        <Left>2850</Left>
+        <Top>3315</Top>
+        <Width>3990</Width>
+        <Height>285</Height>
+        <Align>0</Align>
+        <BorderColor>16777215</BorderColor>
+        <CanGrow>-1</CanGrow>
+        <Font>
+          <Name>Verdana</Name>
+          <Size>7.5</Size>
+        </Font>
+      </Field>
+      <Field>
+        <Name>Field23</Name>
+        <Section>1</Section>
+        <Text>Submit.
+</Text>
+        <Left>10515</Left>
+        <Width>705</Width>
+        <Height>285</Height>
+        <Align>0</Align>
+        <BorderStyle>1</BorderStyle>
+        <BorderColor>16777215</BorderColor>
+        <Font>
+          <Name>Verdana</Name>
+          <Size>7.5</Size>
+        </Font>
+      </Field>
+      <Field>
+        <Name>Field24</Name>
+        <Section>1</Section>
+        <Text>adrianypc@codistri.com</Text>
+        <Left>5385</Left>
+        <Top>1660</Top>
+        <Width>2280</Width>
+        <Height>285</Height>
+        <Align>0</Align>
+        <BorderStyle>1</BorderStyle>
+        <BorderColor>16777215</BorderColor>
+        <Font>
+          <Name>Verdana</Name>
+          <Size>7.5</Size>
+        </Font>
+      </Field>
+      <Field>
+        <Name>Field1</Name>
+        <Section>1</Section>
+        <Width>480000</Width>
+        <Height>15</Height>
+        <Align>0</Align>
+      </Field>
+      <Field>
+        <Name>Field26</Name>
+        <Section>1</Section>
+        <Text>+61 2 9223 0200.</Text>
+        <Left>5385</Left>
+        <Top>225</Top>
+        <Width>1710</Width>
+        <Height>285</Height>
+        <Align>0</Align>
+        <BorderStyle>1</BorderStyle>
+        <BorderColor>16777215</BorderColor>
+        <Font>
+          <Name>Verdana</Name>
+          <Size>7.5</Size>
+        </Font>
+      </Field>
+      <Field>
+        <Name>Field27</Name>
+        <Section>1</Section>
+        <Text>built, modified, and deployed.</Text>
+        <Left>7740</Left>
+        <Top>225</Top>
+        <Width>2565</Width>
+        <Height>285</Height>
+        <Align>0</Align>
+        <BorderStyle>1</BorderStyle>
+        <BorderColor>16777215</BorderColor>
+        <Font>
+          <Name>Verdana</Name>
+          <Size>7.5</Size>
+        </Font>
+      </Field>
+      <Field>
+        <Name>Field28</Name>
+        <Section>1</Section>
+        <Text>+61 2 9475 0160.</Text>
+        <Left>5385</Left>
+        <Top>985</Top>
+        <Width>1995</Width>
+        <Height>285</Height>
+        <Align>0</Align>
+        <BorderStyle>1</BorderStyle>
+        <BorderColor>16777215</BorderColor>
+        <Font>
+          <Name>Verdana</Name>
+          <Size>7.5</Size>
+        </Font>
+      </Field>
+      <Field>
+        <Name>Field29</Name>
+        <Section>1</Section>
+        <Text>www.codistri.com</Text>
+        <Left>5385</Left>
+        <Top>2335</Top>
+        <Width>1995</Width>
+        <Height>270</Height>
+        <Align>0</Align>
+        <BorderStyle>1</BorderStyle>
+        <BorderColor>16777215</BorderColor>
+        <Font>
+          <Name>Verdana</Name>
+          <Size>7.5</Size>
+        </Font>
+      </Field>
+      <Field>
+        <Name>Field30</Name>
+        <Section>1</Section>
+        <Text>firm works to increase staff
+</Text>
+        <Left>2850</Left>
+        <Top>985</Top>
+        <Width>2565</Width>
+        <Height>285</Height>
+        <Align>0</Align>
+        <BorderStyle>1</BorderStyle>
+        <BorderColor>16777215</BorderColor>
+        <Font>
+          <Name>Verdana</Name>
+          <Size>7.5</Size>
+        </Font>
+      </Field>
+      <Field>
+        <Name>Field31</Name>
+        <Section>1</Section>
+        <Text>19-29 Martin Place, Sydney,
+</Text>
+        <Left>2850</Left>
+        <Top>2110</Top>
+        <Width>2565</Width>
+        <Height>285</Height>
+        <Align>0</Align>
+        <BorderStyle>1</BorderStyle>
+        <BorderColor>16777215</BorderColor>
+        <Font>
+          <Name>Verdana</Name>
+          <Size>7.5</Size>
+        </Font>
+      </Field>
+      <Field>
+        <Name>Field32</Name>
+        <Section>1</Section>
+        <Text>7 days.</Text>
+        <Left>10515</Left>
+        <Top>985</Top>
+        <Width>1140</Width>
+        <Height>285</Height>
+        <Align>0</Align>
+        <BorderStyle>1</BorderStyle>
+        <BorderColor>16777215</BorderColor>
+        <Font>
+          <Name>Verdana</Name>
+          <Size>7.5</Size>
+        </Font>
+      </Field>
+      <Field>
+        <Name>Field33</Name>
+        <Section>1</Section>
+        <Text>Client information portals.</Text>
+        <Left>7740</Left>
+        <Top>985</Top>
+        <Width>2565</Width>
+        <Height>285</Height>
+        <Align>0</Align>
+        <BorderStyle>1</BorderStyle>
+        <BorderColor>16777215</BorderColor>
+        <Font>
+          <Name>Verdana</Name>
+          <Size>7.5</Size>
+        </Font>
+      </Field>
+      <Field>
+        <Name>Field34</Name>
+        <Section>1</Section>
+        <Text>Records to billing intergration.</Text>
+        <Left>7740</Left>
+        <Top>1210</Top>
+        <Width>2565</Width>
+        <Height>285</Height>
+        <Align>0</Align>
+        <BorderStyle>1</BorderStyle>
+        <BorderColor>16777215</BorderColor>
+        <Font>
+          <Name>Verdana</Name>
+          <Size>7.5</Size>
+        </Font>
+      </Field>
+      <Field>
+        <Name>Field35</Name>
+        <Section>1</Section>
+        <Text>Real time asset inventory.</Text>
+        <Left>7740</Left>
+        <Top>1435</Top>
+        <Width>2565</Width>
+        <Height>285</Height>
+        <Align>0</Align>
+        <BorderStyle>1</BorderStyle>
+        <BorderColor>16777215</BorderColor>
+        <Font>
+          <Name>Verdana</Name>
+          <Size>7.5</Size>
+        </Font>
+      </Field>
+      <Field>
+        <Name>Field36</Name>
+        <Section>1</Section>
+        <Text>Business rules automation.</Text>
+        <Left>7740</Left>
+        <Top>1660</Top>
+        <Width>2565</Width>
+        <Height>285</Height>
+        <Align>0</Align>
+        <BorderStyle>1</BorderStyle>
+        <BorderColor>16777215</BorderColor>
+        <Font>
+          <Name>Verdana</Name>
+          <Size>7.5</Size>
+        </Font>
+      </Field>
+      <Field>
+        <Name>Field37</Name>
+        <Section>1</Section>
+        <Text>Customer quotation systems.</Text>
+        <Left>7740</Left>
+        <Top>1885</Top>
+        <Width>2565</Width>
+        <Height>285</Height>
+        <Align>0</Align>
+        <BorderStyle>1</BorderStyle>
+        <BorderColor>16777215</BorderColor>
+        <Font>
+          <Name>Verdana</Name>
+          <Size>7.5</Size>
+        </Font>
+      </Field>
+      <Field>
+        <Name>Field38</Name>
+        <Section>1</Section>
+        <Text>Transactional data systems.</Text>
+        <Left>7740</Left>
+        <Top>2110</Top>
+        <Width>2565</Width>
+        <Height>285</Height>
+        <Align>0</Align>
+        <BorderStyle>1</BorderStyle>
+        <BorderColor>16777215</BorderColor>
+        <Font>
+          <Name>Verdana</Name>
+          <Size>7.5</Size>
+        </Font>
+      </Field>
+      <Field>
+        <Name>Field39</Name>
+        <Section>1</Section>
+        <Text>Order to delivery systems.</Text>
+        <Left>7740</Left>
+        <Top>2335</Top>
+        <Width>2565</Width>
+        <Height>285</Height>
+        <Align>0</Align>
+        <BorderStyle>1</BorderStyle>
+        <BorderColor>16777215</BorderColor>
+        <Font>
+          <Name>Verdana</Name>
+          <Size>7.5</Size>
+        </Font>
+      </Field>
+      <Field>
+        <Name>Field40</Name>
+        <Section>1</Section>
+        <Text>efficiences and reduce  costs.</Text>
+        <Left>2850</Left>
+        <Top>1210</Top>
+        <Width>2565</Width>
+        <Height>285</Height>
+        <Align>0</Align>
+        <BorderStyle>1</BorderStyle>
+        <BorderColor>16777215</BorderColor>
+        <Font>
+          <Name>Verdana</Name>
+          <Size>7.5</Size>
+        </Font>
+      </Field>
+      <Field>
+        <Name>Field41</Name>
+        <Section>1</Section>
+        <Text>Suite 10.08, MLC Centre,</Text>
+        <Left>2850</Left>
+        <Top>1885</Top>
+        <Width>2565</Width>
+        <Height>195</Height>
+        <Align>0</Align>
+        <BorderStyle>1</BorderStyle>
+        <BorderColor>16777215</BorderColor>
+        <Font>
+          <Name>Verdana</Name>
+          <Size>7.5</Size>
+        </Font>
+      </Field>
+      <Field>
+        <Name>Field42</Name>
+        <Section>1</Section>
+        <Text>New South Wales 2000.</Text>
+        <Left>2850</Left>
+        <Top>2335</Top>
+        <Width>2565</Width>
+        <Height>285</Height>
+        <Align>0</Align>
+        <BorderStyle>1</BorderStyle>
+        <BorderColor>16777215</BorderColor>
+        <Font>
+          <Name>Verdana</Name>
+          <Size>7.5</Size>
+        </Font>
+      </Field>
+      <Field>
+        <Name>Field43</Name>
+        <Section>1</Section>
+        <Text>Page.</Text>
+        <Left>10515</Left>
+        <Top>2110</Top>
+        <Width>1140</Width>
+        <Height>285</Height>
+        <Align>0</Align>
+        <BorderStyle>1</BorderStyle>
+        <BorderColor>16777215</BorderColor>
+        <Font>
+          <Name>Verdana</Name>
+          <Size>7.5</Size>
+        </Font>
+      </Field>
+      <Field>
+        <Name>Field44</Name>
+        <Section>1</Section>
+        <Text>Monthly.</Text>
+        <Left>10515</Left>
+        <Top>225</Top>
+        <Width>1140</Width>
+        <Height>285</Height>
+        <Align>0</Align>
+        <BorderStyle>1</BorderStyle>
+        <BorderColor>16777215</BorderColor>
+        <Font>
+          <Name>Verdana</Name>
+          <Size>7.5</Size>
+        </Font>
+      </Field>
+      <Field>
+        <Name>Field25</Name>
+        <Section>1</Section>
+        <Left>350</Left>
+        <Width>1995</Width>
+        <Height>2565</Height>
+        <Picture encoding="base64">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</Picture>
+      </Field>
+    </Fields>
+  </Report>
+  <!--Report *** RptWeeklyCommuncationsLogReport ***-->
+  <Report version="2.5.20052.176">
+    <Name>RptWeeklyCommuncationsLogReport</Name>
+    <DataSource>
+      <ConnectionString>Provider=Microsoft.Jet.OLEDB.4.0;Data Source=C:\RothGrid\CoRE - Full.mdb;Persist Security Info=False</ConnectionString>
+      <RecordSource>PARAMETERS @MonDate datetime '',@Staff string ''; 
+SELECT Q.Staff,Q.MonDate,Q.TaskCode,T.TaskDescription,C.LogId,DateValue(C.LogDate) as LogDate,
+C.Comment,C.AttachmentName,C.Author FROM (qryWeeklyTimesheet Q INNER JOIN tblTasks T
+ON Q.TaskCode = T.TaskCode) INNER JOIN tblCommunicationsLog C ON Q.TaskCode = C.TaskCode 
+AND Q.Staff = C.Author 
+AND C.LogDate &gt;= Q.MonDate 
+AND C.LogDate &lt; DATEADD("d",7,Q.MonDate) 
+WHERE Q.MonDate=@MonDate AND Q.Staff =@Staff</RecordSource>
+    </DataSource>
+    <Layout>
+      <Width>6975</Width>
+      <Orientation>2</Orientation>
+    </Layout>
+    <Font>
+      <Name>Arial</Name>
+      <Size>8</Size>
+    </Font>
+    <Groups>
+      <Group>
+        <Name>LogDate</Name>
+        <GroupBy>LogDate</GroupBy>
+      </Group>
+      <Group>
+        <Name>TaskCode</Name>
+        <GroupBy>TaskCode</GroupBy>
+        <Sort>1</Sort>
+      </Group>
+    </Groups>
+    <Sections>
+      <Section>
+        <Name>Detail</Name>
+        <Type>0</Type>
+        <Height>570</Height>
+        <KeepTogether>0</KeepTogether>
+        <CanShrink>-1</CanShrink>
+      </Section>
+      <Section>
+        <Name>Header</Name>
+        <Type>1</Type>
+        <Visible>0</Visible>
+      </Section>
+      <Section>
+        <Name>Footer</Name>
+        <Type>2</Type>
+        <Height>855</Height>
+        <KeepTogether>0</KeepTogether>
+        <Visible>0</Visible>
+      </Section>
+      <Section>
+        <Name>PageHeader</Name>
+        <Type>3</Type>
+        <KeepTogether>0</KeepTogether>
+        <Visible>0</Visible>
+      </Section>
+      <Section>
+        <Name>PageFooter</Name>
+        <Type>4</Type>
+        <KeepTogether>0</KeepTogether>
+        <Visible>0</Visible>
+      </Section>
+      <Section>
+        <Name>LogDate Header</Name>
+        <Type>5</Type>
+        <Height>345</Height>
+        <KeepTogether>0</KeepTogether>
+      </Section>
+      <Section>
+        <Name>LogDate Footer</Name>
+        <Type>6</Type>
+        <KeepTogether>0</KeepTogether>
+        <Visible>0</Visible>
+      </Section>
+      <Section>
+        <Name>TaskCode Header</Name>
+        <Type>7</Type>
+        <Height>345</Height>
+        <KeepTogether>0</KeepTogether>
+      </Section>
+      <Section>
+        <Name>TaskCode Footer</Name>
+        <Type>8</Type>
+        <KeepTogether>0</KeepTogether>
+        <Visible>0</Visible>
+      </Section>
+    </Sections>
+    <Fields>
+      <Field>
+        <Name>CommentLbl</Name>
+        <Section>0</Section>
+        <Text>Iif(LEN(AttachmentName)=0,"(C)",Iif(Mid(AttachmentName,LEN(AttachmentName)-3,1)=".","(F)","(E)"))</Text>
+        <Calculated>-1</Calculated>
+        <Left>135</Left>
+        <Width>855</Width>
+        <Height>300</Height>
+        <Align>0</Align>
+        <WordWrap>0</WordWrap>
+        <Font>
+          <Name>Arial</Name>
+          <Size>8.25</Size>
+        </Font>
+      </Field>
+      <Field>
+        <Name>CommentCtl</Name>
+        <Section>0</Section>
+        <Text>Iif(Len(AttachmentName)&gt;0,AttachmentName,Comment)</Text>
+        <Calculated>-1</Calculated>
+        <Left>1140</Left>
+        <Width>5700</Width>
+        <Height>300</Height>
+        <Align>0</Align>
+        <CanShrink>-1</CanShrink>
+        <Font>
+          <Name>Arial</Name>
+          <Size>8.25</Size>
+        </Font>
+      </Field>
+      <Field>
+        <Name>StartTimeLbl1</Name>
+        <Section>7</Section>
+        <Text>TaskCode</Text>
+        <Calculated>-1</Calculated>
+        <Left>135</Left>
+        <Width>720</Width>
+        <Height>345</Height>
+        <Align>6</Align>
+        <WordWrap>0</WordWrap>
+        <Font>
+          <Underline>-1</Underline>
+          <Name>Microsoft Sans Serif</Name>
+          <Size>8.25</Size>
+        </Font>
+      </Field>
+      <Field>
+        <Name>Field1</Name>
+        <Section>7</Section>
+        <Text>"(" &amp; Duration &amp; ")  "&amp; TaskDescription</Text>
+        <Calculated>-1</Calculated>
+        <Left>1140</Left>
+        <Width>5700</Width>
+        <Height>345</Height>
+        <Align>6</Align>
+      </Field>
+      <Field>
+        <Name>Field2</Name>
+        <Section>5</Section>
+        <Text>Communication Log</Text>
+        <Width>3420</Width>
+        <Height>345</Height>
+        <Align>6</Align>
+        <Font>
+          <Bold>-1</Bold>
+          <Underline>-1</Underline>
+          <Name>Microsoft Sans Serif</Name>
+          <Size>8.25</Size>
+        </Font>
+        <KeepTogether>-1</KeepTogether>
+      </Field>
+      <Field>
+        <Name>Field3</Name>
+        <Section>0</Section>
+        <Text>Iif(Len(AttachmentName)&gt;0,Comment,"")</Text>
+        <Calculated>-1</Calculated>
+        <Left>1140</Left>
+        <Top>285</Top>
+        <Width>5700</Width>
+        <Height>285</Height>
+        <Align>0</Align>
+        <CanGrow>-1</CanGrow>
+        <CanShrink>-1</CanShrink>
+      </Field>
+    </Fields>
+  </Report>
+  <!--Report *** RptWeeklyCommuncationsLogReportByTaskCode ***-->
+  <Report version="2.5.20052.176">
+    <Name>RptWeeklyCommuncationsLogReportByTaskCode</Name>
+    <DataSource>
+      <ConnectionString>Provider=Microsoft.Jet.OLEDB.4.0;Data Source=S:\Clients\Codistri\TestCoRE\CoRE.mdb;Persist Security Info=False</ConnectionString>
+      <RecordSource>PARAMETERS @MonDate datetime '',@Staff string ''; 
+SELECT Q.Staff,Q.MonDate,
+Q.TaskCode,T.TaskDescription,
+C.LogId,DateValue(C.LogDate) as LogDate,
+C.Comment,C.AttachmentName,C.Author
+FROM (qryWeeklyTimesheet Q
+INNER JOIN tblTasks T
+ON Q.TaskCode = T.TaskCode)
+INNER JOIN tblCommunicationsLog C
+ON Q.TaskCode = C.TaskCode
+AND Q.Staff = C.Author
+AND C.LogDate &gt;= Q.MonDate
+AND C.LogDate &lt; DATEADD("d",7,Q.MonDate)
+WHERE Q.MonDate = @MonDate
+AND Q.Staff = @Staff</RecordSource>
+    </DataSource>
+    <Layout>
+      <Width>7980</Width>
+      <Orientation>1</Orientation>
+    </Layout>
+    <Font>
+      <Name>Arial</Name>
+      <Size>8</Size>
+    </Font>
+    <Groups>
+      <Group>
+        <Name>LogDate</Name>
+        <GroupBy>LogDate</GroupBy>
+        <KeepTogether>2</KeepTogether>
+      </Group>
+      <Group>
+        <Name>TaskCode</Name>
+        <GroupBy>TaskCode</GroupBy>
+        <KeepTogether>2</KeepTogether>
+      </Group>
+    </Groups>
+    <Sections>
+      <Section>
+        <Name>Detail</Name>
+        <Type>0</Type>
+        <Height>300</Height>
+      </Section>
+      <Section>
+        <Name>Header</Name>
+        <Type>1</Type>
+      </Section>
+      <Section>
+        <Name>Footer</Name>
+        <Type>2</Type>
+        <Visible>0</Visible>
+      </Section>
+      <Section>
+        <Name>PageHeader</Name>
+        <Type>3</Type>
+        <Visible>0</Visible>
+      </Section>
+      <Section>
+        <Name>PageFooter</Name>
+        <Type>4</Type>
+      </Section>
+      <Section>
+        <Name>LogDate Header</Name>
+        <Type>5</Type>
+        <Height>5</Height>
+        <Repeat>-1</Repeat>
+      </Section>
+      <Section>
+        <Name>LogDate Footer</Name>
+        <Type>6</Type>
+        <Visible>0</Visible>
+      </Section>
+      <Section>
+        <Name>TaskCode Header</Name>
+        <Type>7</Type>
+        <Height>285</Height>
+        <Repeat>-1</Repeat>
+      </Section>
+      <Section>
+        <Name>TaskCode Footer</Name>
+        <Type>8</Type>
+        <Visible>0</Visible>
+      </Section>
+    </Sections>
+    <Fields>
+      <Field>
+        <Name>CommentLbl</Name>
+        <Section>7</Section>
+        <Text>Comment</Text>
+        <Width>3705</Width>
+        <Height>285</Height>
+        <Align>6</Align>
+        <WordWrap>0</WordWrap>
+        <Font>
+          <Bold>-1</Bold>
+          <Underline>-1</Underline>
+          <Name>Microsoft Sans Serif</Name>
+          <Size>8.25</Size>
+        </Font>
+      </Field>
+      <Field>
+        <Name>AttachmentNameLbl</Name>
+        <Section>7</Section>
+        <Text>AttachmentName</Text>
+        <Left>3840</Left>
+        <Width>3990</Width>
+        <Height>285</Height>
+        <Align>6</Align>
+        <WordWrap>0</WordWrap>
+        <Font>
+          <Bold>-1</Bold>
+          <Underline>-1</Underline>
+          <Name>Microsoft Sans Serif</Name>
+          <Size>8.25</Size>
+        </Font>
+      </Field>
+      <Field>
+        <Name>CommentCtl</Name>
+        <Section>0</Section>
+        <Text>Comment</Text>
+        <Calculated>-1</Calculated>
+        <Width>3705</Width>
+        <Height>285</Height>
+        <Align>0</Align>
+        <CanGrow>-1</CanGrow>
+      </Field>
+      <Field>
+        <Name>AttachmentNameCtl</Name>
+        <Section>0</Section>
+        <Text>AttachmentName</Text>
+        <Calculated>-1</Calculated>
+        <Left>3840</Left>
+        <Width>3990</Width>
+        <Height>300</Height>
+        <Align>0</Align>
+        <CanGrow>-1</CanGrow>
+      </Field>
+    </Fields>
+  </Report>
+  <!--Report *** RptWeeklyProductivityReport ***-->
+  <Report version="2.5.20052.176">
+    <Name>RptWeeklyProductivityReport</Name>
+    <DataSource>
+      <ConnectionString>Provider=Microsoft.Jet.OLEDB.4.0;Data Source=C:\RothGrid\CoRE - Full.mdb;Persist Security Info=False</ConnectionString>
+      <RecordSource>PARAMETERS @MonDate datetime '',@Staff string ''; 
+SELECT Q.Staff,Q.MonDate,
+Q.TaskCode,T.TaskDescription,
+Q.TotalDuration,Q.TotalBillableDuration,
+Format(TI.StartTime,"ddd") as DayOfTheWeek,
+DateValue(TI.StartTime) as DateOfTheWeek,
+IIF(Format(TI.StartTime,"ddd") = "Mon", Q.MonDuration,
+IIF(Format(TI.StartTime,"ddd") = "Tue", Q.TueDuration,
+IIF(Format(TI.StartTime,"ddd") = "Wed", Q.WedDuration,
+IIF(Format(TI.StartTime,"ddd") = "Thu", Q.ThuDuration,
+IIF(Format(TI.StartTime,"ddd") = "Fri", Q.FriDuration,
+IIF(Format(TI.StartTime,"ddd") = "Sat", Q.SatDuration,SunDuration)))))) AS DayDuration,
+Format(TI.StartTime,"HH:mm") as StartTime,
+Format(TI.EndTime,"HH:mm") as EndTime,
+DATEDIFF("s",TI.StartTime,TI.EndTime) / 3600 AS Duration
+FROM (qryWeeklyTimesheet Q
+INNER JOIN tblTasks T
+ON Q.TaskCode = T.TaskCode)
+INNER JOIN tblTimings TI
+ON Q.TaskCode = TI.TaskCode
+AND Q.Staff = TI.Staff
+AND TI.StartTime &gt;= Q.MonDate
+AND TI.StartTime &lt; DATEADD("d",7,Q.MonDate)
+WHERE Q.MonDate = @MonDate
+AND Q.Staff = @Staff
+ORDER BY TI.StartTime</RecordSource>
+    </DataSource>
+    <Layout>
+      <Width>12960</Width>
+      <MarginLeft>1000</MarginLeft>
+      <Orientation>2</Orientation>
+    </Layout>
+    <Font>
+      <Name>Arial</Name>
+      <Size>8</Size>
+    </Font>
+    <Groups>
+      <Group>
+        <Name>Day</Name>
+        <GroupBy>DateOfTheWeek</GroupBy>
+        <Sort>1</Sort>
+        <KeepTogether>1</KeepTogether>
+      </Group>
+    </Groups>
+    <Sections>
+      <Section>
+        <Name>Detail</Name>
+        <Type>0</Type>
+        <Height>135</Height>
+        <KeepTogether>0</KeepTogether>
+        <Visible>0</Visible>
+        <CanGrow>0</CanGrow>
+      </Section>
+      <Section>
+        <Name>Header</Name>
+        <Type>1</Type>
+        <Height>1155</Height>
+      </Section>
+      <Section>
+        <Name>Footer</Name>
+        <Type>2</Type>
+        <KeepTogether>0</KeepTogether>
+        <Visible>0</Visible>
+        <CanGrow>0</CanGrow>
+      </Section>
+      <Section>
+        <Name>PageHeader</Name>
+        <Type>3</Type>
+        <Height>300</Height>
+      </Section>
+      <Section>
+        <Name>PageFooter</Name>
+        <Type>4</Type>
+        <Visible>0</Visible>
+      </Section>
+      <Section>
+        <Name>Day Header</Name>
+        <Type>5</Type>
+        <Height>990</Height>
+        <KeepTogether>0</KeepTogether>
+      </Section>
+      <Section>
+        <Name>Day Footer</Name>
+        <Type>6</Type>
+        <Height>30</Height>
+        <KeepTogether>0</KeepTogether>
+        <CanGrow>0</CanGrow>
+      </Section>
+    </Sections>
+    <Fields>
+      <Field>
+        <Name>titleLbl</Name>
+        <Section>1</Section>
+        <Text>Weekly Activity Report For</Text>
+        <Width>12960</Width>
+        <Height>570</Height>
+        <Align>1</Align>
+        <Font>
+          <Name>Times New Roman</Name>
+          <Size>18</Size>
+        </Font>
+      </Field>
+      <Field>
+        <Name>ftrLeft</Name>
+        <Section>3</Section>
+        <Text>Now()</Text>
+        <Calculated>-1</Calculated>
+        <Width>1710</Width>
+        <Height>300</Height>
+        <Align>0</Align>
+        <Font>
+          <Name>Arial</Name>
+          <Size>9</Size>
+        </Font>
+      </Field>
+      <Field>
+        <Name>ftrRight</Name>
+        <Section>3</Section>
+        <Text>"Page " &amp; [Page] &amp; " of " &amp; [Pages]</Text>
+        <Calculated>-1</Calculated>
+        <Left>10545</Left>
+        <Width>2280</Width>
+        <Height>300</Height>
+        <Align>2</Align>
+        <Font>
+          <Name>Arial</Name>
+          <Size>9</Size>
+        </Font>
+      </Field>
+      <Field>
+        <Name>StaffLbl</Name>
+        <Section>1</Section>
+        <Text>Staff</Text>
+        <Calculated>-1</Calculated>
+        <Top>420</Top>
+        <Width>12960</Width>
+        <Height>405</Height>
+        <Align>7</Align>
+        <Font>
+          <Bold>-1</Bold>
+          <Name>Arial</Name>
+          <Size>12</Size>
+        </Font>
+      </Field>
+      <Field>
+        <Name>Field1</Name>
+        <Section>1</Section>
+        <Text>"FROM "+[MonDate]+" To "+DateAdd("d",6,[MonDate])</Text>
+        <Calculated>-1</Calculated>
+        <Top>705</Top>
+        <Width>12960</Width>
+        <Height>435</Height>
+        <Align>7</Align>
+        <Font>
+          <Bold>-1</Bold>
+          <Name>Arial</Name>
+          <Size>9.75</Size>
+        </Font>
+      </Field>
+      <Field>
+        <Name>Field10</Name>
+        <Section>5</Section>
+        <Text>Day:</Text>
+        <Width>570</Width>
+        <Height>285</Height>
+        <Align>0</Align>
+        <CanGrow>-1</CanGrow>
+        <Font>
+          <Bold>-1</Bold>
+          <Name>Arial</Name>
+          <Size>8.25</Size>
+        </Font>
+        <KeepTogether>-1</KeepTogether>
+      </Field>
+      <Field>
+        <Name>DayCtl</Name>
+        <Section>5</Section>
+        <Text>DateOfTheWeek+" ("+DayOfTheWeek+")"</Text>
+        <Calculated>-1</Calculated>
+        <Left>570</Left>
+        <Width>5700</Width>
+        <Height>285</Height>
+        <Align>0</Align>
+        <CanGrow>-1</CanGrow>
+        <Font>
+          <Bold>-1</Bold>
+          <Name>Arial</Name>
+          <Size>8.25</Size>
+        </Font>
+        <KeepTogether>-1</KeepTogether>
+      </Field>
+      <Field>
+        <Name>Field8</Name>
+        <Section>0</Section>
+        <Text>TaskCode</Text>
+        <Calculated>-1</Calculated>
+        <Left>705</Left>
+        <Top>135</Top>
+      </Field>
+      <Field>
+        <Name>RptWeeklyTimingsReport</Name>
+        <Section>5</Section>
+        <Text>"[DateOfTheWeek] = #" &amp; format([DateOfTheWeek], "MM/dd/yyyy") &amp;"#"</Text>
+        <Calculated>-1</Calculated>
+        <Top>285</Top>
+        <Width>5700</Width>
+        <Height>705</Height>
+        <Align>0</Align>
+        <CanGrow>-1</CanGrow>
+        <CanShrink>-1</CanShrink>
+        <Subreport>RptWeeklyTimingsReport</Subreport>
+      </Field>
+      <Field>
+        <Name>RptWeeklyCommuncationsLogReport</Name>
+        <Section>5</Section>
+        <Text>"[LogDate] = #" &amp; format([DateOfTheWeek], "MM/dd/yyyy") &amp;"#"</Text>
+        <Calculated>-1</Calculated>
+        <Left>6840</Left>
+        <Top>285</Top>
+        <Width>5985</Width>
+        <Height>705</Height>
+        <Align>0</Align>
+        <CanGrow>-1</CanGrow>
+        <CanShrink>-1</CanShrink>
+        <Subreport>RptWeeklyCommuncationsLogReport</Subreport>
+      </Field>
+      <Field>
+        <Name>Field2</Name>
+        <Section>6</Section>
+        <Width>12825</Width>
+        <BorderStyle>1</BorderStyle>
+        <LineSlant>1</LineSlant>
+      </Field>
+    </Fields>
+  </Report>
+  <!--Report *** RptWeeklyProductivityReportByTaskCode ***-->
+  <Report version="2.5.20052.176">
+    <Name>RptWeeklyProductivityReportByTaskCode</Name>
+    <DataSource>
+      <ConnectionString>Provider=Microsoft.Jet.OLEDB.4.0;Data Source=S:\Clients\Codistri\TestCoRE\CoRE.mdb;Persist Security Info=False</ConnectionString>
+      <RecordSource>PARAMETERS @MonDate datetime '',@Staff string ''; 
+SELECT Q.Staff,Q.MonDate,
+Q.TaskCode,T.TaskDescription,
+Q.TotalDuration,Q.TotalBillableDuration,
+Format(TI.StartTime,"ddd") as DayOfTheWeek,
+DateValue(TI.StartTime) as DateOfTheWeek,
+IIF(Format(TI.StartTime,"ddd") = "Mon", Q.MonDuration,
+IIF(Format(TI.StartTime,"ddd") = "Tue", Q.TueDuration,
+IIF(Format(TI.StartTime,"ddd") = "Wed", Q.WedDuration,
+IIF(Format(TI.StartTime,"ddd") = "Thu", Q.ThuDuration,
+IIF(Format(TI.StartTime,"ddd") = "Fri", Q.FriDuration,
+IIF(Format(TI.StartTime,"ddd") = "Sat", Q.SatDuration,SunDuration)))))) AS DayDuration,
+Format(TI.StartTime,"HH:mm") as StartTime,
+Format(TI.EndTime,"HH:mm") as EndTime,
+DATEDIFF("s",TI.StartTime,TI.EndTime) / 3600 AS Duration
+FROM (qryWeeklyTimesheet Q
+INNER JOIN tblTasks T
+ON Q.TaskCode = T.TaskCode)
+INNER JOIN tblTimings TI
+ON Q.TaskCode = TI.TaskCode
+AND Q.Staff = TI.Staff
+AND TI.StartTime &gt;= Q.MonDate
+AND TI.StartTime &lt; DATEADD("d",7,Q.MonDate)
+WHERE Q.MonDate = @MonDate
+AND Q.Staff = @Staff</RecordSource>
+    </DataSource>
+    <Layout>
+      <Width>9255</Width>
+      <Orientation>1</Orientation>
+    </Layout>
+    <Font>
+      <Name>Arial</Name>
+      <Size>8</Size>
+    </Font>
+    <Groups>
+      <Group>
+        <Name>Day</Name>
+        <GroupBy>DateOfTheWeek</GroupBy>
+        <Sort>1</Sort>
+      </Group>
+      <Group>
+        <Name>Task</Name>
+        <GroupBy>TaskCode</GroupBy>
+        <KeepTogether>1</KeepTogether>
+      </Group>
+    </Groups>
+    <Sections>
+      <Section>
+        <Name>Detail</Name>
+        <Type>0</Type>
+        <Height>135</Height>
+        <Visible>0</Visible>
+      </Section>
+      <Section>
+        <Name>Header</Name>
+        <Type>1</Type>
+        <Height>1575</Height>
+      </Section>
+      <Section>
+        <Name>Footer</Name>
+        <Type>2</Type>
+        <Visible>0</Visible>
+      </Section>
+      <Section>
+        <Name>PageHeader</Name>
+        <Type>3</Type>
+      </Section>
+      <Section>
+        <Name>PageFooter</Name>
+        <Type>4</Type>
+      </Section>
+      <Section>
+        <Name>Day Header</Name>
+        <Type>5</Type>
+        <Height>315</Height>
+      </Section>
+      <Section>
+        <Name>Day Footer</Name>
+        <Type>6</Type>
+        <Height>150</Height>
+      </Section>
+      <Section>
+        <Name>Task Header</Name>
+        <Type>7</Type>
+        <Height>1140</Height>
+      </Section>
+      <Section>
+        <Name>Task Footer</Name>
+        <Type>8</Type>
+        <Height>120</Height>
+      </Section>
+    </Sections>
+    <Fields>
+      <Field>
+        <Name>titleLbl</Name>
+        <Section>1</Section>
+        <Text>Weekly Productivity Report For</Text>
+        <Width>9120</Width>
+        <Height>570</Height>
+        <Align>1</Align>
+        <Font>
+          <Name>Times New Roman</Name>
+          <Size>18</Size>
+        </Font>
+      </Field>
+      <Field>
+        <Name>ftrLeft</Name>
+        <Section>1</Section>
+        <Text>Now()</Text>
+        <Calculated>-1</Calculated>
+        <Top>1140</Top>
+        <Width>1710</Width>
+        <Height>300</Height>
+        <Align>0</Align>
+        <Font>
+          <Name>Arial</Name>
+          <Size>9</Size>
+        </Font>
+      </Field>
+      <Field>
+        <Name>ftrRight</Name>
+        <Section>1</Section>
+        <Text>"Page " &amp; [Page] &amp; " of " &amp; [Pages]</Text>
+        <Calculated>-1</Calculated>
+        <Left>6840</Left>
+        <Top>1140</Top>
+        <Width>2280</Width>
+        <Height>300</Height>
+        <Align>2</Align>
+        <Font>
+          <Name>Arial</Name>
+          <Size>9</Size>
+        </Font>
+      </Field>
+      <Field>
+        <Name>StaffLbl</Name>
+        <Section>1</Section>
+        <Text>Staff</Text>
+        <Calculated>-1</Calculated>
+        <Top>420</Top>
+        <Width>9120</Width>
+        <Height>405</Height>
+        <Align>7</Align>
+        <Font>
+          <Bold>-1</Bold>
+          <Name>Arial</Name>
+          <Size>12</Size>
+        </Font>
+      </Field>
+      <Field>
+        <Name>Field1</Name>
+        <Section>1</Section>
+        <Text>"FROM "+[MonDate]+" To "+DateAdd("d",7,[MonDate])</Text>
+        <Calculated>-1</Calculated>
+        <Top>705</Top>
+        <Width>9120</Width>
+        <Height>435</Height>
+        <Align>7</Align>
+        <Font>
+          <Bold>-1</Bold>
+          <Name>Arial</Name>
+          <Size>9.75</Size>
+        </Font>
+      </Field>
+      <Field>
+        <Name>Field10</Name>
+        <Section>5</Section>
+        <Text>Day:</Text>
+        <Width>570</Width>
+        <Height>285</Height>
+        <Align>0</Align>
+        <Font>
+          <Bold>-1</Bold>
+          <Name>Arial</Name>
+          <Size>8.25</Size>
+        </Font>
+      </Field>
+      <Field>
+        <Name>DayCtl</Name>
+        <Section>5</Section>
+        <Text>DateOfTheWeek+" ("+DayOfTheWeek+")"</Text>
+        <Calculated>-1</Calculated>
+        <Left>570</Left>
+        <Width>5700</Width>
+        <Height>285</Height>
+        <Align>0</Align>
+        <Font>
+          <Bold>-1</Bold>
+          <Name>Arial</Name>
+          <Size>8.25</Size>
+        </Font>
+      </Field>
+      <Field>
+        <Name>Field2</Name>
+        <Section>7</Section>
+        <Text>Task Code</Text>
+        <Left>285</Left>
+        <Width>855</Width>
+        <Height>315</Height>
+        <Align>0</Align>
+        <Font>
+          <Bold>-1</Bold>
+          <Underline>-1</Underline>
+          <Name>Microsoft Sans Serif</Name>
+          <Size>8.25</Size>
+        </Font>
+      </Field>
+      <Field>
+        <Name>Field3</Name>
+        <Section>7</Section>
+        <Text>Task Description</Text>
+        <Left>285</Left>
+        <Top>285</Top>
+        <Width>1425</Width>
+        <Height>315</Height>
+        <Align>0</Align>
+        <Font>
+          <Bold>-1</Bold>
+          <Underline>-1</Underline>
+          <Name>Microsoft Sans Serif</Name>
+          <Size>8.25</Size>
+        </Font>
+      </Field>
+      <Field>
+        <Name>DayDurationCtl</Name>
+        <Section>7</Section>
+        <Text>DayDuration</Text>
+        <Calculated>-1</Calculated>
+        <Left>7410</Left>
+        <Width>855</Width>
+        <Height>285</Height>
+        <Align>2</Align>
+        <Font>
+          <Bold>-1</Bold>
+          <Underline>-1</Underline>
+          <Name>Arial</Name>
+          <Size>8.25</Size>
+        </Font>
+      </Field>
+      <Field>
+        <Name>Field8</Name>
+        <Section>0</Section>
+        <Text>TaskCode</Text>
+        <Calculated>-1</Calculated>
+        <Left>705</Left>
+        <Top>135</Top>
+      </Field>
+      <Field>
+        <Name>Field9</Name>
+        <Section>7</Section>
+        <Text>TaskCode</Text>
+        <Calculated>-1</Calculated>
+        <Left>1710</Left>
+        <Width>855</Width>
+        <Height>285</Height>
+      </Field>
+      <Field>
+        <Name>Field11</Name>
+        <Section>7</Section>
+        <Text>TaskDescription</Text>
+        <Calculated>-1</Calculated>
+        <Left>1710</Left>
+        <Top>285</Top>
+        <Width>3855</Width>
+        <Height>285</Height>
+        <Align>0</Align>
+      </Field>
+      <Field>
+        <Name>Field15</Name>
+        <Section>6</Section>
+        <Top>135</Top>
+        <Width>9120</Width>
+        <BorderStyle>1</BorderStyle>
+        <LineSlant>1</LineSlant>
+      </Field>
+      <Field>
+        <Name>Field7</Name>
+        <Section>7</Section>
+        <Text>Total Task Duration:</Text>
+        <Left>5700</Left>
+        <Width>1710</Width>
+        <Height>285</Height>
+        <Align>0</Align>
+        <Font>
+          <Bold>-1</Bold>
+          <Name>Arial</Name>
+          <Size>8.25</Size>
+        </Font>
+      </Field>
+      <Field>
+        <Name>Field16</Name>
+        <Section>8</Section>
+        <Left>285</Left>
+        <Width>8685</Width>
+        <BorderStyle>2</BorderStyle>
+        <LineSlant>1</LineSlant>
+      </Field>
+      <Field>
+        <Name>Field17</Name>
+        <Section>5</Section>
+        <Calculated>-1</Calculated>
+        <Left>5835</Left>
+        <Width>2145</Width>
+        <Height>285</Height>
+      </Field>
+      <Field>
+        <Name>RptWeeklyTimingsReportByTaskCode</Name>
+        <Section>7</Section>
+        <Text>"[TaskCode]='" &amp; [TaskCode] &amp; "' and [DateOfTheWeek] = #" &amp; format([DateOfTheWeek], "MM/dd/yyyy") &amp;"#"</Text>
+        <Calculated>-1</Calculated>
+        <Left>285</Left>
+        <Top>570</Top>
+        <Width>3135</Width>
+        <Height>570</Height>
+        <Align>0</Align>
+        <CanGrow>-1</CanGrow>
+        <CanShrink>-1</CanShrink>
+        <Subreport>RptWeeklyTimingsReportByTaskCode</Subreport>
+      </Field>
+      <Field>
+        <Name>RptWeeklyCommuncationsLogReportByTaskCode</Name>
+        <Section>7</Section>
+        <Text>"[TaskCode]='" &amp; [TaskCode] &amp; "' and [LogDate] = #" &amp; format([DateOfTheWeek], "MM/dd/yyyy") &amp;"#"</Text>
+        <Calculated>-1</Calculated>
+        <Left>3705</Left>
+        <Top>570</Top>
+        <Width>5415</Width>
+        <Height>570</Height>
+        <Align>0</Align>
+        <CanGrow>-1</CanGrow>
+        <CanShrink>-1</CanShrink>
+        <Subreport>RptWeeklyCommuncationsLogReportByTaskCode</Subreport>
+      </Field>
+    </Fields>
+  </Report>
+  <!--Report *** RptWeeklyTimingsReport ***-->
+  <Report version="2.5.20052.176">
+    <Name>RptWeeklyTimingsReport</Name>
+    <DataSource>
+      <ConnectionString>Provider=Microsoft.Jet.OLEDB.4.0;Data Source=C:\RothGrid\CoRE - Full.mdb;Persist Security Info=False</ConnectionString>
+      <RecordSource>PARAMETERS @MonDate datetime '',@Staff string ''; 
+
+      	SELECT Q.Staff,Q.MonDate,
+	Q.TaskCode,T.TaskDescription,
+	Q.TotalDuration,Q.TotalBillableDuration,
+	Format(TI.StartTime,"ddd") as DayOfTheWeek,
+	DateValue(TI.StartTime) as DateOfTheWeek,
+	IIF(Format(TI.StartTime,"ddd") = "Mon", Q.MonDuration,
+	IIF(Format(TI.StartTime,"ddd") = "Tue", Q.TueDuration,
+	IIF(Format(TI.StartTime,"ddd") = "Wed", Q.WedDuration,
+	IIF(Format(TI.StartTime,"ddd") = "Thu", Q.ThuDuration,
+	IIF(Format(TI.StartTime,"ddd") = "Fri", Q.FriDuration,
+	IIF(Format(TI.StartTime,"ddd") = "Sat", Q.SatDuration,SunDuration)))))) AS DayDuration,
+	Format(TI.StartTime,"HH:mm") as StartTime,
+	Format(TI.EndTime,"HH:mm") as EndTime,
+	DATEDIFF("s",TI.StartTime,TI.EndTime) / 3600 AS Duration
+	FROM (qryWeeklyTimesheet Q
+	INNER JOIN tblTasks T
+	ON Q.TaskCode = T.TaskCode)
+	INNER JOIN tblTimings TI
+	ON Q.TaskCode = TI.TaskCode
+	AND Q.Staff = TI.Staff
+	AND TI.StartTime &gt;= Q.MonDate
+	AND TI.StartTime &lt; DATEADD("d",7,Q.MonDate)
+	WHERE Q.MonDate = @MonDate
+	AND Q.Staff = @Staff ORDER BY TI.StartTime
+
+    </RecordSource>
+    </DataSource>
+    <Layout>
+      <Width>6405</Width>
+      <Orientation>2</Orientation>
+    </Layout>
+    <Font>
+      <Name>Arial</Name>
+      <Size>8</Size>
+    </Font>
+    <Groups>
+      <Group>
+        <Name>DateOfTheWeek</Name>
+        <GroupBy>DateOfTheWeek</GroupBy>
+      </Group>
+    </Groups>
+    <Sections>
+      <Section>
+        <Name>Detail</Name>
+        <Type>0</Type>
+        <Height>305</Height>
+      </Section>
+      <Section>
+        <Name>Header</Name>
+        <Type>1</Type>
+        <Height>5</Height>
+      </Section>
+      <Section>
+        <Name>Footer</Name>
+        <Type>2</Type>
+        <Height>885</Height>
+        <Visible>0</Visible>
+      </Section>
+      <Section>
+        <Name>PageHeader</Name>
+        <Type>3</Type>
+        <Visible>0</Visible>
+      </Section>
+      <Section>
+        <Name>PageFooter</Name>
+        <Type>4</Type>
+        <Visible>0</Visible>
+      </Section>
+      <Section>
+        <Name>DateOfTheWeek Header</Name>
+        <Type>5</Type>
+        <Height>345</Height>
+      </Section>
+      <Section>
+        <Name>DateOfTheWeek Footer</Name>
+        <Type>6</Type>
+        <Height>360</Height>
+      </Section>
+    </Sections>
+    <Fields>
+      <Field>
+        <Name>StartTimeLbl</Name>
+        <Section>5</Section>
+        <Text>Start</Text>
+        <Left>4125</Left>
+        <Width>705</Width>
+        <Height>345</Height>
+        <Align>6</Align>
+        <WordWrap>0</WordWrap>
+        <Font>
+          <Bold>-1</Bold>
+          <Underline>-1</Underline>
+          <Name>Microsoft Sans Serif</Name>
+          <Size>8.25</Size>
+        </Font>
+      </Field>
+      <Field>
+        <Name>EndTimeLbl</Name>
+        <Section>5</Section>
+        <Text>End</Text>
+        <Left>4830</Left>
+        <Width>705</Width>
+        <Height>345</Height>
+        <Align>6</Align>
+        <WordWrap>0</WordWrap>
+        <Font>
+          <Bold>-1</Bold>
+          <Underline>-1</Underline>
+          <Name>Microsoft Sans Serif</Name>
+          <Size>8.25</Size>
+        </Font>
+      </Field>
+      <Field>
+        <Name>DurationLbl</Name>
+        <Section>5</Section>
+        <Text>Duration</Text>
+        <Left>5550</Left>
+        <Width>855</Width>
+        <Height>345</Height>
+        <Align>8</Align>
+        <WordWrap>0</WordWrap>
+        <Font>
+          <Bold>-1</Bold>
+          <Underline>-1</Underline>
+          <Name>Microsoft Sans Serif</Name>
+          <Size>8.25</Size>
+        </Font>
+      </Field>
+      <Field>
+        <Name>StartTimeCtl</Name>
+        <Section>0</Section>
+        <Text>StartTime</Text>
+        <Calculated>-1</Calculated>
+        <Left>4125</Left>
+        <Width>705</Width>
+        <Height>300</Height>
+        <Align>0</Align>
+      </Field>
+      <Field>
+        <Name>EndTimeCtl</Name>
+        <Section>0</Section>
+        <Text>EndTime</Text>
+        <Calculated>-1</Calculated>
+        <Left>4830</Left>
+        <Width>705</Width>
+        <Height>300</Height>
+        <Align>0</Align>
+      </Field>
+      <Field>
+        <Name>DurationCtl</Name>
+        <Section>0</Section>
+        <Text>Duration</Text>
+        <Calculated>-1</Calculated>
+        <Format>#,##0.00</Format>
+        <Left>5550</Left>
+        <Width>855</Width>
+        <Height>300</Height>
+        <Align>2</Align>
+      </Field>
+      <Field>
+        <Name>Field1</Name>
+        <Section>0</Section>
+        <Text>TaskCode</Text>
+        <Calculated>-1</Calculated>
+        <Width>705</Width>
+        <Height>285</Height>
+      </Field>
+      <Field>
+        <Name>StartTimeLbl1</Name>
+        <Section>5</Section>
+        <Text>Code</Text>
+        <Width>705</Width>
+        <Height>345</Height>
+        <Align>6</Align>
+        <WordWrap>0</WordWrap>
+        <Font>
+          <Bold>-1</Bold>
+          <Underline>-1</Underline>
+          <Name>Microsoft Sans Serif</Name>
+          <Size>8.25</Size>
+        </Font>
+      </Field>
+      <Field>
+        <Name>Field2</Name>
+        <Section>0</Section>
+        <Text>TaskDescription</Text>
+        <Calculated>-1</Calculated>
+        <Left>855</Left>
+        <Width>3135</Width>
+        <Height>285</Height>
+        <CanGrow>-1</CanGrow>
+      </Field>
+      <Field>
+        <Name>StartTimeLbl2</Name>
+        <Section>5</Section>
+        <Text>Description</Text>
+        <Left>855</Left>
+        <Width>3135</Width>
+        <Height>345</Height>
+        <Align>6</Align>
+        <WordWrap>0</WordWrap>
+        <CanGrow>-1</CanGrow>
+        <Font>
+          <Bold>-1</Bold>
+          <Underline>-1</Underline>
+          <Name>Microsoft Sans Serif</Name>
+          <Size>8.25</Size>
+        </Font>
+      </Field>
+      <Field>
+        <Name>Field3</Name>
+        <Section>6</Section>
+        <Text>Sum(Duration)</Text>
+        <Calculated>-1</Calculated>
+        <Format>#,##0.00</Format>
+        <Left>5700</Left>
+        <Width>705</Width>
+        <Height>285</Height>
+        <Align>5</Align>
+        <RunningSum>1</RunningSum>
+        <Font>
+          <Bold>-1</Bold>
+          <Underline>-1</Underline>
+          <Name>Arial</Name>
+          <Size>8.25</Size>
+        </Font>
+      </Field>
+      <Field>
+        <Name>Field4</Name>
+        <Section>6</Section>
+        <Text>Total Hours:</Text>
+        <Left>3990</Left>
+        <Width>1710</Width>
+        <Height>285</Height>
+        <Align>5</Align>
+        <Font>
+          <Bold>-1</Bold>
+          <Name>Arial</Name>
+          <Size>8.25</Size>
+        </Font>
+      </Field>
+      <Field>
+        <Name>Field6</Name>
+        <Section>6</Section>
+        <Left>3990</Left>
+        <Width>2415</Width>
+        <BorderStyle>1</BorderStyle>
+        <LineSlant>1</LineSlant>
+      </Field>
+      <Field>
+        <Name>Field5</Name>
+        <Section>6</Section>
+        <Left>3990</Left>
+        <Top>255</Top>
+        <Width>2415</Width>
+        <BorderStyle>1</BorderStyle>
+        <LineSlant>1</LineSlant>
+      </Field>
+    </Fields>
+  </Report>
+  <!--Report *** RptWeeklyTimingsReportByTaskCode ***-->
+  <Report version="2.5.20052.176">
+    <Name>RptWeeklyTimingsReportByTaskCode</Name>
+    <DataSource>
+      <ConnectionString>Provider=Microsoft.Jet.OLEDB.4.0;Data Source=S:\Clients\Codistri\TestCoRE\CoRE.mdb;Persist Security Info=False</ConnectionString>
+      <RecordSource>PARAMETERS @MonDate datetime '',@Staff string ''; 
+SELECT Q.Staff,Q.MonDate,
+Q.TaskCode,T.TaskDescription,
+Q.TotalDuration,Q.TotalBillableDuration,
+Format(TI.StartTime,"ddd") as DayOfTheWeek,
+DateValue(TI.StartTime) as DateOfTheWeek,
+IIF(Format(TI.StartTime,"ddd") = "Mon", Q.MonDuration,
+IIF(Format(TI.StartTime,"ddd") = "Tue", Q.TueDuration,
+IIF(Format(TI.StartTime,"ddd") = "Wed", Q.WedDuration,
+IIF(Format(TI.StartTime,"ddd") = "Thu", Q.ThuDuration,
+IIF(Format(TI.StartTime,"ddd") = "Fri", Q.FriDuration,
+IIF(Format(TI.StartTime,"ddd") = "Sat", Q.SatDuration,SunDuration)))))) AS DayDuration,
+Format(TI.StartTime,"HH:mm") as StartTime,
+Format(TI.EndTime,"HH:mm") as EndTime,
+DATEDIFF("s",TI.StartTime,TI.EndTime) / 3600 AS Duration
+FROM (qryWeeklyTimesheet Q
+INNER JOIN tblTasks T
+ON Q.TaskCode = T.TaskCode)
+INNER JOIN tblTimings TI
+ON Q.TaskCode = TI.TaskCode
+AND Q.Staff = TI.Staff
+AND TI.StartTime &gt;= Q.MonDate
+AND TI.StartTime &lt; DATEADD("d",7,Q.MonDate)
+WHERE Q.MonDate = @MonDate
+AND Q.Staff = @Staff</RecordSource>
+    </DataSource>
+    <Layout>
+      <Width>3405</Width>
+      <Orientation>1</Orientation>
+    </Layout>
+    <Font>
+      <Name>Arial</Name>
+      <Size>8</Size>
+    </Font>
+    <Groups>
+      <Group>
+        <Name>DateOfTheWeek</Name>
+        <GroupBy>DateOfTheWeek</GroupBy>
+        <Sort>1</Sort>
+        <KeepTogether>2</KeepTogether>
+      </Group>
+      <Group>
+        <Name>TaskCode</Name>
+        <GroupBy>TaskCode</GroupBy>
+        <Sort>1</Sort>
+        <KeepTogether>2</KeepTogether>
+      </Group>
+    </Groups>
+    <Sections>
+      <Section>
+        <Name>Detail</Name>
+        <Type>0</Type>
+        <Height>305</Height>
+      </Section>
+      <Section>
+        <Name>Header</Name>
+        <Type>1</Type>
+        <Height>5</Height>
+      </Section>
+      <Section>
+        <Name>Footer</Name>
+        <Type>2</Type>
+        <Visible>0</Visible>
+      </Section>
+      <Section>
+        <Name>PageHeader</Name>
+        <Type>3</Type>
+        <Visible>0</Visible>
+      </Section>
+      <Section>
+        <Name>PageFooter</Name>
+        <Type>4</Type>
+      </Section>
+      <Section>
+        <Name>GroupHeader0</Name>
+        <Type>5</Type>
+        <Height>5</Height>
+        <Visible>0</Visible>
+        <Repeat>-1</Repeat>
+      </Section>
+      <Section>
+        <Name>GroupFooter0</Name>
+        <Type>6</Type>
+        <Visible>0</Visible>
+      </Section>
+      <Section>
+        <Name>GroupHeader1</Name>
+        <Type>7</Type>
+        <Height>285</Height>
+        <Repeat>-1</Repeat>
+      </Section>
+      <Section>
+        <Name>GroupFooter1</Name>
+        <Type>8</Type>
+        <Visible>0</Visible>
+      </Section>
+    </Sections>
+    <Fields>
+      <Field>
+        <Name>StartTimeLbl</Name>
+        <Section>7</Section>
+        <Text>StartTime</Text>
+        <Width>1140</Width>
+        <Height>285</Height>
+        <Align>6</Align>
+        <WordWrap>0</WordWrap>
+        <Font>
+          <Bold>-1</Bold>
+          <Underline>-1</Underline>
+          <Name>Microsoft Sans Serif</Name>
+          <Size>8.25</Size>
+        </Font>
+      </Field>
+      <Field>
+        <Name>EndTimeLbl</Name>
+        <Section>7</Section>
+        <Text>EndTime</Text>
+        <Left>1140</Left>
+        <Width>1140</Width>
+        <Height>285</Height>
+        <Align>6</Align>
+        <WordWrap>0</WordWrap>
+        <Font>
+          <Bold>-1</Bold>
+          <Underline>-1</Underline>
+          <Name>Microsoft Sans Serif</Name>
+          <Size>8.25</Size>
+        </Font>
+      </Field>
+      <Field>
+        <Name>DurationLbl</Name>
+        <Section>7</Section>
+        <Text>Duration</Text>
+        <Left>2280</Left>
+        <Width>855</Width>
+        <Height>285</Height>
+        <Align>8</Align>
+        <WordWrap>0</WordWrap>
+        <Font>
+          <Bold>-1</Bold>
+          <Underline>-1</Underline>
+          <Name>Microsoft Sans Serif</Name>
+          <Size>8.25</Size>
+        </Font>
+      </Field>
+      <Field>
+        <Name>StartTimeCtl</Name>
+        <Section>0</Section>
+        <Text>StartTime</Text>
+        <Calculated>-1</Calculated>
+        <Width>1140</Width>
+        <Height>300</Height>
+        <Align>0</Align>
+      </Field>
+      <Field>
+        <Name>EndTimeCtl</Name>
+        <Section>0</Section>
+        <Text>EndTime</Text>
+        <Calculated>-1</Calculated>
+        <Left>1140</Left>
+        <Width>1140</Width>
+        <Height>300</Height>
+        <Align>0</Align>
+      </Field>
+      <Field>
+        <Name>DurationCtl</Name>
+        <Section>0</Section>
+        <Text>Duration</Text>
+        <Calculated>-1</Calculated>
+        <Format>#,##0.00</Format>
+        <Left>2280</Left>
+        <Width>855</Width>
+        <Height>300</Height>
+        <Align>2</Align>
+      </Field>
+    </Fields>
+  </Report>
+</Reports>

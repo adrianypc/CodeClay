@@ -1,0 +1,127 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<CiTable>
+  <TableName>Timings</TableName>
+  <RowKey>TaskCode,TimingID</RowKey>
+  <DefaultView>Grid</DefaultView>
+  <CiField>
+    <FieldName>TaskCode</FieldName>
+    <Caption>Task</Caption>
+    <Hidden>true</Hidden>
+  </CiField>
+  <CiField>
+    <FieldName>TimingID</FieldName>
+    <Caption>Timing ID</Caption>
+    <Hidden>true</Hidden>
+  </CiField>
+  <CiComboField>
+    <FieldName>Staff</FieldName>
+    <Caption>Staff</Caption>
+    <DropdownSQL>
+      select  StaffCode as Staff
+      from    tblStaff
+      order by StaffCode
+    </DropdownSQL>
+  </CiComboField>
+  <CiDateField>
+    <FieldName>StartTime</FieldName>
+    <Caption>Start</Caption>
+    <ColumnType>Date</ColumnType>
+    <ColumnFormat>dd/MM/yyyy HH:mm</ColumnFormat>
+  </CiDateField>
+  <CiDateField>
+    <FieldName>EndTime</FieldName>
+    <Caption>End</Caption>
+    <ColumnType>Date</ColumnType>
+    <ColumnFormat>dd/MM/yyyy HH:mm</ColumnFormat>
+  </CiDateField>
+  <CiField>
+    <FieldName>Duration</FieldName>
+    <Caption>Hours</Caption>
+    <ColumnType>Number</ColumnType>
+    <ColumnFormat>0.00</ColumnFormat>
+    <Editable>false</Editable>
+  </CiField>
+  <SelectMacro>
+    <ActionSQL>
+      select  TimingID,
+              TaskCode,
+              Staff,
+              StartTime,
+              EndTime,
+              datediff('s', StartTime, EndTime)/3600 as Duration
+      from    tblTimings
+      where   TaskCode = @TaskCode
+      order by TimingID desc
+    </ActionSQL>
+  </SelectMacro>
+  <UpdateMacro>
+    <ActionSQL>
+      update tblTimings
+      set    TaskCode  = @TaskCode,
+             Staff     = @Staff,
+             StartTime = @StartTime,
+             EndTime   = @EndTime
+      where  TimingID  = @TimingID
+    </ActionSQL>
+    <ActionSQL>
+      select  BuyHourlyRate
+      from    tblStaff, tblTasks
+      where   StaffCode = PrimaryDeveloper
+      and     TaskCode = @TaskCode
+    </ActionSQL>
+    <ActionSQL>
+      update  tblTasks
+      set     HoursBought = DSum("BuyHour","qryHourlyCalculation","TaskCode='" + @TaskCode + "'"),
+              HoursSold = iif(FixedPrice = false,DSum("SellHour","qryHourlyCalculation","TaskCode='" + @TaskCode + "'"),HoursSold),
+              SellPrice = iif(FixedPrice = false,DSum("SellPrice","qryHourlyCalculation","TaskCode='" + @TaskCode + "'"),SellPrice),
+              BuyPrice =  iif(FixedPrice = false,DSum("BuyPrice","qryHourlyCalculation","TaskCode='" + @TaskCode + "'"),@BuyHourlyRate*HoursSold)
+      where   TaskCode = @TaskCode
+    </ActionSQL>
+  </UpdateMacro>
+  <InsertMacro>
+    <ActionSQL>
+      insert
+      into  tblTimings
+      (     TaskCode,
+            StartTime,
+            EndTime,
+            Staff
+      )
+      values
+      (     @TaskCode,
+            @StartTime,
+            @EndTime,
+            @Staff
+      )
+    </ActionSQL>
+    <ActionSQL>
+      update  tblTasks
+      set     HoursBought = DSum("BuyHour","qryHourlyCalculation","TaskCode='" + @TaskCode + "'"),
+              HoursSold = iif(FixedPrice = false,DSum("SellHour","qryHourlyCalculation","TaskCode='" + @TaskCode + "'"),HoursSold),
+              SellPrice = iif(FixedPrice = false,DSum("SellPrice","qryHourlyCalculation","TaskCode='" + @TaskCode + "'"),SellPrice),
+              BuyPrice =  iif(FixedPrice = false,DSum("BuyPrice","qryHourlyCalculation","TaskCode='" + @TaskCode + "'"),@BuyHourlyRate*HoursSold)
+      where   TaskCode = @TaskCode
+    </ActionSQL>
+  </InsertMacro>
+  <DeleteMacro>
+    <ActionSQL>
+      delete
+      from    tblTimings
+      where   TimingID = @TimingID
+    </ActionSQL>
+    <ActionSQL>
+      select  BuyHourlyRate
+      from    tblStaff, tblTasks
+      where   StaffCode = PrimaryDeveloper
+      and     TaskCode = @TaskCode
+    </ActionSQL>
+    <ActionSQL>
+      update  tblTasks
+      set     HoursBought = DSum("BuyHour","qryHourlyCalculation","TaskCode='" + @TaskCode + "'"),
+              HoursSold = iif(FixedPrice = false,DSum("SellHour","qryHourlyCalculation","TaskCode='" + @TaskCode + "'"),HoursSold),
+              SellPrice = iif(FixedPrice = false,DSum("SellPrice","qryHourlyCalculation","TaskCode='" + @TaskCode + "'"),SellPrice),
+              BuyPrice =  iif(FixedPrice = false,DSum("BuyPrice","qryHourlyCalculation","TaskCode='" + @TaskCode + "'"),@BuyHourlyRate*HoursSold)
+      where TaskCode = @TaskCode
+    </ActionSQL>
+  </DeleteMacro>
+</CiTable>

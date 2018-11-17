@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<CiMenu>
+  <MenuName>Side Menu</MenuName>
+  <CiMenu>
+    <MenuName>Microsoft</MenuName>
+    <PluginSrc>http://www.microsoft.com</PluginSrc>
+  </CiMenu>
+  <CiMenu>
+    <MenuName>UiTable</MenuName>
+    <PluginSrc>UiTable.pux</PluginSrc>
+  </CiMenu>
+</CiMenu>

@@ -1,0 +1,51 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<CodistriGrid>
+  <CiRowFetchAction>
+    <ActionSQL>
+      select  TaskCode,
+              LogID,
+              LogDate,
+  	      Author,
+              Comment,
+              AttachmentName
+      from    tblCommunicationsLog
+      where   TaskCode = @TaskCode
+      order by LogID
+    </ActionSQL>
+  </CiRowFetchAction>
+  <CiColumn>
+    <ColumnName>TaskCode</ColumnName>
+    <Visible>false</Visible>
+  </CiColumn>
+  <CiColumn>
+    <ColumnName>LogID</ColumnName>
+    <Visible>false</Visible>
+  </CiColumn>
+  <CiColumn>
+    <ColumnName>LogDate</ColumnName>
+    <ColumnCaption>Date</ColumnCaption>
+    <ColumnType>Date</ColumnType>
+    <ColumnFormat>dd/MM/yyyy</ColumnFormat>
+    <Editable>false</Editable>
+  </CiColumn>
+  <CiColumn>
+    <ColumnName>Author</ColumnName>
+    <ColumnCaption>Author</ColumnCaption>
+    <Editable>false</Editable>
+  </CiColumn>
+  <CiColumn>
+    <ColumnName>Comment</ColumnName>
+    <ColumnCaption>Comment</ColumnCaption>
+    <Editable>false</Editable>
+  </CiColumn>
+  <CiColumn>
+    <ColumnName>AttachmentName</ColumnName>
+    <ColumnCaption>Attachment</ColumnCaption>
+    <Editable>false</Editable>
+  </CiColumn>
+  <!--<CiPaperClip>
+    <FolderSQL>
+      select  iif(isnull(@LogID), 'Tasks\' + @TaskCode, 'Tasks\' + @TaskCode + '\L' + right('00'+trim(str(@LogID)),2)) as FolderName
+    </FolderSQL>
+  </CiPaperClip>-->
+</CodistriGrid>

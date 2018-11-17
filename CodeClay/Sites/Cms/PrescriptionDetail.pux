@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<CiTable>
+	<TableName>Prescription</TableName>
+	<TableCaption>Prescription</TableCaption>
+	<DefaultView>Card</DefaultView>
+	<RowKey>ClientNo,LogID</RowKey>
+    <CiField>
+        <FieldName>ClientNo</FieldName>
+        <Caption>Patient No</Caption>
+        <Hidden>true</Hidden>
+    </CiField>
+    <CiTextField>
+		<FieldName>LogID</FieldName>
+		<Caption>Prescription ID</Caption>
+		<Editable>false</Editable>
+	</CiTextField>
+	<CiDateField>
+		<FieldName>LogDate</FieldName>
+		<Caption>Prescription Date</Caption>
+		<Editable>false</Editable>
+	</CiDateField>
+	<CiTextField>
+		<FieldName>Staff</FieldName>
+		<Caption>Doctor</Caption>
+		<Editable>false</Editable>
+	</CiTextField>
+    <CiMemoField>
+        <FieldName>Comments</FieldName>
+        <Caption>Comments</Caption>
+        <Editable>false</Editable>
+    </CiMemoField>
+    <CiTable Src="PrescriptionItemList.pux" />
+	<SelectMacro>
+		<ActionSQL>
+			select  *
+            from    CoupleCaseNotes
+            where   ClientNo = @ClientNo
+            and     (@LogID is null or LogID = @LogID)
+			order by LogID
+		</ActionSQL>
+	</SelectMacro>
+	<CiMacro1>
+		<MacroName>Dispense</MacroName>
+        <ActionSQL>
+            select  (case
+                    when DispenseDate1 is null then 1
+                    when DispenseDate1 is not null and DispenseDate2 is null then 2
+                    when DispenseDate1 is not null and DispenseDate2 is not null and DispenseDate3 is null then 3
+                    end) as DispenseNumber
+            from    CoupleCaseNotes
+            where   ClientNo = @ClientNo
+            and     LogID = @LogID
+        </ActionSQL>
+        <ActionSQL>
+            update  PrescriptionItem
+            set     LastChangedDate = getdate(),
+                    LastChangedBy = dbo.FnGetUserId(@CI_UserEmail),
+                    DispenseQuantity1 = (case when @DispenseNumber = 1 then (Quantity) else DispenseQuantity1 end),
+                    DispenseQuantity2 = (case when @DispenseNumber = 2 then (Quantity - DispenseQuantity1) else DispenseQuantity2 end),
+                    DispenseQuantity3 = (case when @DispenseNumber = 3 then (Quantity - DispenseQuantity1 - DispenseQuantity2) else DispenseQuantity3 end)
+            where   ClientNo = @ClientNo
+            and     LogID = @LogID
+        </ActionSQL>
+        <ActionSQL>
+            select  @ClientNo as ClientNo,
+                    @LogID as LogID,
+                    @DispenseNumber as DispenseNumber
+        </ActionSQL>
+        <NavigatePos>Popup</NavigatePos>
+        <NavigateUrl>DispenseDetail.pux</NavigateUrl>
+        <VisibleSQL>
+            select  1
+            from    CoupleCaseNotes
+            where   ClientNo = @ClientNo
+            and     LogID = @LogID
+            and     (DispenseDate1 is null or DispenseDate2 is null or DispenseDate3 is null)
+        </VisibleSQL>
+	</CiMacro1>
+</CiTable>

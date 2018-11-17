@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<CiTable>
+  <TableName>Credit Note  Detail</TableName>
+  <RowKey>CNBillNo</RowKey>
+  <DefaultView>Card</DefaultView>
+  <CiTextField>
+    <FieldName>ClientNo</FieldName>
+    <Caption>Client No</Caption>
+    <Editable>false</Editable>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>PresNo</FieldName>
+    <Caption>Pres No</Caption>
+  </CiTextField>
+  <CiDateField>
+    <FieldName>CNBillDate</FieldName>
+    <Caption>Date</Caption>
+    <Editable>true</Editable>
+    <ColumnFormat>dd/MM/yyyy</ColumnFormat>
+  </CiDateField>
+  <CiTextField>
+    <FieldName>CNBillNo</FieldName>
+    <Caption>CN No</Caption>
+    <Editable>false</Editable>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>RefPresNo</FieldName>
+    <Caption>Ref Pres No</Caption>
+    <Editable>false</Editable>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>Name</FieldName>
+    <Editable>false</Editable>
+  </CiTextField>
+  <CiComboField>
+    <FieldName>Doctor</FieldName>
+    <Editable>false</Editable>
+    <Code>ConsultantId</Code>
+    <Description>ConsultantName</Description>
+    <DropdownSQL>select ConsultantOtherNames+' '+ConsultantSurname as ConsultantName,ConsultantId from Consultant where ConsultantEnabled = 'Y' </DropdownSQL>
+  </CiComboField>
+  <CiTextField>
+    <FieldName>Dispenser</FieldName>
+    <Editable>false</Editable>
+  </CiTextField>
+  <CiComboField>
+    <FieldName>BillType</FieldName>
+    <Caption>Type</Caption>
+    <Editable>false</Editable>
+    <Code>BillTypeID</Code>
+    <Description>BillTypeName</Description>
+    <DataSource>
+      <DataItem BillTypeName="Consultation" BillTypeID="CC"  />
+      <DataItem BillTypeName="Hospitalization" BillTypeID="CH" />
+    </DataSource>
+  </CiComboField>
+  <CiTextField>
+    <FieldName>RefBillNo</FieldName>
+    <Caption>Ref Bill No</Caption>
+    <Editable>false</Editable>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>Gender</FieldName>
+    <Editable>false</Editable>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>NRIC</FieldName>
+    <Editable>false</Editable>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>Company</FieldName>
+    <Editable>false</Editable>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>Remarks</FieldName>
+    <Caption>Remark</Caption>
+  </CiTextField>
+  <CiTable Src="CreditNoteBillItemDetail.pux"></CiTable>
+  <CiTextField>
+    <FieldName>DepositOrigVal</FieldName>
+    <Caption>Deposit Orig Val</Caption>
+    <Editable>false</Editable>
+    <Value>0.00</Value>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>DepositBalance</FieldName>
+    <Caption>Deposit Balance</Caption>
+    <Editable>false</Editable>
+    <Value>0.00</Value>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>DepositRetVal</FieldName>
+    <Caption>Deposit Ret Val</Caption>
+    <Editable>false</Editable>
+    <Value>0.00</Value>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>PrepaymentOrigVal</FieldName>
+    <Caption>Pre-pay Orig Val</Caption>
+    <Editable>false</Editable>
+    <Value>0.00</Value>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>PrepaymentBalance</FieldName>
+    <Caption>Pre-pay Balance</Caption>
+    <Editable>false</Editable>
+    <Value>0.00</Value>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>PrepaymentRetVal</FieldName>
+    <Caption>Pre-pay Ret Val</Caption>
+    <Editable>false</Editable>
+    <Value>0.00</Value>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>FSOrigVal</FieldName>
+    <Caption>FS</Caption>
+    <Editable>false</Editable>
+    <Value>0.00</Value>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>NonTaxableAmount</FieldName>
+    <Caption>Non-Taxable Amount</Caption>
+    <Value>0.00</Value>
+    <Editable>true</Editable>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>TaxableAmount</FieldName>
+    <Caption>Taxable Amount</Caption>
+    <Value>0.00</Value>
+    <Editable>true</Editable>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>TotalExGST</FieldName>
+    <Caption>Total Ex GST</Caption>
+    <Value>0.00</Value>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>GST</FieldName>
+    <Value>0.00</Value>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>AdjAmount</FieldName>
+    <Caption>Adjustment Amount</Caption>
+    <Value>0.00</Value>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>MaxAmount</FieldName>
+    <Caption>Max</Caption>
+    <Value>0.00</Value>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>TotalRefund</FieldName>
+    <Caption>Total Refund</Caption>
+    <Value>0.00</Value>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>PaymentFSBalance</FieldName>
+    <Caption>FSettlement Balance</Caption>
+    <Editable>false</Editable>
+    <Value>0.00</Value>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>PaymentFSOrigVal</FieldName>
+    <Caption>FSettlement Orig Val</Caption>
+    <Editable>false</Editable>
+    <Value>0.00</Value>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>PaymentFSReturn</FieldName>
+    <Caption>FSettlement Return Val</Caption>
+    <Editable>false</Editable>
+    <Value>0.00</Value>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>Cheque</FieldName>
+    <Editable>true</Editable>
+    <Value>0.00</Value>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>Cash</FieldName>
+    <Editable>true</Editable>
+    <Value>0.00</Value>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>Card1Type</FieldName>
+    <Caption>Credit Card 1</Caption>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>Card1Amount</FieldName>
+    <Caption>Cardit Card 1 Amount</Caption>
+    <Value>0.00</Value>
+    <Editable>true</Editable>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>Card1RetAmount</FieldName>
+    <Caption>Cardit Card 1 Ret Amount</Caption>
+    <Value>0.00</Value>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>Card2Type</FieldName>
+    <Caption>Credit Card 2</Caption>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>Card2Amount</FieldName>
+    <Caption>Cardit Card 2 Amount</Caption>
+    <Value>0.00</Value>
+    <Editable>true</Editable>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>Card2RetAmount</FieldName>
+    <Caption>Cardit Card 2 Ret Amount</Caption>
+    <Value>0.00</Value>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>OutstandingAmount</FieldName>
+    <Caption>Outstanding</Caption>
+    <Value>0.00</Value>
+    <Editable>false</Editable>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>TotalPaid</FieldName>
+    <Caption>Total Paid</Caption>
+    <Value>0.00</Value>
+    <Editable>false</Editable>
+  </CiTextField>
+  <DefaultMacro></DefaultMacro>
+  <SelectMacro>
+    <ActionSQL>?exec spCreditNote_selbyNoteNoORBillNo 'HCC0320457',null</ActionSQL>
+  </SelectMacro>
+  <UpdateMacro></UpdateMacro>
+  <InsertMacro></InsertMacro>
+</CiTable>

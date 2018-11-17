@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<CiTable>
+  <TableName>Allergy</TableName>
+  <RowKey>AllergyNum</RowKey>
+  <DefaultView>Grid</DefaultView>
+  <CiTextField>
+    <FieldName>AllergyNum</FieldName>
+    <Visible>false</Visible>
+  </CiTextField>
+  <CiComboField>
+    <FieldName>AllergyCode</FieldName>
+    <Caption>Code</Caption>
+    <Editable>true</Editable>
+    <Code>Code</Code>
+    <Description>AllergyDescription</Description>
+    <DropdownSQL>select CodeValue as Code,CodeDescription as AllergyDescription from CodeListItem where Category = 'Allergies' </DropdownSQL>
+  </CiComboField>
+  <CiTextField>
+    <FieldName>AllergyDescription</FieldName>
+    <Caption>Descrption</Caption>
+    <Editable>false</Editable>
+  </CiTextField>
+  <SelectMacro>
+    <ActionSQL>
+      ?exec spClient_Allergies_selByClientNo @MPatientNo
+    </ActionSQL>
+  </SelectMacro>
+  <UpdateMacro>
+    <ActionSQL>
+      exec spClient_Allergies_upd @MPatientNo,@AllergyNum,@AllergyCode
+    </ActionSQL>
+  </UpdateMacro>
+  <InsertMacro>
+    <ActionSQL>
+      exec spClient_Allergies_upd @MPatientNo,@AllergyNum,@AllergyCode
+    </ActionSQL>
+  </InsertMacro>
+</CiTable>

@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<CiTable>
+  <TableName>Tasks</TableName>
+  <DefaultView>Grid</DefaultView>
+  <CiTextField>
+    <FieldName>TaskCode</FieldName>
+    <Caption>Code</Caption>
+    <Editable>false</Editable>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>TaskDescription</FieldName>
+    <Caption>Description</Caption>
+    <Editable>false</Editable>
+  </CiTextField>
+  <CiButtonField>
+    <FieldName>TaskDetail</FieldName>
+    <Caption>Task Detail</Caption>
+    <CiMacro>
+      <ActionSQL>
+        select TaskCode from tblTasks where TaskCode = @TaskCode
+      </ActionSQL>
+      <NavigateUrl>TaskDetails.pux</NavigateUrl>
+      <NavigatePos>Popup</NavigatePos>
+    </CiMacro>
+  </CiButtonField>
+  <SelectMacro>
+    <ActionSQL>select top 10 * from tblTasks order by TaskCode desc</ActionSQL>
+  </SelectMacro>
+</CiTable>

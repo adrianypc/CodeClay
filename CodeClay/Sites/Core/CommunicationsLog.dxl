@@ -1,0 +1,124 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<CodistriGrid>
+  <CiIndexColumnName>LogID</CiIndexColumnName>
+  <CiRowFetchAction>
+    <ActionSQL>
+      select  TaskCode,
+              LogID,
+              LogDate,
+      	      Author,
+              Comment,
+              AttachmentName,
+              AttachmentUrl
+      from    tblCommunicationsLog
+      where   TaskCode = @TaskCode
+      order by LogID desc
+    </ActionSQL>
+  </CiRowFetchAction>
+  <CiColumn>
+    <ColumnName>TaskCode</ColumnName>
+    <Visible>false</Visible>
+  </CiColumn>
+  <CiColumn>
+    <ColumnName>LogID</ColumnName>
+    <Visible>false</Visible>
+  </CiColumn>
+  <CiColumn>
+    <ColumnName>LogDate</ColumnName>
+    <ColumnCaption>Date</ColumnCaption>
+    <ColumnType>Date</ColumnType>
+    <ColumnFormat>dd/MM/yyyy</ColumnFormat>
+  </CiColumn>
+  <CiColumn>
+    <ColumnName>Author</ColumnName>
+    <ColumnCaption>Author</ColumnCaption>
+    <DropdownSQL>
+      select  StaffCode as Staff
+      from    tblStaff
+      order by StaffCode
+    </DropdownSQL>
+  </CiColumn>
+  <CiColumn>
+    <ColumnName>Comment</ColumnName>
+    <ColumnCaption>Comment</ColumnCaption>
+  </CiColumn>
+  <CiColumn>
+    <ColumnName>AttachmentUrl</ColumnName>
+    <ColumnType>Hyperlink</ColumnType>
+    <ColumnFormat>AttachmentName</ColumnFormat>
+    <ColumnCaption>Attachment</ColumnCaption>
+    <DropdownSQL>select 'CoreSite/Attachments/Tasks/' + TaskCode + '/L' + right('00'+trim(str(LogID)), 2) from tblCommunicationsLog where TaskCode = @TaskCode and LogID = @LogID</DropdownSQL>
+  </CiColumn>
+  <CiRowUpdateAction>
+    <ActionSQL>
+      update  tblCommunicationsLog
+      set     LogDate         = @LogDate,
+              Author          = @Author,
+              Comment         = @Comment,
+              AttachmentUrl   = @AttachmentUrl,
+              AttachmentName  = @AttachmentName
+      where   LogID           = @LogID
+      and     TaskCode        = @TaskCode
+    </ActionSQL>
+  </CiRowUpdateAction>
+  <CiRowInsertAction>
+    <ActionSQL>
+      select  1 + iif(isnull(max(LogID)), 0, max(LogID)) as LogID
+      from    tblCommunicationsLog
+      where   TaskCode = @TaskCode
+    </ActionSQL>
+    <ActionSQL>
+      insert
+      into    tblCommunicationsLog
+      (       LogID,
+              Author,
+              LogDate,
+              TaskCode,
+              Comment,
+              AttachmentName
+       )
+       values
+       (      @LogID,
+              @Author,
+              @LogDate,
+              @TaskCode,
+              @Comment,
+              @AttachmentName
+       )
+    </ActionSQL>
+    <ActionSQL>
+         SELECT TaskStatus as TaskStatus, @LogID as LogID FROM tblTasks WHERE TaskCode = @TaskCode
+    </ActionSQL>
+  </CiRowInsertAction>
+  <CiRowDeleteAction>
+    <ActionSQL>
+      delete from tblCommunicationsLog
+      where  LogID    = @LogID
+      and    TaskCode = @TaskCode
+    </ActionSQL>
+  </CiRowDeleteAction>
+  <CiCellEnterAction>
+    <ColumnName>Comment</ColumnName>
+    <ActionSQL>
+      select iif(@LogDate is null, Now, @LogDate) as LogDate,
+             iif(@Author is null, @CI_DefaultUser, @Author) as Author
+    </ActionSQL>
+  </CiCellEnterAction>
+  <!-- <CiPaperClip>
+    <FolderSQL>
+      select  iif(isnull(@LogID), 'Tasks\' + @TaskCode, 'Tasks\' + @TaskCode + '\L' + right('00'+trim(str(@LogID)),2)) as FolderName
+    </FolderSQL>
+    <EmailDragDropSQL>
+      select  iif(@LogDate is null, Now, @LogDate) as LogDate,
+              iif(@Author is null, @CI_DefaultUser, @Author) as Author,
+              ('Email sent on ' + @SentOn + ' by ' + @SenderEmail) as Comment,
+              cstr(@Subject) as AttachmentName
+    </EmailDragDropSQL>
+    <FileDragDropSQL>
+      select  iif(@LogDate is null, Now, @LogDate) as LogDate,
+              iif(@Author is null, @CI_DefaultUser, @Author) as Author,
+              ('File modified on ' + @ModifiedOn) as Comment,
+              cstr(@Filename) as AttachmentName
+    </FileDragDropSQL>
+  </CiPaperClip> -->
+</CodistriGrid>

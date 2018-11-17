@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<CiTable>
+  <TableName>Corporate Insurance Bill Printing</TableName>
+  <RowKey>CustomerNo</RowKey>
+  <DefaultView>Card</DefaultView>
+  <CiComboField>
+    <FieldName>Display</FieldName>
+    <Caption>Display</Caption>
+    <Code>PrintType</Code>
+    <Description>PrintTypeDescription</Description>
+    <DataSource>
+      <DataItem PrintTypeDescription="Unprinted Bills" PrintType="0"  />
+      <DataItem PrintTypeDescription="Printed Bills" PrintType="1" />
+    </DataSource>
+  </CiComboField>
+  <CiComboField>
+    <FieldName>CustomerNo</FieldName>
+    <Caption>Customer</Caption>
+    <Code>CustomerNo</Code>
+    <Description>CustomerName</Description>
+    <DropdownSQL>?exec spCorporateInsuranceBill null,null,null,null,1</DropdownSQL>
+  </CiComboField>
+  <CiComboField>
+    <FieldName>BillDate</FieldName>
+    <Caption>Bill Date</Caption>
+    <Code>BillDate</Code>
+    <Description>[Display Date]</Description>
+    <DropdownSQL>?exec spCorporateInsuranceBill @CustomerNo,null,null,null,6</DropdownSQL>
+  </CiComboField>
+  <CiTable Src="UnprintedCorporateInsuranceBillItemDetail.pux"></CiTable>
+  <CiTable Src="PrintedCorporateInsuranceBillItemDetail.pux"></CiTable>
+  <CiTextField>
+    <FieldName>Remarks</FieldName>
+    <Caption>Remarks</Caption>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>Total</FieldName>
+    <Caption>Total</Caption>
+    <Editable>false</Editable>
+    <Value>0.00</Value>
+  </CiTextField>
+  <DefaultMacro></DefaultMacro>
+  <SelectMacro>
+    <ActionSQL></ActionSQL>
+  </SelectMacro>
+  <UpdateMacro></UpdateMacro>
+</CiTable>

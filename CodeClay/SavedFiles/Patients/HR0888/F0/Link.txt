@@ -1,0 +1,21 @@
+Default.aspx?ApplicationFolder=CmsSite&PluginSrc=Couple.pux&sClientNo=HR050034
+Default.aspx?ApplicationFolder=CmsSite&PluginSrc=PatientBills.pux&PatientNo=HR021968
+Default.aspx?ApplicationFolder=TestSite&PluginSrc=TaskDetails.pux&TaskCode=T004740
+Default.aspx?ApplicationFolder=TestSite&PluginSrc=TaskSearch.pux
+
+                        <dx:ASPxButton ID="dxEdit" ClientInstanceName="dxEdit" runat="server" Theme="Aqua" Image-IconID="actions_edit_16x16devav" AutoPostBack="false" RenderMode="Link">
+                            <ClientSideEvents Click="dxEdit_Click" />
+                        </dx:ASPxButton>
+
+<dx:ASPxPopupControl ID="dxUploadPopup" ClientInstanceName="dxUploadPopup" runat="server" CloseAction="CloseButton" CloseOnEscape="true" Modal="True" Theme="Aqua" AllowResize="true"
+    PopupHorizontalAlign="WindowCenter" PopupVerticalAlign="WindowCenter" HeaderText="CodeClay popup" AllowDragging="True" PopupAnimationType="None" EnableViewState="False"
+    Height="400" Width="1000">
+    <SettingsLoadingPanel Enabled="false" />
+    <ContentCollection>
+        <dx:PopupControlContentControl>
+            <dx:ASPxUploadControl ID="dxUpload" ClientInstanceName="dxUpload" runat="server" Theme="Aqua" ShowUploadButton="true" OnFileUploadComplete="dxUpload_FileUploadComplete">
+                <ClientSideEvents FileUploadComplete="dxUpload_FileUploadComplete" />
+            </dx:ASPxUploadControl>
+        </dx:PopupControlContentControl>
+    </ContentCollection>
+</dx:ASPxPopupControl>

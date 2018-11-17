@@ -38,7 +38,9 @@ namespace CodeClay.Account
                 switch (result)
                 {
                     case SignInStatus.Success:
-                        IdentityHelper.RedirectToReturnUrl(Request.QueryString["ReturnUrl"], Response);
+                        Session["JustLoggedIn"] = true;
+                        //IdentityHelper.RedirectToReturnUrl(Request.QueryString["ReturnUrl"], Response);
+                        Response.Redirect("~/Default.aspx?" + MyWebUtils.QueryString);
                         break;
                     case SignInStatus.LockedOut:
                         Response.Redirect("/Account/Lockout");

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<CiTable>
+  <TableName>Allocation History</TableName>
+  <RowKey>BillNo</RowKey>
+  <DefaultView>Card</DefaultView>
+  <CiTextField>
+    <FieldName>BillNo</FieldName>
+    <Caption>Bill No</Caption>
+    <Editable>false</Editable>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>Type</FieldName>
+    <Caption>Type</Caption>
+    <Editable>false</Editable>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>Amount</FieldName>
+    <Caption>Amount</Caption>
+    <Editable>false</Editable>
+  </CiTextField>
+  <CiTable Src="AllocationHistoryDetail.pux"/>
+  <CiTextField>
+    <FieldName>Total</FieldName>
+    <Caption>Total</Caption>
+    <Editable>false</Editable>
+  </CiTextField>
+  <SelectMacro>
+    <ActionSQL>
+      SELECT
+        FromBillNo as BillNo,
+        OutstandingType as Type,
+        @Amount as Amount,
+        SUM(AllocationAmount) as Total
+      FROM OutstandingAmountAllocation
+      WHERE FromBillNo = @BillNo
+      AND OutstandingType = @OutstandingType
+      GROUP BY FromBillNo,OutstandingType
+    </ActionSQL>
+  </SelectMacro>
+</CiTable>

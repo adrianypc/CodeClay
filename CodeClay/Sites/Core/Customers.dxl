@@ -1,0 +1,98 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<CodistriGrid>
+  <CiRowFetchAction>
+    <ActionSQL>
+      select  CustomerCode as OldCustomerCode,
+              CustomerCode,
+              Customer,
+              BillerContact,
+              ProjectContact1,
+              ProjectContact2,
+              ProjectContact3,
+	      Billable
+      from    tblCustomers
+      order by Customer
+    </ActionSQL>
+  </CiRowFetchAction>
+  <CiColumn>
+    <ColumnName>OldCustomerCode</ColumnName>
+    <Visible>false</Visible>
+  </CiColumn>
+  <CiColumn>
+    <ColumnName>CustomerCode</ColumnName>
+    <ColumnCaption>Code</ColumnCaption>
+  </CiColumn>
+  <CiColumn>
+    <ColumnName>Customer</ColumnName>
+    <ColumnCaption>Customer</ColumnCaption>
+  </CiColumn>
+  <CiColumn>
+    <ColumnName>BillerContact</ColumnName>
+    <ColumnCaption>Payer</ColumnCaption>
+  </CiColumn>
+  <CiColumn>
+    <ColumnName>ProjectContact1</ColumnName>
+    <ColumnCaption>Project Contact #1</ColumnCaption>
+  </CiColumn>
+  <CiColumn>
+    <ColumnName>ProjectContact2</ColumnName>
+    <ColumnCaption>Project Contact #2</ColumnCaption>
+  </CiColumn>
+  <CiColumn>
+    <ColumnName>ProjectContact3</ColumnName>
+    <ColumnCaption>Project Contact #3</ColumnCaption>
+  </CiColumn>
+  <CiColumn>
+    <ColumnName>Billable</ColumnName>
+    <ColumnCaption>Billable</ColumnCaption>
+    <ColumnType>Checkbox</ColumnType>
+    <ColumnBackColor>AliceBlue</ColumnBackColor>
+  </CiColumn>
+  <CiRowUpdateAction>
+    <ActionSQL>
+      update  tblCustomers
+      set     Customer      = @Customer,
+              BillerContact = @BillerContact,
+              ProjectContact1 = @ProjectContact1,
+              ProjectContact2 = @ProjectContact2,
+              ProjectContact3 = @ProjectContact3,
+              CustomerCode  = @CustomerCode,
+	      Billable	    = @Billable
+      where   CustomerCode  = @OldCustomerCode
+    </ActionSQL>
+    <ActionSQL>
+      select  @CustomerCode as OldCustomerCode
+    </ActionSQL>
+  </CiRowUpdateAction>
+  <CiRowInsertAction>
+    <ActionSQL>
+      insert
+      into    tblCustomers
+      (       CustomerCode,
+              Customer,
+              BillerContact,
+	      Billable,
+              ProjectContact1,
+              ProjectContact2,
+              ProjectContact3
+      )
+      values
+      (       @CustomerCode,
+              @Customer,
+              @BillerContact,
+              @Billable,
+              @ProjectContact1,
+              @ProjectContact2,
+              @ProjectContact3
+      )
+    </ActionSQL>
+    <ActionSQL>
+      select  @CustomerCode as OldCustomerCode
+    </ActionSQL>
+  </CiRowInsertAction>
+  <CiRowDeleteAction>
+    <ActionSQL>
+      delete from tblCustomers where CustomerCode = @CustomerCode
+    </ActionSQL>
+  </CiRowDeleteAction>
+</CodistriGrid>

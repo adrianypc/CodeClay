@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<CiTable>
+  <TableName>Reversal Bill Item Detail</TableName>
+  <RowKey>ItemNo</RowKey>
+  <DefaultView>Grid</DefaultView>
+  <CiTextField>
+    <FieldName>ItemNo</FieldName>
+    <Caption>No</Caption>
+    <Editable>false</Editable>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>ItemCode</FieldName>
+    <Caption>Item Code</Caption>
+    <Editable>false</Editable>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>ItemDescription</FieldName>
+    <Caption>Description</Caption>
+    <Editable>false</Editable>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>RecommendedDose</FieldName>
+    <Caption>Dose</Caption>
+    <Editable>false</Editable>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>Strength</FieldName>
+    <Caption>Strength</Caption>
+    <Editable>false</Editable>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>UnitOfMeasure</FieldName>
+    <Caption>UOM</Caption>
+    <Editable>false</Editable>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>Quantity</FieldName>
+    <Caption>Qty</Caption>
+    <Editable>false</Editable>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>UnitPrice</FieldName>
+    <Caption>Unit $</Caption>
+    <Editable>false</Editable>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>Amount</FieldName>
+    <Caption>Charge $</Caption>
+    <Editable>false</Editable>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>CBIGSTApplicable</FieldName>
+    <Caption>GST</Caption>
+    <Editable>false</Editable>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>TaxableAmount</FieldName>
+    <Visible>false</Visible>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>UnitPriceEditable</FieldName>
+    <Visible>false</Visible>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>CIUnitPrice</FieldName>
+    <Visible>false</Visible>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>GSTApplicable</FieldName>
+    <Visible>false</Visible>
+  </CiTextField>
+  <SelectMacro>
+    <ActionSQL>?exec spBillReversalItemList_selbyBillNo_NoteNo 'HCC0320457',null</ActionSQL>
+  </SelectMacro>
+</CiTable>

@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<CiTable>
+  <TableName>Previous ART</TableName>
+  <TableCaption>Previous ART attempts</TableCaption>
+  <DefaultView>Grid</DefaultView>
+  <RowKey>ClientNo,LogID</RowKey>
+  <CiTextField>
+    <FieldName>ClientNo</FieldName>
+    <Caption>Patient No</Caption>
+    <Hidden>true</Hidden>
+  </CiTextField>
+  <CiField>
+    <FieldName>LogID</FieldName>
+    <Caption>Log ID</Caption>
+    <Hidden>true</Hidden>
+  </CiField>
+  <CiDateField>
+    <FieldName>ProcedureDate</FieldName>
+    <Caption>Procedure Date</Caption>
+    <ColumnFormat>dd/MM/yyyy</ColumnFormat>
+  </CiDateField>
+  <CiComboField>
+    <FieldName>ARCentre</FieldName>
+    <Caption>AR Centre</Caption>
+    <DropdownSQL>
+      select TextItem from TextListItem where Category = 'ARCentre'
+    </DropdownSQL>
+  </CiComboField>
+  <CiComboField>
+    <FieldName>ARProcedure</FieldName>
+    <Caption>Procedure</Caption>
+    <DropdownSQL>
+      select TextItem from TextListItem where Category = 'ARProcedure'
+    </DropdownSQL>
+  </CiComboField>
+  <CiNumericField>
+    <FieldName>NumOocytes</FieldName>
+    <Caption>No. of Oocytes</Caption>
+    <MinValue>0</MinValue>
+    <MaxValue>20</MaxValue>
+  </CiNumericField>
+  <CiNumericField>
+    <FieldName>NumEmbryos</FieldName>
+    <Caption>No. of Embryos</Caption>
+    <MinValue>0</MinValue>
+    <MaxValue>20</MaxValue>
+  </CiNumericField>
+  <CiNumericField>
+    <FieldName>NumEmbryoTransfers</FieldName>
+    <Caption>No. of Embryo Transfers</Caption>
+    <MinValue>0</MinValue>
+    <MaxValue>20</MaxValue>
+  </CiNumericField>
+  <CiNumericField>
+    <FieldName>NumFrozenEmbryos</FieldName>
+    <Caption>No. of Frozen Embryos</Caption>
+    <MinValue>0</MinValue>
+    <MaxValue>20</MaxValue>
+  </CiNumericField>
+  <CiTextField>
+    <FieldName>CycleOutcome</FieldName>
+    <Caption>Cycle Outcome</Caption>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>CompleteCycle</FieldName>
+    <Caption>Complete Cycle</Caption>
+  </CiTextField>
+  <CiMemoField>
+    <FieldName>Comments</FieldName>
+    <Caption>Comments</Caption>
+  </CiMemoField>
+  <DefaultMacro>
+    <ActionSQL>
+      select @ClientNo as ClientNo
+    </ActionSQL>
+  </DefaultMacro>
+  <SelectMacro>
+    <ActionSQL>
+      select * from CoupleART where ClientNo = @ClientNo order by ClientNo, LogID
+    </ActionSQL>
+  </SelectMacro>
+  <InsertMacro>
+    <ActionSQL>
+      select  coalesce(1 + max(LogID), 1) as LogID
+      from    CoupleART
+      where   ClientNo = @ClientNo
+    </ActionSQL>
+    <ActionSQL>
+      insert into CoupleART
+      ( ClientNo,
+        LogID,
+        ProcedureDate,
+        ARCentre,
+        ARProcedure,
+        NumOocytes,
+        NumEmbryos,
+        NumEmbryoTransfers,
+        NumFrozenEmbryos,
+        CycleOutcome,
+        CompleteCycle,
+	Comments)
+      values
+      ( @ClientNo,
+        @LogID,
+        convert(datetime,@ProcedureDate,103),
+        @ARCentre,
+        @ARProcedure,
+        @NumOocytes,
+        @NumEmbryos,
+        @NumEmbryoTransfers,
+        @NumFrozenEmbryos,
+        @CycleOutcome,
+        @CompleteCycle,
+	@Comments)
+    </ActionSQL>
+  </InsertMacro>
+  <UpdateMacro>
+    <ActionSQL>
+      update  CoupleART
+      set     ProcedureDate = convert(datetime,@ProcedureDate,103),
+              ARCentre = @ARCentre,
+              ARProcedure = @ARProcedure,
+              NumOocytes = @NumOocytes,
+              NumEmbryos = @NumEmbryos,
+              NumEmbryoTransfers = @NumEmbryoTransfers,
+              NumFrozenEmbryos = @NumFrozenEmbryos,
+              CycleOutcome = @CycleOutcome,
+              CompleteCycle = @CompleteCycle,
+	      Comments = @Comments
+      where   ClientNo = @ClientNo
+      and     LogID = @LogID
+    </ActionSQL>
+  </UpdateMacro>
+</CiTable>

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<CiTable>
+  <TableName>UnprintedCorpInsBillDetail</TableName>
+  <TableCaption>Corporate Insurance Bill Item Detail</TableCaption>
+  <RowKey>CustomerBillNo</RowKey>
+  <DefaultView>Grid</DefaultView>
+  <CiTextField>
+    <FieldName>CustomerBillNo</FieldName>
+    <Caption>Bill No</Caption>
+    <Editable>false</Editable>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>[Client No]</FieldName>
+    <Caption>Patient No</Caption>
+    <Editable>false</Editable>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>[Bill No]</FieldName>
+    <Caption>Patient Bill No</Caption>
+    <Editable>false</Editable>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>[Prescription No]</FieldName>
+    <Caption>Prescription No</Caption>
+    <Editable>false</Editable>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>Amount</FieldName>
+    <Caption>Amount</Caption>
+    <Editable>false</Editable>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>[Customer Name]</FieldName>
+    <Caption>Customer Name</Caption>
+    <Editable>false</Editable>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>PR</FieldName>
+    <Visible>false</Visible>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>Remarks</FieldName>
+    <Visible>false</Visible>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>[Bill Type]</FieldName>
+    <Visible>false</Visible>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>custdate</FieldName>
+    <Visible>false</Visible>
+  </CiTextField>
+  <SelectMacro>
+    <ActionSQL>?exec spCorporateInsuranceBill null,null,null,null,2</ActionSQL>
+  </SelectMacro>
+</CiTable>

@@ -1,0 +1,56 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<CodistriGrid>
+  <CiRowFetchAction>
+    <ActionSQL>
+      select  DropdownItemID,
+              Type,
+              Description
+      from    tblDropdown
+      order by Type, Description
+    </ActionSQL>
+  </CiRowFetchAction>
+  <CiColumn>
+    <ColumnName>DropdownItemID</ColumnName>
+    <Visible>false</Visible>
+  </CiColumn>
+  <CiColumn>
+    <ColumnName>Type</ColumnName>
+    <ColumnCaption>Type</ColumnCaption>
+  </CiColumn>
+  <CiColumn>
+    <ColumnName>Description</ColumnName>
+    <ColumnCaption>Description</ColumnCaption>
+  </CiColumn>
+  <CiRowUpdateAction>
+    <ActionSQL>
+      update  tblDropdown
+      set     Type           = @Type,
+              Description    = @Description
+      where   DropdownItemID = @DropdownItemID
+    </ActionSQL>
+  </CiRowUpdateAction>
+  <CiRowInsertAction>
+    <ActionSQL>
+      select  1+iif(isnull(Max(DropdownItemID)), 0, Max(DropdownItemID)) as DropdownItemID
+      from    tblDropdown
+    </ActionSQL>
+    <ActionSQL>
+      insert
+      into    tblDropdown
+      (       Type,
+              Description,
+              DropdownItemID
+      )
+      values
+      (       @Type,
+              @Description,
+              @DropdownItemID
+      )
+    </ActionSQL>
+  </CiRowInsertAction>
+  <CiRowDeleteAction>
+    <ActionSQL>
+      delete from tblDropdown where DropdownItemID = @DropdownItemID
+    </ActionSQL>
+  </CiRowDeleteAction>
+</CodistriGrid>

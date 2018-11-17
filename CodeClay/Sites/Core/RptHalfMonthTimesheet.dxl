@@ -1,0 +1,71 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<CodistriGrid>
+  <CiRowFetchAction>
+    <ActionSQL>
+      select  Staff,
+              format(StartTime, "dd/mm/yyyy") as DateOfWork,
+              tblTasks.TaskCode,
+              TaskDescription,
+              StartTime,
+              EndTime,
+              datediff('s', StartTime, EndTime)/3600 as Duration,
+              iif(Billable, datediff('s', StartTime, EndTime)/3600, 0) as BillableDuration
+      from    tblTimings
+      left join tblTasks
+      on      tblTasks.TaskCode = tblTimings.TaskCode
+      where   StartTime between @StartDate and @EndDate
+      and     (@Staff is null or tblTimings.Staff = @Staff)
+      order by StartTime
+    </ActionSQL>
+  </CiRowFetchAction>
+  <CiColumn>
+    <ColumnName>Staff</ColumnName>
+    <ColumnCaption>Staff</ColumnCaption>
+    <Editable>false</Editable>
+  </CiColumn>
+  <CiColumn>
+    <ColumnName>DateOfWork</ColumnName>
+    <ColumnCaption>Date</ColumnCaption>
+    <Editable>false</Editable>
+  </CiColumn>
+  <CiColumn>
+    <ColumnName>TaskCode</ColumnName>
+    <ColumnCaption>Task</ColumnCaption>
+    <Editable>false</Editable>
+  </CiColumn>
+  <CiColumn>
+    <ColumnName>TaskDescription</ColumnName>
+    <ColumnCaption>Description</ColumnCaption>
+    <Editable>false</Editable>
+  </CiColumn>
+  <CiColumn>
+    <ColumnName>StartTime</ColumnName>
+    <ColumnCaption>Start</ColumnCaption>
+    <ColumnType>Date</ColumnType>
+    <ColumnFormat>dd/MM/yyyy HH:mm</ColumnFormat>
+    <Editable>false</Editable>
+  </CiColumn>
+  <CiColumn>
+    <ColumnName>EndTime</ColumnName>
+    <ColumnCaption>End</ColumnCaption>
+    <ColumnType>Date</ColumnType>
+    <ColumnFormat>dd/MM/yyyy HH:mm</ColumnFormat>
+    <Editable>false</Editable>
+  </CiColumn>
+  <CiColumn>
+    <ColumnName>Duration</ColumnName>
+    <ColumnCaption>TOTAL (H)</ColumnCaption>
+    <ColumnType>Number</ColumnType>
+    <ColumnFormat>0.00</ColumnFormat>
+    <AggregateFunction>Sum</AggregateFunction>
+    <Editable>false</Editable>
+  </CiColumn>
+  <CiColumn>
+    <ColumnName>BillableDuration</ColumnName>
+    <ColumnCaption>BILLABLE (H)</ColumnCaption>
+    <ColumnType>Number</ColumnType>
+    <ColumnFormat>0.00</ColumnFormat>
+    <AggregateFunction>Sum</AggregateFunction>
+    <Editable>false</Editable>
+  </CiColumn>
+</CodistriGrid>

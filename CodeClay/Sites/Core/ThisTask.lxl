@@ -1,0 +1,4 @@
+<ScreenLayout Width="1000" Height="800">
+  <CommunicationsLog Width="567">page1|visible8|t0|f-1|t1|t2|t3|t4|t5|t6|width8|50px|e|0px|0px|83px|49px|314px|71px</CommunicationsLog>
+  <Timings Width="494">page1|visible8|t0|f-1|t1|t2|t3|t4|t5|t6|width8|50px|e|0px|0px|52px|117px|116px|159px</Timings>
+</ScreenLayout>

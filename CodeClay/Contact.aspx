@@ -15,6 +15,4 @@
         <strong>Email.</strong><br /> 
         <a href="mailto:info@codistri.com">info@codistri.com</a><br />
     </address>
-
-   
 </asp:Content>

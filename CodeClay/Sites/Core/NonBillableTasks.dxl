@@ -1,0 +1,121 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<CodistriGrid>
+  <CiRowFetchAction>
+    <ActionSQL>
+      select  TaskCode,
+              TaskDescription,
+              TaskType,
+              CustomerCode,
+              Category,
+              PrimaryDeveloper,
+              SellPrice as SellingPrice,
+	      HoursSold,
+              FixedPrice,
+              BuyPrice,
+              HoursBought,
+              CompletedDate,
+              InvoiceNumber
+      from    tblTasks,
+              tblStaff      
+      where   tblStaff.StaffCode = tblTasks.PrimaryDeveloper
+      and     CompletedDate >= #1 Mar 2014#
+      and     CompletedDate &lt;= #31 Dec 2014#
+      and     Billable = 0
+      order by TaskCode desc
+    </ActionSQL>
+  </CiRowFetchAction>
+  <CiColumn>
+    <ColumnName>TaskCode</ColumnName>
+    <ColumnCaption>Task</ColumnCaption>
+    <Editable>false</Editable>
+  </CiColumn>
+  <CiColumn>
+    <ColumnName>TaskDescription</ColumnName>
+    <ColumnCaption>Description</ColumnCaption>
+    <Editable>false</Editable>
+  </CiColumn>
+  <CiColumn>
+    <ColumnName>TaskType</ColumnName>
+    <ColumnCaption>Task Type</ColumnCaption>
+    <Editable>false</Editable>
+  </CiColumn>
+  <CiColumn>
+    <ColumnName>CustomerCode</ColumnName>
+    <ColumnCaption>Customer</ColumnCaption>
+    <Editable>false</Editable>
+    <Visible>false</Visible>
+  </CiColumn>
+  <CiColumn>
+    <ColumnName>InvoiceNumber</ColumnName>
+    <ColumnCaption>Status</ColumnCaption>
+    <Editable>false</Editable>
+    <Visible>false</Visible>
+  </CiColumn>
+  <CiColumn>
+    <ColumnName>PrimaryDeveloper</ColumnName>
+    <ColumnCaption>Staff</ColumnCaption>
+    <Editable>false</Editable>
+  </CiColumn>
+  <CiColumn>
+    <ColumnName>SellingPrice</ColumnName>
+    <ColumnCaption>Sell ($)</ColumnCaption>
+    <ColumnType>Number</ColumnType>
+    <ColumnFormat>$0.00</ColumnFormat>
+    <AggregateFunction>Sum</AggregateFunction>
+    <Editable>false</Editable>
+    <Visible>false</Visible>
+  </CiColumn>
+  <CiColumn>
+    <ColumnName>BuyPrice</ColumnName>
+    <ColumnCaption>Buy ($)</ColumnCaption>
+    <ColumnType>Number</ColumnType>
+    <ColumnFormat>$0.00</ColumnFormat>
+    <AggregateFunction>Sum</AggregateFunction>
+    <Editable>false</Editable>
+  </CiColumn>
+  <CiColumn>
+    <ColumnName>HoursSold</ColumnName>
+    <ColumnCaption>Sell (H)</ColumnCaption>
+    <ColumnType>Number</ColumnType>
+    <ColumnFormat>0.00</ColumnFormat>
+    <AggregateFunction>Sum</AggregateFunction>
+    <Editable>false</Editable>
+    <Visible>false</Visible>
+  </CiColumn>
+  <CiColumn>
+    <ColumnName>HoursBought</ColumnName>
+    <ColumnCaption>Buy (H)</ColumnCaption>
+    <ColumnType>Number</ColumnType>
+    <ColumnFormat>0.00</ColumnFormat>
+    <AggregateFunction>Sum</AggregateFunction>
+    <Editable>false</Editable>
+  </CiColumn>
+  <CiColumn>
+    <ColumnName>CompletedDate</ColumnName>
+    <ColumnCaption>Due Date</ColumnCaption>
+    <ColumnType>Date</ColumnType>
+    <ColumnFormat>dd/MM/yyyy</ColumnFormat>
+    <Editable>false</Editable>
+  </CiColumn>
+  <CiColumn>
+    <ColumnName>FixedPrice</ColumnName>
+    <ColumnCaption>Fixed?</ColumnCaption>
+    <ColumnType>Checkbox</ColumnType>
+    <Editable>false</Editable>
+    <Visible>false</Visible>
+  </CiColumn>
+  <CiColumn>
+    <ColumnName>InvoiceNumber</ColumnName>
+    <ColumnCaption>Invoice</ColumnCaption>
+    <Editable>false</Editable>
+    <Visible>false</Visible>
+  </CiColumn>
+  <CiColumn>
+    <ColumnName>Category</ColumnName>
+    <ColumnCaption>Category</ColumnCaption>
+    <Editable>false</Editable>
+    <Visible>false</Visible>
+  </CiColumn>
+  <ChildGridURL>ReadOnly_CommunicationsLog.dxl</ChildGridURL>
+  <ChildGridURL>ReadOnly_Timings.dxl</ChildGridURL>
+</CodistriGrid>

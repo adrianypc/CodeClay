@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<CodistriGrid>
+  <CiRowFetchAction>
+    <ActionSQL>
+      select  ProjectCode,
+	      ProjectName,
+              LTRIM(RTRIM(CustomerCode)) as CustomerCode,
+              StaffCode,
+              LTRIM(RTRIM(System)) as System,
+              ProjectContact,
+              SalesCycle,
+	      CreationDate,
+              SaleDate
+      from    tblProjects
+      order by ProjectCode
+    </ActionSQL>
+  </CiRowFetchAction>
+  <CiColumn>
+    <ColumnName>ProjectCode</ColumnName>
+    <ColumnCaption>Project</ColumnCaption>
+    <Editable>false</Editable>
+  </CiColumn>
+  <CiColumn>
+    <ColumnName>ProjectName</ColumnName>
+    <ColumnCaption>Project Name</ColumnCaption>
+  </CiColumn>
+  <CiColumn>
+    <ColumnName>CustomerCode</ColumnName>
+    <ColumnCaption>Customer</ColumnCaption>
+    <DropdownSQL>
+      select  CustomerCode as CustomerCode,
+              Customer
+      from    tblCustomers
+      order by CustomerCode
+    </DropdownSQL>
+    <DropdownToFitLargestText>true</DropdownToFitLargestText>
+    <DropdownValueColumn>CustomerCode</DropdownValueColumn>
+    <DropdownDisplayColumn>Customer</DropdownDisplayColumn>
+  </CiColumn>
+  <CiColumn>
+    <ColumnName>StaffCode</ColumnName>
+    <ColumnCaption>Staff</ColumnCaption>
+    <DropdownSQL>
+      select  StaffCode
+      from    tblStaff
+      order by StaffCode
+    </DropdownSQL>
+  </CiColumn>
+  <CiColumn>
+    <ColumnName>System</ColumnName>
+    <ColumnCaption>System</ColumnCaption>
+    <DropdownSQL>
+      select  LTRIM(RTRIM(System)) as System
+      from    tblSystems
+      where   CustomerCode = @CustomerCode
+      order by SystemID
+    </DropdownSQL>
+    <DropdownToFitLargestText>true</DropdownToFitLargestText>
+  </CiColumn>
+  <CiColumn>
+    <ColumnName>ProjectContact</ColumnName>
+    <ColumnCaption>Project Contact</ColumnCaption>
+    <DropdownSQL>
+      select  ProjectContact1 as [ProjectContact]
+      from    tblCustomers
+      where   CustomerCode = @CustomerCode
+      and     ProjectContact1 is not null
+      union
+      select  ProjectContact2 as [ProjectContact]
+      from    tblCustomers
+      where   CustomerCode = @CustomerCode
+      and     ProjectContact2 is not null
+      union
+      select  ProjectContact3 as [ProjectContact]
+      from    tblCustomers
+      where   CustomerCode = @CustomerCode
+      and     ProjectContact3 is not null
+    </DropdownSQL>
+    <DropdownToFitLargestText>false</DropdownToFitLargestText>
+  </CiColumn>
+  <CiColumn>
+    <ColumnName>SalesCycle</ColumnName>
+    <ColumnCaption>Sales Cycle</ColumnCaption>
+    <DropdownSQL>
+      select  Description as [SalesCycle]
+      from    tblDropdown
+      where   Type = 'SalesCycle'
+      order by Description
+    </DropdownSQL>
+    <ColumnAlignment>left</ColumnAlignment>
+    <DropdownToFitLargestText>false</DropdownToFitLargestText>
+    <DefaultValue>3: Possibility</DefaultValue>
+  </CiColumn>
+  <CiColumn>
+    <ColumnName>CreationDate</ColumnName>
+    <ColumnCaption>Creation Date</ColumnCaption>
+    <ColumnType>Date</ColumnType>
+    <ColumnFormat>dd/MM/yyyy</ColumnFormat>	
+    <ColumnBackColor>AliceBlue</ColumnBackColor>
+  </CiColumn>
+  <CiColumn>
+    <ColumnName>SaleDate</ColumnName>
+    <ColumnCaption>Sale Date</ColumnCaption>
+    <ColumnType>Date</ColumnType>
+    <ColumnFormat>dd/MM/yyyy</ColumnFormat>	
+    <ColumnBackColor>AliceBlue</ColumnBackColor>
+  </CiColumn>
+  <ChildGridURL>ProjectLog.dxl</ChildGridURL>
+ <CiCellExitAction>
+    <ColumnName>ProjectName</ColumnName>
+    <ActionSQL>
+      select  Now() as CreationDate
+      from    tblSingleton
+      where   @ProjectName is not null
+      and     @CreationDate is null
+    </ActionSQL>
+  </CiCellExitAction>
+ <CiCellExitAction>
+    <ColumnName>SalesCycle</ColumnName>
+    <ActionSQL>
+      select  Date() as SaleDate
+      from    tblSingleton
+      where   @SalesCycle = '4: Sold'
+      and     @SaleDate is null
+    </ActionSQL>
+  </CiCellExitAction>
+  <CiRowInsertAction>
+    <ValidationSQL>select 'Please enter a Project Name.' from tblSingleton where IsNull(@ProjectName) = true</ValidationSQL>
+    <ValidationSQL>select 'Please select a Customer.' from tblSingleton where IsNull(@CustomerCode) = true</ValidationSQL>
+    <ValidationSQL>select 'Please select a Staff.' from tblSingleton where IsNull(@StaffCode) = true</ValidationSQL>
+    <ActionSQL>
+      select  'P'+right('00000'+ trim(str(1+Right(iif(isnull(Max(LTRIM(RTRIM(ProjectCode)))), 'P00000', Max(LTRIM(RTRIM(ProjectCode)))), 5))) ,5) as ProjectCode,
+	      Now() as CreationDate,iif(@SalesCycle = '4: Sold',@SaleDate,null) as SaleDate
+      from    tblProjects    
+    </ActionSQL>
+    <ActionSQL>
+      insert
+      into    tblProjects
+      (       ProjectCode,
+              ProjectName,
+              CustomerCode,
+              StaffCode,
+              System,
+              ProjectContact,
+              SalesCycle,
+              CreationDate,
+              SaleDate
+      )
+      values
+      (       @ProjectCode,
+	      @ProjectName,
+              @CustomerCode,
+              @StaffCode,
+              @System,
+              @ProjectContact,
+              @SalesCycle,
+              @CreationDate,
+              @SaleDate
+      )
+    </ActionSQL>
+    <AutoRefresh>true</AutoRefresh>
+  </CiRowInsertAction>
+  <CiRowUpdateAction>
+    <ValidationSQL>select 'Please enter a Project Name.' from tblSingleton where IsNull(@ProjectName) = true</ValidationSQL>
+    <ValidationSQL>select 'Please select a Customer.' from tblSingleton where IsNull(@CustomerCode) = true</ValidationSQL>
+    <ValidationSQL>select 'Please select a Staff.' from tblSingleton where IsNull(@StaffCode) = true</ValidationSQL>
+    <ActionSQL>
+      update  tblProjects
+      set     ProjectName = @ProjectName,
+              CustomerCode = @CustomerCode,
+              StaffCode = @StaffCode,
+              System = @System,
+              ProjectContact = @ProjectContact,
+              SalesCycle = @SalesCycle,
+              CreationDate = @CreationDate,
+              SaleDate = iif(@SalesCycle = '4: Sold',@SaleDate,null)
+      where   ProjectCode = @ProjectCode
+    </ActionSQL>
+    <AutoRefresh>true</AutoRefresh>
+  </CiRowUpdateAction>
+  <CiRowDeleteAction>
+    <ActionSQL>
+      delete from tblProjectLog where ProjectCode = @ProjectCode
+    </ActionSQL>
+    <ActionSQL>
+      delete from tblProjects where ProjectCode = @ProjectCode
+    </ActionSQL>
+     <AutoRefresh>true</AutoRefresh>
+  </CiRowDeleteAction>
+</CodistriGrid>

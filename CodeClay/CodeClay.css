@@ -1,0 +1,9 @@
+﻿table.CodeClay {
+    width: 100%;
+    border: 2px solid transparent;
+}
+
+td.CodeClay {
+    padding: 3px;
+    color: gray;
+}

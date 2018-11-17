@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<CiTable>
+  <TableName>Male History</TableName>
+  <TableCaption>Male History</TableCaption>
+  <RowKey>PatientNo</RowKey>
+  <DefaultView>Card</DefaultView>
+  <CiTextField>
+    <FieldName>PatientNo</FieldName>
+    <Hidden>true</Hidden>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>GenderType</FieldName>
+    <Hidden>true</Hidden>
+    <Value>M</Value>
+  </CiTextField>
+  <CiField>
+    <Value>
+      <u>Physical Examination</u>
+    </Value>
+  </CiField>
+  <CiTextField>
+    <FieldName>PatientAge</FieldName>
+    <Caption>Age</Caption>
+    <Editable>false</Editable>
+  </CiTextField>
+  <CiComboField>
+    <FieldName>Language</FieldName>
+    <Caption>Language</Caption>
+    <DropdownSQL>select TextItem from TextListItem where Category =  'Languages' </DropdownSQL>
+  </CiComboField>
+  <CiTextField>
+    <FieldName>Height</FieldName>
+    <Caption>Height (cm)</Caption>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>Weight</FieldName>
+    <Caption>Weight (kg)</Caption>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>BMI</FieldName>
+    <Caption>BMI</Caption>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>BloodPressure</FieldName>
+    <Caption>Blood Pressure</Caption>
+  </CiTextField>
+  <CiField>
+    <Value>
+      <u>Drug Allergies</u>
+    </Value>
+  </CiField>
+  <CiCheckField>
+    <FieldName>NotKnown</FieldName>
+    <Caption>Not Known</Caption>
+    <Editable>true</Editable>
+    <Value>false</Value>
+  </CiCheckField>
+  <CiTextField>
+    <FieldName>DrugReaction</FieldName>
+    <Caption>Drug and Reaction</Caption>
+  </CiTextField>
+  <CiField>
+    <Value>
+      <u>Medical</u>
+    </Value>
+  </CiField>
+  <CiComboField>
+    <FieldName>Mumps</FieldName>
+    <Caption>Mumps</Caption>
+    <DataSource>
+      <DataItem CodeValue="Yes"/>
+      <DataItem CodeValue="No"/>
+      <DataItem CodeValue="Unsure"/>
+    </DataSource>
+  </CiComboField>
+  <CiMemoField>
+    <FieldName>MedicalHistory</FieldName>
+    <Caption>Medical History</Caption>
+  </CiMemoField>
+  <CiMemoField>
+    <FieldName>CurrentMedTreatment</FieldName>
+    <Caption>Current Medication / Treatment</Caption>
+  </CiMemoField>
+  <CiField>
+    <Value>
+      <u>Surgical</u>
+    </Value>
+  </CiField>
+  <CiComboField>
+    <FieldName>PastGynaeOrUrologicalOperation</FieldName>
+    <Caption>Past Urological/Abdominal Operations</Caption>
+    <DataSource>
+      <DataItem CodeDescription="Yes" />
+      <DataItem CodeDescription="No" />
+    </DataSource>
+  </CiComboField>
+  <CiMemoField>
+    <FieldName>PastGynaeOrUrologicalOptComment</FieldName>
+    <Caption>If yes, state type, date and Hospital</Caption>
+  </CiMemoField>
+  <CiField>
+    <Value>
+      <u>Social</u>
+    </Value>
+  </CiField>
+  <CiComboField>
+    <FieldName>Smoke</FieldName>
+    <Caption>Smoke</Caption>
+    <DataSource>
+      <DataItem CodeDescription="Yes" />
+      <DataItem CodeDescription="No" />
+    </DataSource>
+  </CiComboField>
+  <CiTextField>
+    <FieldName>SmokeComment</FieldName>
+    <Caption>Specify (sticks per day)</Caption>
+  </CiTextField>
+  <CiComboField>
+    <FieldName>Alcohol</FieldName>
+    <Caption>Alcohol</Caption>
+    <DataSource>
+        <DataItem CodeDescription="Yes" />
+        <DataItem CodeDescription="No" />
+    </DataSource>
+  </CiComboField>
+  <CiTextField>
+    <FieldName>AlcoholComment</FieldName>
+    <Caption>Specify (glasses per day)</Caption>
+  </CiTextField>
+  <CiComboField>
+    <FieldName>WeightChange</FieldName>
+    <Caption>Weight Change</Caption>
+    <DataSource>
+        <DataItem CodeDescription="Yes" />
+        <DataItem CodeDescription="No" />
+    </DataSource>
+  </CiComboField>
+  <CiTextField>
+    <FieldName>WeightChangeComment</FieldName>
+    <Caption>Specify (KG gained/lost in weeks/months)</Caption>
+  </CiTextField>
+  <CiField>
+    <Value>
+      <u>Family Medical</u>
+    </Value>
+  </CiField>
+  <CiComboField>
+    <FieldName>Mother</FieldName>
+    <Caption>Mother</Caption>
+    <DataSource>
+      <DataItem CodeDescription="Yes" />
+      <DataItem CodeDescription="No" />
+    </DataSource>
+  </CiComboField>
+  <CiTextField>
+    <FieldName>MotherComment</FieldName>
+    <Caption>Specify (mother)</Caption>
+  </CiTextField>
+  <CiComboField>
+    <FieldName>Father</FieldName>
+    <Caption>Father</Caption>
+    <DataSource>
+      <DataItem CodeDescription="Yes" />
+      <DataItem CodeDescription="No" />
+    </DataSource>
+  </CiComboField>
+  <CiTextField>
+    <FieldName>FatherComment</FieldName>
+    <Caption>Specify (father)</Caption>
+  </CiTextField>
+  <DefaultMacro>
+    <ActionSQL>select @MPatientNo as PatientNo</ActionSQL>
+  </DefaultMacro>
+  <SelectMacro>
+    <ActionSQL>?exec spClientHistory_sel @MPatientNo,'M'</ActionSQL>
+  </SelectMacro>
+  <UpdateMacro>
+    <ActionSQL>
+      EXEC spClientHistory_upd
+        @GenderType,
+        @PatientNo,
+        @Language,
+        @Height,
+        @Weight,
+        @BMI,
+        @BloodPressure,
+        @NotKnown,
+        @DrugReaction,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        @MedicalHistory,
+        @CurrentMedTreatment,
+        @PastGynaeOrUrologicalOperation,
+        @PastGynaeOrUrologicalOptComment,
+        @Smoke,
+        @SmokeComment,
+        @Alcohol,
+        @AlcoholComment,
+        @WeightChange,
+        @WeightChangeComment,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        @Mother,
+        @MotherComment,
+        @Father,
+        @FatherComment,
+        @Mumps
+    </ActionSQL>
+  </UpdateMacro>
+</CiTable>

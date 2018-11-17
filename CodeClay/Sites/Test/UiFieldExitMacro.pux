@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<CiTable>
+  <DefaultView>Card</DefaultView>
+  <Mode>New</Mode>
+  <CiTextField>
+    <FieldName>TaskDescription</FieldName>
+    <Caption>Task Description</Caption>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>Message</FieldName>
+    <Caption>Message</Caption>
+  </CiTextField>
+  <CiFieldExitMacro>
+    <FieldName>TaskDescription</FieldName>
+    <ActionSQL>select @TaskDescription as Message</ActionSQL>
+  </CiFieldExitMacro>
+</CiTable>

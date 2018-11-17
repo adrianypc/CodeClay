@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<CiTable>
+  <TableName>Bill Item Detail</TableName>
+  <RowKey>ItemNo</RowKey>
+  <DefaultView>Grid</DefaultView>
+  <CiTextField>
+    <FieldName>ItemNo</FieldName>
+    <Caption>No</Caption>
+    <Editable>false</Editable>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>ItemCode</FieldName>
+    <Caption>Item Code</Caption>
+    <Editable>false</Editable>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>ItemDescription</FieldName>
+    <Caption>Description</Caption>
+    <Editable>false</Editable>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>UnitOfMeasure</FieldName>
+    <Caption>UOM</Caption>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>Quantity</FieldName>
+    <Caption>Qty</Caption>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>UnitPrice</FieldName>
+    <Caption>Unit $</Caption>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>CNIQuantity</FieldName>
+    <Caption>Ret Qty</Caption>
+    <Value>0</Value>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>ChargeAmount</FieldName>
+    <Caption>Ret $</Caption>
+    <Value>0.00</Value>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>GSTApplicable</FieldName>
+    <Caption>GST</Caption>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>CNITaxableAmount</FieldName>
+    <Visible>false</Visible>
+  </CiTextField>
+  <SelectMacro>
+    <ActionSQL>?exec spCreditNoteItemList_sel 'HCC0320457',null</ActionSQL>
+  </SelectMacro>
+  <UpdateMacro></UpdateMacro>
+</CiTable>

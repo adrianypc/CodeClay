@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<CiTable>
+  <TableName>Bill List</TableName>
+  <TableCaption>Patient Bill Lists</TableCaption>
+  <RowKey>ClientBillNo</RowKey>
+  <DefaultView>Grid</DefaultView>
+  <CiTextField>
+    <FieldName>sPatientNo</FieldName>
+    <Caption>Patient No</Caption>
+    <Searchable>true</Searchable>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>ClientBillNo</FieldName>
+    <Caption>Bill No</Caption>
+    <Editable>false</Editable>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>PrescriptionNo</FieldName>
+    <Caption>Prescription No</Caption>
+    <Editable>false</Editable>
+  </CiTextField>
+  <CiDateField>
+    <FieldName>ClientBillDate</FieldName>
+    <Caption>Bill Date</Caption>
+    <Editable>false</Editable>
+    <ColumnFormat>dd/MM/yyyy</ColumnFormat>
+  </CiDateField>
+  <CiTextField>
+    <FieldName>TotalBillAmount</FieldName>
+    <Caption>Bill Amount</Caption>
+    <Editable>false</Editable>
+    <Mask>Currency</Mask>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>OutstandingAmount</FieldName>
+    <Caption>Outstanding Amt</Caption>
+    <Editable>false</Editable>
+    <Mask>Currency</Mask>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>CreditNoteNo</FieldName>
+    <Caption>CN/Rev</Caption>
+    <Editable>false</Editable>
+  </CiTextField>
+  <CiCheckField>
+    <FieldName>Printed</FieldName>
+    <Caption>Printed</Caption>
+    <Editable>false</Editable>
+  </CiCheckField>
+  <CiMacro>
+    <MacroName>Bill Detail</MacroName>
+    <MacroType>MENU</MacroType>
+    <ActionSQL>select @ClientBillNo as BillNo</ActionSQL>
+    <NavigateUrl>BillDetail.pux</NavigateUrl>
+    <NavigatePos>NewTab</NavigatePos>
+  </CiMacro>
+  <SelectMacro>
+    <ActionSQL>
+      ?exec spClientBillList_sel @sPatientNo,'SI','SI'
+    </ActionSQL>
+  </SelectMacro>
+</CiTable>

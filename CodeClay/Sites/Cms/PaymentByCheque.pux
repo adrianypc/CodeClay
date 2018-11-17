@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<CiTable>
+  <TableName>PaymentByCheque</TableName>
+  <TableCaption>Payment By Cheque</TableCaption>
+  <RowKey>BillNo</RowKey>
+  <DefaultView>Card</DefaultView>
+  <CiTextField>
+    <FieldName>BillNo</FieldName>
+    <Hidden>true</Hidden>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>ClientNo</FieldName>
+    <Caption>Client No</Caption>
+    <Editable>false</Editable>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>ClientSurname</FieldName>
+    <Caption>Surname</Caption>
+    <Editable>false</Editable>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>ClientOtherNames</FieldName>
+    <Caption>Other Names</Caption>
+    <Editable>false</Editable>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>PresNo</FieldName>
+    <Caption>Pres No</Caption>
+    <Editable>false</Editable>
+  </CiTextField>
+  <CiComboField>
+    <FieldName>Bank</FieldName>
+    <Caption>Bank</Caption>
+    <Editable>true</Editable>
+    <DropdownSQL>select TextItem from TextListItem where Category = 'Banks' </DropdownSQL>
+  </CiComboField>
+  <CiTextField>
+    <FieldName>ChequeNo</FieldName>
+    <Caption>Cheque No</Caption>
+    <Editable>true</Editable>
+  </CiTextField>
+  <CiMemoField>
+    <FieldName>ChequeRemark</FieldName>
+    <Caption>Remarks</Caption>
+  </CiMemoField>
+  <CiTextField>
+    <FieldName>ChequeAmount</FieldName>
+    <Caption>Amount</Caption>
+    <Editable>true</Editable>
+    <Value>0.00</Value>
+  </CiTextField>
+  <SelectMacro>
+    <ActionSQL>
+      select
+	@BillNo as BillNo,
+	@PresNo as PresNo, 
+        ClientNo,
+        ClientSurname,
+        ClientOtherNames
+      from Client
+      where ClientNo = @ClientNo
+    </ActionSQL>
+  </SelectMacro>
+</CiTable>

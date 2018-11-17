@@ -1,0 +1,404 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<CiTable>
+  <TableName>Female History</TableName>
+  <TableCaption>Female History</TableCaption>
+  <RowKey>PatientNo</RowKey>
+  <DefaultView>Card</DefaultView>
+  <CiTextField>
+    <FieldName>PatientNo</FieldName>
+    <Hidden>true</Hidden>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>GenderType</FieldName>
+    <Hidden>true</Hidden>
+    <Value>F</Value>
+  </CiTextField>
+  <CiField>
+    <Value>
+      <u>Physical Examination</u>
+    </Value>
+  </CiField>
+  <CiTextField>
+    <FieldName>PatientAge</FieldName>
+    <Caption>Age</Caption>
+    <Editable>false</Editable>
+  </CiTextField>
+  <CiComboField>
+    <FieldName>Language</FieldName>
+    <Caption>Language</Caption>
+    <DropdownSQL>select TextItem from TextListItem where Category = 'Languages' </DropdownSQL>
+  </CiComboField>
+  <CiTextField>
+    <FieldName>Height</FieldName>
+    <Caption>Height (cm)</Caption>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>Weight</FieldName>
+    <Caption>Weight (kg)</Caption>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>BMI</FieldName>
+    <Caption>BMI</Caption>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>BloodPressure</FieldName>
+    <Caption>Blood Pressure</Caption>
+  </CiTextField>
+  <CiField>
+    <Value>
+      <u>Drug Allergies</u>
+    </Value>
+  </CiField>
+  <CiCheckField>
+    <FieldName>NotKnown</FieldName>
+    <Caption>Not Known</Caption>
+    <Editable>true</Editable>
+    <Value>false</Value>
+  </CiCheckField>
+  <CiTextField>
+    <FieldName>DrugReaction</FieldName>
+    <Caption>Drug And Reaction</Caption>
+  </CiTextField>
+  <CiField>
+    <Value>
+      <u>Obstetric</u>
+    </Value>
+  </CiField>
+  <CiTextField>
+    <FieldName>NumOfPregnancies</FieldName>
+    <Caption>Number of Pregnancies</Caption>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>NumOfTerminations</FieldName>
+    <Caption>Number of Terminations</Caption>
+  </CiTextField>
+  <CiCheckField>
+    <FieldName>Adoption</FieldName>
+    <Caption>Adoption (if any)</Caption>
+    <Editable>true</Editable>
+    <Value>false</Value>
+  </CiCheckField>
+  <CiComboField>
+    <FieldName>Gender</FieldName>
+    <Caption>Gender</Caption>
+    <DataSource>
+        <DataItem GDescription="Male"/>
+        <DataItem GDescription="Female"/>
+    </DataSource>
+  </CiComboField>
+  <CiTextField>
+    <FieldName>Age</FieldName>
+    <Caption>Age</Caption>
+  </CiTextField>
+  <CiField>
+    <Value>
+      <u>Obstetric History</u>
+    </Value>
+  </CiField>  
+  <CiDateField>
+    <FieldName>DeliveryDate</FieldName>
+    <Caption>Date of Delivery</Caption>
+    <ColumnFormat>dd/MM/yyyy</ColumnFormat>
+  </CiDateField>
+  <CiTextField>
+    <FieldName>Pregnancy</FieldName>
+    <Caption>Pregnancy</Caption>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>ModeOfDelivery</FieldName>
+    <Caption>Mode of Delivery</Caption>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>Puerperium</FieldName>
+    <Caption>Puerperium</Caption>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>BirthWeight</FieldName>
+    <Caption>Birth Weight</Caption>
+  </CiTextField>
+  <CiComboField>
+    <FieldName>OHGender</FieldName>
+    <Caption>Gender</Caption>
+    <DataSource>
+        <DataItem GDescription="Male"/>
+        <DataItem GDescription="Female"/>
+    </DataSource>
+  </CiComboField>
+  <CiTextField>
+    <FieldName>OHCondition</FieldName>
+    <Caption>Condition</Caption>
+  </CiTextField>
+  <CiField>
+    <Value>
+      <u>Menstrual</u>
+    </Value>
+  </CiField>
+  <CiDateField>
+    <FieldName>LastMenstrualPeriod</FieldName>
+    <Caption>Last Menstrual Period</Caption>
+    <ColumnFormat>dd/MM/yyyy</ColumnFormat>
+  </CiDateField>
+  <CiTextField>
+    <FieldName>MenarcheAge</FieldName>
+    <Caption>Menarche Age</Caption>
+  </CiTextField>
+  <CiComboField>
+    <FieldName>IsMensesRegular</FieldName>
+    <Caption>Is your menses regular</Caption>
+    <DataSource>
+        <DataItem CodeDescription="Yes" />
+        <DataItem CodeDescription="No" />
+    </DataSource>
+  </CiComboField>
+  <CiField>
+    <Value>Cycle Length</Value>
+  </CiField>
+  <CiTextField>
+    <FieldName>FlowingDays</FieldName>
+    <Caption>Flowing for (days)</Caption>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>ForEvery</FieldName>
+    <Caption>For Every</Caption>
+  </CiTextField>
+  <CiComboField>
+    <FieldName>Dysmenorrhoea</FieldName>
+    <Caption>Dysmenorrhoea</Caption>
+    <DataSource>
+        <DataItem CodeValue="Non"/>
+        <DataItem CodeValue="Mild"/>
+        <DataItem CodeValue="Moderate"/>
+        <DataItem CodeValue="Severe"/>
+    </DataSource>
+  </CiComboField>
+  <CiComboField>
+    <FieldName>Menorrhagia</FieldName>
+    <Caption>Menorrhagia</Caption>
+    <DataSource>
+        <DataItem CodeDescription="Yes" />
+        <DataItem CodeDescription="No" />
+    </DataSource>
+  </CiComboField>
+  <CiTextField>
+    <FieldName>DayOfCycle</FieldName>
+    <Caption>Day of Cycle</Caption>
+  </CiTextField>
+  <CiComboField>
+    <FieldName>Dyspareunia</FieldName>
+    <Caption>Dyspareunia</Caption>
+    <DataSource>
+        <DataItem CodeDescription="Yes" />
+        <DataItem CodeDescription="No" />
+    </DataSource>
+  </CiComboField>
+  <CiComboField>
+    <FieldName>IntercourseFPW</FieldName>
+    <Caption>Intercourse Frequency per Week</Caption>
+    <Code>CodeValue</Code>
+    <DataSource>
+        <DataItem CodeValue="1-2"/>
+        <DataItem CodeValue="3-5"/>
+        <DataItem CodeValue="6-8"/>
+        <DataItem CodeValue="9+"/>
+    </DataSource>
+  </CiComboField>
+  <CiField>
+    <Value>
+      <u>Medical</u>
+    </Value>
+  </CiField>
+  <CiMemoField>
+    <FieldName>MedicalHistory</FieldName>
+    <Caption>Medical History</Caption>
+  </CiMemoField>
+  <CiMemoField>
+    <FieldName>CurrentMedTreatment</FieldName>
+    <Caption>Current Medication / Treatment</Caption>
+  </CiMemoField>
+  <CiField>
+    <Value>
+      <u>Surgical</u>
+    </Value>
+  </CiField>
+  <CiComboField>
+    <FieldName>PastGynaeOrUrologicalOperation</FieldName>
+    <Caption>Past Gynae/Abdominal Operations</Caption>
+    <DataSource>
+        <DataItem CodeDescription="Yes" />
+        <DataItem CodeDescription="No" />
+    </DataSource>
+  </CiComboField>
+  <CiMemoField>
+    <FieldName>PastGynaeOrUrologicalOptComment</FieldName>
+    <Caption>If yes, state type, date and Hospital</Caption>
+  </CiMemoField>
+  <CiField>
+    <Value>
+      <u>Social</u>
+    </Value>
+  </CiField>
+  <CiComboField>
+    <FieldName>Smoke</FieldName>
+    <Caption>Smoke</Caption>
+    <DataSource>
+        <DataItem CodeDescription="Yes" />
+        <DataItem CodeDescription="No" />
+    </DataSource>
+  </CiComboField>
+  <CiTextField>
+    <FieldName>SmokeComment</FieldName>
+    <Caption>Specify (sticks per day)</Caption>
+  </CiTextField>
+  <CiComboField>
+    <FieldName>Alcohol</FieldName>
+    <Caption>Alcohol</Caption>
+    <DataSource>
+        <DataItem CodeDescription="Yes" />
+        <DataItem CodeDescription="No" />
+    </DataSource>
+  </CiComboField>
+  <CiTextField>
+    <FieldName>AlcoholComment</FieldName>
+    <Caption>Specify (glasses per day)</Caption>
+  </CiTextField>
+    <CiComboField>
+    <FieldName>WeightChange</FieldName>
+    <Caption>Weight Change</Caption>
+    <DataSource>
+        <DataItem CodeDescription="Yes" />
+        <DataItem CodeDescription="No" />
+    </DataSource>
+  </CiComboField>
+  <CiTextField>
+    <FieldName>WeightChangeComment</FieldName>
+    <Caption>Specify (KG gained/lost in weeks/months)</Caption>
+  </CiTextField>
+  <CiComboField>
+    <FieldName>Bladder</FieldName>
+    <Caption>Bladder</Caption>
+    <DataSource>
+        <DataItem CodeDescription="Yes" />
+        <DataItem CodeDescription="No" />
+    </DataSource>
+  </CiComboField>
+  <CiTextField>
+    <FieldName>BladderComment</FieldName>
+    <Caption>Specify (bladder)</Caption>
+  </CiTextField>
+  <CiComboField>
+    <FieldName>Bowel</FieldName>
+    <Caption>Bowel</Caption>
+    <DataSource>
+        <DataItem CodeDescription="Yes" />
+        <DataItem CodeDescription="No" />
+    </DataSource>
+  </CiComboField>
+  <CiTextField>
+    <FieldName>BowelComment</FieldName>
+    <Caption>Specify (bowel)</Caption>
+  </CiTextField>
+  <CiComboField>
+    <FieldName>Papsmear</FieldName>
+    <Caption>Pap Smear</Caption>
+    <DataSource>
+        <DataItem CodeDescription="Yes" />
+        <DataItem CodeDescription="No" />
+    </DataSource>
+  </CiComboField>
+  <CiTextField>
+    <FieldName>LastDone</FieldName>
+    <Caption>Last Done</Caption>
+  </CiTextField>
+  <CiField>
+    <Value>
+      <u>Family Medical</u>
+    </Value>
+  </CiField>
+  <CiComboField>
+    <FieldName>Mother</FieldName>
+    <Caption>Mother</Caption>
+    <DataSource>
+        <DataItem CodeDescription="Yes" />
+        <DataItem CodeDescription="No" />
+    </DataSource>
+  </CiComboField>
+  <CiTextField>
+    <FieldName>MotherComment</FieldName>
+    <Caption>Specify (mother)</Caption>
+  </CiTextField>
+  <CiComboField>
+    <FieldName>Father</FieldName>
+    <Caption>Father</Caption>
+    <DataSource>
+        <DataItem CodeDescription="Yes" />
+        <DataItem CodeDescription="No" />
+    </DataSource>
+  </CiComboField>
+  <CiTextField>
+    <FieldName>FatherComment</FieldName>
+    <Caption>Specify (father)</Caption>
+  </CiTextField>
+  <DefaultMacro>
+    <ActionSQL>select @FPatientNo as PatientNo</ActionSQL>
+  </DefaultMacro>
+  <SelectMacro>
+    <ActionSQL>?exec spClientHistory_sel @FPatientNo,'F'</ActionSQL>
+  </SelectMacro>
+  <UpdateMacro>
+    <ActionSQL>
+      EXEC spClientHistory_upd
+        @GenderType,
+        @PatientNo,
+        @Language,
+        @Height,
+        @Weight,
+        @BMI,
+        @BloodPressure,
+        @NotKnown,
+        @DrugReaction,
+        @NumOfPregnancies,
+        @NumOfTerminations,
+        @Adoption,
+        @Gender,
+        @Age,
+        @DeliveryDate,
+        @Pregnancy,
+        @ModeOfDelivery,
+        @Puerperium,
+        @BirthWeight,
+        @OHGender,
+        @OHCondition,
+        @LastMenstrualPeriod,
+        @MenarcheAge,
+        @IsMensesRegular,
+        @FlowingDays,
+        @ForEvery,
+        @Dysmenorrhoea,
+        @Menorrhagia,
+        @DayOfCycle,
+        @Dyspareunia,
+        @IntercourseFPW,
+        @MedicalHistory,
+        @CurrentMedTreatment,
+        @PastGynaeOrUrologicalOperation,
+        @PastGynaeOrUrologicalOptComment,
+        @Smoke,
+        @SmokeComment,
+        @Alcohol,
+        @AlcoholComment,
+        @WeightChange,
+        @WeightChangeComment,
+        @Bladder,
+        @BladderComment,
+        @Bowel,
+        @BowelComment,
+        @Papsmear,
+        @LastDone,
+        @Mother,
+        @MotherComment,
+        @Father,
+        @FatherComment,
+        null
+    </ActionSQL>
+  </UpdateMacro>
+</CiTable>

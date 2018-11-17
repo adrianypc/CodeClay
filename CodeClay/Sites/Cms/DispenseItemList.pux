@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<CiTable>
+	<TableName>Dispense Item</TableName>
+	<TableCaption>Dispense Item</TableCaption>
+	<DefaultView>Grid</DefaultView>
+	<RowKey>ClientNo,LogID,PrescriptionItemID</RowKey>
+    <CiField>
+        <FieldName>DispenseNumber</FieldName>
+        <Caption>Dispense#</Caption>
+        <Hidden>true</Hidden>
+    </CiField>
+    <CiField>
+    	<FieldName>ClientNo</FieldName>
+		<Caption>Patient No</Caption>
+		<Hidden>true</Hidden>
+	</CiField>
+	<CiField>
+		<FieldName>LogID</FieldName>
+		<Caption>Log ID</Caption>
+		<Hidden>true</Hidden>
+	</CiField>
+	<CiField>
+		<FieldName>PrescriptionItemID</FieldName>
+		<Caption>ID</Caption>
+	</CiField>
+	<CiComboField>
+		<FieldName>ItemCode</FieldName>
+		<Caption>Code</Caption>
+		<Code>ItemCode</Code>
+		<Description>ItemDescription</Description>
+		<DropdownSQL>
+			select ItemCode, ItemDescription from ChargeItem where CIEnabled = 'Y' order by ItemCode
+		</DropdownSQL>
+        <Editable>false</Editable>
+    </CiComboField>
+	<CiTextField>
+		<FieldName>ItemDescription</FieldName>
+		<Caption>Description</Caption>
+		<ValueSQL>select ItemDescription from ChargeItem where ItemCode = @ItemCode</ValueSQL>
+		<Editable>false</Editable>
+	</CiTextField>
+	<CiTextField>
+		<FieldName>UnitPrice</FieldName>
+		<Caption>Unit Price ($)</Caption>
+		<ValueSQL>select CiUnitPrice from ChargeItem where ItemCode = @ItemCode</ValueSQL>
+		<Mask>Currency</Mask>
+        <Editable>false</Editable>
+    </CiTextField>
+    <CiNumericField>
+        <FieldName>Quantity</FieldName>
+        <Caption>Qty Prescribed</Caption>
+        <Editable>false</Editable>
+    </CiNumericField>
+    <CiNumericField>
+        <FieldName>DispenseQuantity</FieldName>
+        <Caption>Qty to Dispense</Caption>
+    </CiNumericField>
+    <CiTextField>
+	    <FieldName>TotalPrice</FieldName>
+	    <Caption>Total Price ($)</Caption>
+	    <Computed>true</Computed>
+	    <Value>Quantity * UnitPrice</Value>
+	    <Mask>Currency</Mask>
+        <Editable>false</Editable>
+    </CiTextField>
+	<SelectMacro>
+		<ActionSQL>
+            select  *,
+                    (case
+                    when @DispenseNumber = 1 then DispenseQuantity1
+                    when @DispenseNumber = 2 then DispenseQuantity2
+                    when @DispenseNumber = 3 then DispenseQuantity3
+                    end) as DispenseQuantity
+            from    PrescriptionItem
+            where   ClientNo = @ClientNo
+            and     LogID = @LogID
+            order by PrescriptionItemID
+        </ActionSQL>
+	</SelectMacro>
+    <UpdateMacro>
+        <ActionSQL>
+            update  PrescriptionItem
+            set     LastChangedDate = getdate(),
+                    LastChangedBy = dbo.FnGetUserId(@CI_UserEmail),
+                    DispenseQuantity1 = (case when @DispenseNumber = 1 then @DispenseQuantity else DispenseQuantity1 end),
+                    DispenseQuantity2 = (case when @DispenseNumber = 2 then @DispenseQuantity else DispenseQuantity2 end),
+                    DispenseQuantity3 = (case when @DispenseNumber = 3 then @DispenseQuantity else DispenseQuantity3 end)
+            where   ClientNo = @ClientNo
+            and     LogID = @LogID
+            and	    PrescriptionItemID = @PrescriptionItemID
+        </ActionSQL>
+        <VisibleSQL></VisibleSQL>
+    </UpdateMacro>
+</CiTable>

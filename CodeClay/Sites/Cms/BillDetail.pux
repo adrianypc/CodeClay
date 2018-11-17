@@ -1,0 +1,312 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<CiTable>
+  <TableName>Bill Detail</TableName>
+  <TableCaption>Bill Detail</TableCaption>
+  <RowKey>BillNo</RowKey>
+  <DefaultView>Card</DefaultView>
+  <ColCount>3</ColCount>
+  <CiTextField>
+    <FieldName>BillNo</FieldName>
+    <Caption>Bill No</Caption>
+    <Editable>false</Editable>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>PresNo</FieldName>
+    <Caption>Pres No</Caption>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>ClientNo</FieldName>
+    <Caption>Client No</Caption>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>Name</FieldName>
+    <Caption>Name</Caption>
+    <Editable>false</Editable>
+  </CiTextField>
+  <CiComboField>
+    <FieldName>Gender</FieldName>
+    <Caption>Gender</Caption>
+    <Editable>false</Editable>
+    <Code>Gender</Code>
+    <Description>Description</Description>
+    <DataSource>
+      <DataItem Description="Male" Gender="M"   />
+      <DataItem Description="Female" Gender="F" />
+    </DataSource>
+  </CiComboField>
+  <CiTextField>
+    <FieldName>NRIC</FieldName>
+    <Caption>NRIC/Passport</Caption>
+    <Editable>false</Editable>
+  </CiTextField>
+  <CiComboField>
+    <FieldName>Company</FieldName>
+    <Caption>Company</Caption>
+    <Editable>false</Editable>
+    <Code>CustomerNo</Code>
+    <Description>CustomerName</Description>
+    <DropdownSQL>select CustomerName,CustomerNo from Customer where CustomerType = 'B'</DropdownSQL>
+  </CiComboField>
+  <CiTextField>
+    <FieldName>Dispenser</FieldName>
+    <Caption>Dispenser</Caption>
+  </CiTextField>
+  <CiComboField>
+    <FieldName>Doctor</FieldName>
+    <Caption>Doctor</Caption>
+    <Editable>true</Editable>
+    <Code>ConsultantId</Code>
+    <Description>ConsultantName</Description>
+    <DropdownSQL>select ConsultantOtherNames+' '+ConsultantSurname as ConsultantName,ConsultantId from Consultant where ConsultantEnabled = 'Y' </DropdownSQL>
+  </CiComboField>
+  <CiTextField>
+    <FieldName>OutstandingBalance</FieldName>
+    <Caption>Outstanding Balance</Caption>
+    <Editable>false</Editable>
+    <Value>0.00</Value>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>MedisaveOutstandingBalance</FieldName>
+    <Caption>Medisave Outstanding Balance</Caption>
+    <Editable>false</Editable>
+    <Value>0.00</Value>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>AvailablePrepayment</FieldName>
+    <Caption>Available Prepayment</Caption>
+    <Editable>false</Editable>
+    <Value>0.00</Value>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>AvailableDeposit</FieldName>
+    <Caption>Available Deposit</Caption>
+    <Editable>false</Editable>
+    <Value>0.00</Value>
+  </CiTextField>
+  <CiDateField>
+    <FieldName>BillDate</FieldName>
+    <Caption>Date</Caption>
+    <Editable>true</Editable>
+    <ColumnFormat>dd/MM/yyyy</ColumnFormat>
+  </CiDateField>
+  <CiRadioField>
+    <FieldName>BillType</FieldName>
+    <Caption>Bill Type</Caption>
+    <Editable>true</Editable>
+    <Code>BillTypeID</Code>
+    <Description>BillTypeName</Description>
+    <DataSource>
+      <DataItem BillTypeName="Consultation" BillTypeID="CC"  />
+      <DataItem BillTypeName="Hospitalization" BillTypeID="CH" />
+    </DataSource>
+  </CiRadioField>
+  <CiTextField>
+    <FieldName>Remarks</FieldName>
+    <Caption>Remark</Caption>
+  </CiTextField>
+  <CiTable Src="BillItemDetail.pux"/>
+  <CiTextField>
+    <FieldName>Deposit</FieldName>
+    <Caption>Deposit</Caption>
+    <Value>0.00</Value>
+    <Editable>true</Editable>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>Prepayment</FieldName>
+    <Caption>Prepayment</Caption>
+    <Value>0.00</Value>
+    <Editable>true</Editable>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>NonTaxableAmount</FieldName>
+    <Caption>Non-Taxable Amount</Caption>
+    <Value>0.00</Value>
+    <Editable>true</Editable>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>TaxableAmount</FieldName>
+    <Caption>Taxable Amount</Caption>
+    <Value>0.00</Value>
+    <Editable>true</Editable>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>TotalExGST</FieldName>
+    <Caption>Total Ex GST</Caption>
+    <Value>0.00</Value>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>GST</FieldName>
+    <Caption>GST</Caption>
+    <Value>0.00</Value>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>TotalIncGST</FieldName>
+    <Caption>Total Inc GST</Caption>
+    <Value>0.00</Value>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>Cash</FieldName>
+    <Caption>Cash</Caption>
+    <Editable>true</Editable>
+    <Value>0.00</Value>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>Nets</FieldName>
+    <Caption>Nets</Caption>
+    <Editable>true</Editable>
+    <Value>0.00</Value>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>ChequeBank</FieldName>
+    <Caption>Cheque Bank</Caption>
+    <Editable>true</Editable>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>ChequeNo</FieldName>
+    <Caption>Cheque No</Caption>
+    <Editable>true</Editable>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>ChequeRemarks</FieldName>
+    <Caption>Cheque Remarks</Caption>
+    <Editable>true</Editable>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>Cheque</FieldName>
+    <Caption>Cheque</Caption>
+    <Editable>true</Editable>
+    <Value>0.00</Value>
+  </CiTextField>
+  <CiComboField>
+    <FieldName>Card1Type</FieldName>
+    <Caption>Credit Card 1</Caption>
+    <Code>CreditCardCode</Code>
+    <Description>CreditCardCode</Description>
+    <DropdownSQL>select CreditCardCode,CreditCardDescription from  CreditCardType</DropdownSQL>
+    <Editable>true</Editable>
+  </CiComboField>
+  <CiTextField>
+    <FieldName>Card1Amount</FieldName>
+    <Caption>Credit Card 1 Amount</Caption>
+    <Value>0.00</Value>
+    <Editable>true</Editable>
+  </CiTextField>
+  <CiComboField>
+    <FieldName>Card2Type</FieldName>
+    <Caption>Credit Card 2</Caption>
+    <Code>CreditCardCode</Code>
+    <Description>CreditCardCode</Description>
+    <DropdownSQL>select CreditCardCode,CreditCardDescription from  CreditCardType</DropdownSQL>
+    <Editable>true</Editable>
+  </CiComboField>
+  <CiTextField>
+    <FieldName>Card2Amount</FieldName>
+    <Caption>Credit Card 2 Amount</Caption>
+    <Value>0.00</Value>
+    <Editable>true</Editable>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>TotalPaid</FieldName>
+    <Caption>Total Paid</Caption>
+    <Value>0.00</Value>
+    <Editable>false</Editable>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>OutstandingAmount</FieldName>
+    <Caption>Outstanding</Caption>
+    <Value>0.00</Value>
+    <Editable>false</Editable>
+  </CiTextField>
+  <DefaultMacro>
+    <ActionSQL>update TempIdentityRecord set ClientBillId = ClientBillId + 1</ActionSQL>
+    <ActionSQL>
+      select dbo.FnTempIdentity('ClientBill',0) as BillNo,
+            convert(datetime,cast(getdate() as varchar(12)),103) as BillDate,
+            'CC' as BillType,
+            30 as Doctor
+    </ActionSQL>
+  </DefaultMacro>
+  <SelectMacro>
+    <ActionSQL>?exec spClientBill_sel @BillNo</ActionSQL>
+  </SelectMacro>
+  <UpdateMacro>
+    <VisibleSQL>select 1 from ClientBill where ClientBillNo = @BillNo</VisibleSQL>
+    <ActionSQL>
+      ?exec spClientBill_upd 
+	      @BillNo,
+	      @BillDate,
+	      @PresNo,
+	      @Doctor,
+	      @Dispenser,
+	      @Remarks,
+	      @Deposit,
+	      @BillType,
+	      0.00,
+	      @NonTaxableAmount,
+	      @GST,
+	      @TotalIncGST,
+	      @OutstandingBalance,
+	      @TaxableAmount,
+	      @ClientNo,
+	      @Company,
+	      @Prepayment, 
+	      @Cash,
+	      @Nets,
+	      @Cheque,
+	      @ChequeBank,
+	      @ChequeNo,
+	      @ChequeRemarks,
+	      0.00,
+	      0.00,
+	      @Card1Amount,
+	      @Card1Type,
+	      @Card2Amount,
+	      @Card2Type,
+	      0.00,
+	      0.00,
+	      @TotalIncGST,
+	      @OutstandingAmount,
+	      0.00
+  </ActionSQL>
+  </UpdateMacro>
+  <InsertMacro>
+    <VisibleSQL>select 1 from ClientBill where not exists (select 1 from ClientBill where ClientBillNo = @BillNo)</VisibleSQL>
+    <ActionSQL>
+      ?exec spClientBill_upd 
+	      @BillNo,
+	      @BillDate,
+	      @PresNo,
+	      @Doctor,
+	      @Dispenser,
+	      @Remarks,
+	      @Deposit,
+	      @BillType,
+	      0.00,
+	      @NonTaxableAmount,
+	      @GST,
+	      @TotalIncGST,
+	      @OutstandingBalance,
+	      @TaxableAmount,
+	      @ClientNo,
+	      @Company,
+	      @Prepayment, 
+	      @Cash,
+	      @Nets,
+	      @Cheque,
+	      @ChequeBank,
+	      @ChequeNo,
+	      @ChequeRemarks,
+	      0.00,
+	      0.00,
+	      @Card1Amount,
+	      @Card1Type,
+	      @Card2Amount,
+	      @Card2Type,
+	      0.00,
+	      0.00,
+	      @TotalIncGST,
+	      @OutstandingAmount,
+	      0.00
+    </ActionSQL>
+  </InsertMacro>
+</CiTable>

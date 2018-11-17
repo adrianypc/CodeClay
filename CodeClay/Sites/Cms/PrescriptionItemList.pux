@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<CiTable>
+	<TableName>Prescription Items</TableName>
+	<TableCaption>Prescription Items</TableCaption>
+	<DefaultView>Grid</DefaultView>
+	<RowKey>ClientNo,LogID,PrescriptionItemID</RowKey>
+  <QuickInsert>true</QuickInsert>
+	<CiField>
+	<FieldName>ClientNo</FieldName>
+		<Caption>Patient No</Caption>
+		<Hidden>true</Hidden>
+	</CiField>
+	<CiField>
+		<FieldName>LogID</FieldName>
+		<Caption>Log ID</Caption>
+		<Hidden>true</Hidden>
+	</CiField>
+	<CiField>
+		<FieldName>PrescriptionItemID</FieldName>
+		<Caption>ID</Caption>
+		<Width>2</Width>
+	</CiField>
+	<CiComboField>
+		<FieldName>ItemCode</FieldName>
+		<Caption>Code</Caption>
+		<DropdownSQL>
+			select ItemCode, ItemDescription from ChargeItem where CIEnabled = 'Y' and StockItem = 'Y' order by ItemCode
+		</DropdownSQL>
+        <DropdownWidth>800</DropdownWidth>
+		<Width>10</Width>
+	</CiComboField>
+	<CiTextField>
+		<FieldName>ItemDescription</FieldName>
+		<Caption>Description</Caption>
+	</CiTextField>
+	<CiTextField>
+		<FieldName>Strength</FieldName>
+		<Caption>Strength</Caption>
+		<Width>10</Width>
+	</CiTextField>
+	<CiComboField>
+		<FieldName>Dose</FieldName>
+		<Caption>Dose</Caption>
+		<Width>7</Width>
+		<DropdownSQL>select TextItem from TextListItem where Category = 'Dose_' + @ItemCode order by TextItem</DropdownSQL>
+		<InsertSQL>insert into TextListItem (Category, TextItem) values ('Dose_' + @ItemCode, @Dose)</InsertSQL>
+	</CiComboField>
+	<CiComboField>
+		<FieldName>Frequency</FieldName>
+		<Caption>Frequency</Caption>
+		<Width>7</Width>
+		<DropdownSQL>select CodeValue from CodeListItem where Category = 'RecommendedFrequencies' order by CodeValue</DropdownSQL>
+	</CiComboField>
+	<CiTextField>
+		<FieldName>UnitOfMeasure</FieldName>
+		<Caption>UOM</Caption>
+		<Width>10</Width>
+	</CiTextField>
+	<CiTextField>
+		<FieldName>UnitPrice</FieldName>
+		<Caption>Unit Price ($)</Caption>
+		<Width>9</Width>
+		<Mask>Currency</Mask>
+	</CiTextField>
+	<CiNumericField>
+		<FieldName>Quantity</FieldName>
+		<Caption>Quantity</Caption>
+		<Width>7</Width>
+	</CiNumericField>
+	<CiTextField>
+		<FieldName>TotalPrice</FieldName>
+		<Caption>Total Price ($)</Caption>
+		<Width>9</Width>
+		<Mask>Currency</Mask>
+		<Summary>Sum</Summary>
+    <Editable>false</Editable>
+	</CiTextField>
+	<DefaultMacro>
+		<ActionSQL>
+			select  @ClientNo as ClientNo,
+					@LogID as LogID
+		</ActionSQL>
+	</DefaultMacro>
+	<SelectMacro>
+		<ActionSQL>
+			select  *,
+              UnitPrice * Quantity as TotalPrice
+			from	  PrescriptionItem
+			where   ClientNo = @ClientNo
+			and     LogID = @LogID
+			order by PrescriptionItemID
+		</ActionSQL>
+	</SelectMacro>
+	<InsertMacro>
+		<ActionSQL>
+			select  coalesce(1 + max(PrescriptionItemID), 1) as PrescriptionItemID
+			from    PrescriptionItem
+			where   ClientNo = @ClientNo
+			and		LogID = @LogID
+		</ActionSQL>
+		<ActionSQL>
+			insert into PrescriptionItem
+			(	ClientNo,
+				LogID,
+				PrescriptionItemID,
+				LastChangedDate,
+				LastChangedBy,
+				ItemCode,
+				ItemDescription,
+				Strength,
+				Dose,
+				Frequency,
+				Quantity,
+				UnitOfMeasure,
+				UnitPrice
+			)
+			values
+			(	@ClientNo,
+				@LogID,
+				@PrescriptionItemID,
+				getdate(),
+				dbo.FnGetUserId(@CI_UserEmail),
+				@ItemCode,
+				@ItemDescription,
+				@Strength,
+				@Dose,
+				@Frequency,
+				@Quantity,
+				@UnitOfMeasure,
+				@UnitPrice
+			)
+		</ActionSQL>
+        <VisibleSQL>
+            select  1
+            from    CoupleCaseNotes
+            where   ClientNo = @ClientNo
+            and     LogID = @LogID
+            and     LogDate &gt; DATEADD(day, DATEDIFF(day, 0, GETDATE()), 0)
+        </VisibleSQL>
+	</InsertMacro>
+	<UpdateMacro>
+		<ActionSQL>
+			update  PrescriptionItem
+			set     LastChangedDate = getdate(),
+					    LastChangedBy = dbo.FnGetUserId(@CI_UserEmail),
+					    ItemCode = @ItemCode,
+					    ItemDescription = @ItemDescription,
+					    Strength = @Strength,
+					    Dose = @Dose,
+					    Frequency = @Frequency,
+					    Quantity = @Quantity,
+					    UnitOfMeasure = @UnitOfMeasure,
+					    UnitPrice = @UnitPrice
+			where   ClientNo = @ClientNo
+			and     LogID = @LogID
+			and     PrescriptionItemID = @PrescriptionItemID
+		</ActionSQL>
+        <VisibleSQL>
+            select  1
+            from    CoupleCaseNotes
+            where   ClientNo = @ClientNo
+            and     LogID = @LogID
+            and     LogDate &gt; DATEADD(day, DATEDIFF(day, 0, GETDATE()), 0)
+        </VisibleSQL>
+    </UpdateMacro>
+	<CiFieldExitMacro>
+		<FieldName>ItemCode</FieldName>
+		<ActionSQL>
+			select	ItemDescription,
+					    Strength,
+					    RecommendedDose as Dose,
+					    RecommendedFrequency as Frequency,
+					    UnitOfMeasure,
+					    CiUnitPrice as UnitPrice,
+              CiUnitPrice * @Quantity as TotalPrice
+			from    ChargeItem
+			where   ItemCode = @ItemCode
+		</ActionSQL>
+	</CiFieldExitMacro>
+  <CiFieldExitMacro>
+    <FieldName>Quantity</FieldName>
+    <FieldName>UnitPrice</FieldName>
+    <ActionSQL>
+      select  @UnitPrice * @Quantity as TotalPrice
+    </ActionSQL>
+  </CiFieldExitMacro>
+</CiTable>

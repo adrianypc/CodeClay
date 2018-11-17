@@ -1,0 +1,80 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<CiTable>
+	<TableName>Suppliers</TableName>
+	<TableCaption>Suppliers</TableCaption>
+	<RowKey>SupplierID</RowKey>
+	<DefaultView>Grid</DefaultView>
+	<CiTextField>
+		<FieldName>sSupplierID</FieldName>
+		<Caption>Supplier ID</Caption>
+		<Searchable>true</Searchable>
+	</CiTextField>
+	<CiTextField>
+		<FieldName>SupplierID</FieldName>
+		<Caption>Supplier ID</Caption>
+		<Editable>false</Editable>
+	  </CiTextField>
+	<CiTextField>
+		<FieldName>SupplierName</FieldName>
+		<Caption>Supplier Name</Caption>
+	</CiTextField>
+	<CiComboField>
+		<FieldName>BranchCode</FieldName>
+		<Caption>Branch</Caption>
+		<DropdownSQL>select Code from Dropdown where Category = 'Branch' order by Code</DropdownSQL>
+	</CiComboField>
+	<CiTextField>
+		<FieldName>ContactPerson</FieldName>
+		<Caption>Contact Person</Caption>
+	</CiTextField>
+	<CiMemoField>
+		<FieldName>Address</FieldName>
+		<Caption>Address</Caption>
+	</CiMemoField>
+	<CiComboField>
+		<FieldName>CountryCode</FieldName>
+		<TextFieldName>CountryName</TextFieldName>
+		<Caption>Country</Caption>
+		<DropdownSQL>select Code, Description from Dropdown where Category = 'Country' order by Code</DropdownSQL>
+	</CiComboField>
+	<CiTextField>
+		<FieldName>Postcode</FieldName>
+		<Caption>Postcode</Caption>
+	</CiTextField>
+	<CiTextField>
+		<FieldName>Email</FieldName>
+		<Caption>Email</Caption>
+	</CiTextField>
+	<CiTextField>
+		<FieldName>Mobile</FieldName>
+		<Caption>Mobile</Caption>
+	</CiTextField>
+	<CiMemoField>
+		<FieldName>BrandInfo</FieldName>
+		<Caption>Brand Info</Caption>
+    <Hidden>true</Hidden>
+	</CiMemoField>
+  <CiTable Src="SupplierOrders.pux">
+    <SelectMacro>
+      <ActionSQL>?exec spSupplierOrders_selbySupplierID @SupplierID</ActionSQL>
+    </SelectMacro>
+  </CiTable>
+  <DefaultMacro>
+		<ActionSQL>select '-New-' as SupplierID, 0 as Points</ActionSQL>
+	</DefaultMacro>
+	<SelectMacro>
+		<ActionSQL>?exec spSupplier_sel @sSupplierID</ActionSQL>
+	</SelectMacro>
+	<InsertMacro>
+		<ActionSQL>
+			exec spSupplier_ins @SupplierName, @BranchCode, @ContactPerson, @Address, @CountryCode,
+			@Postcode, @Email, @Mobile, @BrandInfo
+		</ActionSQL>
+	</InsertMacro>
+	<UpdateMacro>
+		<ActionSQL>
+			exec spSupplier_upd @SupplierID, @SupplierName, @BranchCode, @ContactPerson, @Address, @CountryCode,
+			@Postcode, @Email, @Mobile, @BrandInfo
+		</ActionSQL>
+	</UpdateMacro>
+</CiTable>

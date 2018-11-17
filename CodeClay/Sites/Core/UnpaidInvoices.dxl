@@ -1,0 +1,111 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<CodistriGrid>
+  <CiRowFetchAction>
+    <ActionSQL>
+      select  InvoiceNumber,
+              DispatchDate,
+              CustomerCode,
+              Paid
+      from    tblInvoices
+      where   DispatchDate is not null
+      and     Paid = false
+      order by InvoiceNumber
+    </ActionSQL>
+  </CiRowFetchAction>
+  <CiColumn>
+    <ColumnName>InvoiceNumber</ColumnName>
+    <ColumnCaption>Invoice</ColumnCaption>
+    <Editable>false</Editable>
+  </CiColumn>
+  <CiColumn>
+    <ColumnName>DispatchDate</ColumnName>
+    <ColumnCaption>Dispatch Date</ColumnCaption>
+    <ColumnType>Date</ColumnType>
+    <ColumnFormat>dd/MM/yyyy</ColumnFormat>
+  </CiColumn>
+  <CiColumn>
+    <ColumnName>CustomerCode</ColumnName>
+    <ColumnCaption>Customer</ColumnCaption>
+    <DropdownSQL>
+      select  CustomerCode as Code,
+              Customer
+      from    tblCustomers
+      order by CustomerCode
+    </DropdownSQL>
+    <DropdownToFitLargestText>true</DropdownToFitLargestText>
+  </CiColumn>
+  <CiColumn>
+    <ColumnName>Paid</ColumnName>
+    <ColumnCaption>Paid</ColumnCaption>
+    <ColumnType>Checkbox</ColumnType>
+  </CiColumn>
+  <CiAction>
+    <ActionName>Run Report</ActionName>
+    <ActionReportName>RptInvoice</ActionReportName>
+  </CiAction>
+  <CiReport>
+     <ReportName>RptInvoice</ReportName>
+     <ReportFileLocation>RptInvoiceReport.xml</ReportFileLocation>
+     <ReportConnection>Provider=Microsoft.Jet.OLEDB.4.0;Data Source=CoRE.mdb;Persist Security Info=False</ReportConnection>
+     <ReportSQL>
+       SELECT 
+	(MID([TaskCode],2,LEN([TaskCode])-1)) AS TaskCodes, 
+	Category, TaskDescription AS Description, 
+	CompletedDate AS Completed,
+	iif(tblTasks.Billable, SellPrice, BuyPrice) AS Amount,
+	Customer,
+	InvoiceNumber,
+	BillerContact
+      FROM (tblTasks
+      INNER JOIN tblCustomers 
+      ON tblTasks.CustomerCode = tblCustomers.CustomerCode)
+      INNER JOIN tblStaff
+      ON tblTasks.PrimaryDeveloper = tblStaff.StaffCode
+      WHERE InvoiceNumber = @InvoiceNumber
+      AND PrimaryDeveloper &lt;&gt; 'TBA'
+      AND (((tblCustomers.Billable = true) AND (tblTasks.Billable = true))
+	    OR
+	   (tblCustomers.Billable = false))
+      order by Category, CompletedDate, TaskCode
+    </ReportSQL>
+  </CiReport>
+  <CiRowUpdateAction>
+    <ActionSQL>
+      update  tblInvoices
+      set     CustomerCode  = @CustomerCode,
+              DispatchDate  = @DispatchDate,
+              Paid          = @Paid
+      where   InvoiceNumber = @InvoiceNumber
+    </ActionSQL>
+  </CiRowUpdateAction>
+  <CiRowInsertAction>
+    <ActionSQL>
+      select  'IN'+ @CustomerCode + right('000'+trim(str(1+Right(iif(isnull(Max(InvoiceNumber)), 0, Max(InvoiceNumber)),3))),3) as InvoiceNumber
+      from    tblInvoices
+      where   CustomerCode = @CustomerCode
+    </ActionSQL>
+    <ActionSQL>
+      insert
+      into  tblInvoices
+      (     InvoiceNumber,
+            DispatchDate,
+            CustomerCode
+      )
+      values
+      (     @InvoiceNumber,
+            @DispatchDate,
+            @CustomerCode
+      )
+    </ActionSQL>
+  </CiRowInsertAction>
+  <CiRowDeleteAction>
+    <ActionSQL>
+      delete from tblInvoices where InvoiceNumber = @InvoiceNumber
+    </ActionSQL>
+  </CiRowDeleteAction>
+  <CiPaperClip>
+    <FolderSQL>
+      select  ('Invoices\' + @InvoiceNumber) as FolderName
+    </FolderSQL>
+  </CiPaperClip>
+</CodistriGrid>

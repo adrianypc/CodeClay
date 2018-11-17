@@ -1,0 +1,111 @@
+﻿using System;
+
+// Extra references
+using CodistriCore;
+using DevExpress.Web;
+using System.Xml.Serialization;
+
+namespace CodeClay
+{
+    [XmlType("CiDateField")]
+    public class CiDateField : CiField
+    {
+        // --------------------------------------------------------------------------------------------------
+        // Methods (Override)
+        // --------------------------------------------------------------------------------------------------
+
+        public override string GetUiPluginName()
+        {
+            if (!Enabled)
+            {
+                return "UiTextField";
+            }
+
+            return base.GetUiPluginName();
+        }
+
+        public override CardViewColumn CreateCardColumn(UiTable uiTable)
+        {
+            CardViewDateColumn dxColumn = new CardViewDateColumn();
+
+            if (uiTable != null)
+            {
+                dxColumn.EditItemTemplate = uiTable.CreateTemplate(this);
+            }
+
+            return dxColumn;
+        }
+
+        public override GridViewDataColumn CreateGridColumn(UiTable uiTable)
+        {
+            GridViewDataDateColumn dxColumn = new GridViewDataDateColumn();
+
+            if (uiTable != null)
+            {
+                dxColumn.EditItemTemplate = uiTable.CreateTemplate(this);
+            }
+
+            return dxColumn;
+        }
+
+        public override string ToString(object value)
+        {
+            string formattedValue = base.ToString(value);
+
+            try
+            {
+                formattedValue = ((DateTime)value).ToShortDateString();
+            }
+            catch
+            {
+                // Do nothing
+            }
+
+            return formattedValue;
+        }
+    }
+
+    public partial class UiDateField : UiField
+    {
+        // --------------------------------------------------------------------------------------------------
+        // Properties
+        // --------------------------------------------------------------------------------------------------
+
+        public virtual CiDateField CiDateField
+        {
+            get { return CiField as CiDateField; }
+        }
+
+        // --------------------------------------------------------------------------------------------------
+        // Event Handlers
+        // --------------------------------------------------------------------------------------------------
+
+        protected override void Page_Load(object sender, EventArgs e)
+        {
+            mEditor = dxDateBox;
+            base.Page_Load(sender, e);
+
+            // Setup date value
+            try
+            {
+                if (MyUtils.IsEmpty(FieldValue))
+                {
+                    dxDateBox.Value = null;
+                }
+                else
+                {
+                    dxDateBox.Value = Convert.ToDateTime(FieldValue);
+                }
+            }
+            catch
+            {
+                // Do nothing
+            }
+        }
+
+        protected void dxDatePanel_Callback(object sender, CallbackEventArgsBase e)
+        {
+            Refresh();
+        }
+    }
+}

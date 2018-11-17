@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<CiTable>
+	<TableName>Branches</TableName>
+	<TableCaption>Branches</TableCaption>
+	<RowKey>BranchCode</RowKey>
+	<DefaultView>Grid</DefaultView>
+	<CiField>
+		<FieldName>ExistingBranch</FieldName>
+		<Value>true</Value>
+		<Hidden>true</Hidden>
+	</CiField>
+	<CiTextField>
+		<FieldName>BranchCode</FieldName>
+		<Caption>Branch Code</Caption>
+		<EditableSQL>select 1 where @ExistingBranch is null</EditableSQL>
+	</CiTextField>
+	<CiTextField>
+		<FieldName>BranchDescription</FieldName>
+		<Caption>Branch Description</Caption>
+	</CiTextField>
+	<SelectMacro>
+		<ActionSQL>?exec spBranch_sel @sBranchCode</ActionSQL>
+	</SelectMacro>
+	<InsertMacro>
+		<ActionSQL>
+			exec spBranch_ins @BranchCode, @BranchDescription
+		</ActionSQL>
+	</InsertMacro>
+	<UpdateMacro>
+		<ActionSQL>
+			exec spBranch_upd @BranchCode, @BranchDescription
+		</ActionSQL>
+	</UpdateMacro>
+</CiTable>

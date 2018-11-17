@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<CiTable>
+	<TableName>Dispense Detail</TableName>
+	<TableCaption>Dispense Detail</TableCaption>
+	<DefaultView>Card</DefaultView>
+	<RowKey>ClientNo,LogID</RowKey>
+    <CiField>
+        <Value>
+            <b>Please edit the quantities to be dispensed if necessary, and click the Finish button</b>
+        </Value>
+    </CiField>
+    <CiTextField>
+        <FieldName>DispenseNumber</FieldName>
+        <Caption>Dispense ID</Caption>
+        <Hidden>true</Hidden>
+    </CiTextField>
+    <CiField>
+    	<FieldName>ClientNo</FieldName>
+		<Caption>Patient No</Caption>
+		<Hidden>true</Hidden>
+	</CiField>
+	<CiField>
+		<FieldName>LogID</FieldName>
+		<Caption>Log ID</Caption>
+		<Hidden>true</Hidden>
+	</CiField>
+    <CiTable Src="DispenseItemList.pux" />
+	<SelectMacro>
+		<ActionSQL>
+            select  *
+            from    CoupleCaseNotes
+            where   ClientNo = @ClientNo
+            and     LogID = @LogID
+        </ActionSQL>
+	</SelectMacro>
+    <CiMacro>
+        <MacroName>Finish</MacroName>
+        <ActionSQL>
+            update  CoupleCaseNotes
+            set     LastChangedDate = getdate(),
+                    LastChangedBy = dbo.FnGetUserId(@CI_UserEmail),
+                    DispenseDate1 = (case when @DispenseNumber = 1 then getdate() else DispenseDate1 end),
+                    DispenseDate2 = (case when @DispenseNumber = 2 then getdate() else DispenseDate2 end),
+                    DispenseDate3 = (case when @DispenseNumber = 3 then getdate() else DispenseDate3 end)
+            where   ClientNo = @ClientNo
+            and     LogID = @LogID
+        </ActionSQL>
+        <NavigatePos>Parent</NavigatePos>
+    </CiMacro>
+</CiTable>

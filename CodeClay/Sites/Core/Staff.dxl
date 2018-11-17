@@ -1,0 +1,68 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<CodistriGrid>
+  <CiRowFetchAction>
+    <ActionSQL>
+      select  StaffCode as OldStaffCode,
+              StaffCode,
+	      BuyHourlyRate,
+              SellHourlyRate
+      from    tblStaff
+      order by StaffCode
+    </ActionSQL>
+  </CiRowFetchAction>
+  <CiColumn>
+    <ColumnName>OldStaffCode</ColumnName>
+    <Visible>false</Visible>
+  </CiColumn>
+  <CiColumn>
+    <ColumnName>StaffCode</ColumnName>
+    <ColumnCaption>Staff</ColumnCaption>
+  </CiColumn>
+  <CiColumn>
+    <ColumnName>BuyHourlyRate</ColumnName>
+    <ColumnCaption>Buy rate ($/h)</ColumnCaption>
+    <ColumnType>Number</ColumnType>
+    <ColumnFormat>$0.00</ColumnFormat>
+  </CiColumn>
+  <CiColumn>
+    <ColumnName>SellHourlyRate</ColumnName>
+    <ColumnCaption>Sell rate ($/h)</ColumnCaption>
+    <ColumnType>Number</ColumnType>
+    <ColumnFormat>$0.00</ColumnFormat>
+  </CiColumn>
+  <CiRowUpdateAction>
+    <ActionSQL>
+      update  tblStaff
+      set     BuyHourlyRate = @BuyHourlyRate,
+              SellHourlyRate = @SellHourlyRate,
+	      StaffCode  = @StaffCode
+      where   StaffCode  = @OldStaffCode
+    </ActionSQL>
+    <ActionSQL>
+      select  @StaffCode as OldStaffCode
+    </ActionSQL>
+  </CiRowUpdateAction>
+  <CiRowInsertAction>
+    <ActionSQL>
+      insert
+      into    tblStaff
+      (       StaffCode,
+              BuyHourlyRate,
+              SellHourlyRate
+      )
+      values
+      (       @StaffCode,
+              @BuyHourlyRate,
+              @SellHourlyRate      
+      )
+    </ActionSQL>
+    <ActionSQL>
+      select  @StaffCode as OldStaffCode
+    </ActionSQL>
+  </CiRowInsertAction>
+  <CiRowDeleteAction>
+    <ActionSQL>
+      delete from tblStaff where StaffCode = @StaffCode
+    </ActionSQL>
+  </CiRowDeleteAction>
+</CodistriGrid>

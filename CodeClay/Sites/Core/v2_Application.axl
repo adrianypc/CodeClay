@@ -1,0 +1,79 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<CiApplication>
+	<HomeGridURL>CurrentTasks.dxl</HomeGridURL>
+	<CiMenu>
+		<MenuName>Application</MenuName>
+		<CiMenu>
+			<MenuName>Timesheets</MenuName>
+			<GridURL>Timesheet.dxl</GridURL>
+		</CiMenu>
+		<CiMenu>
+			<MenuName>Half Month Timesheets</MenuName>
+			<GridURL>RptHalfMonthTimesheetSearch.dxl</GridURL>
+		</CiMenu>
+		<CiMenu>
+			<MenuName>Tasks</MenuName>
+			<CiMenu>
+				<MenuName>Current Tasks</MenuName>
+				<GridURL>CurrentTasks.dxl</GridURL>
+			</CiMenu>
+			<CiMenu>
+				<MenuName>Invoiceable Tasks</MenuName>
+				<GridURL>InvoiceableTasks.dxl</GridURL>
+			</CiMenu>
+			<CiMenu>
+				<MenuName>All Tasks</MenuName>
+				<GridURL>AllTasks.dxl</GridURL>
+			</CiMenu>
+			<CiMenu>
+				<MenuName>2014 - Non-Billable Tasks</MenuName>
+				<GridURL>NonBillableTasks.dxl</GridURL>
+			</CiMenu>
+			<CiMenu>
+				<MenuName>2014 - Billable Tasks</MenuName>
+				<GridURL>BillableTasks.dxl</GridURL>
+			</CiMenu>
+		</CiMenu>
+		<CiMenu>
+			<MenuName>Invoices</MenuName>
+			<GridURL>Invoices.dxl</GridURL>
+		</CiMenu>
+		<CiMenu>
+			<MenuName>Administration</MenuName>
+			<CiMenu>
+				<MenuName>Staff</MenuName>
+				<GridURL>Staff.dxl</GridURL>
+			</CiMenu>
+			<CiMenu>
+				<MenuName>Customers</MenuName>
+				<GridURL>Customers.dxl</GridURL>
+			</CiMenu>
+			<CiMenu>
+				<MenuName>Categories</MenuName>
+				<GridURL>Categories.dxl</GridURL>
+			</CiMenu>
+			<CiMenu>
+				<MenuName>Dropdowns</MenuName>
+				<GridURL>Dropdowns.dxl</GridURL>
+			</CiMenu>
+			<CiMenu>
+				<MenuName>Systems</MenuName>
+				<GridURL>Systems.dxl</GridURL>
+			</CiMenu>
+			<CiMenu>
+				<MenuName>Modules</MenuName>
+				<GridURL>Modules.dxl</GridURL>
+			</CiMenu>
+			<CiMenu>
+				<MenuName>Projects</MenuName>
+				<GridURL>Projects.dxl</GridURL>
+			</CiMenu>
+
+		</CiMenu>
+	</CiMenu>
+	<CiConfiguration>
+                <IsDesigner>true</IsDesigner>
+		<ProviderName>System.Data.OleDb</ProviderName>
+		<ConnectionString>Provider=Microsoft.Jet.OLEDB.4.0;Data Source=CoRE.mdb</ConnectionString>
+	</CiConfiguration>
+</CiApplication>

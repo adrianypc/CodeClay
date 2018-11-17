@@ -1,0 +1,212 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<CodistriGrid>
+  <CiRowFetchAction>
+    <ActionSQL>
+      select  Staff,
+              MonDate,
+              qryWeeklyTimesheet.TaskCode,
+              tblTasks.TaskDescription,
+              MonDuration,
+              TueDuration,
+              WedDuration,
+              ThuDuration,
+              FriDuration,
+              SatDuration,
+              SunDuration,
+              TotalDuration,
+              TaskType,
+              Category
+      from    qryWeeklyTimesheet
+      left join tblTasks
+      on      tblTasks.TaskCode = qryWeeklyTimesheet.TaskCode
+      order by MonDate, Staff, category, TaskType, tblTasks.TaskDescription
+    </ActionSQL>
+  </CiRowFetchAction>
+  <CiColumn>
+    <ColumnName>Staff</ColumnName>
+    <ColumnCaption>Staff</ColumnCaption>
+    <Visible>false</Visible>
+  </CiColumn>
+  <CiColumn>
+    <ColumnName>MonDate</ColumnName>
+    <ColumnCaption>StartOfWeek</ColumnCaption>
+    <Visible>false</Visible>
+  </CiColumn>
+  <CiColumn>
+    <ColumnName>TaskCode</ColumnName>
+    <ColumnCaption>Task</ColumnCaption>
+    <Editable>false</Editable>
+  </CiColumn>
+  <CiColumn>
+    <ColumnName>TaskDescription</ColumnName>
+    <ColumnCaption>Description</ColumnCaption>
+    <Editable>false</Editable>
+  </CiColumn>
+  <CiColumn>
+    <ColumnName>MonDuration</ColumnName>
+    <ColumnCaption>Mon (H)</ColumnCaption>
+    <Editable>false</Editable>
+    <ColumnType>Number</ColumnType>
+    <ColumnFormat>0.00</ColumnFormat>
+    <AggregateFunction>Sum</AggregateFunction>
+  </CiColumn>
+  <CiColumn>
+    <ColumnName>TueDuration</ColumnName>
+    <ColumnCaption>Tue (H)</ColumnCaption>
+    <Editable>false</Editable>
+    <ColumnType>Number</ColumnType>
+    <ColumnFormat>0.00</ColumnFormat>
+    <AggregateFunction>Sum</AggregateFunction>
+  </CiColumn>
+  <CiColumn>
+    <ColumnName>WedDuration</ColumnName>
+    <ColumnCaption>Wed (H)</ColumnCaption>
+    <Editable>false</Editable>
+    <ColumnType>Number</ColumnType>
+    <ColumnFormat>0.00</ColumnFormat>
+    <AggregateFunction>Sum</AggregateFunction>
+  </CiColumn>
+  <CiColumn>
+    <ColumnName>ThuDuration</ColumnName>
+    <ColumnCaption>Thu (H)</ColumnCaption>
+    <Editable>false</Editable>
+    <ColumnType>Number</ColumnType>
+    <ColumnFormat>0.00</ColumnFormat>
+    <AggregateFunction>Sum</AggregateFunction>
+  </CiColumn>
+  <CiColumn>
+    <ColumnName>FriDuration</ColumnName>
+    <ColumnCaption>Fri (H)</ColumnCaption>
+    <Editable>false</Editable>
+    <ColumnType>Number</ColumnType>
+    <ColumnFormat>0.00</ColumnFormat>
+    <AggregateFunction>Sum</AggregateFunction>
+  </CiColumn>
+  <CiColumn>
+    <ColumnName>SatDuration</ColumnName>
+    <ColumnCaption>Sat (H)</ColumnCaption>
+    <Editable>false</Editable>
+    <ColumnType>Number</ColumnType>
+    <ColumnFormat>0.00</ColumnFormat>
+    <AggregateFunction>Sum</AggregateFunction>
+  </CiColumn>
+  <CiColumn>
+    <ColumnName>SunDuration</ColumnName>
+    <ColumnCaption>Sun (H)</ColumnCaption>
+    <Editable>false</Editable>
+    <ColumnType>Number</ColumnType>
+    <ColumnFormat>0.00</ColumnFormat>
+    <AggregateFunction>Sum</AggregateFunction>
+  </CiColumn>
+  <CiColumn>
+    <ColumnName>TotalDuration</ColumnName>
+    <ColumnCaption>TOTAL (H)</ColumnCaption>
+    <Editable>false</Editable>
+    <ColumnType>Number</ColumnType>
+    <ColumnFormat>0.00</ColumnFormat>
+    <AggregateFunction>Sum</AggregateFunction>
+  </CiColumn>
+  <!--<CiColumn>
+    <ColumnName>TotalBillableDuration</ColumnName>
+    <ColumnCaption>BILLABLE (H)</ColumnCaption>
+    <Editable>false</Editable>
+    <ColumnType>Number</ColumnType>
+    <ColumnFormat>0.00</ColumnFormat>
+    <AggregateFunction>Sum</AggregateFunction>
+  </CiColumn>-->
+  <ChildGridURL>Timesheet_CommunicationsLog.dxl</ChildGridURL>
+  <ChildGridURL>Timesheet_Timings.dxl</ChildGridURL>
+  <CiAction>
+    <ActionName>Run Report [By Hour]</ActionName>
+    <ActionReportName>RptWeeklyProductivityReport</ActionReportName>
+  </CiAction>
+  <CiReport>
+     <ReportName>RptWeeklyProductivityReport</ReportName>
+     <ReportFileLocation>Report.xml</ReportFileLocation>
+     <ReportConnection>Provider=Microsoft.Jet.OLEDB.4.0;Data Source=CoRE.mdb;Persist Security Info=False</ReportConnection>
+     <ReportSQL>
+      	SELECT Q.Staff,Q.MonDate,
+	Q.TaskCode,T.TaskDescription,
+	Q.TotalDuration,Q.TotalBillableDuration,
+	Format(TI.StartTime,"ddd") as DayOfTheWeek,
+	DateValue(TI.StartTime) as DateOfTheWeek,
+	IIF(Format(TI.StartTime,"ddd") = "Mon", Q.MonDuration,
+	IIF(Format(TI.StartTime,"ddd") = "Tue", Q.TueDuration,
+	IIF(Format(TI.StartTime,"ddd") = "Wed", Q.WedDuration,
+	IIF(Format(TI.StartTime,"ddd") = "Thu", Q.ThuDuration,
+	IIF(Format(TI.StartTime,"ddd") = "Fri", Q.FriDuration,
+	IIF(Format(TI.StartTime,"ddd") = "Sat", Q.SatDuration,SunDuration)))))) AS DayDuration,
+	Format(TI.StartTime,"HH:mm") as StartTime,
+	Format(TI.EndTime,"HH:mm") as EndTime,
+	DATEDIFF("s",TI.StartTime,TI.EndTime) / 3600 AS Duration
+	FROM (qryWeeklyTimesheet Q
+	INNER JOIN tblTasks T
+	ON Q.TaskCode = T.TaskCode)
+	INNER JOIN tblTimings TI
+	ON Q.TaskCode = TI.TaskCode
+	AND Q.Staff = TI.Staff
+	AND TI.StartTime &gt;= Q.MonDate
+	AND TI.StartTime &lt; DATEADD("d",7,Q.MonDate)
+	WHERE Q.MonDate = @MonDate
+	AND Q.Staff = @Staff
+    </ReportSQL>
+    <SubReportName>RptWeeklyTimingsReport</SubReportName>
+    <SubReportName>RptWeeklyCommuncationsLogReport</SubReportName>
+  </CiReport>
+  <CiReport>
+     <ReportName>RptWeeklyCommuncationsLogReport</ReportName>
+     <ReportFileLocation>Report.xml</ReportFileLocation>
+     <ReportConnection>Provider=Microsoft.Jet.OLEDB.4.0;Data Source=CoRE.mdb;Persist Security Info=False</ReportConnection>
+     <ReportSQL>
+      	SELECT 	Q.Staff,Q.MonDate,
+		Q.TaskCode,T.TaskDescription,
+		C.LogId,DateValue(C.LogDate) as LogDate,
+		C.Comment,C.AttachmentName,C.Author,
+		iif(weekday(C.LogDate) = 2, Q.MonDuration, iif(weekday(C.LogDate) = 3, Q.TueDuration,
+		iif(weekday(C.LogDate) = 4, Q.WedDuration, iif(weekday(C.LogDate) = 5, Q.ThuDuration,
+		iif(weekday(C.LogDate) = 6, Q.FriDuration, iif(weekday(C.LogDate) = 7, Q.SatDuration,Q.SunDuration)))))) as Duration
+	FROM (qryWeeklyTimesheet Q
+	INNER JOIN tblTasks T
+	ON Q.TaskCode = T.TaskCode)
+	INNER JOIN tblCommunicationsLog C
+	ON Q.TaskCode = C.TaskCode
+	AND Q.Staff = C.Author
+	AND C.LogDate &gt;= Q.MonDate
+	AND C.LogDate &lt; DATEADD("d",7,Q.MonDate)
+	WHERE Q.MonDate = @MonDate
+	AND Q.Staff = @Staff
+    </ReportSQL>
+  </CiReport>
+  <CiReport>
+     <ReportName>RptWeeklyTimingsReport</ReportName>
+     <ReportFileLocation>Report.xml</ReportFileLocation>
+     <ReportConnection>Provider=Microsoft.Jet.OLEDB.4.0;Data Source=CoRE.mdb;Persist Security Info=False</ReportConnection>
+     <ReportSQL>
+      	SELECT 	Q.Staff,Q.MonDate,
+		Q.TaskCode,T.TaskDescription,
+		Q.TotalDuration,Q.TotalBillableDuration,
+		Format(TI.StartTime,"ddd") as DayOfTheWeek,
+		DateValue(TI.StartTime) as DateOfTheWeek,
+		IIF(Format(TI.StartTime,"ddd") = "Mon", Q.MonDuration,
+		IIF(Format(TI.StartTime,"ddd") = "Tue", Q.TueDuration,
+		IIF(Format(TI.StartTime,"ddd") = "Wed", Q.WedDuration,
+		IIF(Format(TI.StartTime,"ddd") = "Thu", Q.ThuDuration,
+		IIF(Format(TI.StartTime,"ddd") = "Fri", Q.FriDuration,
+		IIF(Format(TI.StartTime,"ddd") = "Sat", Q.SatDuration,SunDuration)))))) AS DayDuration,
+		Format(TI.StartTime,"HH:mm") as StartTime,
+		Format(TI.EndTime,"HH:mm") as EndTime,
+		DATEDIFF("s",TI.StartTime,TI.EndTime) / 3600 AS Duration
+	FROM (qryWeeklyTimesheet Q
+	INNER JOIN tblTasks T
+	ON Q.TaskCode = T.TaskCode)
+	INNER JOIN tblTimings TI
+	ON Q.TaskCode = TI.TaskCode
+	AND Q.Staff = TI.Staff
+	AND TI.StartTime &gt;= Q.MonDate
+	AND TI.StartTime &lt; DATEADD("d",7,Q.MonDate)
+	WHERE Q.MonDate = @MonDate
+	AND Q.Staff = @Staff
+        order by TI.StartTime
+    </ReportSQL>
+  </CiReport>
+</CodistriGrid>

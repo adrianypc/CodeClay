@@ -1,0 +1,91 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<CodistriGrid>
+  <CiRowFetchAction>
+    <ActionSQL>
+      select  TimingID,
+              TaskCode,
+              Staff,
+              StartTime,
+              EndTime,
+              datediff('s', StartTime, EndTime)/3600 as Duration
+      from    tblTimings
+      where   TaskCode = @TaskCode
+      order by starttime
+    </ActionSQL>
+  </CiRowFetchAction>
+  <CiColumn>
+    <ColumnName>TimingID</ColumnName>
+    <Visible>false</Visible>
+  </CiColumn>
+  <CiColumn>
+    <ColumnName>TaskCode</ColumnName>
+    <Visible>false</Visible>
+  </CiColumn>
+  <CiColumn>
+    <ColumnName>Staff</ColumnName>
+    <ColumnCaption>Staff</ColumnCaption>
+    <Editable>false</Editable>
+  </CiColumn>
+  <CiColumn>
+    <ColumnName>StartTime</ColumnName>
+    <ColumnCaption>Start</ColumnCaption>
+    <ColumnType>Date</ColumnType>
+    <ColumnFormat>dd/MM/yyyy HH:mm</ColumnFormat>
+    <Editable>false</Editable>
+  </CiColumn>
+  <CiColumn>
+    <ColumnName>EndTime</ColumnName>
+    <ColumnCaption>End</ColumnCaption>
+    <ColumnType>Date</ColumnType>
+    <ColumnFormat>dd/MM/yyyy HH:mm</ColumnFormat>
+    <Editable>false</Editable>
+  </CiColumn>
+  <CiColumn>
+    <ColumnName>Duration</ColumnName>
+    <ColumnCaption>Hours</ColumnCaption>
+    <ColumnType>Number</ColumnType>
+    <ColumnFormat>0.00</ColumnFormat>
+    <Editable>false</Editable>
+  </CiColumn>
+  <CiAction>
+    <ActionName>Transfer To Task</ActionName>
+    <StringPromptSQL>select "Please enter new task code to transfer."</StringPromptSQL>
+    <ActionSQL>
+      update  tblTimings
+      set     TaskCode = [@CI_Prompt]
+      where   TaskCode   = @TaskCode
+      and     TimingID	 = @TimingID
+    </ActionSQL>
+    <ActionSQL>
+      update tblTasks 
+      set    
+	HoursBought = IIF(IsNULL(DSum("BuyHour","qryHourlyCalculation","TaskCode='" + @TaskCode + "'")),0,
+	     		  DSum("BuyHour","qryHourlyCalculation","TaskCode='" + @TaskCode + "'")),
+	HoursSold = iif(FixedPrice = false,DSum("SellHour","qryHourlyCalculation","TaskCode='" + @TaskCode + "'"),HoursSold),
+ 	SellPrice = iif(FixedPrice = false,DSum("SellPrice","qryHourlyCalculation","TaskCode='" + @TaskCode + "'"),SellPrice),
+ 	BuyPrice =  DSum("BuyPrice","qryHourlyCalculation","TaskCode='" + @TaskCode + "'")
+      WHERE TaskCode = @TaskCode
+    </ActionSQL>
+    <ActionSQL>
+      update tblTasks 
+      set    
+	HoursBought = IIF(IsNULL(DSum("BuyHour","qryHourlyCalculation","TaskCode='" + [@CI_Prompt] + "'")),0,
+	     		  DSum("BuyHour","qryHourlyCalculation","TaskCode='" + [@CI_Prompt] + "'")),
+	HoursSold = iif(FixedPrice = false,DSum("SellHour","qryHourlyCalculation","TaskCode='" + [@CI_Prompt] + "'"),HoursSold),
+ 	SellPrice = iif(FixedPrice = false,DSum("SellPrice","qryHourlyCalculation","TaskCode='" + [@CI_Prompt] + "'"),SellPrice),
+ 	BuyPrice =  DSum("BuyPrice","qryHourlyCalculation","TaskCode='" + [@CI_Prompt] + "'")
+      WHERE TaskCode = [@CI_Prompt]
+    </ActionSQL>
+    <VisibleSQL>
+      select  1
+      from    tblTimings
+      where   TaskCode   = @TaskCode
+      and     TimingID = @TimingID
+      and
+      (       Staff = @CI_DefaultUser
+       or     @CI_DefaultUser = 'Adrian'
+      )
+    </VisibleSQL>
+    <AutoRefresh>true</AutoRefresh>
+  </CiAction>
+</CodistriGrid>

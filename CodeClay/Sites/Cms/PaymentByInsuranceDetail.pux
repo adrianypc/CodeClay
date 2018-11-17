@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<CiTable>
+  <TableName>PaymentByInsurance</TableName>
+  <TableCaption>Payment By Insurance</TableCaption>
+  <RowKey>BillNo,CustomerNo</RowKey>
+  <DefaultView>Grid</DefaultView>
+  <CiTextField>
+    <FieldName>BillNo</FieldName>
+    <Hidden>true</Hidden>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>CustomerNo</FieldName>
+    <Caption>Customer No</Caption>
+    <Editable>false</Editable>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>CustomerName</FieldName>
+    <Caption>Customer Name</Caption>
+    <Editable>false</Editable>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>Amount</FieldName>
+    <Caption>Other Names</Caption>
+    <Editable>true</Editable>
+  </CiTextField>
+  <SelectMacro>
+    <ActionSQL>
+      select
+	@BillNo as BillNo,
+	CustomerNo,
+	CustomerName
+      from Customer
+      where CustomerType = 'A'
+    </ActionSQL>
+  </SelectMacro>
+</CiTable>

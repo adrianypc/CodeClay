@@ -1,0 +1,62 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<CodistriGrid>
+  <CiRowFetchAction>
+    <ActionSQL>
+      select  qryWeeklyTimesheet.MonDate,
+              tblTimings.TimingID,
+              tblTimings.TaskCode,
+              tblTimings.Staff,
+              tblTimings.StartTime,
+              tblTimings.EndTime,
+              datediff('s', tblTimings.StartTime, tblTimings.EndTime)/3600 as Duration
+      from    tblTimings
+      inner join  qryWeeklyTimesheet
+      on tblTimings.TaskCode = qryWeeklyTimesheet.TaskCode
+      and tblTimings.Staff = qryWeeklyTimesheet.Staff
+      and tblTimings.StartTime &gt;= qryWeeklyTimesheet.MonDate 
+      and tblTimings.StartTime &lt; DATEADD('d',7,qryWeeklyTimesheet.MonDate)
+      where tblTimings.TaskCode = @TaskCode
+      and tblTimings.Staff = @Staff
+      and qryWeeklyTimesheet.MonDate = @MonDate
+      order by tblTimings.TimingID,tblTimings.StartTime    
+   </ActionSQL>
+  </CiRowFetchAction>
+  <CiColumn>
+    <ColumnName>MonDate</ColumnName>
+    <Visible>false</Visible>
+  </CiColumn>
+  <CiColumn>
+    <ColumnName>TimingID</ColumnName>
+    <Visible>false</Visible>
+  </CiColumn>
+  <CiColumn>
+    <ColumnName>TaskCode</ColumnName>
+    <Visible>false</Visible>
+  </CiColumn>
+  <CiColumn>
+    <ColumnName>Staff</ColumnName>
+    <ColumnCaption>Staff</ColumnCaption>
+    <Editable>false</Editable>
+  </CiColumn>
+  <CiColumn>
+    <ColumnName>StartTime</ColumnName>
+    <ColumnCaption>Start</ColumnCaption>
+    <ColumnType>Date</ColumnType>
+    <ColumnFormat>dd/MM/yyyy HH:mm</ColumnFormat>
+    <Editable>false</Editable>
+  </CiColumn>
+  <CiColumn>
+    <ColumnName>EndTime</ColumnName>
+    <ColumnCaption>End</ColumnCaption>
+    <ColumnType>Date</ColumnType>
+    <ColumnFormat>dd/MM/yyyy HH:mm</ColumnFormat>
+    <Editable>false</Editable>
+  </CiColumn>
+  <CiColumn>
+    <ColumnName>Duration</ColumnName>
+    <ColumnCaption>Hours</ColumnCaption>
+    <ColumnType>Number</ColumnType>
+    <ColumnFormat>0.00</ColumnFormat>
+    <Editable>false</Editable>
+  </CiColumn>
+</CodistriGrid>

@@ -1,0 +1,84 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<CodistriGrid>
+  <CiRowFetchAction>
+    <ActionSQL>
+      select  ModuleID,
+	      LTRIM(RTRIM(CustomerCode)) as CustomerCode,
+	      LTRIM(RTRIM(System)) as System,
+	      [Module] as Modules
+      from    tblModules 
+      order by CustomerCode,System,[Module]
+    </ActionSQL>
+  </CiRowFetchAction>
+  <CiColumn>
+    <ColumnName>ModuleID</ColumnName>
+    <Visible>false</Visible>
+  </CiColumn>
+  <CiColumn>
+    <ColumnName>CustomerCode</ColumnName>
+    <ColumnCaption>Customer</ColumnCaption>
+    <DropdownSQL>
+      select  CustomerCode as CustomerCode,
+              Customer as Customer
+      from    tblCustomers
+      order by CustomerCode
+    </DropdownSQL>
+    <DropdownToFitLargestText>true</DropdownToFitLargestText>
+    <DropdownValueColumn>CustomerCode</DropdownValueColumn>
+    <DropdownDisplayColumn>Customer</DropdownDisplayColumn>
+  </CiColumn>
+  <CiColumn>
+    <ColumnName>System</ColumnName>
+    <ColumnCaption>System</ColumnCaption>
+    <DropdownSQL>
+      select  LTRIM(RTRIM(System)) as System
+      from    tblSystems
+      where   LTRIM(RTRIM(CustomerCode)) = @CustomerCode
+      order by SystemID
+    </DropdownSQL>
+    <ColumnAlignment>left</ColumnAlignment>
+    <DropdownToFitLargestText>true</DropdownToFitLargestText>
+  </CiColumn>
+  <CiColumn>
+    <ColumnName>Modules</ColumnName>
+    <ColumnCaption>Module</ColumnCaption>
+  </CiColumn>
+  <CiRowUpdateAction>
+    <ValidationSQL>select 'Another record already existed for current customer, system and module.' from tblModules where CustomerCode =@CustomerCode and SystemID = @System and [Module]=@Modules and ModuleID &lt;&gt; @ModuleID</ValidationSQL>
+    <ActionSQL>
+      update  tblModules
+      set     CustomerCode  = @CustomerCode,
+	      System	    = @System,
+	      [Module]	    = @Modules
+      where   ModuleID = @ModuleID
+    </ActionSQL>
+  </CiRowUpdateAction>
+  <CiRowInsertAction>
+    <ValidationSQL>select 'Please select a customer.' from tblSingleton where IsNULL(@CustomerCode) = true</ValidationSQL>
+    <ValidationSQL>select 'Please select a System.' from tblSingleton where IsNULL(@System) = true</ValidationSQL>
+    <ValidationSQL>select 'Please enter a module.' from tblSingleton where IsNULL(@Modules) = true</ValidationSQL>
+    <ValidationSQL>select 'Module already existed for current customer and system.' from tblModules where CustomerCode=@CustomerCode and System=@System and [Module]=@Modules</ValidationSQL>
+    <ActionSQL>
+      insert
+      into    tblModules
+      (       CustomerCode,
+              System,
+	      [Module]
+      )
+      values
+      (       @CustomerCode,
+              @System,
+	      @Modules
+      )
+    </ActionSQL>
+    <ActionSQL>
+      select @ModuleID=ModuleID from tblModules 
+      where CustomerCode = @CustomerCode and System = @System and [Module] = @Modules
+    </ActionSQL>
+  </CiRowInsertAction>
+  <CiRowDeleteAction>
+    <ActionSQL>
+      delete from tblModules where ModuleID = @ModuleID
+    </ActionSQL>
+  </CiRowDeleteAction>
+</CodistriGrid>

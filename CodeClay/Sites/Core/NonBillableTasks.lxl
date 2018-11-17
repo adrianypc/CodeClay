@@ -1,0 +1,5 @@
+<ScreenLayout Width="1382" Height="744">
+  <NonBillableTasks Width="1158">page1|sort1|a3|visible16|t0|f-1|t1|t2|t3|t4|t5|t6|t7|t8|t9|t10|t11|t12|t13|t14|width16|50px|e|74px|249px|154px|0px|0px|154px|0px|154px|0px|154px|154px|0px|0px|0px</NonBillableTasks>
+  <ReadOnly_CommunicationsLog Width="50">page1|visible8|t0|f-1|t1|t2|t3|t4|t5|t6|width8|50px|e|0px|0px|e|e|e|e</ReadOnly_CommunicationsLog>
+  <ReadOnly_Timings Width="50">page1|visible8|t0|f-1|t1|t2|t3|t4|t5|t6|width8|50px|e|0px|0px|e|e|e|e</ReadOnly_Timings>
+</ScreenLayout>

@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<CiTable>
+    <TableName>Appointments</TableName>
+    <TableCaption>Appointments</TableCaption>
+    <RowKey>AppointmentNo</RowKey>
+    <DefaultView>Grid</DefaultView>
+    <DoubleClickMacroName>Couple Detail</DoubleClickMacroName>
+    <CiTextField>
+        <FieldName>sAppointmentNo</FieldName>
+        <Caption>Appointment No</Caption>
+        <Searchable>true</Searchable>
+    </CiTextField>
+    <CiTextField>
+        <FieldName>sPatientNo</FieldName>
+        <Caption>Patient No</Caption>
+        <Searchable>true</Searchable>
+    </CiTextField>
+    <CiTextField>
+        <FieldName>sNRIC</FieldName>
+        <Caption>NRIC/Passport</Caption>
+        <Searchable>true</Searchable>
+    </CiTextField>
+    <CiTextField>
+        <FieldName>sLastName</FieldName>
+        <Caption>Last Name</Caption>
+        <Searchable>true</Searchable>
+    </CiTextField>
+    <CiTextField>
+        <FieldName>sFirstName</FieldName>
+        <Caption>First Name</Caption>
+        <Searchable>true</Searchable>
+    </CiTextField>
+    <CiComboField>
+        <FieldName>sConsultantId</FieldName>
+        <Caption>Doctor</Caption>
+        <Code>ConsultantId</Code>
+        <Description>ConsultantName</Description>
+        <DropdownSQL>select ConsultantOtherNames+' '+ConsultantSurname as ConsultantName,ConsultantId from Consultant where ConsultantEnabled = 'Y' </DropdownSQL>
+        <Searchable>true</Searchable>
+    </CiComboField>
+    <CiDateField>
+        <FieldName>sAppointmentDate</FieldName>
+        <Caption>Appointment Date</Caption>
+        <ColumnFormat>dd/MM/yyyy</ColumnFormat>
+        <Searchable>true</Searchable>
+    </CiDateField>
+    <CiCheckField>
+        <FieldName>sFutureAppointment</FieldName>
+        <Caption>Future Appointments Only</Caption>
+        <Searchable>true</Searchable>
+    </CiCheckField>
+    <CiTextField>
+        <FieldName>AppointmentNo</FieldName>
+    </CiTextField>
+    <CiTextField>
+        <FieldName>ConsultantName</FieldName>
+        <Caption>Doctor</Caption>
+        <Editable>false</Editable>
+    </CiTextField>
+    <CiDateField>
+        <FieldName>AppointmentDate</FieldName>
+        <Caption>Appointment Date</Caption>
+        <Editable>false</Editable>
+        <ColumnFormat>dd/MM/yyyy</ColumnFormat>
+    </CiDateField>
+    <CiTextField>
+        <FieldName>ApptTime</FieldName>
+        <Caption>Appointment Slot</Caption>
+        <Editable>false</Editable>
+    </CiTextField>
+    <CiTextField>
+        <FieldName>ClientNo</FieldName>
+        <Caption>Patient #</Caption>
+        <Editable>false</Editable>
+    </CiTextField>
+    <CiTextField>
+        <FieldName>IdentityNo</FieldName>
+        <Caption>NRIC</Caption>
+        <Editable>false</Editable>
+    </CiTextField>
+    <CiTextField>
+        <FieldName>ClientSurname</FieldName>
+        <Caption>Last Name</Caption>
+        <Editable>false</Editable>
+    </CiTextField>
+    <CiTextField>
+        <FieldName>ClientOtherNames</FieldName>
+        <Caption>First Name</Caption>
+        <Editable>false</Editable>
+    </CiTextField>
+    <CiTextField>
+        <FieldName>Mobile</FieldName>
+        <Caption>Phone</Caption>
+        <Editable>false</Editable>
+    </CiTextField>
+    <CiTextField>
+        <FieldName>ApptStatus</FieldName>
+        <Caption>Status</Caption>
+        <Editable>false</Editable>
+    </CiTextField>
+    <CiMacro>
+        <MacroName>Appointment Detail</MacroName>
+        <ActionSQL>
+            select @AppointmentNo as AppointmentNo,
+                   'Edit' as Mode
+        </ActionSQL>
+        <NavigateUrl>AppointmentDetail.pux</NavigateUrl>
+        <NavigatePos>NewTab</NavigatePos>
+    </CiMacro>
+    <CiMacro>
+	    <MacroName>Couple Detail</MacroName>
+	    <ActionSQL>select @ClientNo as sClientNo</ActionSQL>
+	    <NavigateUrl>Couple.pux</NavigateUrl>
+	    <NavigatePos>NewTab</NavigatePos>
+    </CiMacro>
+    <CiMacro1>
+        <MacroName>Tomorrow's List</MacroName>
+        <ActionSQL>select Convert(datetime,Convert(varchar(11),DateAdd(day,1,getdate()),103),103) as sAppointmentDate</ActionSQL>
+        <NavigateUrl>AppointmentList.pux</NavigateUrl>
+    </CiMacro1>
+    <CiMacro>
+        <MacroName>NewAppt</MacroName>
+        <Caption>New</Caption>
+        <ActionSQL>
+            select -1 as AppointmentNo,
+                  'New' as Mode,
+                  @sConsultantId as ConsultantId
+        </ActionSQL>
+        <NavigateUrl>AppointmentDetail.pux</NavigateUrl>
+        <NavigatePos>NewTab</NavigatePos>
+    </CiMacro>
+    <CiMacro>
+        <MacroName>Confirmed</MacroName>
+        <Caption>-&gt; Confirmed</Caption>
+        <VisibleSQL>select 1 from Appointment where AppointmentNo = @AppointmentNo and (AppointmentStatus = '' or AppointmentStatus is null)</VisibleSQL>
+        <ActionSQL>
+            exec spAppointmentStatus_upd @AppointmentNo,1
+        </ActionSQL>
+    </CiMacro>
+    <CiMacro>
+        <MacroName>Cancel</MacroName>
+        <Caption>-&gt; Cancel</Caption>
+        <VisibleSQL>select 1 from Appointment where AppointmentNo = @AppointmentNo and (AppointmentStatus = '' or AppointmentStatus is null)</VisibleSQL>
+        <ActionSQL>
+            ?exec spAppointmentDelete @AppointmentNo
+        </ActionSQL>
+    </CiMacro>
+    <CiMacro>
+        <MacroName>Arrived</MacroName>
+        <Caption>-&gt; Arrived</Caption>
+        <VisibleSQL>select 1 from Appointment where AppointmentNo = @AppointmentNo and (AppointmentStatus = '' or AppointmentStatus is null or AppointmentStatus = 'Confirmed')</VisibleSQL>
+        <ActionSQL>
+            exec spAppointmentStatus_upd @AppointmentNo,2
+        </ActionSQL>
+    </CiMacro>
+    <CiMacro>
+        <MacroName>No Show</MacroName>
+        <Caption>-&gt; No Show</Caption>
+        <VisibleSQL>select 1 from Appointment where AppointmentNo = @AppointmentNo and (AppointmentStatus = '' or AppointmentStatus is null)</VisibleSQL>
+        <ActionSQL>
+            exec spAppointmentStatus_upd @AppointmentNo,3
+        </ActionSQL>
+    </CiMacro>
+    <CiMacro>
+        <MacroName>Create Bill</MacroName>
+        <Caption>-&gt; Create Bill</Caption>
+        <VisibleSQL>select 1 from Appointment where AppointmentNo = @AppointmentNo and AppointmentStatus = 'Arrived'</VisibleSQL>
+        <ActionSQL>
+            select @AppointmentNo as AppointmentNo
+        </ActionSQL>
+      <NavigateUrl>BillDetail.pux</NavigateUrl>
+      <NavigatePos>NewTab</NavigatePos>
+    </CiMacro>
+    <SelectMacro>
+        <ActionSQL>
+            ?exec spAppointmentSearch @sLastName,@sFirstName,@sPatientNo,@sAppointmentNo,@sNRIC,@sFutureAppointment,@sConsultantId,@sAppointmentDate
+        </ActionSQL>
+    </SelectMacro>
+</CiTable>

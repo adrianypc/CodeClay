@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<CiComboField>
+  <FieldName>Category</FieldName>
+  <Caption>Category</Caption>
+  <DropdownSQL>
+    select  Category
+    from    tblCategories
+    where   CustomerCode = "CDSI"
+    order by Category
+  </DropdownSQL>
+  <Width>50</Width>
+</CiComboField>

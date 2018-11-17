@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<CiTable>
+  <TableName>AllocatePrepayment</TableName>
+  <TableCaption>Allocate Prepayment</TableCaption>
+  <RowKey>BillNo</RowKey>
+  <DefaultView>Card</DefaultView>
+  <CiTextField>
+    <FieldName>BillNo</FieldName>
+    <Hidden>true</Hidden>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>ClientNo</FieldName>
+    <Caption>Client No</Caption>
+    <Editable>false</Editable>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>ClientSurname</FieldName>
+    <Caption>Surname</Caption>
+    <Editable>false</Editable>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>ClientOtherNames</FieldName>
+    <Caption>Other Names</Caption>
+    <Editable>false</Editable>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>PresNo</FieldName>
+    <Caption>Pres No</Caption>
+    <Editable>false</Editable>
+  </CiTextField>
+  <CiTable Src= "AllocateDetail.pux"/>
+  <SelectMacro>
+    <ActionSQL>
+      select
+	      @BillNo as BillNo,
+	      @PresNo as PresNo, 
+        ClientNo,
+        ClientSurname,
+        ClientOtherNames
+      from Client
+      where ClientNo = @ClientNo
+    </ActionSQL>
+  </SelectMacro>
+</CiTable>

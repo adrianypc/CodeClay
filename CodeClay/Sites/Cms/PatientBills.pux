@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<CiTable>
+  <TableName>PatientBills</TableName>
+  <TableCaption>Patient Bills</TableCaption>
+  <RowKey>ClientNo</RowKey>
+  <DefaultView>Card</DefaultView>
+  <CiTextField>
+    <FieldName>PatientNo</FieldName>
+    <Hidden>true</Hidden>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>ClientNo</FieldName>
+    <Caption>Patient No</Caption>
+    <Editable>false</Editable>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>ClientSurname</FieldName>
+    <Caption>Last Name</Caption>
+    <Editable>false</Editable>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>ClientOtherNames</FieldName>
+    <Caption>First Name</Caption>
+    <Editable>false</Editable>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>IdentityNo</FieldName>
+    <Caption>NRIC/Passport</Caption>
+    <Editable>false</Editable>
+  </CiTextField>
+  <CiTable Src="PatientBillList.pux" />
+  <SelectMacro>
+    <ActionSQL>
+      select @PatientNo as PatientNo
+    </ActionSQL>
+    <ActionSQL>
+      select 
+        ClientNo,
+        ClientSurname,
+        ClientOtherNames,
+        IdentityNo 
+      from Client
+      where ClientNo = @PatientNo
+    </ActionSQL>
+  </SelectMacro>
+</CiTable>

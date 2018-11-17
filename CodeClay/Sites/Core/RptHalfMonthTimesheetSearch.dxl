@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<CodistriGrid>
+  <CiFormName>Half Month Timesheet Search</CiFormName>
+  <CiRowFetchAction>
+    <ActionSQL>
+      select 'Adrian' as Staff,
+             dateserial(2014, 3, 1) as StartDate,
+             dateserial(year(now()), month(now()), iif(day(now()) > 15, 15, 0))  as EndDate
+    </ActionSQL>
+  </CiRowFetchAction>
+  <CiColumn>
+    <ColumnName>StartDate</ColumnName>
+    <ColumnCaption>Start Date</ColumnCaption>
+    <ColumnType>Date</ColumnType>
+    <ColumnFormat>dd/MM/yyyy</ColumnFormat>
+  </CiColumn>
+  <CiColumn>
+    <ColumnName>EndDate</ColumnName>
+    <ColumnCaption>End Date</ColumnCaption>
+    <ColumnType>Date</ColumnType>
+    <ColumnFormat>dd/MM/yyyy</ColumnFormat>
+  </CiColumn>
+  <CiColumn>
+    <ColumnName>Staff</ColumnName>
+    <ColumnCaption>Staff</ColumnCaption>
+    <DropdownSQL>
+      select  StaffCode as Staff
+      from    tblStaff
+      order by StaffCode
+    </DropdownSQL>
+  </CiColumn>
+  <CiAction>
+    <ActionName>Find</ActionName>
+    <TargetGridURL>RptHalfMonthTimesheet.dxl</TargetGridURL>
+    <TargetGridName>RptHalfMonthTimesheet</TargetGridName>
+  </CiAction>
+</CodistriGrid>

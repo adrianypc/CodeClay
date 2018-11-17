@@ -6,9 +6,9 @@ using Microsoft.AspNet.FriendlyUrls;
 
 namespace CodeClay
 {
-    public static class RouteConfig
+    public static  class RouteConfig
     {
-        public static void RegisterRoutes(RouteCollection routes)
+        public static  void RegisterRoutes(RouteCollection routes)
         {
             var settings = new FriendlyUrlSettings();
             settings.AutoRedirectMode = RedirectMode.Permanent;

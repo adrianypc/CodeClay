@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<CiTable>
+  <TableName>Female Profile</TableName>
+  <TableCaption>Female Profile</TableCaption>
+  <RowKey>FPatientNo</RowKey>
+  <DefaultView>Card</DefaultView>
+  <ColCount>2</ColCount>
+  <BubbleUpdate>true</BubbleUpdate>
+  <CiTextField>
+    <FieldName>FPatientNo</FieldName>
+    <Caption>Patient No</Caption>
+    <Editable>false</Editable>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>FNRIC</FieldName>
+    <Caption>NRIC</Caption>
+    <Editable>true</Editable>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>FLastName</FieldName>
+    <Caption>Surname</Caption>
+    <Editable>true</Editable>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>FFirstName</FieldName>
+    <Caption>Other Names</Caption>
+    <Editable>true</Editable>
+  </CiTextField>
+  <CiDateField>
+    <FieldName>FBirthDate</FieldName>
+    <Caption>Date Of Birth</Caption>
+    <Editable>true</Editable>
+    <ColumnFormat>dd/MM/yyyy</ColumnFormat>
+  </CiDateField>
+  <CiTextField>
+    <FieldName>FAge</FieldName>
+    <Caption>Age</Caption>
+    <Editable>false</Editable>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>FAddress1</FieldName>
+    <Caption>Address1</Caption>
+    <Editable>true</Editable>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>FAddress2</FieldName>
+    <Caption>Address2</Caption>    
+    <Editable>true</Editable>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>FAddress3</FieldName>
+    <Caption>Address3</Caption>
+    <Editable>true</Editable>
+  </CiTextField>
+  <CiComboField>
+    <FieldName>FCountryCode</FieldName>
+    <Caption>Country Code</Caption>
+    <Editable>true</Editable>
+    <Code>CountryCode</Code>
+    <Description>CountryCode</Description>
+    <DropdownSQL>select CountryCode,CountryName as FCountry from Country</DropdownSQL>
+  </CiComboField>
+  <CiTextField>
+    <FieldName>FCountry</FieldName>
+    <Caption>Country</Caption>
+    <Editable>false</Editable>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>FPostcode</FieldName>
+    <Caption>Postcode</Caption>
+    <Editable>true</Editable>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>FHomePhone</FieldName>
+    <Caption>Home Phone</Caption>
+    <Editable>true</Editable>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>FHomeFax</FieldName>
+    <Caption>Home Fax</Caption>
+    <Editable>true</Editable>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>FEmail</FieldName>
+    <Caption>Email</Caption>
+    <Editable>true</Editable>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>FMobile</FieldName>
+    <Caption>Mobile</Caption>
+    <Editable>true</Editable>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>FPager</FieldName>
+    <Caption>Pager</Caption>
+    <Editable>true</Editable>
+  </CiTextField>
+  <CiComboField>
+    <FieldName>FNationality</FieldName>
+    <Caption>Nationality</Caption>
+    <Editable>true</Editable>
+    <Value>SINGAPOREAN</Value>
+    <DropdownSQL>select TextItem from TextListItem where Category =  'Nationalities' </DropdownSQL>
+  </CiComboField>
+  <CiComboField>
+    <FieldName>FRace</FieldName>
+    <Caption>Race</Caption>
+    <Editable>true</Editable>
+    <Value>CHINESE</Value>
+    <DropdownSQL>select TextItem from TextListItem where Category =  'Races' </DropdownSQL>
+  </CiComboField>
+  <CiComboField>
+    <FieldName>FLanguage</FieldName>
+    <Caption>Language</Caption>
+    <Editable>true</Editable>
+    <DropdownSQL>select TextItem from TextListItem where Category =  'Languages' </DropdownSQL>
+    <Value>ENGLISH</Value>
+  </CiComboField>
+  <CiComboField>
+    <FieldName>FDialect</FieldName>
+    <Caption>Dialect</Caption>
+    <Editable>true</Editable>
+    <DropdownSQL>select TextItem from TextListItem where Category =  'Dialects' </DropdownSQL>
+    <Value>ENGLISH</Value>
+  </CiComboField>
+  <CiComboField>
+    <FieldName>FCategory</FieldName>
+    <Caption>Category</Caption>
+    <Editable>true</Editable>
+    <DropdownSQL>select TextItem from TextListItem where Category =  'VisitCategories' </DropdownSQL>
+  </CiComboField>
+  <CiDateField>
+    <FieldName>FFirstVisitDate</FieldName>
+    <Caption>First Visit Date</Caption>
+    <Editable>true</Editable>
+    <ColumnFormat>dd/MM/yyyy</ColumnFormat>
+  </CiDateField>
+  <CiComboField>
+    <FieldName>FDoctorInCharge</FieldName>
+    <TextFieldName>FDoctorInChargeName</TextFieldName>
+    <Caption>Consultant</Caption>
+    <Editable>true</Editable>
+    <Code>ConsultantId</Code>
+    <Description>ConsultantName</Description>
+    <DropdownSQL>select ConsultantOtherNames+' '+ConsultantSurname as ConsultantName,ConsultantId from Consultant where ConsultantEnabled = 'Y' </DropdownSQL>
+  </CiComboField>
+  <CiComboField>
+    <FieldName>FReferredBy</FieldName>
+    <Caption>Referrer</Caption>
+    <Editable>true</Editable>
+    <DropdownSQL>select TextItem from TextListItem where Category =  'Referrers' </DropdownSQL>
+  </CiComboField>
+  <CiCheckField>
+    <FieldName>FIsCorporateBilling</FieldName>
+    <Caption>Corporate Billing</Caption>
+    <Editable>true</Editable>
+    <Value>false</Value>
+  </CiCheckField>
+  <CiComboField>
+    <FieldName>FCorporate</FieldName>
+    <TextFieldName>FCorporateName</TextFieldName>
+    <Caption>Corporate</Caption>
+    <Editable>true</Editable>
+    <Code>CustomerNo</Code>
+    <Description>CustomerName</Description>
+    <DropdownSQL>select CustomerName,CustomerNo from Customer where CustomerType = 'B' </DropdownSQL>
+  </CiComboField>
+  <CiTextField>
+    <FieldName>FCompany</FieldName>
+    <Caption>Company</Caption>
+    <Editable>true</Editable>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>FOccupation</FieldName>
+    <Caption>Occupation</Caption>
+    <Editable>true</Editable>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>FWorkPhone</FieldName>
+    <Caption>Work Phone</Caption>
+    <Editable>true</Editable>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>FWorkFax</FieldName>
+    <Caption>Work Fax</Caption>
+    <Editable>true</Editable>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>FSpouseClientNo</FieldName>
+    <Caption>Spouse No</Caption>
+    <Editable>false</Editable>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>MPatientNo</FieldName>
+    <Hidden>true</Hidden>
+  </CiTextField>
+  <DefaultMacro>
+    <ActionSQL>update TempIdentityRecord set ClientId = ClientId + 1</ActionSQL>
+    <ActionSQL>
+      select  
+        dbo.FnTempIdentity('Client',0) as FPatientNo,
+        getdate() as FFirstVisitDate,
+	      @MPatientNo as FSpouseClientNo
+    </ActionSQL>
+  </DefaultMacro>
+  <SelectMacro>
+    <ActionSQL>
+      ?exec spClientSearch_Husband_Wife_selByClientNo @FPatientNo,'F'
+    </ActionSQL>
+  </SelectMacro>
+  <UpdateMacro>
+    <VisibleSQL>select 1 from Client where ClientNo = @FPatientNo and Sex='F'</VisibleSQL>
+    <ActionSQL>
+      ?exec spClient_update
+        @FPatientNo,
+        @FNRIC,
+        @FLastName,
+        @FFirstName,
+        @FBirthDate,
+        @FAddress1,
+        @FAddress2,
+        @FAddress3,
+        @FCountryCode,
+        @FPostCode,
+        @FHomePhone,
+        @FHomeFax,
+        @FMobile,
+        @FPager,
+        @FEmail,
+        @FNationality ,
+        @FRace ,
+        @FCorporate,
+        @FLanguage,
+        @FDialect,
+        @FCategory,
+        @FFirstVisitDate,
+        @FDoctorInCharge,
+        @FReferredBy,
+        @FIsCorporateBilling,
+        @FOccupation,
+        @FCompany,
+        @FWorkPhone,
+        @FWorkFax,
+        @FSpouseClientNo,
+        'F',
+        true
+    </ActionSQL>
+  </UpdateMacro>
+  <InsertMacro>
+    <VisibleSQL>select 1 from Client where not exists (select 1 from Client where ClientNo = @FPatientNo and Sex='F')</VisibleSQL>
+    <ActionSQL>
+     ?exec spClient_update
+      @FPatientNo,
+      @FNRIC,
+      @FLastName,
+      @FFirstName,
+      @FBirthDate,
+      @FAddress1,
+      @FAddress2,
+      @FAddress3,
+      @FCountryCode,
+      @FPostCode,
+      @FHomePhone,
+      @FHomeFax,
+      @FMobile,
+      @FPager,
+      @FEmail,
+      @FNationality ,
+      @FRace ,
+      @FCorporate,
+      @FLanguage,
+      @FDialect,
+      @FCategory,
+      @FFirstVisitDate,
+      @FDoctorInCharge,
+      @FReferredBy,
+      @FIsCorporateBilling,
+      @FOccupation,
+      @FCompany,
+      @FWorkPhone,
+      @FWorkFax,
+      @FSpouseClientNo,
+      'F',
+      true
+    </ActionSQL>
+  </InsertMacro>
+  <CiFieldExitMacro>
+    <FieldName>FBirthDate</FieldName>
+    <ActionSQL>select (CONVERT(int,CONVERT(char(8),getdate(),112))-CONVERT(char(8),@FBirthDate,112))/10000 as FAge</ActionSQL>
+  </CiFieldExitMacro>
+  <CiFieldExitMacro>
+    <FieldName>FCountryCode</FieldName>
+    <ActionSQL>select CountryName as FCountry from Country where CountryCode = @FCountryCode</ActionSQL>
+  </CiFieldExitMacro>
+</CiTable>

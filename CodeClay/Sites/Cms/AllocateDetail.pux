@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<CiTable>
+  <TableName>AllocateDetail</TableName>
+  <RowKey>BillNo</RowKey>
+  <DefaultView>Grid</DefaultView>
+  <CiTextField>
+    <FieldName>BillNo</FieldName>
+    <Hidden>true</Hidden>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>BillDate</FieldName>
+    <Caption>Bill Date</Caption>
+    <Editable>false</Editable>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>PrescriptionNo</FieldName>
+    <Caption>Prescription No</Caption>
+    <Editable>false</Editable>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>FromBillNo</FieldName>
+    <Caption>From Bill No</Caption>
+    <Editable>false</Editable>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>BillType</FieldName>
+    <Caption>Type</Caption>
+    <Editable>false</Editable>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>Amount</FieldName>
+    <Caption>Amount</Caption>
+    <Editable>false</Editable>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>Balance</FieldName>
+    <Caption>Balance</Caption>
+    <Editable>false</Editable>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>Apply</FieldName>
+    <Caption>Apply</Caption>
+    <Editable>false</Editable>
+  </CiTextField>
+  <SelectMacro>
+    <ActionSQL>
+      select
+	      @BillNo as BillNo,
+	      @PresNo as PresNo, 
+        ClientNo,
+        ClientSurname,
+        ClientOtherNames
+      from Client
+      where ClientNo = @ClientNo
+    </ActionSQL>
+  </SelectMacro>
+</CiTable>

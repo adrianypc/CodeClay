@@ -1,0 +1,203 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<CodistriGrid>
+  <CiRowFetchAction>
+    <ActionSQL>
+      select  TaskCode,
+              TaskDescription,
+              TaskType,
+              CustomerCode,
+              Category,
+              PrimaryDeveloper,
+              HoursSold,	
+              SellPrice,
+	      FixedPrice,
+	      Billable,
+              HoursBought,
+              BuyPrice,
+              CompletedDate,
+              InvoiceNumber
+      from    tblTasks      
+      where   (TaskType &lt;&gt; 'C: Quote')
+      and     (TaskStatus &lt;&gt; 'REJECT' or TaskStatus is null)
+      and     (InvoiceNumber is null or InvoiceNumber in
+      (       select  InvoiceNumber
+  	      from    tblInvoices
+  	      where   DispatchDate is null
+      ))
+      order by InvoiceNumber, PrimaryDeveloper, TaskCode
+    </ActionSQL>
+  </CiRowFetchAction>
+  <CiColumn>
+    <ColumnName>TaskCode</ColumnName>
+    <ColumnCaption>Task</ColumnCaption>
+    <Editable>false</Editable>
+  </CiColumn>
+  <CiColumn>
+    <ColumnName>TaskDescription</ColumnName>
+    <ColumnCaption>Description</ColumnCaption>
+  </CiColumn>
+  <CiColumn>
+    <ColumnName>TaskType</ColumnName>
+    <ColumnCaption>Task Type</ColumnCaption>
+    <DropdownSQL>
+      select  Description as [Task Type]
+      from    tblDropdown
+      where   Type = 'TaskType'
+      order by Description
+    </DropdownSQL>
+  </CiColumn>
+  <CiColumn>
+    <ColumnName>CustomerCode</ColumnName>
+    <ColumnCaption>Customer</ColumnCaption>
+    <DropdownSQL>
+      select  CustomerCode as Code,
+              Customer
+      from    tblCustomers
+      order by CustomerCode
+    </DropdownSQL>
+    <DropdownToFitLargestText>true</DropdownToFitLargestText>
+    <Visible>false</Visible>
+  </CiColumn>
+  <CiColumn>
+    <ColumnName>InvoiceNumber</ColumnName>
+    <ColumnCaption>Invoice</ColumnCaption>
+  </CiColumn>
+  <CiColumn>
+    <ColumnName>PrimaryDeveloper</ColumnName>
+    <ColumnCaption>Staff</ColumnCaption>
+    <DropdownSQL>
+      select  StaffCode as Staff
+      from    tblStaff
+      order by StaffCode
+    </DropdownSQL>
+  </CiColumn>
+  <CiColumn>
+    <ColumnName>SellPrice</ColumnName>
+    <ColumnCaption>Sell ($)</ColumnCaption>
+    <ColumnType>Number</ColumnType>
+    <ColumnFormat>$0.00</ColumnFormat>
+    <AggregateFunction>Sum</AggregateFunction>
+  </CiColumn>
+  <CiColumn>
+    <ColumnName>BuyPrice</ColumnName>
+    <ColumnCaption>Buy ($)</ColumnCaption>
+    <ColumnType>Number</ColumnType>
+    <ColumnFormat>$0.00</ColumnFormat>
+    <AggregateFunction>Sum</AggregateFunction>
+    <Editable>false</Editable>
+  </CiColumn>
+  <CiColumn>
+    <ColumnName>HoursSold</ColumnName>
+    <ColumnCaption>Sell (H)</ColumnCaption>
+    <ColumnType>Number</ColumnType>
+    <ColumnFormat>0.00</ColumnFormat>
+    <AggregateFunction>Sum</AggregateFunction>
+    <Editable>false</Editable>
+  </CiColumn>
+  <CiColumn>
+    <ColumnName>HoursBought</ColumnName>
+    <ColumnCaption>Buy (H)</ColumnCaption>
+    <ColumnType>Number</ColumnType>
+    <ColumnFormat>0.00</ColumnFormat>
+    <AggregateFunction>Sum</AggregateFunction>
+    <Editable>false</Editable>
+  </CiColumn>
+  <CiColumn>
+    <ColumnName>CompletedDate</ColumnName>
+    <ColumnCaption>Due Date</ColumnCaption>
+    <ColumnType>Date</ColumnType>
+    <ColumnFormat>dd/MM/yyyy</ColumnFormat>
+  </CiColumn>
+  <CiColumn>
+    <ColumnName>FixedPrice</ColumnName>
+    <ColumnCaption>Fixed?</ColumnCaption>
+    <ColumnType>Checkbox</ColumnType>
+  </CiColumn>
+  <CiColumn>
+    <ColumnName>Billable</ColumnName>
+    <ColumnCaption>Billable</ColumnCaption>
+    <ColumnType>Checkbox</ColumnType>
+  </CiColumn>
+  <CiColumn>
+    <ColumnName>InvoiceNumber</ColumnName>
+    <ColumnCaption>Invoice</ColumnCaption>
+    <DropdownSQL>
+      select  InvoiceNumber as [Invoice]
+      from    tblInvoices
+      where   DispatchDate is null
+      and     CustomerCode = @CustomerCode
+      order by InvoiceNumber
+    </DropdownSQL>
+  </CiColumn>
+  <CiColumn>
+    <ColumnName>Category</ColumnName>
+    <ColumnCaption>Category</ColumnCaption>
+    <DropdownSQL>
+      select  Category
+      from    tblCategories
+      where   CustomerCode = @CustomerCode
+      order by Category
+    </DropdownSQL>
+  </CiColumn>
+  <CiRowUpdateAction>
+    <ActionSQL>
+      update  tblTasks
+      set     TaskDescription   = @TaskDescription,
+              TaskType          = @TaskType,
+              CustomerCode      = @CustomerCode,
+              Category          = @Category,
+              InvoiceNumber     = @InvoiceNumber,
+              PrimaryDeveloper  = @PrimaryDeveloper,
+              SellPrice         = @SellPrice,
+	      HoursSold		= @HoursSold,
+	      CompletedDate     = @CompletedDate,
+              FixedPrice        = @FixedPrice,
+	      Billable		= @Billable
+      where   TaskCode          = @TaskCode
+    </ActionSQL>
+  </CiRowUpdateAction>
+  <CiRowDeleteAction>
+    <ActionSQL>
+      delete from tblTasks where TaskCode = @TaskCode
+    </ActionSQL>
+  </CiRowDeleteAction>
+  <ChildGridURL>ReadOnly_CommunicationsLog.dxl</ChildGridURL>
+  <ChildGridURL>ReadOnly_Timings.dxl</ChildGridURL>
+  <CiCellExitAction>
+    <ColumnName>SellPrice</ColumnName>
+    <ActionSQL>
+      UPDATE tblTasks INNER JOIN tblStaff on tblTasks.PrimaryDeveloper = tblStaff.StaffCode SET
+	HoursSold = @SellPrice / tblStaff.SellHourlyRate
+      WHERE TaskCode = @TaskCode AND @SellPrice is not null and tblStaff.SellHourlyRate &lt;&gt; 0 and tblStaff.SellHourlyRate is not null
+    </ActionSQL>
+    <ActionSQL>
+	SELECT HoursSold,
+               iif(@FixedPrice = false,DSum("BuyPrice","qryHourlyCalculation","TaskCode='" + @TaskCode + "'"), BuyHourlyRate*HoursSold) as BuyPrice
+        FROM   tblTasks,
+               tblStaff
+        WHERE  tblTasks.TaskCode = @TaskCode
+        AND    tblStaff.StaffCode = tblTasks.PrimaryDeveloper
+    </ActionSQL>
+  </CiCellExitAction>
+  <CiCellExitAction>
+    <ColumnName>FixedPrice</ColumnName>
+    <ActionSQL>
+	SELECT iif(@FixedPrice = false,DSum("BuyPrice","qryHourlyCalculation","TaskCode='" + @TaskCode + "'"), BuyHourlyRate*@HoursSold) as BuyPrice
+        FROM   tblTasks,
+               tblStaff
+        WHERE  tblTasks.TaskCode = @TaskCode
+        AND    tblStaff.StaffCode = tblTasks.PrimaryDeveloper
+    </ActionSQL>
+  </CiCellExitAction>
+  <CiCellExitAction>
+    <ColumnName>Billable</ColumnName>
+    <ActionSQL>
+	SELECT  iif(@Billable = false,true,@FixedPrice) as FixedPrice,
+		iif(@Billable = false,0,SellPrice) as SellPrice
+        FROM   tblTasks,
+               tblStaff
+        WHERE  tblTasks.TaskCode = @TaskCode
+        AND    tblStaff.StaffCode = tblTasks.PrimaryDeveloper
+    </ActionSQL>
+  </CiCellExitAction>
+</CodistriGrid>

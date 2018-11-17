@@ -1,0 +1,65 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<CodistriGrid>
+  <CiRowFetchAction>
+    <ActionSQL>
+      select  CategoryID,
+              CustomerCode,
+              Category
+      from    tblCategories
+      where   CustomerCode = 'C3RM'
+      order by CustomerCode, Category
+    </ActionSQL>
+  </CiRowFetchAction>
+  <CiColumn>
+    <ColumnName>CategoryID</ColumnName>
+    <ColumnCaption>CategoryID</ColumnCaption>
+    <Visible>false</Visible>
+  </CiColumn>
+  <CiColumn>
+    <ColumnName>CustomerCode</ColumnName>
+    <ColumnCaption>Customer</ColumnCaption>
+    <DropdownSQL>
+      select  CustomerCode as Customer,
+              Customer as Name
+      from    tblCustomers
+      order by CustomerCode
+    </DropdownSQL>
+    <DropdownToFitLargestText>true</DropdownToFitLargestText>
+  </CiColumn>
+  <CiColumn>
+    <ColumnName>Category</ColumnName>
+    <ColumnCaption>Category</ColumnCaption>
+  </CiColumn>
+  <CiRowUpdateAction>
+    <ActionSQL>
+      update  tblCategories
+      set     CustomerCode  = @CustomerCode,
+              Category      = @Category
+      where   CategoryID    = @CategoryID
+    </ActionSQL>
+  </CiRowUpdateAction>
+  <CiRowInsertAction>
+    <ActionSQL>
+      select  1+iif(isnull(Max(CategoryID)), 0, Max(CategoryID)) as CategoryID
+      from    tblCategories
+    </ActionSQL>
+    <ActionSQL>
+      insert
+      into    tblCategories
+      (       CustomerCode,
+              Category,
+              CategoryID
+      )
+      values
+      (       @CustomerCode,
+              @Category,
+              @CategoryID
+      )
+    </ActionSQL>
+  </CiRowInsertAction>
+  <CiRowDeleteAction>
+    <ActionSQL>
+      delete from tblCategories where CategoryID = @CategoryID
+    </ActionSQL>
+  </CiRowDeleteAction>
+</CodistriGrid>

@@ -5,7 +5,8 @@ using System.Web;
 using System.Web.Optimization;
 using System.Web.Routing;
 using System.Web.Security;
-using System.Web.SessionState;
+
+using DevExpress.XtraReports.Native;
 
 namespace CodeClay
 {
@@ -16,6 +17,7 @@ namespace CodeClay
             // Code that runs on application startup
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
+            SerializationService.RegisterSerializer(DataSetSerializer.Name, new DataSetSerializer());
         }
     }
 }

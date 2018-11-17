@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<CiTable>
+  <TableName>Case Summary</TableName>
+  <TableCaption>Case Summary</TableCaption>
+  <RowKey>ClientNo</RowKey>
+  <DefaultView>Card</DefaultView>
+  <CiTextField>
+    <FieldName>ClientNo</FieldName>
+    <Caption>Patient No</Caption>
+    <Hidden>true</Hidden>
+  </CiTextField>
+  <CiField>
+    <Value>
+      <br/>
+      <u>For non-Singaporean/Singapore PR, indicate:</u>
+    </Value>
+  </CiField>
+  <CiCheckField>
+    <FieldName>LivingSG</FieldName>
+    <Caption>Living / Working in Singapore</Caption>
+  </CiCheckField>
+  <CiCheckField>
+    <FieldName>Treatment</FieldName>
+    <Caption>Came specifically for treatment</Caption>
+  </CiCheckField>
+  <CiField>
+    <Value>
+      <br/>
+    </Value>
+  </CiField>
+  <CiComboField>
+    <FieldName>MaritalStatus</FieldName>
+    <Caption>Marital Status</Caption>
+    <DropdownSQL>
+      select TextItem from TextListItem where Category = 'MaritalStatus'
+    </DropdownSQL>
+  </CiComboField>
+  <CiNumericField>
+    <FieldName>YearOfMarriage</FieldName>
+    <Caption>Year of Current Marriage</Caption>
+    <MinValue>1950</MinValue>
+    <MaxValue>2100</MaxValue>
+  </CiNumericField>
+  <CiNumericField>
+    <FieldName>MonthOfMarriage</FieldName>
+    <Caption>Month of Current Marriage</Caption>
+    <MinValue>1</MinValue>
+    <MaxValue>12</MaxValue>
+  </CiNumericField>
+  <CiMemoField>
+    <FieldName>Complaints</FieldName>
+    <Caption>Present Complaints</Caption>
+  </CiMemoField>
+  <CiTextField>
+    <FieldName>ReferredBy</FieldName>
+    <Caption>Referred By</Caption>
+  </CiTextField>
+  <CiNumericField>
+    <FieldName>YearsOfInfertility</FieldName>
+    <Caption>Years of Infertility</Caption>
+    <MinValue>0</MinValue>
+    <MaxValue>30</MaxValue>
+  </CiNumericField>
+  <CiNumericField>
+    <FieldName>MonthsOfInfertility</FieldName>
+    <Caption>Months of Infertility</Caption>
+    <MinValue>0</MinValue>
+    <MaxValue>12</MaxValue>
+  </CiNumericField>
+  <CiComboField>
+    <FieldName>Contraception</FieldName>
+    <Caption>Contraception</Caption>
+    <DropdownSQL>select TextItem from TextListItem where Category =  'Contraception' </DropdownSQL>
+  </CiComboField>
+  <CiMemoField>
+    <FieldName>ContraceptionComment</FieldName>
+    <Caption>Comment</Caption>
+  </CiMemoField>
+  <SelectMacro>
+    <ActionSQL>
+     select * from CoupleSummary where ClientNo = @ClientNo
+    </ActionSQL>
+  </SelectMacro>
+  <InsertMacro>
+    <VisibleSQL>
+	select 1 from CoupleSummary where not exists (select ClientNo from 
+		CoupleSummary where ClientNo = @ClientNo)
+    </VisibleSQL>
+    <ActionSQL>
+      insert into CoupleSummary
+      (ClientNo, LivingSG, Treatment, MaritalStatus, YearOfMarriage, MonthOfMarriage, Complaints, ReferredBy,
+       YearsOfInfertility, MonthsOfInfertility, Contraception, ContraceptionComment)
+      values
+      (@ClientNo, @LivingSG, @Treatment, @MaritalStatus, @YearOfMarriage, @MonthOfMarriage, @Complaints, @ReferredBy,
+       @YearsOfInfertility, @MonthsOfInfertility, @Contraception, @ContraceptionComment)
+    </ActionSQL>
+  </InsertMacro>
+  <UpdateMacro>
+    <VisibleSQL>select 1 from CoupleSummary where ClientNo = @ClientNo</VisibleSQL>
+    <ActionSQL>
+      update  CoupleSummary
+      set     LivingSG = @LivingSG,
+              Treatment = @Treatment,
+              MaritalStatus = @MaritalStatus,
+              YearOfMarriage = @YearOfMarriage,
+              MonthOfMarriage = @MonthOfMarriage,
+              Complaints = @Complaints,
+              ReferredBy = @ReferredBy,
+              YearsOfInfertility = @YearsOfInfertility,
+              MonthsOfInfertility = @MonthsOfInfertility,
+              Contraception = @Contraception,
+              ContraceptionComment = @ContraceptionComment
+      where   ClientNo = @ClientNo
+    </ActionSQL>
+  </UpdateMacro>
+</CiTable>

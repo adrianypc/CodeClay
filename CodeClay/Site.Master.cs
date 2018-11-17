@@ -5,8 +5,10 @@ using System.Security.Principal;
 using System.Web;
 using System.Web.Security;
 using System.Web.UI;
-using System.Web.UI.WebControls;
 using Microsoft.AspNet.Identity;
+
+using DevExpress.Web;
+using CodistriCore;
 
 namespace CodeClay
 {
@@ -15,6 +17,10 @@ namespace CodeClay
         private const string AntiXsrfTokenKey = "__AntiXsrfToken";
         private const string AntiXsrfUserNameKey = "__AntiXsrfUserName";
         private string _antiXsrfTokenValue;
+
+        // --------------------------------------------------------------------------------------------------
+        // Event handlers
+        // --------------------------------------------------------------------------------------------------
 
         protected void Page_Init(object sender, EventArgs e)
         {
@@ -45,10 +51,10 @@ namespace CodeClay
                 Response.Cookies.Set(responseCookie);
             }
 
-            Page.PreLoad += master_Page_PreLoad;
+            Page.PreLoad += Page_PreLoad;
         }
 
-        protected void master_Page_PreLoad(object sender, EventArgs e)
+        protected void Page_PreLoad(object sender, EventArgs e)
         {
             if (!IsPostBack)
             {
@@ -66,16 +72,5 @@ namespace CodeClay
                 }
             }
         }
-
-        protected void Page_Load(object sender, EventArgs e)
-        {
-
-        }
-
-        protected void Unnamed_LoggingOut(object sender, LoginCancelEventArgs e)
-        {
-            Context.GetOwinContext().Authentication.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
-        }
     }
-
 }

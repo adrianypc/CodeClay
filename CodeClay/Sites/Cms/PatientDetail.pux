@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<CiTable>
+  <TableName>PatientDetail</TableName>
+  <TableCaption>Patient Detail</TableCaption>
+  <RowKey>FPatientNo,MPatientNo</RowKey>
+  <DefaultView>Card</DefaultView>
+  <CiTextField>
+    <FieldName>FPatientNo</FieldName>
+    <Hidden>true</Hidden>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>MPatientNo</FieldName>
+    <Hidden>true</Hidden>
+  </CiTextField>
+  <SelectMacro>
+    <ActionSQL>
+      select 
+        @FPatientNo as FPatientNo,
+        @MPatientNo as MPatientNo
+    </ActionSQL>
+  </SelectMacro>
+  <CiTable Src="FProfile.pux" />
+  <CiTable Src="MProfile.pux" />
+</CiTable>

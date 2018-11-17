@@ -1,0 +1,106 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<CiTable>
+  <TableName>ScannedFiles</TableName>
+  <TableCaption>Scanned Files</TableCaption>
+  <RowKey>ClientNo,FileID</RowKey>
+  <DefaultView>Card</DefaultView>
+  <CiField>
+    <FieldName>ClientNo</FieldName>
+    <Caption>ClientNo</Caption>
+    <Hidden>true</Hidden>
+  </CiField>
+  <CiField>
+    <FieldName>FileID</FieldName>
+    <Caption>ID</Caption>
+    <Width>2</Width>
+  </CiField>
+  <CiDateField>
+    <FieldName>UploadDate</FieldName>
+    <Caption>Upload Date</Caption>
+    <Width>10</Width>
+  </CiDateField>
+  <CiComboField>
+    <FieldName>Staff</FieldName>
+    <Caption>Staff</Caption>
+    <DropdownSQL>
+      select OtherNames from ApplicationUser where Enabled = 'Y' order by OtherNames
+    </DropdownSQL>
+    <Width>15</Width>
+  </CiComboField>
+  <CiTextField>
+    <FieldName>Comments</FieldName>
+    <Caption>Comments</Caption>
+    <Width>30</Width>
+  </CiTextField>
+  <CiLinkField>
+    <FieldName>AttachmentUrl</FieldName>
+    <Caption>Attachment</Caption>
+    <Folder lang="sql">select 'SavedFiles\Patients\' + @ClientNo + '\F' + ltrim(str(@FileID))</Folder>
+    <Width>50</Width>
+  </CiLinkField>
+  <DefaultMacro>
+    <ActionSQL>
+      select  @ClientNo as ClientNo,
+              isnull(1 + max(FileID), 0) as FileID,
+              getdate() as UploadDate,
+					    (select OtherNames from ApplicationUser where Email = @CI_UserEmail) as Staff
+      from    ScannedFiles
+      where   ClientNo = @ClientNo
+    </ActionSQL>
+  </DefaultMacro>
+  <SelectMacro>
+    <ActionSQL>
+      select  *
+      from    ScannedFiles
+      where   ClientNo = @ClientNo
+      order by FileID
+    </ActionSQL>
+  </SelectMacro>
+  <UpdateMacro>
+    <ActionSQL>
+      update  ScannedFiles
+      set     UploadDate     = @UploadDate,
+      Staff          = @Staff,
+      Comments       = @Comments,
+      AttachmentUrl  = @AttachmentUrl
+      where   FileID         = @FileID
+      and     ClientNo       = @ClientNo
+    </ActionSQL>
+  </UpdateMacro>
+  <InsertMacro>
+    <ActionSQL>
+      select  isnull(1 + max(FileID), 0) as FileID
+      from    ScannedFiles
+      where   ClientNo = @ClientNo
+    </ActionSQL>
+    <ActionSQL>
+      insert
+      into    ScannedFiles
+      (       FileID,
+      Staff,
+      UploadDate,
+      ClientNo,
+      Comments,
+      AttachmentUrl
+      )
+      values
+      (       @FileID,
+      @Staff,
+      @UploadDate,
+      @ClientNo,
+      @Comments,
+      @AttachmentUrl
+      )
+    </ActionSQL>
+    <ActionSQL>
+      select @ClientNo as ClientNo, @FileID as FileID
+    </ActionSQL>
+  </InsertMacro>
+  <DeleteMacro>
+    <ActionSQL>
+      delete from ScannedFiles
+      where  FileID    = @FileID
+      and    ClientNo = @ClientNo
+    </ActionSQL>
+  </DeleteMacro>
+</CiTable>

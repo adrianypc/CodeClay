@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<CiTable>
+	<TableName>Past Records</TableName>
+	<TableCaption>Past Records</TableCaption>
+	<DefaultView>Card</DefaultView>
+	<CiField>
+		<Value>View past records for this patient</Value>
+	</CiField>
+	<CiField>
+		<FieldName>sPatientNo</FieldName>
+		<Hidden>true</Hidden>
+	</CiField>
+	<CiField>
+		<FieldName>sFutureAppointment</FieldName>
+		<Hidden>true</Hidden>
+    <Value>N</Value>
+	</CiField>
+  <CiTable Src="AppointmentList.pux">
+    <DoubleClickMacroName>Appointment Detail</DoubleClickMacroName>
+    <PageSize>10</PageSize>
+  </CiTable>
+  <CiTable Src="PatientBillList.pux">
+    <DoubleClickMacroName>Bill Detail</DoubleClickMacroName>
+    <PageSize>10</PageSize>
+  </CiTable>
+  <SelectMacro>
+    <ActionSQL>select 1</ActionSQL>
+  </SelectMacro>
+</CiTable>

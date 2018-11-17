@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<CiApplication>
+  <AppName>CMS</AppName>
+	<IsDesigner>true</IsDesigner>
+	<ProviderName>System.Data.SqlClient</ProviderName>
+	<TEST_ConnectionString>Password=cms123*;Persist Security Info=True;User ID=sa;Initial Catalog=CMSTest;Data Source=cccrmsm</TEST_ConnectionString>
+	<ConnectionString>Integrated Security=SSPI;Initial Catalog=CMSTest;Data Source=(localdb)\ProjectsV13;AttachDBFilename=C:\Users\adrianypc\Documents\Databases\CMSTest.mdf</ConnectionString>
+	<CiMenu>
+		<MenuName>Application</MenuName>
+		<CiMenu>
+			<MenuName>Doctor Appointments</MenuName>
+			<CiMenu>
+				<MenuName>Min Yu</MenuName>
+				<PluginSrc>Appointmentlist.pux&amp;sFutureAppointment=false&amp;sConsultantID=61</PluginSrc>
+			</CiMenu>
+			<CiMenu>
+				<MenuName>Cheng Toh</MenuName>
+				<PluginSrc>Appointmentlist.pux&amp;sFutureAppointment=false&amp;sConsultantID=56</PluginSrc>
+			</CiMenu>
+			<CiMenu>
+				<MenuName>Siew Hong</MenuName>
+				<PluginSrc>Appointmentlist.pux&amp;sFutureAppointment=false&amp;sConsultantID=58</PluginSrc>
+			</CiMenu>
+			<CiMenu>
+				<MenuName>Suresh</MenuName>
+				<PluginSrc>Appointmentlist.pux&amp;sFutureAppointment=false&amp;sConsultantID=59</PluginSrc>
+			</CiMenu>
+			<CiMenu>
+				<MenuName>Michelle</MenuName>
+				<PluginSrc>Appointmentlist.pux&amp;sFutureAppointment=false&amp;sConsultantID=60</PluginSrc>
+			</CiMenu>
+		</CiMenu>
+		<CiMenu>
+			<MenuName>Patients</MenuName>
+			<PluginSrc>Couple.pux</PluginSrc>
+		</CiMenu>
+	</CiMenu>
+	<LoginMacro>
+		<ActionSQL>exec spUser_Login @CI_UserEmail</ActionSQL>
+	</LoginMacro>
+	<LogoutMacro>
+		<ActionSQL>exec spUser_Logout @CI_UserEmail</ActionSQL>
+	</LogoutMacro>
+</CiApplication>

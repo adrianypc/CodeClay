@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<CiTable>
+  <TableName>Patients</TableName>
+  <TableCaption>Patients</TableCaption>
+  <RowKey>ClientNo</RowKey>
+  <DefaultView>Grid</DefaultView>
+  <CiTextField>
+    <FieldName>sPatientNo</FieldName>
+    <Caption>Patient No</Caption>
+    <Searchable>true</Searchable>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>sNRIC</FieldName>
+    <Caption>NRIC/Passport</Caption>
+    <Searchable>true</Searchable>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>sLastName</FieldName>
+    <Caption>Surname</Caption>
+    <Searchable>true</Searchable>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>sFirstName</FieldName>
+    <Caption>First Name</Caption>
+    <Searchable>true</Searchable>
+  </CiTextField>
+  <CiComboField>
+    <FieldName>sCorporate</FieldName>
+    <Caption>Corporate</Caption>
+    <Code>CustomerNo</Code>
+    <Description>CustomerName</Description>
+    <DropdownSQL>select CustomerName,CustomerNo from Customer where CustomerType = 'B' </DropdownSQL>
+    <Searchable>true</Searchable>
+  </CiComboField>
+  <CiDateField>
+    <FieldName>sBirthDate</FieldName>
+    <Caption>Date Of Birth</Caption>
+    <Searchable>true</Searchable>
+    <ColumnFormat>dd/MM/yyyy</ColumnFormat>
+  </CiDateField>
+  <CiTextField>
+    <FieldName>ClientNo</FieldName>
+    <Caption>Patient No</Caption>
+    <Editable>false</Editable>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>IdentityNo</FieldName>
+    <Caption>NRIC/Passport</Caption>
+    <Editable>false</Editable>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>ClientSurname</FieldName>
+    <Caption>Last Name</Caption>
+    <Editable>false</Editable>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>ClientOtherNames</FieldName>
+    <Caption>First Name</Caption>
+    <Editable>false</Editable>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>Mobile</FieldName>
+    <Caption>Phone</Caption>
+    <Editable>false</Editable>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>Sex</FieldName>
+    <Hidden>true</Hidden>
+  </CiTextField>
+  <CiMacro>
+    <MacroName>Appointments</MacroName>
+    <MacroType>MENU</MacroType>
+    <ActionSQL>
+      select
+        @ClientNo as sPatientNo,
+        @ClientSurname as sLastName,
+        @ClientOtherNames as sFirstName,
+        @IdentityNo as sNRIC,
+        -1 as sAppointmentNo,
+        1 as sFutureAppointment
+    </ActionSQL>
+    <NavigateUrl>AppointmentList.pux</NavigateUrl>
+    <NavigatePos>Popup</NavigatePos>
+  </CiMacro>
+  <CiMacro>
+    <MacroName>Bills</MacroName>
+    <MacroType>MENU</MacroType>
+    <ActionSQL>select @ClientNo as PatientNo</ActionSQL>
+    <NavigateUrl>PatientBills.pux</NavigateUrl>
+    <NavigatePos>NewTab</NavigatePos>
+  </CiMacro>
+  <CiMacro>
+    <MacroName>New Appointment</MacroName>
+    <MacroType>MENU</MacroType>
+    <ActionSQL>
+      select
+      ClientNo,
+      IdentityNo,
+      ClientSurname,
+      ClientOtherNames,
+      Sex,
+      AddressLine1,
+      AddressLine2,
+      AddressLine3,
+      PhoneHome,
+      Mobile,
+      Pager,
+      cast(0 as bit) as IsNewPatient
+      from Client where ClientNo = @ClientNo
+    </ActionSQL>
+    <NavigateUrl>AppointmentDetail.pux</NavigateUrl>
+    <NavigatePos>NewTab</NavigatePos>
+  </CiMacro>
+  <CiMacro>
+    <MacroName>New Appointment for New Patient</MacroName>
+    <MacroType>MENU</MacroType>
+    <NavigateUrl>AppointmentDetail.pux</NavigateUrl>
+    <NavigatePos>NewTab</NavigatePos>
+  </CiMacro>
+  <CiMacro>
+    <MacroName>Patient Detail</MacroName>
+    <MacroType>MENU</MacroType>
+    <ActionSQL>select @ClientNo as FPatientNo, @ClientNo as MPatientNo </ActionSQL>
+    <NavigateUrl>PatientDetail.pux</NavigateUrl>
+    <NavigatePos>NewTab</NavigatePos>
+  </CiMacro>
+  <SelectMacro>
+    <ActionSQL>
+     ?exec spClientSearch_sel
+      @sPatientNo,
+      @sNRIC,
+      @sLastName,
+      @sFirstName,
+      @sCorporate,
+      @sBirthDate
+    </ActionSQL>
+  </SelectMacro>
+</CiTable>

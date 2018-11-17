@@ -1,0 +1,130 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<XtraReportsLayoutSerializer SerializerVersion="17.1.12.0" Ref="1" ControlType="DevExpress.XtraReports.UI.XtraReport, DevExpress.XtraReports.v17.1, Version=17.1.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" Name="XtraReport" PageWidth="850" PageHeight="1100" Version="17.1" DataMember="ReportFields" DataSource="#Ref-0">
+  <Extensions>
+    <Item1 Ref="2" Key="DataSerializationExtension" Value="DataSetSerializer" />
+  </Extensions>
+  <Bands>
+    <Item1 Ref="3" ControlType="TopMarginBand" Name="topMarginBand1" HeightF="100" />
+    <Item2 Ref="4" ControlType="ReportHeaderBand" Name="reportHeaderBand1" HeightF="45">
+      <Controls>
+        <Item1 Ref="5" ControlType="XRLabel" Name="label31" Text="Report Title" SizeF="638,33" LocationFloat="6, 6" StyleName="Title" />
+      </Controls>
+    </Item2>
+    <Item3 Ref="6" ControlType="DetailBand" Name="detailBand1" HeightF="403">
+      <Controls>
+        <Item1 Ref="7" ControlType="XRLabel" Name="label1" Text="Billable" SizeF="162,23" LocationFloat="6, 9" StyleName="FieldCaption" />
+        <Item2 Ref="8" ControlType="XRLabel" Name="label2" Text="Buy Price" SizeF="162,18" LocationFloat="6, 38" StyleName="FieldCaption" />
+        <Item3 Ref="9" ControlType="XRLabel" Name="label3" Text="Category" SizeF="162,18" LocationFloat="6, 62" StyleName="FieldCaption" />
+        <Item4 Ref="10" ControlType="XRLabel" Name="label4" Text="Completed Date" SizeF="162,18" LocationFloat="6, 86" StyleName="FieldCaption" />
+        <Item5 Ref="11" ControlType="XRLabel" Name="label5" Text="Customer Code" SizeF="162,18" LocationFloat="6, 110" StyleName="FieldCaption" />
+        <Item6 Ref="12" ControlType="XRLabel" Name="label6" Text="Date Created" SizeF="162,18" LocationFloat="6, 134" StyleName="FieldCaption" />
+        <Item7 Ref="13" ControlType="XRLabel" Name="label7" Text="Fixed Price" SizeF="162,23" LocationFloat="6, 158" StyleName="FieldCaption" />
+        <Item8 Ref="14" ControlType="XRLabel" Name="label8" Text="Hours Bought" SizeF="162,18" LocationFloat="6, 187" StyleName="FieldCaption" />
+        <Item9 Ref="15" ControlType="XRLabel" Name="label9" Text="Hours Sold" SizeF="162,18" LocationFloat="6, 211" StyleName="FieldCaption" />
+        <Item10 Ref="16" ControlType="XRLabel" Name="label10" Text="Invoice Number" SizeF="162,18" LocationFloat="6, 235" StyleName="FieldCaption" />
+        <Item11 Ref="17" ControlType="XRLabel" Name="label11" Text="Primary Developer" SizeF="162,18" LocationFloat="6, 259" StyleName="FieldCaption" />
+        <Item12 Ref="18" ControlType="XRLabel" Name="label12" Text="Sell Price" SizeF="162,18" LocationFloat="6, 283" StyleName="FieldCaption" />
+        <Item13 Ref="19" ControlType="XRLabel" Name="label13" Text="Task Code" SizeF="162,18" LocationFloat="6, 307" StyleName="FieldCaption" />
+        <Item14 Ref="20" ControlType="XRLabel" Name="label14" Text="Task Description" SizeF="162,18" LocationFloat="6, 331" StyleName="FieldCaption" />
+        <Item15 Ref="21" ControlType="XRLabel" Name="label15" Text="Task Status" SizeF="162,18" LocationFloat="6, 355" StyleName="FieldCaption" />
+        <Item16 Ref="22" ControlType="XRLabel" Name="label16" Text="Task Type" SizeF="162,18" LocationFloat="6, 379" StyleName="FieldCaption" />
+        <Item17 Ref="23" ControlType="XRCheckBox" Name="checkBox1" SizeF="470,23" LocationFloat="174, 9" StyleName="DataField">
+          <DataBindings>
+            <Item1 Ref="24" PropertyName="CheckState" DataMember="ReportFields.Billable" />
+          </DataBindings>
+        </Item17>
+        <Item18 Ref="25" ControlType="XRLabel" Name="label17" SizeF="470,18" LocationFloat="174, 38" StyleName="DataField">
+          <DataBindings>
+            <Item1 Ref="26" FormatString="{0:C2}" PropertyName="Text" DataMember="ReportFields.BuyPrice" />
+          </DataBindings>
+        </Item18>
+        <Item19 Ref="27" ControlType="XRLabel" Name="label18" SizeF="470,18" LocationFloat="174, 62" StyleName="DataField">
+          <DataBindings>
+            <Item1 Ref="28" PropertyName="Text" DataMember="ReportFields.Category" />
+          </DataBindings>
+        </Item19>
+        <Item20 Ref="29" ControlType="XRLabel" Name="label19" SizeF="470,18" LocationFloat="174, 86" StyleName="DataField">
+          <DataBindings>
+            <Item1 Ref="30" PropertyName="Text" DataMember="ReportFields.CompletedDate" />
+          </DataBindings>
+        </Item20>
+        <Item21 Ref="31" ControlType="XRLabel" Name="label20" SizeF="470,18" LocationFloat="174, 110" StyleName="DataField">
+          <DataBindings>
+            <Item1 Ref="32" PropertyName="Text" DataMember="ReportFields.CustomerCode" />
+          </DataBindings>
+        </Item21>
+        <Item22 Ref="33" ControlType="XRLabel" Name="label21" SizeF="470,18" LocationFloat="174, 134" StyleName="DataField">
+          <DataBindings>
+            <Item1 Ref="34" PropertyName="Text" DataMember="ReportFields.DateCreated" />
+          </DataBindings>
+        </Item22>
+        <Item23 Ref="35" ControlType="XRCheckBox" Name="checkBox2" SizeF="470,23" LocationFloat="174, 158" StyleName="DataField">
+          <DataBindings>
+            <Item1 Ref="36" PropertyName="CheckState" DataMember="ReportFields.FixedPrice" />
+          </DataBindings>
+        </Item23>
+        <Item24 Ref="37" ControlType="XRLabel" Name="label22" SizeF="470,18" LocationFloat="174, 187" StyleName="DataField">
+          <DataBindings>
+            <Item1 Ref="38" FormatString="{0:C2}" PropertyName="Text" DataMember="ReportFields.HoursBought" />
+          </DataBindings>
+        </Item24>
+        <Item25 Ref="39" ControlType="XRLabel" Name="label23" SizeF="470,18" LocationFloat="174, 211" StyleName="DataField">
+          <DataBindings>
+            <Item1 Ref="40" FormatString="{0:C2}" PropertyName="Text" DataMember="ReportFields.HoursSold" />
+          </DataBindings>
+        </Item25>
+        <Item26 Ref="41" ControlType="XRLabel" Name="label24" SizeF="470,18" LocationFloat="174, 235" StyleName="DataField">
+          <DataBindings>
+            <Item1 Ref="42" PropertyName="Text" DataMember="ReportFields.InvoiceNumber" />
+          </DataBindings>
+        </Item26>
+        <Item27 Ref="43" ControlType="XRLabel" Name="label25" SizeF="470,18" LocationFloat="174, 259" StyleName="DataField">
+          <DataBindings>
+            <Item1 Ref="44" PropertyName="Text" DataMember="ReportFields.PrimaryDeveloper" />
+          </DataBindings>
+        </Item27>
+        <Item28 Ref="45" ControlType="XRLabel" Name="label26" SizeF="470,18" LocationFloat="174, 283" StyleName="DataField">
+          <DataBindings>
+            <Item1 Ref="46" FormatString="{0:C2}" PropertyName="Text" DataMember="ReportFields.SellPrice" />
+          </DataBindings>
+        </Item28>
+        <Item29 Ref="47" ControlType="XRLabel" Name="label27" SizeF="470,18" LocationFloat="174, 307" StyleName="DataField">
+          <DataBindings>
+            <Item1 Ref="48" PropertyName="Text" DataMember="ReportFields.TaskCode" />
+          </DataBindings>
+        </Item29>
+        <Item30 Ref="49" ControlType="XRLabel" Name="label28" SizeF="470,18" LocationFloat="174, 331" StyleName="DataField">
+          <DataBindings>
+            <Item1 Ref="50" PropertyName="Text" DataMember="ReportFields.TaskDescription" />
+          </DataBindings>
+        </Item30>
+        <Item31 Ref="51" ControlType="XRLabel" Name="label29" SizeF="470,18" LocationFloat="174, 355" StyleName="DataField">
+          <DataBindings>
+            <Item1 Ref="52" PropertyName="Text" DataMember="ReportFields.TaskStatus" />
+          </DataBindings>
+        </Item31>
+        <Item32 Ref="53" ControlType="XRLabel" Name="label30" SizeF="470,18" LocationFloat="174, 379" StyleName="DataField">
+          <DataBindings>
+            <Item1 Ref="54" PropertyName="Text" DataMember="ReportFields.TaskType" />
+          </DataBindings>
+        </Item32>
+        <Item33 Ref="55" ControlType="XRLine" Name="line1" SizeF="638,2" LocationFloat="6, 3" />
+      </Controls>
+    </Item3>
+    <Item4 Ref="56" ControlType="BottomMarginBand" Name="bottomMarginBand1" HeightF="100">
+      <Controls>
+        <Item1 Ref="57" ControlType="XRPageInfo" Name="pageInfo1" PageInfo="DateTime" SizeF="313,23" LocationFloat="6, 6" StyleName="PageInfo" />
+        <Item2 Ref="58" ControlType="XRPageInfo" Name="pageInfo2" Format="Page {0} of {1}" TextAlignment="TopRight" SizeF="313,23" LocationFloat="331, 6" StyleName="PageInfo" />
+      </Controls>
+    </Item4>
+  </Bands>
+  <StyleSheet>
+    <Item1 Ref="59" Name="Title" BorderStyle="Inset" Font="Times New Roman, 20pt, style=Bold" ForeColor="Maroon" BackColor="Transparent" BorderColor="Black" Sides="None" StringFormat="Near;Near;0;None;Character;Default" BorderWidthSerializable="1" />
+    <Item2 Ref="60" Name="FieldCaption" BorderStyle="Inset" Font="Arial, 10pt, style=Bold" ForeColor="Maroon" BackColor="Transparent" BorderColor="Black" Sides="None" StringFormat="Near;Near;0;None;Character;Default" BorderWidthSerializable="1" />
+    <Item3 Ref="61" Name="PageInfo" BorderStyle="Inset" Font="Times New Roman, 10pt, style=Bold" ForeColor="Black" BackColor="Transparent" BorderColor="Black" Sides="None" StringFormat="Near;Near;0;None;Character;Default" BorderWidthSerializable="1" />
+    <Item4 Ref="62" Name="DataField" BorderStyle="Inset" Padding="2,2,0,0,100" Font="Times New Roman, 10pt" ForeColor="Black" BackColor="Transparent" BorderColor="Black" Sides="None" StringFormat="Near;Near;0;None;Character;Default" BorderWidthSerializable="1" />
+  </StyleSheet>
+  <ObjectStorage>
+    <Item1 ObjectType="DevExpress.XtraReports.Serialization.ObjectStorageInfo, DevExpress.XtraReports.v17.1" Ref="0" Content="&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-16&quot;?&gt;&lt;ReportTable&gt;&lt;xs:schema id=&quot;ReportTable&quot; xmlns=&quot;&quot; xmlns:xs=&quot;http://www.w3.org/2001/XMLSchema&quot; xmlns:msdata=&quot;urn:schemas-microsoft-com:xml-msdata&quot;&gt;&lt;xs:element name=&quot;ReportTable&quot; msdata:IsDataSet=&quot;true&quot; msdata:UseCurrentLocale=&quot;true&quot;&gt;&lt;xs:complexType&gt;&lt;xs:choice minOccurs=&quot;0&quot; maxOccurs=&quot;unbounded&quot;&gt;&lt;xs:element name=&quot;ReportFields&quot;&gt;&lt;xs:complexType&gt;&lt;xs:sequence&gt;&lt;xs:element name=&quot;TaskCode&quot; type=&quot;xs:string&quot; minOccurs=&quot;0&quot; /&gt;&lt;xs:element name=&quot;TaskDescription&quot; type=&quot;xs:string&quot; minOccurs=&quot;0&quot; /&gt;&lt;xs:element name=&quot;TaskType&quot; type=&quot;xs:string&quot; minOccurs=&quot;0&quot; /&gt;&lt;xs:element name=&quot;CustomerCode&quot; type=&quot;xs:string&quot; minOccurs=&quot;0&quot; /&gt;&lt;xs:element name=&quot;Category&quot; type=&quot;xs:string&quot; minOccurs=&quot;0&quot; /&gt;&lt;xs:element name=&quot;PrimaryDeveloper&quot; type=&quot;xs:string&quot; minOccurs=&quot;0&quot; /&gt;&lt;xs:element name=&quot;InvoiceNumber&quot; type=&quot;xs:string&quot; minOccurs=&quot;0&quot; /&gt;&lt;xs:element name=&quot;CompletedDate&quot; type=&quot;xs:dateTime&quot; minOccurs=&quot;0&quot; /&gt;&lt;xs:element name=&quot;FixedPrice&quot; type=&quot;xs:boolean&quot; minOccurs=&quot;0&quot; /&gt;&lt;xs:element name=&quot;DateCreated&quot; type=&quot;xs:dateTime&quot; minOccurs=&quot;0&quot; /&gt;&lt;xs:element name=&quot;HoursBought&quot; type=&quot;xs:decimal&quot; minOccurs=&quot;0&quot; /&gt;&lt;xs:element name=&quot;HoursSold&quot; type=&quot;xs:decimal&quot; minOccurs=&quot;0&quot; /&gt;&lt;xs:element name=&quot;TaskStatus&quot; type=&quot;xs:string&quot; minOccurs=&quot;0&quot; /&gt;&lt;xs:element name=&quot;Billable&quot; type=&quot;xs:boolean&quot; minOccurs=&quot;0&quot; /&gt;&lt;xs:element name=&quot;SellPrice&quot; type=&quot;xs:decimal&quot; minOccurs=&quot;0&quot; /&gt;&lt;xs:element name=&quot;BuyPrice&quot; type=&quot;xs:decimal&quot; minOccurs=&quot;0&quot; /&gt;&lt;/xs:sequence&gt;&lt;/xs:complexType&gt;&lt;/xs:element&gt;&lt;/xs:choice&gt;&lt;/xs:complexType&gt;&lt;/xs:element&gt;&lt;/xs:schema&gt;&lt;ReportFields&gt;&lt;TaskCode&gt;T000291&lt;/TaskCode&gt;&lt;TaskDescription&gt;Enhance software: Reinstall Clubfit software at TAF Adelaide&lt;/TaskDescription&gt;&lt;TaskType&gt;Enhance software&lt;/TaskType&gt;&lt;CustomerCode&gt;CCL&lt;/CustomerCode&gt;&lt;Category&gt;TAF Adelaide&lt;/Category&gt;&lt;PrimaryDeveloper&gt;Maw&lt;/PrimaryDeveloper&gt;&lt;InvoiceNumber&gt;INCCL100&lt;/InvoiceNumber&gt;&lt;CompletedDate&gt;2008-10-10T00:00:00+11:00&lt;/CompletedDate&gt;&lt;FixedPrice&gt;false&lt;/FixedPrice&gt;&lt;Billable&gt;true&lt;/Billable&gt;&lt;/ReportFields&gt;&lt;ReportFields&gt;&lt;TaskCode&gt;T000375&lt;/TaskCode&gt;&lt;TaskDescription&gt;Rebuild PPC&lt;/TaskDescription&gt;&lt;CustomerCode&gt;CCL&lt;/CustomerCode&gt;&lt;Category&gt;TAF Porirua&lt;/Category&gt;&lt;PrimaryDeveloper&gt;Wei Wei&lt;/PrimaryDeveloper&gt;&lt;InvoiceNumber&gt;INCCL101&lt;/InvoiceNumber&gt;&lt;CompletedDate&gt;2008-10-21T00:00:00+11:00&lt;/CompletedDate&gt;&lt;FixedPrice&gt;false&lt;/FixedPrice&gt;&lt;Billable&gt;true&lt;/Billable&gt;&lt;/ReportFields&gt;&lt;ReportFields&gt;&lt;TaskCode&gt;T000403&lt;/TaskCode&gt;&lt;TaskDescription&gt;Investigate lockout from Chemist Club website&lt;/TaskDescription&gt;&lt;TaskType&gt;Respond to customer enquiry&lt;/TaskType&gt;&lt;CustomerCode&gt;CCL&lt;/CustomerCode&gt;&lt;Category&gt;HIP Bell Park&lt;/Category&gt;&lt;PrimaryDeveloper&gt;Adrian&lt;/PrimaryDeveloper&gt;&lt;InvoiceNumber&gt;INCCL101&lt;/InvoiceNumber&gt;&lt;CompletedDate&gt;2008-10-27T00:00:00+11:00&lt;/CompletedDate&gt;&lt;FixedPrice&gt;false&lt;/FixedPrice&gt;&lt;Billable&gt;true&lt;/Billable&gt;&lt;/ReportFields&gt;&lt;ReportFields&gt;&lt;TaskCode&gt;T000411&lt;/TaskCode&gt;&lt;TaskDescription&gt;Rebuild PocketPC&lt;/TaskDescription&gt;&lt;CustomerCode&gt;CCL&lt;/CustomerCode&gt;&lt;Category&gt;Pulse Richmond&lt;/Category&gt;&lt;PrimaryDeveloper&gt;Wei Wei&lt;/PrimaryDeveloper&gt;&lt;InvoiceNumber&gt;INCCL101&lt;/InvoiceNumber&gt;&lt;CompletedDate&gt;2008-10-30T00:00:00+11:00&lt;/CompletedDate&gt;&lt;FixedPrice&gt;false&lt;/FixedPrice&gt;&lt;Billable&gt;true&lt;/Billable&gt;&lt;/ReportFields&gt;&lt;ReportFields&gt;&lt;TaskCode&gt;T000457&lt;/TaskCode&gt;&lt;TaskDescription&gt;Perform miscellaneous follow up tasks from CluFit IT meeting 7 Nov 08&lt;/TaskDescription&gt;&lt;TaskType&gt;Do ClubFit IT tasks&lt;/TaskType&gt;&lt;CustomerCode&gt;CCL&lt;/CustomerCode&gt;&lt;Category&gt;TAF&lt;/Category&gt;&lt;PrimaryDeveloper&gt;Adrian&lt;/PrimaryDeveloper&gt;&lt;InvoiceNumber&gt;INCCL103&lt;/InvoiceNumber&gt;&lt;CompletedDate&gt;2008-11-13T00:00:00+11:00&lt;/CompletedDate&gt;&lt;FixedPrice&gt;false&lt;/FixedPrice&gt;&lt;Billable&gt;true&lt;/Billable&gt;&lt;/ReportFields&gt;&lt;ReportFields&gt;&lt;TaskCode&gt;T000458&lt;/TaskCode&gt;&lt;TaskDescription&gt;Create extract of member for HYC for 28 stores&lt;/TaskDescription&gt;&lt;TaskType&gt;Create extract&lt;/TaskType&gt;&lt;CustomerCode&gt;CCL&lt;/CustomerCode&gt;&lt;Category&gt;TAF&lt;/Category&gt;&lt;PrimaryDeveloper&gt;Maw&lt;/PrimaryDeveloper&gt;&lt;InvoiceNumber&gt;INCCL103&lt;/InvoiceNumber&gt;&lt;CompletedDate&gt;2008-11-17T00:00:00+11:00&lt;/CompletedDate&gt;&lt;FixedPrice&gt;false&lt;/FixedPrice&gt;&lt;Billable&gt;true&lt;/Billable&gt;&lt;/ReportFields&gt;&lt;ReportFields&gt;&lt;TaskCode&gt;T000537&lt;/TaskCode&gt;&lt;TaskDescription&gt;Enhance software: Install Clubfit software for RetailManager&lt;/TaskDescription&gt;&lt;TaskType&gt;Enhance software&lt;/TaskType&gt;&lt;CustomerCode&gt;CCL&lt;/CustomerCode&gt;&lt;Category&gt;TAF Warrnambool&lt;/Category&gt;&lt;PrimaryDeveloper&gt;Maw&lt;/PrimaryDeveloper&gt;&lt;InvoiceNumber&gt;INCCL106&lt;/InvoiceNumber&gt;&lt;CompletedDate&gt;2008-12-17T00:00:00+11:00&lt;/CompletedDate&gt;&lt;FixedPrice&gt;false&lt;/FixedPrice&gt;&lt;Billable&gt;true&lt;/Billable&gt;&lt;/ReportFields&gt;&lt;ReportFields&gt;&lt;TaskCode&gt;T000556&lt;/TaskCode&gt;&lt;TaskDescription&gt;Investigate why voucher 792001106 was showing as redeemed on the PPC, but unredeemed on the server&lt;/TaskDescription&gt;&lt;CustomerCode&gt;CCL&lt;/CustomerCode&gt;&lt;Category&gt;Pulse Knox City&lt;/Category&gt;&lt;PrimaryDeveloper&gt;Andie&lt;/PrimaryDeveloper&gt;&lt;InvoiceNumber&gt;INCCL106&lt;/InvoiceNumber&gt;&lt;CompletedDate&gt;2008-12-18T00:00:00+11:00&lt;/CompletedDate&gt;&lt;FixedPrice&gt;false&lt;/FixedPrice&gt;&lt;Billable&gt;true&lt;/Billable&gt;&lt;/ReportFields&gt;&lt;ReportFields&gt;&lt;TaskCode&gt;T001161&lt;/TaskCode&gt;&lt;TaskDescription&gt;Enhance software: Automate generation of TAF Dashboard &amp;amp; Monthly performance reports&lt;/TaskDescription&gt;&lt;TaskType&gt;Enhance software&lt;/TaskType&gt;&lt;CustomerCode&gt;CCL&lt;/CustomerCode&gt;&lt;Category&gt;TAF&lt;/Category&gt;&lt;PrimaryDeveloper&gt;Maw&lt;/PrimaryDeveloper&gt;&lt;InvoiceNumber&gt;INCCL107&lt;/InvoiceNumber&gt;&lt;CompletedDate&gt;2009-01-15T00:00:00+11:00&lt;/CompletedDate&gt;&lt;FixedPrice&gt;false&lt;/FixedPrice&gt;&lt;Billable&gt;true&lt;/Billable&gt;&lt;/ReportFields&gt;&lt;ReportFields&gt;&lt;TaskCode&gt;T001177&lt;/TaskCode&gt;&lt;TaskDescription&gt;Write procedure for using members.Chemist Club.com.au to setup user accounts&lt;/TaskDescription&gt;&lt;CustomerCode&gt;CCL&lt;/CustomerCode&gt;&lt;Category&gt;Chemist Club&lt;/Category&gt;&lt;PrimaryDeveloper&gt;Wei Wei&lt;/PrimaryDeveloper&gt;&lt;InvoiceNumber&gt;INCCL101&lt;/InvoiceNumber&gt;&lt;CompletedDate&gt;2008-10-13T00:00:00+11:00&lt;/CompletedDate&gt;&lt;FixedPrice&gt;false&lt;/FixedPrice&gt;&lt;Billable&gt;true&lt;/Billable&gt;&lt;/ReportFields&gt;&lt;/ReportTable&gt;" Type="System.Data.DataSet" />
+  </ObjectStorage>
+</XtraReportsLayoutSerializer>
