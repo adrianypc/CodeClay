@@ -1,12 +1,7 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Data;
-using System.Data.Common;
-using System.Data.Odbc;
-using System.Data.OleDb;
-using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -16,11 +11,9 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Xml;
 using System.Xml.Linq;
-using System.Xml.Serialization;
 
 // Extra references
 using CodistriCore;
-using CsvHelper;
 using DevExpress.Web;
 using DevExpress.XtraReports.Native;
 
