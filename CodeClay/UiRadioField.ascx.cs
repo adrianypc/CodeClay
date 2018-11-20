@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Data;
+using System.Drawing;
 using System.Web.UI.WebControls;
 using System.Xml;
 using System.Xml.Serialization;
@@ -83,8 +84,6 @@ namespace CodeClay
             mEditor = dxRadioBox;
             base.Page_Load(sender, e);
 
-            dxRadioBox.BackColor = System.Drawing.Color.Transparent;
-
             if (CiRadioField != null)
             {
                 dxRadioBox.RepeatColumns = CiRadioField.Columns;
@@ -125,6 +124,15 @@ namespace CodeClay
                     ? firstColumnName
                     : textField;
             }
+        }
+
+        // --------------------------------------------------------------------------------------------------
+        // Methods (Override)
+        // --------------------------------------------------------------------------------------------------
+
+        public override Color GetBackColor(bool isEditable)
+        {
+            return Color.Transparent;
         }
     }
 }

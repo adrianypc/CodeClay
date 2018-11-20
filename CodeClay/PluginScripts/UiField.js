@@ -1,6 +1,7 @@
 ﻿var editors = {};
 var editorPanels = {};
 var fieldExitPanels = {};
+var fieldLoadingPanel = null;
 var leader = null;
 var followerFieldNames = null;
 var followerFieldIndex = 0;
@@ -132,6 +133,7 @@ function GetField(tableName, fieldName) {
 function SetField(tableName, fieldName, fieldValue) {
     if (tableName && fieldName) {
         if (fieldValue == null || fieldValue.length == 0) {
+            // Set empty field to alarm character
             fieldValue = String.fromCharCode(7);
         }
         dxClientState.Set(tableName + "." + fieldName, fieldValue);
@@ -203,14 +205,30 @@ function RefreshNextFollower() {
         var fieldName = followerFieldNames[followerFieldIndex];
         if (fieldName && editorPanels) {
             editorPanel = editorPanels[fieldName];
+
+            var tableName = editorPanel.cpTableName;
+
+            if (tableName) {
+                fieldLoadingPanel = loadingPanels[tableName];
+
+                if (fieldLoadingPanel && !fieldLoadingPanel.GetVisible()) {
+                    fieldLoadingPanel.Show();
+                }
+            }
+
             if (editorPanel) {
                 editorPanel.PerformCallback();
             }
         }
     }
+    else if (fieldLoadingPanel && fieldLoadingPanel.GetVisible()) {
+        fieldLoadingPanel.Hide();
+    }
 }
 
 function RefreshFollowers(followerFieldNames) {
+    return;
+
 	var followerFields = followerFieldNames.split(LIST_SEPARATOR);
 
 	for (var i = 0; i < followerFields.length; i++) {

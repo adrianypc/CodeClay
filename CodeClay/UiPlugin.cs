@@ -490,6 +490,7 @@ namespace CodeClay
                 {
                     if (clientValue.ToString() == "\a")
                     {
+                        // Alarm character is used to denote a field that has been cleared
                         clientValue = "";
                     }
 

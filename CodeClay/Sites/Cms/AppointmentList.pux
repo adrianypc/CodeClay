@@ -101,8 +101,7 @@
     <CiMacro>
         <MacroName>Appointment Detail</MacroName>
         <ActionSQL>
-            select @AppointmentNo as AppointmentNo,
-                   'Edit' as Mode
+            select @AppointmentNo as AppointmentNo
         </ActionSQL>
         <NavigateUrl>AppointmentDetail.pux</NavigateUrl>
         <NavigatePos>NewTab</NavigatePos>

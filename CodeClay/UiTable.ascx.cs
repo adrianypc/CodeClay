@@ -1031,13 +1031,6 @@ namespace CodeClay
                                 ? Convert.ToDecimal(fieldValue)
                                 : Convert.DBNull;
                         }
-                        else if (ciField.Mask == eTextMask.Integer)
-                        {
-                            type = typeof(int);
-                            fieldValue = !MyUtils.IsEmpty(fieldValue)
-                                ? Convert.ToInt32(fieldValue)
-                                : Convert.DBNull;
-                        }
 
                         dcColumns.Add(fieldName, type);
                     }
@@ -1287,9 +1280,12 @@ namespace CodeClay
                         foreach (DataColumn dcColumn in dt.Columns)
                         {
                             string columnName = dcColumn.ColumnName;
-                            e.NewValues[columnName] = drResult[columnName];
+                            object columnValue = drResult[columnName];
 
-							changedColumnNames.Add(columnName);
+                            e.NewValues[columnName] = columnValue;
+                            this[columnName] = columnValue;
+
+                            changedColumnNames.Add(columnName);
                         }
                     }
                 }
@@ -1298,9 +1294,11 @@ namespace CodeClay
                     foreach (DataColumn dcColumn in drParams.Table.Columns)
                     {
                         string columnName = dcColumn.ColumnName;
-                        e.NewValues[columnName] = null;
 
-						changedColumnNames.Add(columnName);
+                        e.NewValues[columnName] = null;
+                        this[columnName] = null;
+
+                        changedColumnNames.Add(columnName);
 					}
                 }
 

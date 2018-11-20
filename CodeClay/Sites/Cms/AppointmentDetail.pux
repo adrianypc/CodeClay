@@ -18,7 +18,7 @@
   <CiTextField>
     <FieldName>ClientNo</FieldName>
     <Caption>Patient No</Caption>
-    <Editable lang="sql">select 1 from Client where @IsNewPatient='false' and @ClientNo is null</Editable>
+    <Editable lang="sql">select 1 from Client where @ClientNo is null and @IsNewPatient='false'</Editable>
   </CiTextField>
   <CiTextField>
     <FieldName>IdentityNo</FieldName>
@@ -33,12 +33,12 @@
   <CiTextField>
     <FieldName>ClientOtherNames</FieldName>
     <Caption>First Name</Caption>
-    <Editable lang="sql">select 1 from Client where @ClientNo is null</Editable>
+    <Editable lang="sql">select 1 from Client where @ClientNo is null and @IsNewPatient = 'True'</Editable>
   </CiTextField>
   <CiComboField>
     <FieldName>Sex</FieldName>
     <Caption>Sex</Caption>
-    <Editable lang="sql">select 1 from Client where @ClientNo is null and @IsNewPatient = 'true'</Editable>
+    <Editable lang="sql">select 1 from Client where @ClientNo is null and @IsNewPatient = 'True'</Editable>
     <Code>Gender</Code>
     <Description>Description</Description>
     <DataSource>
@@ -103,7 +103,6 @@
     <FieldName>AppointmentDuration</FieldName>
     <Caption>Duration</Caption>
     <Editable>true</Editable>
-    <Mask>Integer</Mask>
     <Value>10</Value>
     <DataSource>
       <DataItem DurationValue="10"  />

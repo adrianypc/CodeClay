@@ -8,6 +8,7 @@
 </style>
 
 <dx:ASPxCallbackPanel ID="dxLinkPanel" ClientInstanceName="dxLinkPanel" runat="server" OnCallback="dxLinkPanel_Callback">
+    <SettingsLoadingPanel Enabled="false" />
     <ClientSideEvents Init="dxLinkPanel_Init" />
     <ClientSideEvents EndCallback="dxLinkPanel_EndCallback" />
     <PanelCollection>

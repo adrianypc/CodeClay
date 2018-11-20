@@ -218,7 +218,7 @@ namespace CodeClay
 
         public virtual ArrayList GetLeaderFieldNames()
         {
-            return MyUtils.GetParameters(EditableSQL);
+            return MyUtils.GetParameters(MyWebUtils.GetSQLFromXml(Editable));
         }
 
         public virtual CardViewColumn CreateCardColumn(UiTable uiTable)
@@ -562,9 +562,7 @@ namespace CodeClay
                 mEditor.Width = CiField.EditorWidth;
                 mEditor.Value = fieldValue;
                 mEditor.Visible = CiField.Visible;
-                mEditor.BackColor = (!CiField.IsLabel && isEditable)
-                    ? Color.PaleGoldenrod
-                    : Color.Transparent;
+                mEditor.BackColor = GetBackColor(isEditable);
 				mEditor.JSProperties["cpHasFieldExitMacro"] = (CiField.CiFieldExitMacros.Length > 0);
 				
 				if (!MyUtils.IsEmpty(foreColor))
@@ -601,6 +599,11 @@ namespace CodeClay
                     }
                 }
             }
+        }
+
+        public virtual Color GetBackColor(bool isEditable)
+        {
+            return (!CiField.IsLabel && isEditable) ? Color.PaleGoldenrod : Color.Transparent;
         }
     }
 }

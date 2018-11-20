@@ -116,7 +116,7 @@ namespace CodeClay
 
                         if (dt.Columns.Contains(key))
                         {
-                            rowKey += dr[key] as string;
+                            rowKey += MyUtils.Coalesce(dr[key], "").ToString();
                         }
                     }
                 }

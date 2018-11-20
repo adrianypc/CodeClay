@@ -372,6 +372,36 @@ namespace CodeClay
             return (T)Convert.ChangeType(result, typeof(T));
         }
 
+        public static string GetSQLFromXml(XmlElement expressionElement)
+        {
+            if (!MyUtils.IsEmpty(expressionElement))
+            {
+                eLangType language = eLangType.literal;
+                string expression = expressionElement.InnerText;
+
+                string languageString = expressionElement.GetAttribute("lang");
+                if (!MyUtils.IsEmpty(languageString))
+                {
+                    try
+                    {
+                        language = (eLangType)Enum.Parse(typeof(eLangType), languageString);
+                    }
+                    catch
+                    {
+                        // Do nothing
+                    }
+                }
+
+                switch (language)
+                {
+                    case eLangType.sql:
+                        return expression;
+                }
+            }
+
+            return null;
+        }
+
         public static bool IsTimeOutReached(Page page)
         {
             if (page != null && !Properties.Settings.Default.AirplaneMode)

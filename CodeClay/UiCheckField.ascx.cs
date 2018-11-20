@@ -56,8 +56,6 @@ namespace CodeClay
             mEditor = dxCheckBox;
             base.Page_Load(sender, e);
 
-            dxCheckBox.BackColor = Color.Transparent;
-
             // Setup checkbox value
             if (!MyUtils.IsEmpty(FieldValue))
             {
@@ -75,6 +73,15 @@ namespace CodeClay
         protected void dxCheckPanel_Callback(object sender, CallbackEventArgsBase e)
         {
             Refresh();
+        }
+
+        // --------------------------------------------------------------------------------------------------
+        // Methods (Override)
+        // --------------------------------------------------------------------------------------------------
+
+        public override Color GetBackColor(bool isEditable)
+        {
+            return Color.Transparent;
         }
     }
 }
