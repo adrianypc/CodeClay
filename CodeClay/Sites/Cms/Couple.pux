@@ -137,8 +137,12 @@
       ?exec spCoupleInfo_upd @FPatientNo,@MPatientNo,@FileLocation,@Comments
     </ActionSQL>
   </UpdateMacro>
-  <CiTable Src="FProfile.pux" />
-  <CiTable Src="MProfile.pux" />
+  <CiTable Src="FProfile.pux">
+    <BubbleUpdate>true</BubbleUpdate>
+  </CiTable>
+  <CiTable Src="MProfile.pux">
+    <BubbleUpdate>true</BubbleUpdate>
+  </CiTable>
   <CiTable Src="CoupleSummary.pux" />
   <CiTable Src="CoupleART.pux" />
   <CiTable Src="FHistory.pux" />
@@ -153,6 +157,7 @@
   </CiMacro>
   <CiMacro>
 	  <MacroName>New Patient</MacroName>
+    <ActionSQL>select 'New' as Command</ActionSQL>
 	  <NavigateUrl>PatientDetail.pux</NavigateUrl>
   </CiMacro>
 </CiTable>

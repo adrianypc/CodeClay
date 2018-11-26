@@ -52,20 +52,9 @@ namespace CodeClay
         // Properties
         // --------------------------------------------------------------------------------------------------
 
-        private static NameValueCollection mQueryString = new NameValueCollection();
+        public static NameValueCollection QueryString { get; set; }
 
-        public static NameValueCollection QueryString
-        {
-            get
-            {
-                return mQueryString;
-            }
-
-            set
-            {
-                mQueryString = value;
-            }
-    }
+        public static string QueryStringCommand { get; set; }
 
         public static string Application
         {

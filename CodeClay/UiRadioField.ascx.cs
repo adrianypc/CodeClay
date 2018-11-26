@@ -83,7 +83,7 @@ namespace CodeClay
         {
             mEditor = dxRadioBox;
             base.Page_Load(sender, e);
-
+            
             if (CiRadioField != null)
             {
                 dxRadioBox.RepeatColumns = CiRadioField.Columns;

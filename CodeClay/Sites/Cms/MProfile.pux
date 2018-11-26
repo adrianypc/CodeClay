@@ -5,7 +5,6 @@
   <RowKey>MPatientNo</RowKey>
   <DefaultView>Card</DefaultView>
   <ColCount>2</ColCount>
-  <BubbleUpdate>true</BubbleUpdate>
   <CiTextField>
     <FieldName>MPatientNo</FieldName>
     <Caption>Patient No</Caption>
@@ -64,8 +63,6 @@
     <FieldName>MCountry</FieldName>
     <Caption>Country</Caption>
     <Editable>false</Editable>
-    <Computed>true</Computed>
-    <ValueSQL>select CountryName from Country where CountryCode = @MCountryCode</ValueSQL>
   </CiTextField>
   <CiTextField>
     <FieldName>MPostcode</FieldName>

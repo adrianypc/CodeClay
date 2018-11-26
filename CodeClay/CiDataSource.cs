@@ -35,14 +35,13 @@ namespace CodeClay
             CiTable ciTable = table as CiTable;
             if (ciTable != null)
             {
-                if (ciTable.SelectMacro != null)
+                if (parameters != null && parameters.GetType() == typeof(bool))
+                {
+                    dt = new DataTable();
+                }
+                else if (ciTable.SelectMacro != null)
                 {
                     dt = RunMacro(ciTable.SelectMacro, drParams);
-
-                    if (MyWebUtils.GetNumberOfColumns(dt) > 0 && !dt.Columns.Contains("RowKey"))
-                    {
-                        dt.Columns.Add("RowKey").Expression = CreateRowKeyExpression(ciTable.RowKey);
-                    }
                 }
                 else if (ciTable.DataSource != null)
                 {
@@ -78,6 +77,11 @@ namespace CodeClay
 						DataColumn dc = dt.Columns.Add(fieldName);
                         dc.Expression = expression;
                     }
+                }
+
+                if (MyWebUtils.GetNumberOfColumns(dt) > 0 && !dt.Columns.Contains("RowKey"))
+                {
+                    dt.Columns.Add("RowKey").Expression = CreateRowKeyExpression(ciTable.RowKey);
                 }
             }
 

@@ -54,9 +54,6 @@ namespace CodeClay
         [XmlElement("DefaultView")]
         public string DefaultView { get; set; } = "Grid";
 
-        [XmlElement("Mode")]
-        public eTableMode Mode { get; set; } = eTableMode.Browse;
-
         [XmlElement("ColCount")]
         public int ColCount { get;set;} = 1;
 
@@ -187,7 +184,8 @@ namespace CodeClay
         {
             get
             {
-                return UiApplication.Me.GetCommandFired(TableName) == "Search";
+                return MyUtils.Coalesce(MyWebUtils.QueryStringCommand,
+                    UiApplication.Me.GetCommandFired(TableName)) == "Search";
             }
         }
 
@@ -365,28 +363,6 @@ namespace CodeClay
         // Properties
         // --------------------------------------------------------------------------------------------------
 
-        public eTableMode Mode
-        {
-            get
-            {
-                string mode = MyWebUtils.QueryString["Mode"];
-
-                if (!MyUtils.IsEmpty(mode))
-                {
-                    try
-                    {
-                        return (eTableMode)Enum.Parse(typeof(eTableMode), mode);
-                    }
-                    catch
-                    {
-                        // Do nothing
-                    }
-                }
-
-                return eTableMode.Browse;
-            }
-        }
-
         public bool RecordsExist
         {
             get
@@ -414,8 +390,7 @@ namespace CodeClay
 
                 bool isStartEditing = (command == "New") ||
                     dxCard.IsNewCardEditing ||
-                    dxGrid.IsNewRowEditing ||
-                    (MyUtils.IsEmpty(command) && (Mode == eTableMode.New));
+                    dxGrid.IsNewRowEditing;
 
                 bool isFinishEditing = (command == "Update") || (command == "Cancel");
 
@@ -431,9 +406,7 @@ namespace CodeClay
 
                 bool isStartEditing = (command == "Edit") || (command == "New") ||
                     dxCard.IsEditing || dxCard.IsNewCardEditing ||
-                    dxGrid.IsEditing || dxGrid.IsNewRowEditing ||
-                    (MyUtils.IsEmpty(command) &&
-                    (Mode == eTableMode.Edit || Mode == eTableMode.New));
+                    dxGrid.IsEditing || dxGrid.IsNewRowEditing;
 
                 bool isFinishEditing = (command == "Update") || (command == "Cancel");
 
@@ -514,17 +487,25 @@ namespace CodeClay
             }
         }
 
+        public string SelectedTableName
+        {
+            get { return MyUtils.Coalesce(Session["SelectedTableName"], "").ToString(); }
+            set { Session["SelectedTableName"] = value; }
+        }
+
+        public string ErrorFieldName { get; set; } = null;
+
         // --------------------------------------------------------------------------------------------------
         // Event Handlers
         // --------------------------------------------------------------------------------------------------
 
         protected override void Page_Load(object sender, EventArgs e)
         {
-			if (CiTable != null && UiParentTable == null)
-			{
-				Page.Title = CiTable.TableCaption;
-			}
-		}
+            if (!IsPostBack && CiTable != null && UiParentTable == null)
+            {
+                Page.Title = CiTable.TableCaption;
+            }
+        }
 
         // --------------------------------------------------------------------------------------------------
         // Event Handlers (Search)
@@ -538,8 +519,17 @@ namespace CodeClay
 
             if (isVisible)
             {
+                StoreQueryStringCommand();
                 BuildCardView(dxSearch, true);
                 dxSearch.AddNewCard();
+            }
+        }
+
+        protected void dxSearch_Load(object sender, EventArgs e)
+        {
+            if (!IsPostBack && dxSearch.Visible)
+            {
+                RunQueryStringCommand();
             }
         }
 
@@ -581,20 +571,16 @@ namespace CodeClay
 
         protected void dxCard_Init(object sender, EventArgs e)
         {
-            bool isVisible = IsCardView && CiTable != null && !CiTable.IsSearching;
+            bool isVisible = IsCardView && (CiTable != null) && !CiTable.IsSearching;
 
             dxCard.Visible = isVisible;
 
             if (isVisible)
             {
+                StoreQueryStringCommand();
                 BuildCardView(dxCard, false);
                 BuildCardToolbar();
-
-				if (!IsPostBack)
-				{
-					dxCard.JSProperties["cpMode"] = Mode;
-				}
-			}
+            }
 
             if (UiParentTable == null)
             {
@@ -604,6 +590,14 @@ namespace CodeClay
             if (CiTable != null)
             {
                 dxCard.JSProperties["cpBubbleUpdate"] = CiTable.BubbleUpdate;
+            }
+        }
+
+        protected void dxCard_Load(object sender, EventArgs e)
+        {
+            if (!IsPostBack && dxCard.Visible)
+            {
+                RunQueryStringCommand();
             }
         }
 
@@ -621,6 +615,54 @@ namespace CodeClay
             dxCard.SettingsPager.SettingsTableLayout.RowsPerPage = 0;
 
             dxCard.JSProperties["cpFollowerFields"] = RunDefaultMacro(e);
+        }
+
+        protected void dxCard_CardUpdating(object sender, DevExpress.Web.Data.ASPxDataUpdatingEventArgs e)
+        {
+            if (CiTable != null)
+            {
+                string script = "";
+
+                if (!MyUtils.IsEmpty(ErrorFieldName))
+                {
+                    UiApplication.Me.SetCommandFired(CiTable.TableName, "Edit");
+                    BuildCardView(dxCard, false);
+                    BuildCardToolbar();
+
+                    script += string.Format("SetEditorValue(\'{0}\', \'{1}\', \'{2}\'); ",
+                        CiTable.TableName,
+                        ErrorFieldName,
+                        "\a");
+
+                    script += string.Format("SetEditorFocus(\'{0}\', \'{1}\'); ",
+                        CiTable.TableName,
+                        ErrorFieldName);
+
+                    script += "alert('Please fill in the missing information');";
+
+                    dxCard.JSProperties["cpIsInvalid"] = true;
+                    dxCard.JSProperties["cpScript"] = script;
+
+                    ErrorFieldName = null;
+                    e.Cancel = true;
+                }
+            }
+        }
+
+        protected void dxCard_CardValidating(object sender, ASPxCardViewDataValidationEventArgs e)
+        {
+            if (CiTable != null)
+            {
+                foreach (CiField ciField in CiTable.CiFields)
+                {
+                    string fieldName = ciField.FieldName;
+                    if (ciField.Mandatory && MyUtils.IsEmpty(this[fieldName]))
+                    {
+                        ErrorFieldName = fieldName;
+                        break;
+                    }
+                }
+            }
         }
 
         protected void dxCard_CardInserting(object sender, DevExpress.Web.Data.ASPxDataInsertingEventArgs e)
@@ -695,14 +737,36 @@ namespace CodeClay
 
                 if (pgCardTabs != null && pgCardTabs.TabPages.Count == 0 && CiTable != null)
                 {
+                    int i = 0;
                     foreach (CiTable ciChildTable in CiTable.Get<CiTable>())
                     {
                         IUiColumn uiColumn = this.CreateUiPlugin(ciChildTable) as IUiColumn;
                         if (uiColumn != null)
                         {
                             uiColumn.BuildCardColumn(pgCardTabs);
+                            if (i++ == 0)
+                            {
+                                SelectedTableName = ciChildTable.TableName;
+                            }
                         }
                     }
+                }
+            }
+        }
+
+        protected void pgCardTabs_Callback(object sender, CallbackEventArgsBase e)
+        {
+            ASPxPageControl pgCardTabs = sender as ASPxPageControl;
+            if (pgCardTabs != null && CiTable != null)
+            {
+                int selectedTabIndex = Convert.ToInt32(e.Parameter);
+                TabPageCollection tabPages = pgCardTabs.TabPages;
+
+                if ((selectedTabIndex < tabPages.Count))
+                {
+                    TabPage tabPage = tabPages[selectedTabIndex];
+                    SelectedTableName = tabPage.Text;
+                    tabPage.Controls[0].DataBind();
                 }
             }
         }
@@ -719,14 +783,10 @@ namespace CodeClay
 
             if (isVisible)
             {
+                StoreQueryStringCommand();
                 BuildGridView(dxGrid);
                 BuildGridToolbar();
-
-				if (!IsPostBack)
-				{
-					dxGrid.JSProperties["cpMode"] = Mode;
-				}
-			}
+            }
 
             if (UiParentTable == null)
             {
@@ -740,8 +800,15 @@ namespace CodeClay
                 dxOpenMenuPanel.JSProperties["cpTableName"] = tableName;
                 dxClickMenuPanel.JSProperties["cpTableName"] = tableName;
                 dxLoadingPanel.JSProperties["cpTableName"] = tableName;
-
                 dxGrid.JSProperties["cpBubbleUpdate"] = CiTable.BubbleUpdate;
+            }
+        }
+
+        protected void dxGrid_Load(object sender, EventArgs e)
+        {
+            if (!IsPostBack && dxGrid.Visible)
+            {
+                RunQueryStringCommand();
             }
         }
 
@@ -893,8 +960,19 @@ namespace CodeClay
 
         protected void MyTableData_Selecting(object sender, ObjectDataSourceSelectingEventArgs e)
         {
+            //bool suppressSelect = (CiTable != null) && (CiTable.CiParentTable != null)
+            //    && (SelectedTableName != CiTable.TableName);
+            bool suppressSelect = false;
+
             e.InputParameters["table"] = CiTable;
-            e.InputParameters["parameters"] = GetState();
+
+            if (suppressSelect)
+            {
+                e.InputParameters["parameters"] = suppressSelect;
+            }
+            else {
+                e.InputParameters["parameters"] = GetState();
+            }
         }
 
         protected void MyTableData_Updating(object sender, ObjectDataSourceMethodEventArgs e)
@@ -915,19 +993,11 @@ namespace CodeClay
             {
                 object rowKey = MyUtils.Coalesce(e.OutputParameters["RowKey"], "");
 
-                if (IsCardView)
-                {
-                    dxCard.JSProperties["cpInsertedRowIndex"] = dxCard.FindVisibleIndexByKeyValue(rowKey);
-                }
-                else if (IsGridView)
-                {
-                    dxGrid.JSProperties["cpInsertedRowIndex"] = dxGrid.FindVisibleIndexByKeyValue(rowKey);
-                }
-
                 if (!MyUtils.IsEmpty(rowKey))
                 {
                     string[] keyNames = CiTable.RowKeyNames;
                     string[] keyValues = (rowKey as string).Trim().Split(',');
+                    string script = "";
 
                     for (int i = 0; i < keyNames.Length && i < keyValues.Length; i++)
                     {
@@ -935,6 +1005,25 @@ namespace CodeClay
                         object keyValue = keyValues[i];
 
                         this[keyName] = keyValue;
+
+                        for (CiTable ciTable = CiTable; ciTable != null; ciTable = ciTable.CiParentTable)
+                        {
+                            script += string.Format("SetField(\'{0}\', \'{1}\', \'{2}\'); ",
+                              ciTable.TableName,
+                              keyName,
+                              keyValue);
+                        }
+                    }
+
+                    if (IsCardView)
+                    {
+                        dxCard.JSProperties["cpInsertedRowIndex"] = dxCard.FindVisibleIndexByKeyValue(rowKey);
+                        dxCard.JSProperties["cpScript"] = script;
+                    }
+                    else if (IsGridView)
+                    {
+                        dxGrid.JSProperties["cpInsertedRowIndex"] = dxGrid.FindVisibleIndexByKeyValue(rowKey);
+                        dxGrid.JSProperties["cpScript"] = script;
                     }
                 }
             }
@@ -1385,6 +1474,7 @@ namespace CodeClay
             macros.Add("Inspect");
             macros.Add("ExportToPdf");
             macros.Add("Divider");
+            macros.Add("Refresh");
 
             if (CiTable != null)
             {
@@ -1554,9 +1644,106 @@ namespace CodeClay
 			}
 		}
 
-        protected void pgCardTabs_TabClick(object source, TabControlCancelEventArgs e)
+        private void StoreQueryStringCommand()
         {
+            string command = MyWebUtils.QueryStringCommand;
 
+            if (CiTable != null)
+            {
+                string tableName = CiTable.TableName;
+                string childTableName = (CiTable.CiTables.Length > 0) ? CiTable.CiTables[0].TableName : "";
+
+                if (MyUtils.IsEmpty(command))
+                {
+                    command = UiApplication.Me.GetCommandFired(tableName);
+                }
+
+                switch (command)
+                {
+                    case "New":
+                        if (CiTable.InsertMacro != null)
+                        {
+                            UiApplication.Me.SetCommandFired(tableName, command);
+                        }
+                        else if (childTableName.Length > 0)
+                        {
+                            UiApplication.Me.SetCommandFired(tableName, "");
+                            UiApplication.Me.SetCommandFired(childTableName, "New");
+                        }
+                        break;
+
+                    case "Edit":
+                        if (CiTable.UpdateMacro != null)
+                        {
+                            UiApplication.Me.SetCommandFired(tableName, command);
+                        }
+                        else if (childTableName.Length > 0)
+                        {
+                            UiApplication.Me.SetCommandFired(tableName, "");
+                            UiApplication.Me.SetCommandFired(childTableName, "Edit");
+                        }
+                        break;
+
+                    case "Search":
+                        if (CiTable.CiSearchableFields.Length > 0)
+                        {
+                            UiApplication.Me.SetCommandFired(tableName, command);
+                        }
+                        break;
+
+                    default:
+                        if (!MyUtils.IsEmpty(command))
+                        {
+                            UiApplication.Me.SetCommandFired(tableName, command);
+                        }
+                        break;
+                }
+            }
+
+            MyWebUtils.QueryStringCommand = null;
+        }
+
+        private void RunQueryStringCommand()
+        {
+            string command = "";
+
+            if (CiTable != null)
+            {
+                command = UiApplication.Me.GetCommandFired(CiTable.TableName);
+
+                switch (command)
+                {
+                    case "New":
+                        if (CiTable.InsertMacro != null)
+                        {
+                            if (IsCardView)
+                            {
+                                dxCard.AddNewCard();
+                            }
+                            else if (IsGridView)
+                            {
+                                dxGrid.AddNewRow();
+                            }
+                        }
+                        break;
+
+                    case "Edit":
+                        if (CiTable.UpdateMacro != null)
+                        {
+                            if (IsCardView)
+                            {
+                                dxCard.StartEdit(0);
+                            }
+                            else if (IsGridView)
+                            {
+                                dxGrid.StartEdit(0);
+                            }
+                        }
+                        break;
+                }
+            }
+
+            dxGrid.JSProperties["cpCheckFocusedRow"] = MyUtils.IsEmpty(command);
         }
     }
 }

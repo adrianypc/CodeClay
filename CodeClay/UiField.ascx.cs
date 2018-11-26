@@ -48,8 +48,8 @@ namespace CodeClay
         [XmlAnyElement("Editable")]
         public XmlElement Editable { get; set; } = MyWebUtils.CreateXmlElement("Editable", true);
 
-        [XmlElement("EditableSQL")]
-        public string EditableSQL { get; set; } = "";
+        [XmlElement("Mandatory")]
+        public bool Mandatory { get; set; } = false;
 
         [XmlElement("Computed")]
         public bool Computed { get; set; } = false;
@@ -259,11 +259,19 @@ namespace CodeClay
 
 				if (Visible)
 				{
-					CardViewColumnLayoutItem dxLayoutItem = new CardViewColumnLayoutItem();
-					dxLayoutItem.Name = fieldName;
-					dxLayoutItem.Visible = Visible;
+                    CardViewFormLayoutProperties layoutProperties = dxColumn.CardView.CardLayoutProperties;
+                    CardViewColumnLayoutItem dxLayoutItem = layoutProperties.FindColumnItem(fieldName) as CardViewColumnLayoutItem;
+
+                    if (dxLayoutItem == null)
+                    {
+                        dxLayoutItem = new CardViewColumnLayoutItem();
+                        dxLayoutItem.Name = fieldName;
+                        dxLayoutItem.ColumnName = fieldName;
+                        layoutProperties.Items.Add(dxLayoutItem);
+                    }
+
+                    dxLayoutItem.Visible = Visible;
 					dxLayoutItem.Caption = (Caption == "*") ? "" : Caption;
-					dxLayoutItem.ColumnName = fieldName;
 					dxLayoutItem.RowSpan = RowSpan;
 					dxLayoutItem.ColSpan = ColSpan;
 					dxLayoutItem.Width = ColumnWidth;
@@ -276,7 +284,6 @@ namespace CodeClay
 						HasBorder(dxColumn.CardView.NamingContainer as UiTable)
 						? "cssFieldBorderStyle"
 						: "";
-					dxColumn.CardView.CardLayoutProperties.Items.Add(dxLayoutItem);
 				}
 
 				DevExpress.Data.SummaryItemType summaryItemType = Summary;
@@ -563,13 +570,13 @@ namespace CodeClay
                 mEditor.Value = fieldValue;
                 mEditor.Visible = CiField.Visible;
                 mEditor.BackColor = GetBackColor(isEditable);
-				mEditor.JSProperties["cpHasFieldExitMacro"] = (CiField.CiFieldExitMacros.Length > 0);
 				
 				if (!MyUtils.IsEmpty(foreColor))
 				{
 					mEditor.ForeColor = Color.FromName(foreColor);
 				}
 
+                mEditor.JSProperties["cpHasFieldExitMacro"] = (CiField.CiFieldExitMacros.Length > 0);
                 mEditor.JSProperties["cpTableName"] = tableName;
                 mEditor.JSProperties["cpFollowerFields"] = FollowerFieldNames;
 
@@ -603,7 +610,21 @@ namespace CodeClay
 
         public virtual Color GetBackColor(bool isEditable)
         {
-            return (!CiField.IsLabel && isEditable) ? Color.PaleGoldenrod : Color.Transparent;
+            Color backColor = Color.Transparent;
+
+            if (!CiField.IsLabel && isEditable)
+            {
+                if (CiField.Mandatory)
+                {
+                    backColor = Color.LightPink;
+                }
+                else
+                {
+                    backColor = Color.PaleGoldenrod;
+                }
+            }
+
+            return backColor;
         }
     }
 }

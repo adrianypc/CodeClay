@@ -159,6 +159,14 @@ function SetEditorValue(tableName, fieldName, fieldValue) {
 	}
 }
 
+function SetEditorFocus(tableName, fieldName) {
+    var editor = editors[tableName + "." + fieldName];
+
+    if (editor) {
+        editor.Focus();
+    }
+}
+
 function RunExitMacro(editor) {
     leader = editor;
 

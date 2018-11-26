@@ -26,7 +26,6 @@ function dxSearch_ToolbarItemClick(sender, event) {
 function dxCard_Init(sender, event) {
     var dxCard = sender;
     var isRootTable = dxCard.cpIsRootTable;
-    var mode = dxCard.cpMode;
     var puxFile = dxCard.cpPuxFile;
     var tableName = dxCard.cpTableName;
 
@@ -36,22 +35,6 @@ function dxCard_Init(sender, event) {
 
     if (isRootTable) {
         rootTable = dxCard;
-    }
-
-    dxCard.Command = mode;
-    switch (mode) {
-    	case "New":
-    		dxCard.AddNewCard();
-    		break;
-
-    	case "Edit":
-    		var cardIndex = dxCard.GetFocusedCardIndex();
-    		dxCard.StartEditCard(cardIndex);
-    		break;
-
-    	case "Search":
-    		Navigate(puxFile);
-    		break;
     }
 
     dxCard.SetFocusedCardIndex(0);
@@ -88,25 +71,47 @@ function dxCard_EndCallback(sender, event) {
     		// Do nothing
     		break;
 
-    	case "UpdateNew":
-    		var insertedRowIndex = dxCard.cpInsertedRowIndex;
-    		if (insertedRowIndex && insertedRowIndex >= 0) {
-    			dxCard.GotoPage(insertedRowIndex);
-    		}
-    		else {
-    			insertedRowIndex = 0;
-    		}
+        case "UpdateNew":
+            var insertedRowIndex = dxCard.cpInsertedRowIndex;
+            var script = dxCard.cpScript;
 
-    		dxCard.SetFocusedCardIndex(insertedRowIndex);
-    		dxCard.Command = null;
-    	case "Update":
-    		if (rootTable && rootTable.name != dxCard.name && dxCard.cpBubbleUpdate) {
-    			rootTable.PerformCallback(tableName);
-    			childTable = dxCard;
-    		}
-    		else {
-    			childTable = null;
-    		}
+            if (script) {
+                dxCard.cpScript = null;
+                eval(script);
+            }
+
+            if (insertedRowIndex && insertedRowIndex >= 0) {
+                dxCard.GotoPage(insertedRowIndex);
+            }
+            else {
+                insertedRowIndex = 0;
+            }
+
+            dxCard.SetFocusedCardIndex(insertedRowIndex);
+            dxCard.Command = null;
+            childTable = null;
+            break;
+
+        case "Update":
+            // For cosmetic purposes when clicking on Inspect button
+            ClearState(tableName);
+
+            var script = dxCard.cpScript;
+
+            if (script) {
+                dxCard.cpScript = null;
+                eval(script);
+            }
+
+            if (rootTable && rootTable.name != dxCard.name && dxCard.cpBubbleUpdate && !dxCard.cpIsInvalid) {
+                rootTable.PerformCallback(tableName);
+                childTable = dxCard;
+            }
+            else {
+                childTable = null;
+            }
+            break;
+
     	case "Cancel":
     	case "Delete":
     		// For cosmetic purposes when clicking on Inspect button
@@ -144,7 +149,6 @@ function dxCard_ToolbarItemClick(sender, event) {
 function dxGrid_Init(sender, event) {
 	var dxGrid = sender;
     var isRootTable = dxGrid.cpIsRootTable;
-    var mode = dxGrid.cpMode;
     var puxFile = dxGrid.cpPuxFile;
     var tableName = dxGrid.cpTableName;
 
@@ -154,24 +158,6 @@ function dxGrid_Init(sender, event) {
 
     if (isRootTable) {
     	rootTable = dxGrid;
-    }
-
-    switch (mode) {
-    	case "New":
-    		dxGrid.AddNewRow();
-    		dxGrid.Command = "New";
-    		break;
-
-    	case "Edit":
-    		var rowIndex = dxGrid.GetFocusedRowIndex();
-    		dxGrid.StartEditRow(rowIndex);
-    		dxGrid.Command = "Edit";
-    		break;
-
-    	case "Search":
-    		dxGrid.Command = "Search";
-    		Navigate(puxFile);
-    		break;
     }
 
     dxGrid.SetFocusedRowIndex(0);
@@ -262,9 +248,10 @@ function dxGrid_EndCallback(sender, event) {
 
 function dxGrid_FocusedRowChanged(sender, event) {
 	var dxGrid = sender;
-	var tableName = dxGrid.cpTableName;
+    var tableName = dxGrid.cpTableName;
+    var checkFocusedRow = dxGrid.cpCheckFocusedRow;
 
-	if (dxGrid.IsEditing() || dxGrid.IsNewRowEditing()) {
+    if (checkFocusedRow && (dxGrid.IsEditing() || dxGrid.IsNewRowEditing())) {
         if (dxGrid.ExpandedRowIndex < 0) {
         	dxGrid.Command = "Update";
         	alert("Saving changes on the last edited record");
@@ -417,6 +404,17 @@ function ClickToolbar(table, event, isSearching) {
         default:
         	event.processOnServer = true;
             break;
+    }
+}
+
+// --------------------------------------------------------------------------------------------------
+// Tabcontrol functions
+// --------------------------------------------------------------------------------------------------
+
+function pgCardTabs_TabClick(sender, event) {
+    var tabControl = event.tab.tabControl;
+    if (tabControl) {
+        tabControl.PerformCallback(event.tab.index);
     }
 }
 

@@ -5,7 +5,6 @@
   <RowKey>FPatientNo</RowKey>
   <DefaultView>Card</DefaultView>
   <ColCount>2</ColCount>
-  <BubbleUpdate>true</BubbleUpdate>
   <CiTextField>
     <FieldName>FPatientNo</FieldName>
     <Caption>Patient No</Caption>
@@ -20,6 +19,7 @@
     <FieldName>FLastName</FieldName>
     <Caption>Surname</Caption>
     <Editable>true</Editable>
+    <Mandatory>true</Mandatory>
   </CiTextField>
   <CiTextField>
     <FieldName>FFirstName</FieldName>

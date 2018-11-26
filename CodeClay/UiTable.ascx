@@ -27,7 +27,7 @@
 <uc:UiFieldExitMacro ID="uiFieldExitMacro" runat="server" />
 
 <dx:ASPxCardView ID="dxSearch" ClientInstanceName="dxSearch" runat="server" Theme="Aqua" AutoGenerateColumns="false" Width="100%" DataSourceID="MyTableData" KeyFieldName="RowKey" CssClass="cssSmallFont"
-    OnInit="dxSearch_Init" OnCustomJSProperties="dxSearch_CustomJSProperties"
+    OnInit="dxSearch_Init" OnLoad="dxSearch_Load" OnCustomJSProperties="dxSearch_CustomJSProperties"
     OnInitNewCard="dxSearch_InitNewCard" OnCardInserting="dxSearch_CardInserting" OnCancelCardEditing="dxSearch_CancelCardEditing">
     <ClientSideEvents Init="dxSearch_Init" />
     <ClientSideEvents ToolbarItemClick="dxSearch_ToolbarItemClick" />
@@ -59,8 +59,9 @@
 </dx:ASPxCardView>
 
 <dx:ASPxCardView ID="dxCard" ClientInstanceName="dxCard" runat="server" Theme="Aqua" DataSourceID="MyTableData" AutoGenerateColumns="false" Width="100%" KeyFieldName="RowKey" CssClass="cssSmallFont"
-    OnInit="dxCard_Init" OnCustomJSProperties="dxCard_CustomJSProperties" OnCustomCallback="dxCard_CustomCallback" OnCustomColumnDisplayText="dxCard_CustomColumnDisplayText"
-    OnInitNewCard="dxCard_InitNewCard" OnCardInserting="dxCard_CardInserting" OnCancelCardEditing="dxCard_CancelCardEditing" OnToolbarItemClick="dxCard_ToolbarItemClick">
+    OnInit="dxCard_Init" OnLoad="dxCard_Load" OnCustomJSProperties="dxCard_CustomJSProperties" OnCustomCallback="dxCard_CustomCallback" OnCustomColumnDisplayText="dxCard_CustomColumnDisplayText"
+    OnInitNewCard="dxCard_InitNewCard" OnCardInserting="dxCard_CardInserting" OnCancelCardEditing="dxCard_CancelCardEditing" OnToolbarItemClick="dxCard_ToolbarItemClick"
+    OnCardValidating="dxCard_CardValidating" OnCardUpdating="dxCard_CardUpdating">
     <ClientSideEvents Init="dxCard_Init" />
     <ClientSideEvents FocusedCardChanged="dxCard_FocusedCardChanged" />
     <ClientSideEvents BeginCallback="dxCard_BeginCallback" />
@@ -103,7 +104,8 @@
                 <tr>
                     <td style="width:15px"></td>
                     <td>
-                        <dx:ASPxPageControl ID="pgCardTabs" ClientInstanceName="pgCardTabs" Theme="Aqua" runat="server" Width="100%" OnInit="pgCardTabs_Init">
+                        <dx:ASPxPageControl ID="pgCardTabs" ClientInstanceName="pgCardTabs" Theme="Aqua" runat="server" Width="100%" OnInit="pgCardTabs_Init" OnCallback="pgCardTabs_Callback">
+                            <ClientSideEvents TabClick="pgCardTabs_TabClick" />
                         </dx:ASPxPageControl>
                     </td>
                     <td style="width:15px"></td>
@@ -115,7 +117,7 @@
 </dx:ASPxCardView>
 
 <dx:ASPxGridView ID="dxGrid" ClientInstanceName="dxGrid" runat="server" Theme="Aqua" DataSourceID="MyTableData" AutoGenerateColumns="false" Width="100%" KeyFieldName="RowKey" CssClass="cssSmallFont"
-    OnInit="dxGrid_Init" OnCustomJSProperties="dxGrid_CustomJSProperties" OnCustomCallback="dxGrid_CustomCallback" OnSummaryDisplayText="dxGrid_SummaryDisplayText" OnCustomColumnDisplayText="dxGrid_CustomColumnDisplayText"
+    OnInit="dxGrid_Init" OnLoad="dxGrid_Load" OnCustomJSProperties="dxGrid_CustomJSProperties" OnCustomCallback="dxGrid_CustomCallback" OnSummaryDisplayText="dxGrid_SummaryDisplayText" OnCustomColumnDisplayText="dxGrid_CustomColumnDisplayText"
     OnBeforeColumnSortingGrouping="dxGrid_BeforeColumnSortingGrouping" OnInitNewRow="dxGrid_InitNewRow" OnToolbarItemClick="dxGrid_ToolbarItemClick">
     <ClientSideEvents Init="dxGrid_Init" />
     <ClientSideEvents BeginCallback="dxGrid_BeginCallback" />
@@ -147,6 +149,7 @@
                 <dx:GridViewToolbarItem Name="Inspect" Text="Inspect" />
                 <dx:GridViewToolbarItem Name="ExportToPdf" Command="ExportToPdf" />
                 <dx:GridViewToolbarItem Name="Divider" Text="" Enabled="false"  ItemStyle-Width="100%" />
+                <dx:GridViewToolbarItem Name="Refresh" Command="Refresh" />
                 <dx:GridViewToolbarItem Name="Search" Text="Search" />
                 <dx:GridViewToolbarItem Name="New" Command="New" />
                 <dx:GridViewToolbarItem Name="Edit" Command="Edit" />

@@ -288,6 +288,11 @@ namespace CodeClay
             return MyUtils.Coalesce(command, "").ToString();
         }
 
+        public void SetCommandFired(string tableName, string command)
+        {
+            dxClientCommand[tableName] = command;
+        }
+
         public DataTable GetBySQL(string sql, DataRow drParams)
         {
             return GetBySQL(new string[] { sql }, drParams);

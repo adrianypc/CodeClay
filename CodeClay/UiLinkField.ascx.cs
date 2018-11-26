@@ -157,7 +157,7 @@ namespace CodeClay
         {
             base.ConfigureIn(container);
 
-            if (UiTable != null && CiField != null)
+            if (UiTable != null && CiField != null && ItemIndex >= 0)
             {
                 string fieldName = CiField.FieldName;
 
@@ -169,7 +169,7 @@ namespace CodeClay
                         ASPxCardView dxCard = cardContainer.CardView;
                         if (dxCard != null)
                         {
-                            NavigateUrl = dxCard.GetCardValues(cardContainer.ItemIndex, fieldName).ToString();
+                            NavigateUrl = dxCard.GetCardValues(ItemIndex, fieldName).ToString();
                         }
                     }
                 }
@@ -181,15 +181,15 @@ namespace CodeClay
                         ASPxGridView dxGrid = gridContainer.Grid;
                         if (dxGrid != null)
                         {
-                            NavigateUrl = dxGrid.GetRowValues(gridContainer.ItemIndex, fieldName).ToString();
+                            NavigateUrl = dxGrid.GetRowValues(ItemIndex, fieldName).ToString();
                         }
                     }
                 }
+            }
 
-                if (NavigateUrl == "&nbsp;")
-                {
-                    NavigateUrl = "";
-                }
+            if (NavigateUrl == "&nbsp;")
+            {
+                NavigateUrl = "";
             }
         }
 

@@ -390,6 +390,11 @@ namespace CodeClay
         // Event Handlers
         // --------------------------------------------------------------------------------------------------
 
+        protected virtual void Page_PreInit(object sender, EventArgs e)
+        {
+            // Do nothing
+        }
+
         protected virtual void Page_Load(object sender, EventArgs e)
         {
             // Do nothing
@@ -475,6 +480,11 @@ namespace CodeClay
             return null;
         }
 
+        public virtual void SetServerValue(string key, object value)
+        {
+            // Do nothing
+        }
+
         public virtual object this[string key, int rowIndex = -1]
         {
             get
@@ -504,7 +514,11 @@ namespace CodeClay
                     return serverValue;
                 }
 
-                object parentValue = (CiPlugin != null && CiPlugin.RowKeyNames.Contains(key) && UiParentPlugin != null)
+                CiPlugin ciParentPlugin = CiPlugin.CiParentPlugin;
+                string[] parentRowKeyNames = (ciParentPlugin != null) ? ciParentPlugin.RowKeyNames : new string[] { };
+                string[] rowKeyNames = CiPlugin.RowKeyNames.Concat(parentRowKeyNames).ToArray();
+
+                object parentValue = (CiPlugin != null && rowKeyNames.Contains(key) && UiParentPlugin != null)
                   ? UiParentPlugin[key]
                   : null;
 
@@ -533,6 +547,7 @@ namespace CodeClay
             set
             {
                 SetClientValue(key, value);
+                SetServerValue(key, value);
             }
         }
 
