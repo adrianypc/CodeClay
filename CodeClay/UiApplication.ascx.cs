@@ -413,6 +413,7 @@ namespace CodeClay
                         }
                         else
                         {
+                            dt = new DataTable();
                             Fill(dbCommand, null);
                         }
                     }

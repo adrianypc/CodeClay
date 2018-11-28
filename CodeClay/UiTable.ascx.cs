@@ -487,12 +487,6 @@ namespace CodeClay
             }
         }
 
-        public string SelectedTableName
-        {
-            get { return MyUtils.Coalesce(Session["SelectedTableName"], "").ToString(); }
-            set { Session["SelectedTableName"] = value; }
-        }
-
         public string ErrorFieldName { get; set; } = null;
 
         // --------------------------------------------------------------------------------------------------
@@ -617,57 +611,20 @@ namespace CodeClay
             dxCard.JSProperties["cpFollowerFields"] = RunDefaultMacro(e);
         }
 
-        protected void dxCard_CardUpdating(object sender, DevExpress.Web.Data.ASPxDataUpdatingEventArgs e)
-        {
-            if (CiTable != null)
-            {
-                string script = "";
-
-                if (!MyUtils.IsEmpty(ErrorFieldName))
-                {
-                    UiApplication.Me.SetCommandFired(CiTable.TableName, "Edit");
-                    BuildCardView(dxCard, false);
-                    BuildCardToolbar();
-
-                    script += string.Format("SetEditorValue(\'{0}\', \'{1}\', \'{2}\'); ",
-                        CiTable.TableName,
-                        ErrorFieldName,
-                        "\a");
-
-                    script += string.Format("SetEditorFocus(\'{0}\', \'{1}\'); ",
-                        CiTable.TableName,
-                        ErrorFieldName);
-
-                    script += "alert('Please fill in the missing information');";
-
-                    dxCard.JSProperties["cpIsInvalid"] = true;
-                    dxCard.JSProperties["cpScript"] = script;
-
-                    ErrorFieldName = null;
-                    e.Cancel = true;
-                }
-            }
-        }
-
         protected void dxCard_CardValidating(object sender, ASPxCardViewDataValidationEventArgs e)
         {
-            if (CiTable != null)
-            {
-                foreach (CiField ciField in CiTable.CiFields)
-                {
-                    string fieldName = ciField.FieldName;
-                    if (ciField.Mandatory && MyUtils.IsEmpty(this[fieldName]))
-                    {
-                        ErrorFieldName = fieldName;
-                        break;
-                    }
-                }
-            }
+            ValidateData();
         }
 
         protected void dxCard_CardInserting(object sender, DevExpress.Web.Data.ASPxDataInsertingEventArgs e)
         {
             dxCard.SettingsPager.SettingsTableLayout.RowsPerPage = 1;
+            e.Cancel = !StoreData("New");
+        }
+
+        protected void dxCard_CardUpdating(object sender, DevExpress.Web.Data.ASPxDataUpdatingEventArgs e)
+        {
+            e.Cancel = !StoreData("Edit");
         }
 
         protected void dxCard_CancelCardEditing(object sender, ASPxStartCardEditingEventArgs e)
@@ -737,6 +694,7 @@ namespace CodeClay
 
                 if (pgCardTabs != null && pgCardTabs.TabPages.Count == 0 && CiTable != null)
                 {
+                    pgCardTabs.ID = string.Format("pgCardTabs_{0}", CiTable.TableName);
                     int i = 0;
                     foreach (CiTable ciChildTable in CiTable.Get<CiTable>())
                     {
@@ -744,29 +702,8 @@ namespace CodeClay
                         if (uiColumn != null)
                         {
                             uiColumn.BuildCardColumn(pgCardTabs);
-                            if (i++ == 0)
-                            {
-                                SelectedTableName = ciChildTable.TableName;
-                            }
                         }
                     }
-                }
-            }
-        }
-
-        protected void pgCardTabs_Callback(object sender, CallbackEventArgsBase e)
-        {
-            ASPxPageControl pgCardTabs = sender as ASPxPageControl;
-            if (pgCardTabs != null && CiTable != null)
-            {
-                int selectedTabIndex = Convert.ToInt32(e.Parameter);
-                TabPageCollection tabPages = pgCardTabs.TabPages;
-
-                if ((selectedTabIndex < tabPages.Count))
-                {
-                    TabPage tabPage = tabPages[selectedTabIndex];
-                    SelectedTableName = tabPage.Text;
-                    tabPage.Controls[0].DataBind();
                 }
             }
         }
@@ -819,6 +756,21 @@ namespace CodeClay
             {
                 e.Properties["cpPuxFile"] = CiTable.PuxFile;
             }
+        }
+
+        protected void dxGrid_RowValidating(object sender, DevExpress.Web.Data.ASPxDataValidationEventArgs e)
+        {
+            ValidateData();
+        }
+
+        protected void dxGrid_RowInserting(object sender, DevExpress.Web.Data.ASPxDataInsertingEventArgs e)
+        {
+            e.Cancel = !StoreData("New");
+        }
+
+        protected void dxGrid_RowUpdating(object sender, DevExpress.Web.Data.ASPxDataUpdatingEventArgs e)
+        {
+            e.Cancel = !StoreData("Edit");
         }
 
         protected void dxGrid_BeforeColumnSortingGrouping(object sender, ASPxGridViewBeforeColumnGroupingSortingEventArgs e)
@@ -960,19 +912,8 @@ namespace CodeClay
 
         protected void MyTableData_Selecting(object sender, ObjectDataSourceSelectingEventArgs e)
         {
-            //bool suppressSelect = (CiTable != null) && (CiTable.CiParentTable != null)
-            //    && (SelectedTableName != CiTable.TableName);
-            bool suppressSelect = false;
-
             e.InputParameters["table"] = CiTable;
-
-            if (suppressSelect)
-            {
-                e.InputParameters["parameters"] = suppressSelect;
-            }
-            else {
-                e.InputParameters["parameters"] = GetState();
-            }
+            e.InputParameters["parameters"] = GetState();
         }
 
         protected void MyTableData_Updating(object sender, ObjectDataSourceMethodEventArgs e)
@@ -1003,6 +944,11 @@ namespace CodeClay
                     {
                         string keyName = keyNames[i];
                         object keyValue = keyValues[i];
+
+                        if (MyUtils.IsEmpty(keyValue))
+                        {
+                            break;
+                        }
 
                         this[keyName] = keyValue;
 
@@ -1156,12 +1102,16 @@ namespace CodeClay
             ASPxPageControl pgCardTabs = container as ASPxPageControl;
             if (pgCardTabs != null && CiTable != null)
             {
-                TabPage tabPage = pgCardTabs.TabPages.Add(CiTable.TableName);
-                tabPage.Text = CiTable.TableCaption;
-                tabPage.ToolTip = CiTable.TableCaption;
+                string tableName = CiTable.TableName;
+                string tableCaption = CiTable.TableCaption;
+
+                TabPage tabPage = pgCardTabs.TabPages.Add(tableName);
+                tabPage.Name = string.Format("pgCardTab_{0}", tableName);
+                tabPage.Text = tableCaption;
+                tabPage.ToolTip = tableCaption;
                 tabPage.Controls.Add(this);
 
-                ID += "_" + tabPage.Index.ToString();
+                //ID += "_" + tabPage.Index.ToString();
             }
         }
 
@@ -1175,7 +1125,7 @@ namespace CodeClay
                 tabPage.ToolTip = CiTable.TableCaption;
                 tabPage.Controls.Add(this);
 
-                ID += "_" + tabPage.Index.ToString();
+                //ID += "_" + tabPage.Index.ToString();
             }
         }
 
@@ -1474,7 +1424,6 @@ namespace CodeClay
             macros.Add("Inspect");
             macros.Add("ExportToPdf");
             macros.Add("Divider");
-            macros.Add("Refresh");
 
             if (CiTable != null)
             {
@@ -1744,6 +1693,74 @@ namespace CodeClay
             }
 
             dxGrid.JSProperties["cpCheckFocusedRow"] = MyUtils.IsEmpty(command);
+        }
+
+        private void ValidateData()
+        {
+            if (CiTable != null)
+            {
+                foreach (CiField ciField in CiTable.CiFields)
+                {
+                    string fieldName = ciField.FieldName;
+                    if (ciField.Mandatory && MyUtils.IsEmpty(this[fieldName]))
+                    {
+                        ErrorFieldName = fieldName;
+                        break;
+                    }
+                }
+            }
+        }
+
+        private bool StoreData(string command)
+        {
+            if (CiTable != null)
+            {
+                string script = "";
+
+                if (!MyUtils.IsEmpty(ErrorFieldName))
+                {
+                    UiApplication.Me.SetCommandFired(CiTable.TableName, command);
+
+                    if (IsCardView)
+                    {
+                        BuildCardView(dxCard, false);
+                        BuildCardToolbar();
+                    }
+                    else if (IsGridView)
+                    {
+                        BuildGridView(dxGrid);
+                        BuildGridToolbar();
+                    }
+
+                    script += string.Format("SetEditorValue(\'{0}\', \'{1}\', \'{2}\'); ",
+                        CiTable.TableName,
+                        ErrorFieldName,
+                        "");
+
+                    script += string.Format("SetEditorFocus(\'{0}\', \'{1}\'); ",
+                        CiTable.TableName,
+                        ErrorFieldName);
+
+                    script += "alert('Please fill in the missing information');";
+
+                    if (IsCardView)
+                    {
+                        dxCard.JSProperties["cpIsInvalid"] = true;
+                        dxCard.JSProperties["cpScript"] = script;
+                    }
+                    else if (IsGridView)
+                    {
+                        dxGrid.JSProperties["cpIsInvalid"] = true;
+                        dxGrid.JSProperties["cpScript"] = script;
+                    }
+
+                    ErrorFieldName = null;
+
+                    return false;
+                }
+            }
+
+            return true;
         }
     }
 }

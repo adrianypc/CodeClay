@@ -331,7 +331,7 @@ namespace CodeClay
                     UiPlugin uiPlugin = webPage.LoadControl(userControlFile) as UiPlugin;
                     if (uiPlugin != null)
                     {
-                        uiPlugin.ID = PuxFile;
+                        uiPlugin.ID = Src;
                         uiPlugin.CiPlugin = this;
 
                         return uiPlugin;

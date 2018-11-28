@@ -93,9 +93,6 @@ function dxCard_EndCallback(sender, event) {
             break;
 
         case "Update":
-            // For cosmetic purposes when clicking on Inspect button
-            ClearState(tableName);
-
             var script = dxCard.cpScript;
 
             if (script) {
@@ -213,14 +210,23 @@ function dxGrid_EndCallback(sender, event) {
                 dxGrid.Command = "New";
                 dxGrid.AddNewRow();
             }
-		case "Update":
+        case "Update":
+            var script = dxGrid.cpScript;
+
+            if (script) {
+                dxGrid.cpScript = null;
+                eval(script);
+            }
+
             if (rootTable && rootTable.name != dxGrid.name && dxGrid.cpBubbleUpdate) {
-        		rootTable.PerformCallback(tableName);
-        		childTable = dxGrid;
-        	}
-        	else {
-        		childTable = null;
-        	}
+                rootTable.PerformCallback(tableName);
+                childTable = dxGrid;
+            }
+            else {
+                childTable = null;
+            }
+            break;
+
 		case "Cancel":
     	case "Delete":
             ClearState(tableName);
@@ -404,17 +410,6 @@ function ClickToolbar(table, event, isSearching) {
         default:
         	event.processOnServer = true;
             break;
-    }
-}
-
-// --------------------------------------------------------------------------------------------------
-// Tabcontrol functions
-// --------------------------------------------------------------------------------------------------
-
-function pgCardTabs_TabClick(sender, event) {
-    var tabControl = event.tab.tabControl;
-    if (tabControl) {
-        tabControl.PerformCallback(event.tab.index);
     }
 }
 

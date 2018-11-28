@@ -143,6 +143,7 @@
   <CiTable Src="MProfile.pux">
     <BubbleUpdate>true</BubbleUpdate>
   </CiTable>
+  <CiTable Src="PastRecords.pux" />
   <CiTable Src="CoupleSummary.pux" />
   <CiTable Src="CoupleART.pux" />
   <CiTable Src="FHistory.pux" />

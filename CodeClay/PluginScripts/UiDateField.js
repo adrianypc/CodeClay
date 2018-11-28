@@ -8,7 +8,7 @@
 
     RegisterEditor(dxDateBox,
 		function () { return this.GetDate(); },
-		function (value) { this.SetDate(value); }
+        function (value) { if (value) { this.SetDate(value); } else { this.SetValue(null); } }
 	);
 }
 

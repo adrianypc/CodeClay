@@ -18,6 +18,7 @@
       <FieldName>LogDate</FieldName>
       <Caption>Log Date</Caption>
       <Width>10</Width>
+      <Mandatory>true</Mandatory>
     </CiDateField>
     <CiComboField>
       <FieldName>Staff</FieldName>
@@ -27,6 +28,7 @@
         select OtherNames from ApplicationUser where Enabled = 'Y' order by OtherNames
       </DropdownSQL>
       <Width>10</Width>
+      <Mandatory>true</Mandatory>
     </CiComboField>
     <CiMemoField>
       <FieldName>Comments</FieldName>

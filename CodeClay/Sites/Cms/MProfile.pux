@@ -14,22 +14,26 @@
     <FieldName>MNRIC</FieldName>
     <Caption>NRIC</Caption>
     <Editable>true</Editable>
+    <Mandatory>true</Mandatory>
   </CiTextField>
   <CiTextField>
     <FieldName>MLastName</FieldName>
     <Caption>Surname</Caption>
     <Editable>true</Editable>
+    <Mandatory>true</Mandatory>
   </CiTextField>
   <CiTextField>
     <FieldName>MFirstName</FieldName>
     <Caption>Other Names</Caption>
     <Editable>true</Editable>
+    <Mandatory>true</Mandatory>
   </CiTextField>
   <CiDateField>
     <FieldName>MBirthDate</FieldName>
     <Caption>Date Of Birth</Caption>
     <Editable>true</Editable>
     <ColumnFormat>dd/MM/yyyy</ColumnFormat>
+    <Mandatory>true</Mandatory>
   </CiDateField>
   <CiTextField>
     <FieldName>MAge</FieldName>
@@ -40,6 +44,7 @@
     <FieldName>MAddress1</FieldName>
     <Caption>Address1</Caption>
     <Editable>true</Editable>
+    <Mandatory>true</Mandatory>
   </CiTextField>
   <CiTextField>
     <FieldName>MAddress2</FieldName>
@@ -58,6 +63,7 @@
     <Code>CountryCode</Code>
     <Description>CountryCode</Description>
     <DropdownSQL>select CountryCode,CountryName as MCountry from Country</DropdownSQL>
+    <Mandatory>true</Mandatory>
   </CiComboField>
   <CiTextField>
     <FieldName>MCountry</FieldName>
