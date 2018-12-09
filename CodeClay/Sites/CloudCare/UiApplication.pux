@@ -4,6 +4,7 @@
   <IsDesigner>true</IsDesigner>
   <ProviderName>System.Data.SqlClient</ProviderName>
   <ConnectionString >Integrated Security=SSPI;Initial Catalog=CloudCare;Data Source=(localdb)\ProjectsV13;AttachDBFilename=C:\Users\adrianypc\Documents\Databases\CloudCare.mdf</ConnectionString >
+  <CPanelConnectionString >Integrated Security=SSPI;Initial Catalog=CPanel;Data Source=(localdb)\ProjectsV13;AttachDBFilename=C:\Users\adrianypc\AppData\Local\Microsoft\VisualStudio\SSDT\Admin.mdf</CPanelConnectionString >
   <AZ_ConnectionString>Server=tcp:uitf9udwm5.database.windows.net,1433;Initial Catalog=CloudCare;Persist Security Info=False;User ID=cus_sa;Password=Cms123!@#;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;</AZ_ConnectionString>
   <TE_ConnectionString>Password=cms123*;Persist Security Info=True;User ID=sa;Initial Catalog=CloudCareTest;Data Source=cccrmsm</TE_ConnectionString>
   <CiMenu>

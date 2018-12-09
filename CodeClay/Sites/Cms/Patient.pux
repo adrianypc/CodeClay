@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<CiReport>
+    <Url>Patient.xml</Url>
+    <Designer>false</Designer>
+    <ReportSQL>select * from Client where ClientNo = @ClientNo</ReportSQL>
+</CiReport>

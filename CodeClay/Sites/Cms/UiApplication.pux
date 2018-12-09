@@ -5,7 +5,8 @@
 	<ProviderName>System.Data.SqlClient</ProviderName>
 	<TEST_ConnectionString>Password=cms123*;Persist Security Info=True;User ID=sa;Initial Catalog=CMSTest;Data Source=cccrmsm</TEST_ConnectionString>
 	<ConnectionString>Integrated Security=SSPI;Initial Catalog=CMSTest;Data Source=(localdb)\ProjectsV13;AttachDBFilename=C:\Users\adrianypc\Documents\Databases\CMSTest.mdf</ConnectionString>
-	<CiMenu>
+  <CPanelConnectionString >Integrated Security=SSPI;Initial Catalog=CPanel;Data Source=(localdb)\ProjectsV13;AttachDBFilename=C:\Users\adrianypc\AppData\Local\Microsoft\VisualStudio\SSDT\Admin.mdf</CPanelConnectionString >
+  <CiMenu>
 		<MenuName>Application</MenuName>
 		<CiMenu>
 			<MenuName>Doctor Appointments</MenuName>
@@ -34,7 +35,22 @@
 			<MenuName>Patients</MenuName>
 			<PluginSrc>Couple.pux</PluginSrc>
 		</CiMenu>
-	</CiMenu>
+    <CiMenu>
+      <MenuName>Inventory</MenuName>
+      <CiMenu>
+        <MenuName>Charge Item Master</MenuName>
+        <PluginSrc>ChargeItemMaster.pux</PluginSrc>
+      </CiMenu>
+      <CiMenu>
+        <MenuName>Stock Adjustment</MenuName>
+        <PluginSrc>StockAdjustment.pux</PluginSrc>
+      </CiMenu>
+      <CiMenu>
+        <MenuName>Good Received Note</MenuName>
+        <PluginSrc>GoodReceivedNote.pux</PluginSrc>
+      </CiMenu>
+    </CiMenu>
+  </CiMenu>
 	<LoginMacro>
 		<ActionSQL>exec spUser_Login @CI_UserEmail</ActionSQL>
 	</LoginMacro>

@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<CiReport>
+  <NavigateUrl>DrugLabel.xml</NavigateUrl>
+  <Designer>true</Designer>
+  <ActionSQL>?exec spDrugLabel_sel @ClientNo, @LogID</ActionSQL>
+</CiReport>

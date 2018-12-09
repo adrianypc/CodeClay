@@ -194,7 +194,8 @@ namespace CodeClay
                 CiMacro ciMacro = ciButtonField.CiFirstMacro;
                 if (ciMacro != null)
                 {
-                    script = ciMacro.Run(GetState(itemIndex));
+                    ciMacro.Run(GetState(itemIndex));
+                    script = ciMacro.ResultScript;
                 }
             }
 

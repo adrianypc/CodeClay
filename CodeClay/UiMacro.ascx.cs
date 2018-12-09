@@ -18,7 +18,8 @@ namespace CodeClay
         // --------------------------------------------------------------------------------------------------
 
 		private string mMacroCaption = "";
-		private ArrayList mActionSQL = new ArrayList();
+        private ArrayList mValidateSQL = new ArrayList();
+        private ArrayList mActionSQL = new ArrayList();
 
         // --------------------------------------------------------------------------------------------------
         // Properties (PUX)
@@ -58,7 +59,28 @@ namespace CodeClay
 			}
 		}
 
-		[XmlElement("ActionSQL")]
+        [XmlElement("ValidateSQL")]
+        public string[] ValidateSQL
+        {
+            get
+            {
+                return (string[])mValidateSQL.ToArray(typeof(string));
+            }
+            set
+            {
+                if (value != null)
+                {
+                    string[] ValidateSQL = value;
+                    mValidateSQL.Clear();
+                    foreach (string sql in ValidateSQL)
+                    {
+                        mValidateSQL.Add(sql);
+                    }
+                }
+            }
+        }
+
+        [XmlElement("ActionSQL")]
         public string[] ActionSQL
         {
             get
@@ -83,32 +105,20 @@ namespace CodeClay
         // Properties (Derived)
         // --------------------------------------------------------------------------------------------------
 
-		[XmlIgnore]
-		public ArrayList Parameters
+        [XmlIgnore]
+        public override string ID
         {
-            get
-            {
-                ArrayList allParameters = new ArrayList();
-                foreach (string actionSQL in ActionSQL)
-                {
-                    ArrayList sqlParameters = MyUtils.GetParameters(actionSQL);
-                    foreach (string sqlParameter in sqlParameters.ToArray(typeof(string)))
-                    {
-                        if (!allParameters.Contains(sqlParameter))
-                        {
-                            allParameters.Add(sqlParameter);
-                        }
-                    }
-                }
-
-                if (allParameters.Count > 0)
-                {
-                    return allParameters;
-                }
-
-                return null;
-            }
+            get { return MacroName; }
         }
+
+        [XmlIgnore]
+        public string ErrorMessage { get; set; } = null;
+
+        [XmlIgnore]
+        public DataTable ResultTable { get; set; } = null;
+
+        [XmlIgnore]
+        public string ResultScript { get; set; } = null;
 
         [XmlIgnore]
         public CiTable CiTable
@@ -121,88 +131,25 @@ namespace CodeClay
         // Methods (Virtual)
         // --------------------------------------------------------------------------------------------------
 
-        public virtual DataTable RunSQL(DataRow drParams)
+        public virtual void Run(DataRow drParams)
         {
-            if (ActionSQL != null && ActionSQL.Length == 1 && ActionSQL[0] == "*")
+            ErrorMessage = RunValidateSQL(drParams);
+
+            if (MyUtils.IsEmpty(ErrorMessage))
             {
-                return drParams.Table;
+                ResultTable = RunActionSQL(drParams);
+
+                ResultScript = GetResultScript(ResultTable);
             }
-
-            return UiApplication.Me.GetBySQL(ActionSQL, drParams);
-        }
-
-        public virtual string Run(DataRow drParams)
-        {
-            DataTable dtResult = RunSQL(drParams);
-
-            DataRow drResult = (MyWebUtils.GetNumberOfRows(dtResult) > 0)
-                ? dtResult.Rows[0]
-                : null;
-
-            return GetScript(drResult);
+            else
+            {
+                ResultScript = string.Format("alert('{0}')", ErrorMessage);
+            }
         }
 
         public virtual bool IsVisible(DataRow drParams)
         {
             return MyWebUtils.IsTrueSQL(VisibleSQL, drParams);
-        }
-
-        public virtual string GetScript(DataRow drParams)
-        {
-            string navigateUrl = null;
-            int parameterCount = 0;
-
-            // Reformat URL if navigateUrl refers to a PUX file
-            navigateUrl = NavigateUrl;
-            if (!MyUtils.IsEmpty(navigateUrl) && navigateUrl.EndsWith(".pux"))
-            {
-                string popupQueryParameter = (NavigatePos == "Popup") ? "IsPopup=Y&" : "";
-                navigateUrl = string.Format("Default.aspx?Application={0}&{1}PluginSrc={2}", MyWebUtils.Application, popupQueryParameter, navigateUrl);
-                parameterCount++;
-            }
-
-            string queryString = "";
-            if (drParams != null)
-            {
-                foreach (DataColumn dc in drParams.Table.Columns)
-                {
-                    string columnName = dc.ColumnName;
-                    object columnValue = MyUtils.Coalesce(drParams[dc], "");
-
-                    if (parameterCount++ == 0)
-                    {
-                        queryString += "?";
-                    }
-                    else
-                    {
-                        queryString += "&";
-                    }
-
-                    queryString += string.Format("{0}={1}", columnName, columnValue.ToString());
-                }
-            }
-
-            if (NavigatePos == "Previous")
-            {
-                navigateUrl = "..";
-            }
-
-            if (!MyUtils.IsEmpty(navigateUrl))
-            {
-                navigateUrl += queryString;
-
-                if (!MyUtils.IsEmpty(NavigatePos))
-                {
-                    navigateUrl += LIST_SEPARATOR + NavigatePos;
-                }
-            }
-
-            if (!MyUtils.IsEmpty(navigateUrl))
-            {
-                return string.Format("GotoUrl(\'{0}\')", HttpUtility.JavaScriptStringEncode(navigateUrl));
-            }
-
-            return null;
         }
 
 		public virtual ArrayList GetActionParameterNames()
@@ -228,6 +175,96 @@ namespace CodeClay
 
 			return sqlParams;
 		}
+
+        // --------------------------------------------------------------------------------------------------
+        // Helpers
+        // --------------------------------------------------------------------------------------------------
+
+        private string RunValidateSQL(DataRow drParams)
+        {
+            foreach (string validateSQL in ValidateSQL)
+            {
+                DataTable dt = UiApplication.Me.GetBySQL(validateSQL, drParams);
+
+                if (dt != null && MyWebUtils.GetNumberOfRows(dt) > 0 && MyWebUtils.GetNumberOfColumns(dt) > 0)
+                {
+                    return MyUtils.Coalesce(dt.Rows[0][0], "").ToString();
+                }
+            }
+
+            return null;
+        }
+
+        private DataTable RunActionSQL(DataRow drParams)
+        {
+            if (ActionSQL != null && ActionSQL.Length == 1 && ActionSQL[0] == "*")
+            {
+                return drParams.Table;
+            }
+
+            return UiApplication.Me.GetBySQL(ActionSQL, drParams);
+        }
+
+        protected virtual string GetResultScript(DataTable dt)
+        {
+            string navigateUrl = NavigateUrl;
+            bool isPuxUrl = false;
+
+            DataRow drParams = (MyWebUtils.GetNumberOfRows(dt) > 0)
+                ? dt.Rows[0]
+                : null;
+
+            // Reformat URL if navigateUrl refers to a PUX file
+            if (!MyUtils.IsEmpty(navigateUrl) && navigateUrl.EndsWith(".pux"))
+            {
+                string popupQueryParameter = (NavigatePos == "Popup") ? "IsPopup=Y&" : "";
+                navigateUrl = string.Format("Default.aspx?Application={0}&{1}PluginSrc={2}", MyWebUtils.Application, popupQueryParameter, navigateUrl);
+                isPuxUrl = true;
+            }
+
+            string parameterQueryString = "";
+            if (drParams != null)
+            {
+                foreach (DataColumn dc in drParams.Table.Columns)
+                {
+                    string columnName = dc.ColumnName;
+                    object columnValue = MyUtils.Coalesce(drParams[dc], "");
+
+                    if (!isPuxUrl)
+                    {
+                        parameterQueryString += "?";
+                    }
+                    else
+                    {
+                        parameterQueryString += "&";
+                    }
+
+                    parameterQueryString += string.Format("{0}={1}", columnName, columnValue.ToString());
+                }
+            }
+
+            if (NavigatePos == "Previous")
+            {
+                navigateUrl = "..";
+            }
+
+            if (!MyUtils.IsEmpty(navigateUrl))
+            {
+                navigateUrl += parameterQueryString;
+
+                if (!MyUtils.IsEmpty(NavigatePos))
+                {
+                    navigateUrl += LIST_SEPARATOR + NavigatePos;
+                }
+            }
+
+            if (!MyUtils.IsEmpty(navigateUrl))
+            {
+                return string.Format("GotoUrl(\'{0}\')", HttpUtility.JavaScriptStringEncode(navigateUrl));
+            }
+
+            return null;
+        }
     }
 
     public partial class UiMacro : UiPlugin
@@ -263,7 +300,8 @@ namespace CodeClay
 
             if (CiMacro != null)
             {
-                script = CiMacro.Run(GetState());
+                CiMacro.Run(GetState());
+                script = CiMacro.ResultScript;
             }
 
             dxMacroLabel.JSProperties["cpScript"] = script;

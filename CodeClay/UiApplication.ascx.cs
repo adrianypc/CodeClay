@@ -20,6 +20,9 @@ namespace CodeClay
         // Properties (PUX)
         // --------------------------------------------------------------------------------------------------
 
+        [XmlElement("CPanelConnectionString")]
+        public string CPanelConnectionString { get; set; } = "";
+
         [XmlElement("ConnectionString")]
         public string ConnectionString { get; set; } = "";
 
@@ -114,7 +117,9 @@ namespace CodeClay
 
                 if (mDbConnection != null && mDbConnection.State != ConnectionState.Open)
                 {
-                    string connectionString = CiApplication.ConnectionString;
+                    string connectionString = MyWebUtils.IsConnectedToCPanel
+                        ? CiApplication.CPanelConnectionString
+                        : CiApplication.ConnectionString;
 
                     mDbConnection.ConnectionString = connectionString;
 
@@ -190,7 +195,7 @@ namespace CodeClay
 
             if (loginMacro != null)
             {
-                loginMacro.RunSQL(null);
+                loginMacro.Run(null);
             }
         }
 
@@ -200,7 +205,7 @@ namespace CodeClay
 
             if (logoutMacro != null)
             {
-                logoutMacro.RunSQL(null);
+                logoutMacro.Run(null);
             }
         }
 
@@ -607,6 +612,7 @@ namespace CodeClay
             {
                 OpenConnection();
                 SqlCommandBuilder.DeriveParameters(command);
+                CloseConnection();
 
                 int index = 0; ;
                 foreach (SqlParameter parameter in command.Parameters)

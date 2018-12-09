@@ -202,6 +202,8 @@ namespace CodeClay
         // --------------------------------------------------------------------------------------------------
         // Properties (Derived)
         // --------------------------------------------------------------------------------------------------
+        [XmlIgnore]
+        public virtual string ID { get; set; } = null;
 
         [XmlIgnore]
         public string PuxFile { get; set; } = "";
@@ -331,7 +333,7 @@ namespace CodeClay
                     UiPlugin uiPlugin = webPage.LoadControl(userControlFile) as UiPlugin;
                     if (uiPlugin != null)
                     {
-                        uiPlugin.ID = Src;
+                        uiPlugin.ID = ID;
                         uiPlugin.CiPlugin = this;
 
                         return uiPlugin;

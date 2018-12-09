@@ -60,37 +60,40 @@ namespace CodeClay
 		// Methods (Override)
 		// --------------------------------------------------------------------------------------------------
 		
-		public override string GetScript(DataRow drParams)
-		{
-			string script = "";
+        protected override string GetResultScript(DataTable dt)
+        {
+            string script = "";
+            DataRow drParams = (MyWebUtils.GetNumberOfRows(dt) > 0)
+                ? dt.Rows[0]
+                : null;
 
-			if (drParams != null)
-			{
-				foreach (DataColumn dc in drParams.Table.Columns)
-				{
-					string columnName = dc.ColumnName;
-					string columnValue = MyUtils.Coalesce(drParams[dc], "").ToString();
-					
-					columnValue = HttpUtility.JavaScriptStringEncode(columnValue);
+            if (drParams != null)
+            {
+                foreach (DataColumn dc in drParams.Table.Columns)
+                {
+                    string columnName = dc.ColumnName;
+                    string columnValue = MyUtils.Coalesce(drParams[dc], "").ToString();
 
-					if (IsTest)
-					{
-						script += string.Format("alert(\'{0} = {1}\'); ", columnName, columnValue);
-					}
-					else if (!FieldNames.Contains(columnName) && CiTable != null)
-					{
-						// Avoid recursive calls to change a field's value
-						script += string.Format("SetEditorValue(\'{0}\', \'{1}\', \'{2}\'); ",
-							CiTable.TableName,
-							columnName,
-							columnValue);
-					}
-				}
-			}
+                    columnValue = HttpUtility.JavaScriptStringEncode(columnValue);
 
-			return script;
-		}
-	}
+                    if (IsTest)
+                    {
+                        script += string.Format("alert(\'{0} = {1}\'); ", columnName, columnValue);
+                    }
+                    else if (!FieldNames.Contains(columnName) && CiTable != null)
+                    {
+                        // Avoid recursive calls to change a field's value
+                        script += string.Format("SetEditorValue(\'{0}\', \'{1}\', \'{2}\'); ",
+                            CiTable.TableName,
+                            columnName,
+                            columnValue);
+                    }
+                }
+            }
+
+            return script;
+        }
+    }
 
     public partial class UiFieldExitMacro : UiMacro
     {
@@ -172,7 +175,8 @@ namespace CodeClay
 
 			foreach (CiMacro ciMacro in ciMacros)
 			{
-				script += ciMacro.Run(drParams);
+                ciMacro.Run(drParams);
+                script += ciMacro.ResultScript;
 			}
 
 			return script;

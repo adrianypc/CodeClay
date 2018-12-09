@@ -91,6 +91,12 @@ namespace CodeClay
         // --------------------------------------------------------------------------------------------------
 
         [XmlIgnore]
+        public override string ID
+        {
+            get { return FieldName; }
+        }
+
+        [XmlIgnore]
         public bool IsLabel
         {
             get { return GetType() == typeof(CiField); }

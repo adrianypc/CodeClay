@@ -1,0 +1,141 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CiTable>
+  <TableName>StockAdjustment</TableName>
+  <TableCaption>Stock Adjustment</TableCaption>
+  <RowKey>TransactionNo</RowKey>
+  <DefaultView>Card</DefaultView>
+  <LayoutUrl1>StockAdjustment.html</LayoutUrl1>
+  <CiComboField>
+    <FieldName>sTransactionType</FieldName>
+    <Caption>Type</Caption>
+    <Editable>true</Editable>
+    <DataSource>
+      <DataItem Value="" />
+      <DataItem Value="Positive" />
+      <DataItem Value="Negative" />
+    </DataSource>
+    <Searchable>true</Searchable>
+  </CiComboField>
+  <CiTextField>
+    <FieldName>sIssuedBy</FieldName>
+    <Caption>Issued By</Caption>
+    <Searchable>true</Searchable>
+  </CiTextField>
+  <CiComboField>
+    <FieldName>sBranchCode</FieldName>
+    <Caption>Branch</Caption>
+    <Editable>true</Editable>
+    <Code>BranchCode</Code>
+    <Description>BranchName</Description>
+    <DropdownSQL>select BranchCode,BranchName from Branch </DropdownSQL>
+    <TextFieldName>BranchName</TextFieldName>
+    <Searchable>true</Searchable>
+  </CiComboField>
+  <CiTextField>
+    <FieldName>sTransactionNo</FieldName>
+    <Caption>Trans. No</Caption>
+    <Editable>true</Editable>
+    <Searchable>true</Searchable>
+  </CiTextField>
+  <CiDateField>
+    <FieldName>sTransactionDate</FieldName>
+    <Caption>Date</Caption>
+    <Editable>true</Editable>
+    <ColumnFormat>dd/MM/yyyy</ColumnFormat>
+    <Searchable>true</Searchable>
+  </CiDateField>
+  <CiTextField>
+    <FieldName>TransactionNo</FieldName>
+    <Caption>Trans. No</Caption>
+    <Editable>false</Editable>
+  </CiTextField>
+  <CiComboField>
+    <FieldName>TransactionType</FieldName>
+    <Caption>Type</Caption>
+    <Editable>true</Editable>
+    <Mandatory>true</Mandatory>
+    <DataSource>
+      <DataItem Value="Positive" />
+      <DataItem Value="Negative" />
+    </DataSource>
+  </CiComboField>
+  <CiTextField>
+    <FieldName>SAPostStatus</FieldName>
+    <Caption>Status</Caption>
+    <Editable>false</Editable>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>IssuedBy</FieldName>
+    <Caption>Issued By</Caption>
+    <Editable>false</Editable>
+  </CiTextField>
+  <CiComboField>
+    <FieldName>BranchCode</FieldName>
+    <Caption>Branch</Caption>
+    <Editable>true</Editable>
+    <Mandatory>true</Mandatory>
+    <Code>BranchCode</Code>
+    <Description>BranchName</Description>
+    <DropdownSQL>select BranchCode,BranchName from Branch </DropdownSQL>
+    <TextFieldName>BranchName</TextFieldName>
+  </CiComboField>
+  <CiDateField>
+    <FieldName>TransactionDate</FieldName>
+    <Caption>Date</Caption>
+    <Editable>true</Editable>
+    <Mandatory>true</Mandatory>
+    <ColumnFormat>dd/MM/yyyy</ColumnFormat>
+  </CiDateField>
+  <CiTable Src="StockAdjustmentItem.pux" />
+  <CiMemoField>
+    <FieldName>SARemarks</FieldName>
+    <Caption>Remarks</Caption>
+    <Editable>true</Editable>
+  </CiMemoField>
+  <DefaultMacro>
+    <ActionSQL>
+      SELECT 
+        '' as TransactionNo,
+        'ACRM' as BranchName,
+        'HQU' as BranchCode,
+        getdate() as TransactionDate,
+        'Unposted' as SAPostStatus,
+        coalesce(OtherNames+' '+Surname,'') as IssuedBy
+      FROM ApplicationUser
+      WHERE Email = @CI_UserEmail
+    </ActionSQL>
+  </DefaultMacro>
+  <SelectMacro>
+    <ActionSQL>?exec spStockAdjustment_search @sTransactionType,@sBranchCode,@sTransactionNo,@sTransactionDate,@sIssuedBy</ActionSQL>
+  </SelectMacro>
+  <InsertMacro>
+    <ActionSQL>
+	    ?exec spStockAdjustment_upd 
+	    @TransactionNo,
+	    @BranchCode,
+	    @TransactionType,
+	    @IssuedBy,
+	    @TransactionDate,
+	    @SAPostStatus,
+	    @SARemarks
+     </ActionSQL>
+  </InsertMacro>
+  <UpdateMacro>
+    <ActionSQL>
+	    ?exec spStockAdjustment_upd 
+	    @TransactionNo,
+	    @BranchCode,
+	    @TransactionType,
+	    @IssuedBy,
+	    @TransactionDate,
+	    @SAPostStatus,
+	    @SARemarks
+    </ActionSQL>
+    <VisibleSQL>select 1 from StockAdjustment where TransactionNo = @TransactionNo and SAPostStatus != 'Posted'</VisibleSQL>
+  </UpdateMacro>
+  <CiMacro>
+    <MacroName>Void</MacroName>
+    <ActionSQL>?exec spStockAdjustment_upd_Status @TransactionNo,'Void'</ActionSQL>
+    <VisibleSQL>select 1 from StockAdjustment where TransactionNo = @TransactionNo and SAPostStatus != 'Posted'</VisibleSQL>
+  </CiMacro>
+</CiTable>

@@ -56,6 +56,8 @@ namespace CodeClay
 
         public static string QueryStringCommand { get; set; }
 
+        public static bool IsConnectedToCPanel { get; set; } = false;
+
         public static string Application
         {
             get
@@ -419,13 +421,19 @@ namespace CodeClay
 
         public static bool IsUserAuthorised()
         {
+            bool isUserAuthorised = true;
+
             DataTable dt = new DataTable();
             dt.Columns.Add("Application").DefaultValue = Application;
 
             DataRow dr = dt.NewRow();
             dt.Rows.Add(dr);
 
-            return MyWebUtils.IsTrueSQL("select dbo.fnIsAppOk(@CI_UserEmail, @Application)", dr);
+            MyWebUtils.IsConnectedToCPanel = true;
+            isUserAuthorised = MyWebUtils.IsTrueSQL("select dbo.fnIsAppOk(@CI_UserEmail, @Application)", dr);
+            MyWebUtils.IsConnectedToCPanel = false;
+
+            return isUserAuthorised;
         }
 
         public static XmlElement CreateXmlElement(string name, object value)

@@ -1,0 +1,109 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CiTable>
+  <TableName>GoodReceivedNoteItem</TableName>
+  <TableCaption>Item List</TableCaption>
+  <RowKey>NoteNo,ItemNo</RowKey>
+  <DefaultView>Grid</DefaultView>
+  <CiTextField>
+    <FieldName>ItemNo</FieldName>
+    <Caption>Item No</Caption>
+    <Editable>false</Editable>
+  </CiTextField>
+  <CiComboField>
+    <FieldName>ItemCode</FieldName>
+    <TextFieldName>ItemDescription</TextFieldName>
+    <Caption>Item Code</Caption>
+    <Editable>true</Editable>
+    <Mandatory>true</Mandatory>
+    <Code>ItemCode</Code>
+	  <Description>ItemDescription</Description>
+    <DropdownSQL>select ItemCode,ItemDescription from ChargeItem where CIEnabled = 'Y'</DropdownSQL>
+  </CiComboField>
+  <CiNumericField>
+    <FieldName>GRNIQuantity</FieldName>
+    <Caption>Qty</Caption>
+    <Width>20</Width>
+  </CiNumericField>
+  <CiNumericField>
+    <FieldName>BonusQuantity</FieldName>
+    <Caption>Bonus Qty</Caption>
+    <Width>20</Width>
+  </CiNumericField>
+  <CiTextField>
+    <FieldName>Amount</FieldName>
+    <Caption>Amount</Caption>
+    <Mask>Currency</Mask>
+    <Editable>true</Editable>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>Discount</FieldName>
+    <Caption>Discount</Caption>
+    <Mask>Currency</Mask>
+    <Editable>true</Editable>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>GRNIUnitCost</FieldName>
+    <Caption>Unit Cost</Caption>
+    <Mask>Currency</Mask>
+    <Editable>true</Editable>
+    <Summary>Sum</Summary>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>NoteNo</FieldName>
+    <Hidden>true</Hidden>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>ActualUnitCost</FieldName>
+    <Hidden>true</Hidden>
+  </CiTextField>
+  <DefaultMacro>
+    <ActionSQL>
+      select
+        coalesce(1 + max(ItemNo), 1) as ItemNo,
+        @NoteNo as NoteNo,
+        0 as GRNIQuantity,
+        0 as BonusQuantity,
+        0.00 as GRNIUnitCost,
+        0.00 as Discount,
+        0.00 as Amount
+      from GoodReceivedNoteItem
+      where NoteNo = @NoteNo
+    </ActionSQL>
+  </DefaultMacro>
+  <SelectMacro>
+    <ActionSQL>
+      ?exec spGoodReceivedNoteItem_searchByNoteNo @NoteNo
+    </ActionSQL>
+  </SelectMacro>
+  <InsertMacro>
+    <ActionSQL>
+      ?exec spGoodReceivedNoteItem_upd
+      @NoteNo,
+      @ItemNo,
+      @ItemCode,
+      @GRNIQuantity,
+      @BonusQuantity,
+      @GRNIUnitCost,
+      @Discount,
+      @Amount
+    </ActionSQL>
+  </InsertMacro>
+  <UpdateMacro>
+    <ActionSQL>
+      ?exec spGoodReceivedNoteItem_upd
+      @NoteNo,
+      @ItemNo,
+      @ItemCode,
+      @GRNIQuantity,
+      @BonusQuantity,
+      @GRNIUnitCost,
+      @Discount,
+      @Amount
+    </ActionSQL>
+  </UpdateMacro>
+  <DeleteMacro>
+    <ActionSQL>
+      DELETE FROM GoodReceivedNoteItem WHERE NoteNo = @NoteNo and ItemNo = @ItemNo
+    </ActionSQL>
+  </DeleteMacro>
+</CiTable>

@@ -143,19 +143,12 @@
   <CiTable Src="MProfile.pux">
     <BubbleUpdate>true</BubbleUpdate>
   </CiTable>
-  <CiTable Src="PastRecords.pux" />
   <CiTable Src="CoupleSummary.pux" />
   <CiTable Src="CoupleART.pux" />
   <CiTable Src="FHistory.pux" />
   <CiTable Src="MHistory.pux" />
   <CiTable Src="CoupleCaseNotes.pux" />
   <CiTable Src="ScannedFiles.pux" />
-  <CiMacro>
-    <MacroName>Past records</MacroName>
-    <ActionSQL>select @ClientNo as sPatientNo</ActionSQL>
-    <NavigateUrl>PastRecords.pux</NavigateUrl>
-    <NavigatePos>Popup</NavigatePos>
-  </CiMacro>
   <CiMacro>
 	  <MacroName>New Patient</MacroName>
     <ActionSQL>select 'New' as Command</ActionSQL>

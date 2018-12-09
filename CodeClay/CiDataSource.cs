@@ -202,7 +202,9 @@ namespace CodeClay
         {
             if (ciMacro != null)
             {
-                return ciMacro.RunSQL(drParams);
+                ciMacro.Run(drParams);
+
+                return ciMacro.ResultTable;
             }
 
             return null;

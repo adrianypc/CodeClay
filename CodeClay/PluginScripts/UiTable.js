@@ -123,7 +123,7 @@ function dxCard_EndCallback(sender, event) {
     			eval(script);
     		}
     		else if (command) {
-    			dxCard.Command = "";
+    			dxCard.Command = null;
     			dxCard.Refresh();
     		}
     		break;
@@ -178,13 +178,14 @@ function dxGrid_DetailRowCollapsing(sender, event) {
 
 function dxGrid_BeginCallback(sender, event) {
 	var dxGrid = sender;
-	var tableName = dxGrid.cpTableName;
+    var tableName = dxGrid.cpTableName;
+    var command = dxGrid.Command;
 
-	SetCommand(tableName, dxGrid.Command);
+	SetCommand(tableName, command);
 
-	if (dxGrid.Command == "Update" && dxGrid.IsNewRowEditing()) {
-		dxGrid.Command = "UpdateNew";
-	}
+    if (command == "Update" && dxGrid.IsNewRowEditing()) {
+        dxGrid.Command = "UpdateNew";
+    }
 }
 
 function dxGrid_EndCallback(sender, event) {
@@ -193,15 +194,14 @@ function dxGrid_EndCallback(sender, event) {
     var quickInsert = dxGrid.cpQuickInsert;
     var command = dxGrid.Command;
 
-    switch (dxGrid.Command) {
+    switch (command) {
         case "New":
-        	RefreshFollowers(dxGrid.cpFollowerFields);
+            RefreshFollowers(dxGrid.cpFollowerFields);
         	break;
 
         case "Edit":
             if (dxGrid.ExpandedRowIndex >= 0 && dxGrid.ExpandedRowIndex != dxGrid.GetFocusedRowIndex()) {
                 dxGrid.CollapseAllDetailRows();
-                dxGrid.IsRowExpanded = false;
             }
             break;
 
@@ -240,7 +240,7 @@ function dxGrid_EndCallback(sender, event) {
                 eval(script);
             }
             else if (command) {
-                dxGrid.Command = "";
+                dxGrid.Command = null;
                 dxGrid.Refresh();
             }
             break;

@@ -1,0 +1,290 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CiTable>
+  <TableName>ChargeItemMaster</TableName>
+  <TableCaption>Charge Item Master</TableCaption>
+  <RowKey>ItemCode</RowKey>
+  <DefaultView>Card</DefaultView>
+  <LayoutUrl>ChargeItemMaster.html</LayoutUrl>
+  <CiComboField>
+    <FieldName>sItemCode</FieldName>
+    <Caption>Item Code</Caption>
+    <Editable>true</Editable>
+    <DropdownSQL>select ItemCode from ChargeItem</DropdownSQL>
+    <Searchable>true</Searchable>
+  </CiComboField>
+  <CiTextField>
+    <FieldName>sItemDescription</FieldName>
+    <Caption>Item Description</Caption>
+    <Editable>true</Editable>
+    <Searchable>true</Searchable>
+  </CiTextField>
+  <CiComboField>
+    <FieldName>sSupplierCode</FieldName>
+    <TextFieldName>SupplierName</TextFieldName>
+    <Caption>Supplier</Caption>
+    <Editable>true</Editable>
+    <Code>SupplierCode</Code>
+    <Description>SupplierName</Description>
+    <DropdownSQL>select SupplierCode,SupplierName from Supplier where SupplierEnabled = 'Y'</DropdownSQL>
+    <Searchable>true</Searchable>
+  </CiComboField>
+  <CiTextField>
+    <FieldName>ItemCode</FieldName>
+    <Caption>Item Code</Caption>
+    <Mandatory>true</Mandatory>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>ItemDescription</FieldName>
+    <Caption>Item Description</Caption>
+    <Mandatory>true</Mandatory>
+  </CiTextField>
+  <CiComboField>
+    <FieldName>RevenueAccount</FieldName>
+    <TextFieldName>RevenueCodeDescription</TextFieldName>
+    <Caption>Revenue Account</Caption>
+    <Editable>true</Editable>
+    <Mandatory>true</Mandatory>
+    <Code>AccountCode</Code>
+    <Description>RevenueCodeDescription</Description>
+    <DropdownSQL>select AccountCode,AccountCode+' - '+AccountDescription as RevenueCodeDescription from GLAccount</DropdownSQL>
+  </CiComboField>
+  <CiTextField>
+    <FieldName>CIUnitPrice</FieldName>
+    <Caption>Unit Price $</Caption>
+    <Editable>true</Editable>
+    <Mask>Currency</Mask>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>UnitCost</FieldName>
+    <Caption>Unit Cost $</Caption>
+    <Editable>false</Editable>
+    <Mask>Currency</Mask>
+  </CiTextField>
+  <CiCheckField>
+    <FieldName>UnitPriceEditable</FieldName>
+    <Caption>Unit Price Editable</Caption>
+  </CiCheckField>
+  <CiCheckField>
+    <FieldName>GSTApplicable</FieldName>
+    <Caption>GST Applicable</Caption>
+  </CiCheckField>
+  <CiCheckField>
+    <FieldName>IsPackageItem</FieldName>
+    <Caption>Package Item</Caption>
+  </CiCheckField>
+  <CiMemoField>
+    <FieldName>CIRemarks</FieldName>
+    <Caption>Remarks</Caption>
+    <Editable>true</Editable>
+  </CiMemoField>
+  <CiMemoField>
+    <FieldName>Cautions</FieldName>
+    <Caption>Cautions</Caption>
+    <Editable>true</Editable>
+  </CiMemoField>
+  <CiCheckField>
+    <FieldName>StockItem</FieldName>
+    <Caption>StockItem</Caption>
+  </CiCheckField>
+  <CiCheckField>
+    <FieldName>Suspended</FieldName>
+    <Caption>Suspended</Caption>
+  </CiCheckField>
+  <CiComboField>
+    <FieldName>SupplierCode</FieldName>
+    <TextFieldName>SupplierName</TextFieldName>
+    <Caption>Supplier</Caption>
+    <Editable>true</Editable>
+    <Mandatory>true</Mandatory>
+    <Code>SupplierCode</Code>
+    <Description>SupplierName</Description>
+    <DropdownSQL>select SupplierCode,SupplierName from Supplier where SupplierEnabled = 'Y'</DropdownSQL>
+  </CiComboField>
+  <CiComboField>
+    <FieldName>GroupCategory</FieldName>
+    <TextFieldName>GroupCategoryName</TextFieldName>
+    <Caption>Group Cat.</Caption>
+    <Editable lang="sql">select 1 from tblSingleton where @StockItem = 1</Editable>
+    <Code>CodeValue</Code>
+    <Description>CodeDescription</Description>
+    <DropdownSQL>select CodeValue,CodeDescription from CodeListItem where Category = 'GroupCategories'</DropdownSQL>
+  </CiComboField>
+  <CiTextField>
+    <FieldName>CIBranchName</FieldName>
+    <Caption>Brand Name</Caption>
+    <Editable lang="sql">select 1 from tblSingleton where @StockItem = 1</Editable>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>UnitOfMeasure</FieldName>
+    <Caption>UOM</Caption>
+    <Editable lang="sql">select 1 from tblSingleton where @StockItem = 1</Editable>
+  </CiTextField>
+  <CiComboField>
+    <FieldName>RecommendedFrequency</FieldName>
+    <TextFieldName>RecFreqDescription</TextFieldName>
+    <Caption>Rec. Freq.</Caption>
+    <Editable lang="sql">select 1 from tblSingleton where @StockItem = 1</Editable>
+    <Code>CodeValue</Code>
+    <Description>CodeDescription</Description>
+    <DropdownSQL>select CodeValue,CodeDescription from CodeListItem where Category = 'RecommendedFrequencies'</DropdownSQL>
+  </CiComboField>
+  <CiTextField>
+    <FieldName>ReOrderQuantity</FieldName>
+    <Caption>ReOrder Qty</Caption>
+    <Editable lang="sql">select 1 from tblSingleton where @StockItem = 1</Editable>
+  </CiTextField>
+  <CiComboField>
+    <FieldName>DrugCategory</FieldName>
+    <TextFieldName>DrugCategoryName</TextFieldName>
+    <Caption>Drug Cat.</Caption>
+    <Editable lang="sql">select 1 from tblSingleton where @StockItem = 1</Editable>
+    <Code>CodeValue</Code>
+    <Description>CodeDescription</Description>
+    <DropdownSQL>select CodeValue,CodeDescription from CodeListItem where Category = 'DrugCategories'</DropdownSQL>
+  </CiComboField>
+  <CiTextField>
+    <FieldName>Strength</FieldName>
+    <Caption>Strength</Caption>
+    <Editable lang="sql">select 1 from tblSingleton where @StockItem = 1</Editable>
+  </CiTextField>
+  <CiComboField>
+    <FieldName>RecommendedDose</FieldName>
+    <TextFieldName>RecommendedDoseName</TextFieldName>
+    <Caption>Drug Cat.</Caption>
+    <Editable lang="sql">select 1 from tblSingleton where @StockItem = 1</Editable>
+    <Code>CodeValue</Code>
+    <Description>CodeDescription</Description>
+    <DropdownSQL>select CodeValue,CodeDescription from CodeListItem where Category = 'RecommendedDoses'</DropdownSQL>
+  </CiComboField>
+  <CiTextField>
+    <FieldName>RecommendedQuantity</FieldName>
+    <Caption>Rec. Qty</Caption>
+    <Editable lang="sql">select 1 from tblSingleton where @StockItem = 1</Editable>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>CIQuantity</FieldName>
+    <Caption>Qty. on Hand</Caption>
+    <Editable>false</Editable>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>CIStockValue</FieldName>
+    <Caption>Value on Hand $</Caption>
+    <Editable>false</Editable>
+    <Mask>Currency</Mask>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>ReserveQuantity</FieldName>
+    <Caption>Reserve</Caption>
+    <Editable>false</Editable>
+  </CiTextField>
+  <CiComboField>
+    <FieldName>StockInTradeAccount</FieldName>
+    <TextFieldName>StockInTradeCodeDescription</TextFieldName>
+    <Caption>Stock in Trade Account</Caption>
+    <Editable lang="sql">select 1 from tblSingleton where @StockItem = 1</Editable>
+    <Code>AccountCode</Code>
+    <Description>StockInTradeCodeDescription</Description>
+    <DropdownSQL>select AccountCode,AccountCode+' - '+AccountDescription as StockInTradeCodeDescription from GLAccount</DropdownSQL>
+  </CiComboField>
+  <CiComboField>
+    <FieldName>InventoryAccount</FieldName>
+    <TextFieldName>InventoryCodeDescription</TextFieldName>
+    <Caption>Inventory Account</Caption>
+    <Editable lang="sql">select 1 from tblSingleton where @StockItem = 1</Editable>
+    <Code>AccountCode</Code>
+    <Description>InventoryCodeDescription</Description>
+    <DropdownSQL>select AccountCode,AccountCode+' - '+AccountDescription as InventoryCodeDescription from GLAccount</DropdownSQL>
+  </CiComboField>
+  <CiTextField>
+    <FieldName>QuantityOnHand</FieldName>
+    <Hidden>true</Hidden>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>ValueOnHand</FieldName>
+    <Hidden>true</Hidden>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>CIEnabled</FieldName>
+    <Hidden>true</Hidden>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>CIGRNQuantity</FieldName>
+    <Hidden>true</Hidden>
+  </CiTextField>
+  <DefaultMacro>
+    <ActionSQL>SELECT 0 as CIQuantity, 0.00 as CIStockValue, 0 as QuantityOnHand, 0.00 as ValueOnHand, 0 as ReserveQuantity, 0 as CIGRNQuantity</ActionSQL>
+  </DefaultMacro>
+  <SelectMacro>
+    <ActionSQL>
+        ?exec spChargeItem_Search @sItemCode,@sItemDescription,@sSupplierCode
+    </ActionSQL>
+  </SelectMacro>
+  <InsertMacro>
+    <ActionSQL>
+	    ?exec spChargeItem_v2_upd 
+	    @ItemCode,
+	    @ItemDescription,
+	    @RevenueAccount,
+	    @CIUnitPrice,
+	    @GSTApplicable,
+	    @UnitPriceEditable,
+	    @StockItem,
+	    @SupplierCode,
+	    @GroupCategory,
+	    @DrugCategory,
+	    @CIBranchName,
+	    @Strength,
+	    @UnitOfMeasure,
+	    @RecommendedDose,
+	    @RecommendedQuantity,
+	    @RecommendedFrequency,
+	    @ReOrderQuantity,
+	    @CIRemarks,
+	    @Cautions,
+	    @CIQuantity,
+	    @CIStockValue,
+	    @InventoryAccount,
+	    @StockInTradeAccount,
+	    @CIEnabled,
+	    @QuantityOnHand,
+	    @ValueOnHand,
+	    @ReserveQuantity,
+	    @CIGRNQuantity,
+	    @IsPackageItem
+    </ActionSQL>
+  </InsertMacro>
+  <UpdateMacro>
+    <ActionSQL>
+	    ?exec spChargeItem_v2_upd 
+	    @ItemCode,
+	    @ItemDescription,
+	    @RevenueAccount,
+	    @CIUnitPrice,
+	    @GSTApplicable,
+	    @UnitPriceEditable,
+	    @StockItem,
+	    @SupplierCode,
+	    @GroupCategory,
+	    @DrugCategory,
+	    @CIBranchName,
+	    @Strength,
+	    @UnitOfMeasure,
+	    @RecommendedDose,
+	    @RecommendedQuantity,
+	    @RecommendedFrequency,
+	    @ReOrderQuantity,
+	    @CIRemarks,
+	    @Cautions,
+	    @CIQuantity,
+	    @CIStockValue,
+	    @InventoryAccount,
+	    @StockInTradeAccount,
+	    @CIEnabled,
+	    @QuantityOnHand,
+	    @ValueOnHand,
+	    @ReserveQuantity,
+	    @CIGRNQuantity,
+	    @IsPackageItem
+   </ActionSQL>
+  </UpdateMacro>
+</CiTable>

@@ -1,0 +1,184 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<XtraReportsLayoutSerializer SerializerVersion="18.1.5.0" Ref="1" ControlType="DevExpress.XtraReports.UI.XtraReport, DevExpress.XtraReports.v18.1, Version=18.1.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" Name="XtraReport" PageWidth="850" PageHeight="1100" Version="18.1" DataMember="ReportFields" DataSource="#Ref-0">
+  <Extensions>
+    <Item1 Ref="2" Key="DataSerializationExtension" Value="DataSetSerializer" />
+  </Extensions>
+  <Bands>
+    <Item1 Ref="3" ControlType="TopMarginBand" Name="TopMargin" />
+    <Item2 Ref="4" ControlType="ReportHeaderBand" Name="ReportHeader" HeightF="60">
+      <Controls>
+        <Item1 Ref="5" ControlType="XRLabel" Name="label1" Text="My patient record" SizeF="638,25.5533829" LocationFloat="6, 6" StyleName="Title" />
+      </Controls>
+    </Item2>
+    <Item3 Ref="6" ControlType="GroupHeaderBand" Name="GroupHeader7" GroupUnion="WithFirstDetail" Level="7" HeightF="25">
+      <GroupFields>
+        <Item1 Ref="7" FieldName="ClientNo" />
+      </GroupFields>
+      <Controls>
+        <Item1 Ref="8" ControlType="XRTable" Name="table7" SizeF="650,25" LocationFloat="0, 0">
+          <Rows>
+            <Item1 Ref="9" ControlType="XRTableRow" Name="tableRow7" Weight="1">
+              <Cells>
+                <Item1 Ref="10" ControlType="XRTableCell" Name="tableCell13" Weight="0.10725960364708534" Text="CLIENT NO" StyleName="GroupCaption3" />
+                <Item2 Ref="11" ControlType="XRTableCell" Name="tableCell14" Weight="0.89274038461538463" StyleName="GroupData3">
+                  <ExpressionBindings>
+                    <Item1 Ref="12" Expression="[ClientNo]" PropertyName="Text" EventName="BeforePrint" />
+                  </ExpressionBindings>
+                </Item2>
+              </Cells>
+            </Item1>
+          </Rows>
+        </Item1>
+      </Controls>
+    </Item3>
+    <Item4 Ref="13" ControlType="GroupHeaderBand" Name="GroupHeader6" GroupUnion="WithFirstDetail" Level="6" HeightF="25">
+      <GroupFields>
+        <Item1 Ref="14" FieldName="IdentityNo" />
+      </GroupFields>
+      <Controls>
+        <Item1 Ref="15" ControlType="XRTable" Name="table6" SizeF="650,25" LocationFloat="0, 0">
+          <Rows>
+            <Item1 Ref="16" ControlType="XRTableRow" Name="tableRow6" Weight="1">
+              <Cells>
+                <Item1 Ref="17" ControlType="XRTableCell" Name="tableCell11" Weight="0.12920305692232573" Text="IDENTITY NO" StyleName="GroupCaption3" />
+                <Item2 Ref="18" ControlType="XRTableCell" Name="tableCell12" Weight="0.87079693134014424" StyleName="GroupData3">
+                  <ExpressionBindings>
+                    <Item1 Ref="19" Expression="[IdentityNo]" PropertyName="Text" EventName="BeforePrint" />
+                  </ExpressionBindings>
+                </Item2>
+              </Cells>
+            </Item1>
+          </Rows>
+        </Item1>
+      </Controls>
+    </Item4>
+    <Item5 Ref="20" ControlType="GroupHeaderBand" Name="GroupHeader5" GroupUnion="WithFirstDetail" Level="5" HeightF="25">
+      <GroupFields>
+        <Item1 Ref="21" FieldName="ClientSurname" />
+      </GroupFields>
+      <Controls>
+        <Item1 Ref="22" ControlType="XRTable" Name="table5" SizeF="650,25" LocationFloat="0, 0">
+          <Rows>
+            <Item1 Ref="23" ControlType="XRTableRow" Name="tableRow5" Weight="1">
+              <Cells>
+                <Item1 Ref="24" ControlType="XRTableCell" Name="tableCell9" Weight="0.16744756845327524" Text="CLIENT SURNAME" StyleName="GroupCaption3" />
+                <Item2 Ref="25" ControlType="XRTableCell" Name="tableCell10" Weight="0.832552490234375" StyleName="GroupData3">
+                  <ExpressionBindings>
+                    <Item1 Ref="26" Expression="[ClientSurname]" PropertyName="Text" EventName="BeforePrint" />
+                  </ExpressionBindings>
+                </Item2>
+              </Cells>
+            </Item1>
+          </Rows>
+        </Item1>
+      </Controls>
+    </Item5>
+    <Item6 Ref="27" ControlType="GroupHeaderBand" Name="GroupHeader4" GroupUnion="WithFirstDetail" Level="4" HeightF="25">
+      <GroupFields>
+        <Item1 Ref="28" FieldName="ClientOtherNames" />
+      </GroupFields>
+      <Controls>
+        <Item1 Ref="29" ControlType="XRTable" Name="table4" SizeF="650,25" LocationFloat="0, 0">
+          <Rows>
+            <Item1 Ref="30" ControlType="XRTableRow" Name="tableRow4" Weight="1">
+              <Cells>
+                <Item1 Ref="31" ControlType="XRTableCell" Name="tableCell7" Weight="0.20703592153695913" Text="CLIENT OTHER NAMES" StyleName="GroupCaption3" />
+                <Item2 Ref="32" ControlType="XRTableCell" Name="tableCell8" Weight="0.79296405498798073" StyleName="GroupData3">
+                  <ExpressionBindings>
+                    <Item1 Ref="33" Expression="[ClientOtherNames]" PropertyName="Text" EventName="BeforePrint" />
+                  </ExpressionBindings>
+                </Item2>
+              </Cells>
+            </Item1>
+          </Rows>
+        </Item1>
+      </Controls>
+    </Item6>
+    <Item7 Ref="34" ControlType="GroupHeaderBand" Name="GroupHeader3" GroupUnion="WithFirstDetail" Level="3" HeightF="25">
+      <GroupFields>
+        <Item1 Ref="35" FieldName="BirthDate" />
+      </GroupFields>
+      <Controls>
+        <Item1 Ref="36" ControlType="XRTable" Name="table3" SizeF="650,25" LocationFloat="0, 0">
+          <Rows>
+            <Item1 Ref="37" ControlType="XRTableRow" Name="tableRow3" Weight="1">
+              <Cells>
+                <Item1 Ref="38" ControlType="XRTableCell" Name="tableCell5" Weight="0.11887819730318509" Text="BIRTH DATE" StyleName="GroupCaption3" />
+                <Item2 Ref="39" ControlType="XRTableCell" Name="tableCell6" Weight="0.881121826171875" StyleName="GroupData3">
+                  <ExpressionBindings>
+                    <Item1 Ref="40" Expression="[BirthDate]" PropertyName="Text" EventName="BeforePrint" />
+                  </ExpressionBindings>
+                </Item2>
+              </Cells>
+            </Item1>
+          </Rows>
+        </Item1>
+      </Controls>
+    </Item7>
+    <Item8 Ref="41" ControlType="GroupHeaderBand" Name="GroupHeader2" GroupUnion="WithFirstDetail" Level="2" HeightF="25">
+      <GroupFields>
+        <Item1 Ref="42" FieldName="AddressLine1" />
+      </GroupFields>
+      <Controls>
+        <Item1 Ref="43" ControlType="XRTable" Name="table2" SizeF="650,25" LocationFloat="0, 0">
+          <Rows>
+            <Item1 Ref="44" ControlType="XRTableRow" Name="tableRow2" Weight="1">
+              <Cells>
+                <Item1 Ref="45" ControlType="XRTableCell" Name="tableCell3" Weight="0.15210635845477766" Text="ADDRESS LINE1" StyleName="GroupCaption3" />
+                <Item2 Ref="46" ControlType="XRTableCell" Name="tableCell4" Weight="0.84789362980769234" StyleName="GroupData3">
+                  <ExpressionBindings>
+                    <Item1 Ref="47" Expression="[AddressLine1]" PropertyName="Text" EventName="BeforePrint" />
+                  </ExpressionBindings>
+                </Item2>
+              </Cells>
+            </Item1>
+          </Rows>
+        </Item1>
+      </Controls>
+    </Item8>
+    <Item9 Ref="48" ControlType="GroupHeaderBand" Name="GroupHeader1" GroupUnion="WithFirstDetail" Level="1" HeightF="25">
+      <GroupFields>
+        <Item1 Ref="49" FieldName="AddressLine2" />
+      </GroupFields>
+      <Controls>
+        <Item1 Ref="50" ControlType="XRTable" Name="table1" SizeF="650,25" LocationFloat="0, 0">
+          <Rows>
+            <Item1 Ref="51" ControlType="XRTableRow" Name="tableRow1" Weight="1">
+              <Cells>
+                <Item1 Ref="52" ControlType="XRTableCell" Name="tableCell1" Weight="0.15210635845477766" Text="ADDRESS LINE2" StyleName="GroupCaption3" />
+                <Item2 Ref="53" ControlType="XRTableCell" Name="tableCell2" Weight="0.84789362980769234" StyleName="GroupData3">
+                  <ExpressionBindings>
+                    <Item1 Ref="54" Expression="[AddressLine2]" PropertyName="Text" EventName="BeforePrint" />
+                  </ExpressionBindings>
+                </Item2>
+              </Cells>
+            </Item1>
+          </Rows>
+        </Item1>
+      </Controls>
+    </Item9>
+    <Item10 Ref="55" ControlType="DetailBand" Name="Detail" HeightF="0" />
+    <Item11 Ref="56" ControlType="GroupFooterBand" Name="GroupFooter1" GroupUnion="WithLastDetail" HeightF="6">
+      <Controls>
+        <Item1 Ref="57" ControlType="XRLabel" Name="label2" SizeF="650,2.08" LocationFloat="0, 0" StyleName="GroupCaption3" Borders="None">
+          <StylePriority Ref="58" UseBorders="false" />
+        </Item1>
+      </Controls>
+    </Item11>
+    <Item12 Ref="59" ControlType="BottomMarginBand" Name="BottomMargin">
+      <Controls>
+        <Item1 Ref="60" ControlType="XRPageInfo" Name="pageInfo1" PageInfo="DateTime" SizeF="313,23" LocationFloat="6, 6" StyleName="PageInfo" />
+        <Item2 Ref="61" ControlType="XRPageInfo" Name="pageInfo2" TextFormatString="Page {0} of {1}" TextAlignment="TopRight" SizeF="313,23" LocationFloat="331, 6" StyleName="PageInfo" />
+      </Controls>
+    </Item12>
+  </Bands>
+  <StyleSheet>
+    <Item1 Ref="62" Name="Title" BorderStyle="Inset" Font="Tahoma, 14pt" ForeColor="255,75,75,75" BackColor="Transparent" BorderColor="Black" Sides="None" StringFormat="Near;Near;0;None;Character;Default" BorderWidthSerializable="1" />
+    <Item2 Ref="63" Name="GroupCaption3" BorderStyle="Inset" Padding="6,2,0,0,100" Font="Tahoma, 8pt, style=Bold" ForeColor="255,228,228,228" BackColor="255,137,137,137" BorderColor="White" Sides="Bottom" StringFormat="Near;Center;0;None;Character;Default" TextAlignment="MiddleLeft" BorderWidthSerializable="2" />
+    <Item3 Ref="64" Name="GroupData3" BorderStyle="Inset" Padding="6,2,0,0,100" Font="Tahoma, 8pt, style=Bold" ForeColor="White" BackColor="255,137,137,137" BorderColor="White" Sides="Bottom" StringFormat="Near;Center;0;None;Character;Default" TextAlignment="MiddleLeft" BorderWidthSerializable="2" />
+    <Item4 Ref="65" Name="PageInfo" BorderStyle="Inset" Padding="2,2,0,0,100" Font="Tahoma, 8pt, style=Bold" ForeColor="255,75,75,75" StringFormat="Near;Near;0;None;Character;Default" />
+  </StyleSheet>
+  <ObjectStorage>
+    <Item1 ObjectType="DevExpress.XtraReports.Serialization.ObjectStorageInfo, DevExpress.XtraReports.v18.1" Ref="0" Content="&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-16&quot;?&gt;&lt;ReportTable&gt;&lt;xs:schema id=&quot;ReportTable&quot; xmlns=&quot;&quot; xmlns:xs=&quot;http://www.w3.org/2001/XMLSchema&quot; xmlns:msdata=&quot;urn:schemas-microsoft-com:xml-msdata&quot;&gt;&lt;xs:element name=&quot;ReportTable&quot; msdata:IsDataSet=&quot;true&quot; msdata:UseCurrentLocale=&quot;true&quot;&gt;&lt;xs:complexType&gt;&lt;xs:choice minOccurs=&quot;0&quot; maxOccurs=&quot;unbounded&quot;&gt;&lt;xs:element name=&quot;ReportFields&quot;&gt;&lt;xs:complexType&gt;&lt;xs:sequence&gt;&lt;xs:element name=&quot;ClientNo&quot; type=&quot;xs:string&quot; minOccurs=&quot;0&quot; /&gt;&lt;xs:element name=&quot;IdentityNo&quot; type=&quot;xs:string&quot; minOccurs=&quot;0&quot; /&gt;&lt;xs:element name=&quot;ClientSurname&quot; type=&quot;xs:string&quot; minOccurs=&quot;0&quot; /&gt;&lt;xs:element name=&quot;ClientOtherNames&quot; type=&quot;xs:string&quot; minOccurs=&quot;0&quot; /&gt;&lt;xs:element name=&quot;BirthDate&quot; type=&quot;xs:dateTime&quot; minOccurs=&quot;0&quot; /&gt;&lt;xs:element name=&quot;AddressLine1&quot; type=&quot;xs:string&quot; minOccurs=&quot;0&quot; /&gt;&lt;xs:element name=&quot;AddressLine2&quot; type=&quot;xs:string&quot; minOccurs=&quot;0&quot; /&gt;&lt;xs:element name=&quot;AddressLine3&quot; type=&quot;xs:string&quot; minOccurs=&quot;0&quot; /&gt;&lt;xs:element name=&quot;CountryCode&quot; type=&quot;xs:string&quot; minOccurs=&quot;0&quot; /&gt;&lt;xs:element name=&quot;PostCode&quot; type=&quot;xs:string&quot; minOccurs=&quot;0&quot; /&gt;&lt;xs:element name=&quot;PhoneHome&quot; type=&quot;xs:string&quot; minOccurs=&quot;0&quot; /&gt;&lt;xs:element name=&quot;FaxHome&quot; type=&quot;xs:string&quot; minOccurs=&quot;0&quot; /&gt;&lt;xs:element name=&quot;Mobile&quot; type=&quot;xs:string&quot; minOccurs=&quot;0&quot; /&gt;&lt;xs:element name=&quot;Pager&quot; type=&quot;xs:string&quot; minOccurs=&quot;0&quot; /&gt;&lt;xs:element name=&quot;Email&quot; type=&quot;xs:string&quot; minOccurs=&quot;0&quot; /&gt;&lt;xs:element name=&quot;Nationality&quot; type=&quot;xs:string&quot; minOccurs=&quot;0&quot; /&gt;&lt;xs:element name=&quot;Race&quot; type=&quot;xs:string&quot; minOccurs=&quot;0&quot; /&gt;&lt;xs:element name=&quot;CustomerNo&quot; type=&quot;xs:string&quot; minOccurs=&quot;0&quot; /&gt;&lt;xs:element name=&quot;Language&quot; type=&quot;xs:string&quot; minOccurs=&quot;0&quot; /&gt;&lt;xs:element name=&quot;Dialect&quot; type=&quot;xs:string&quot; minOccurs=&quot;0&quot; /&gt;&lt;xs:element name=&quot;Category&quot; type=&quot;xs:string&quot; minOccurs=&quot;0&quot; /&gt;&lt;xs:element name=&quot;FirstVisitDate&quot; type=&quot;xs:dateTime&quot; minOccurs=&quot;0&quot; /&gt;&lt;xs:element name=&quot;Allergy2&quot; type=&quot;xs:string&quot; minOccurs=&quot;0&quot; /&gt;&lt;xs:element name=&quot;Allergy3&quot; type=&quot;xs:string&quot; minOccurs=&quot;0&quot; /&gt;&lt;xs:element name=&quot;Allergy4&quot; type=&quot;xs:string&quot; minOccurs=&quot;0&quot; /&gt;&lt;xs:element name=&quot;Allergy5&quot; type=&quot;xs:string&quot; minOccurs=&quot;0&quot; /&gt;&lt;xs:element name=&quot;ConsultantInCharge&quot; type=&quot;xs:int&quot; minOccurs=&quot;0&quot; /&gt;&lt;xs:element name=&quot;ReferredBy&quot; type=&quot;xs:string&quot; minOccurs=&quot;0&quot; /&gt;&lt;xs:element name=&quot;CorporateBilling&quot; type=&quot;xs:string&quot; minOccurs=&quot;0&quot; /&gt;&lt;xs:element name=&quot;Occupation&quot; type=&quot;xs:string&quot; minOccurs=&quot;0&quot; /&gt;&lt;xs:element name=&quot;Company&quot; type=&quot;xs:string&quot; minOccurs=&quot;0&quot; /&gt;&lt;xs:element name=&quot;PhoneWork&quot; type=&quot;xs:string&quot; minOccurs=&quot;0&quot; /&gt;&lt;xs:element name=&quot;FaxWork&quot; type=&quot;xs:string&quot; minOccurs=&quot;0&quot; /&gt;&lt;xs:element name=&quot;SpouseClientNo&quot; type=&quot;xs:string&quot; minOccurs=&quot;0&quot; /&gt;&lt;xs:element name=&quot;Allergy1&quot; type=&quot;xs:string&quot; minOccurs=&quot;0&quot; /&gt;&lt;xs:element name=&quot;Sex&quot; type=&quot;xs:string&quot; minOccurs=&quot;0&quot; /&gt;&lt;xs:element name=&quot;FirstBillDate&quot; type=&quot;xs:dateTime&quot; minOccurs=&quot;0&quot; /&gt;&lt;/xs:sequence&gt;&lt;/xs:complexType&gt;&lt;/xs:element&gt;&lt;/xs:choice&gt;&lt;/xs:complexType&gt;&lt;/xs:element&gt;&lt;/xs:schema&gt;&lt;ReportFields&gt;&lt;ClientNo&gt;HR047400&lt;/ClientNo&gt;&lt;IdentityNo&gt;G6671534K&lt;/IdentityNo&gt;&lt;ClientSurname&gt;LEE&lt;/ClientSurname&gt;&lt;ClientOtherNames&gt;CHEN JIAN&lt;/ClientOtherNames&gt;&lt;BirthDate&gt;1988-09-17T19:25:26+08:00&lt;/BirthDate&gt;&lt;AddressLine1&gt;BLK 210&lt;/AddressLine1&gt;&lt;AddressLine2&gt;JURONG EAST ST 21&lt;/AddressLine2&gt;&lt;AddressLine3&gt;#04-375&lt;/AddressLine3&gt;&lt;CountryCode&gt;SG&lt;/CountryCode&gt;&lt;PostCode&gt;620210&lt;/PostCode&gt;&lt;PhoneHome&gt;&lt;/PhoneHome&gt;&lt;FaxHome&gt;&lt;/FaxHome&gt;&lt;Mobile&gt;9015 4364&lt;/Mobile&gt;&lt;Pager&gt;&lt;/Pager&gt;&lt;Email&gt;&lt;/Email&gt;&lt;Nationality&gt;MALAYSIAN&lt;/Nationality&gt;&lt;Race&gt;CHINESE&lt;/Race&gt;&lt;Language&gt;MANDARIN&lt;/Language&gt;&lt;Dialect&gt;MANDARIN&lt;/Dialect&gt;&lt;Category&gt;&lt;/Category&gt;&lt;FirstVisitDate&gt;2014-01-08T19:25:26+08:00&lt;/FirstVisitDate&gt;&lt;Allergy2&gt;&lt;/Allergy2&gt;&lt;Allergy3&gt;&lt;/Allergy3&gt;&lt;Allergy4&gt;&lt;/Allergy4&gt;&lt;Allergy5&gt;&lt;/Allergy5&gt;&lt;ConsultantInCharge&gt;30&lt;/ConsultantInCharge&gt;&lt;ReferredBy&gt;DR TAN LEE KEE&lt;/ReferredBy&gt;&lt;CorporateBilling&gt;N&lt;/CorporateBilling&gt;&lt;Occupation&gt;ASSISTANT SUPERVISOR&lt;/Occupation&gt;&lt;Company&gt;&lt;/Company&gt;&lt;PhoneWork&gt;&lt;/PhoneWork&gt;&lt;FaxWork&gt;&lt;/FaxWork&gt;&lt;SpouseClientNo&gt;HR047399&lt;/SpouseClientNo&gt;&lt;Allergy1&gt;&lt;/Allergy1&gt;&lt;Sex&gt;M&lt;/Sex&gt;&lt;FirstBillDate&gt;2014-01-08T00:00:00+08:00&lt;/FirstBillDate&gt;&lt;/ReportFields&gt;&lt;/ReportTable&gt;" Type="System.Data.DataSet" />
+  </ObjectStorage>
+</XtraReportsLayoutSerializer>

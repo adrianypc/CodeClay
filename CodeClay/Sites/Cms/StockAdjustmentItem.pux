@@ -1,0 +1,101 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CiTable>
+  <TableName>StockAdjustmentItem</TableName>
+  <TableCaption>Item List</TableCaption>
+  <RowKey>TransactionNo,ItemNo</RowKey>
+  <DefaultView>Grid</DefaultView>
+  <CiTextField>
+    <FieldName>ItemNo</FieldName>
+    <Caption>Item No</Caption>
+    <Editable>false</Editable>
+  </CiTextField>
+  <CiComboField>
+    <FieldName>ItemCode</FieldName>
+    <TextFieldName>ItemDescription</TextFieldName>
+    <Caption>Item Code</Caption>
+    <Editable>true</Editable>
+    <Mandatory>true</Mandatory>
+    <DropdownSQL>select ItemCode,ItemDescription from ChargeItem where CIEnabled = 'Y'</DropdownSQL>
+    <Code>ItemCode</Code>
+    <Description>ItemDescription</Description>
+  </CiComboField>
+  <CiNumericField>
+    <FieldName>SAIQuantity</FieldName>
+    <Caption>Qty</Caption>
+    <Width>20</Width>
+    <Summary>Sum</Summary>
+  </CiNumericField>
+  <CiTextField>
+    <FieldName>SAIUnitCost</FieldName>
+    <Caption>Unit Cost $</Caption>
+    <Mask>Currency</Mask>
+    <Editable>true</Editable>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>SAITotal</FieldName>
+    <Caption>Total $</Caption>
+    <Mask>Currency</Mask>
+    <Editable>false</Editable>
+    <Summary>Sum</Summary>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>TransactionNo</FieldName>
+    <Caption>Transaction No</Caption>
+    <Hidden>false</Hidden>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>SAIType</FieldName>
+    <Hidden>true</Hidden>
+  </CiTextField>
+  <DefaultMacro>
+    <ActionSQL>
+	      select 
+	      coalesce(1 + max(ItemNo), 1) as ItemNo,
+	      @TransactionNo as TransactionNo,
+	      @TransactionType as SAIType,
+	      0 as SAIQuantity,
+	      0.00 as SAIUnitCost
+	      from StockAdjustmentItem 
+	      where TransactionNo = @TransactionNo
+    </ActionSQL>
+  </DefaultMacro>
+  <SelectMacro>
+    <ActionSQL>
+      ?exec spStockAdjustmentItem_searchByTransNo @TransactionNo
+    </ActionSQL>
+  </SelectMacro>
+  <InsertMacro>
+    <ActionSQL>
+      ?exec spStockAdjustmentItem_upd 
+	      @TransactionNo,
+	      @ItemNo,
+	      @ItemCode,
+	      @SAIType,
+	      @SAIQuantity,
+	      @SAIUnitCost,
+	      @SAITotal
+    </ActionSQL>
+  </InsertMacro>
+  <UpdateMacro>
+    <ActionSQL>
+      ?exec spStockAdjustmentItem_upd 
+        @TransactionNo,
+        @ItemNo,
+        @ItemCode,
+        @SAIType,
+        @SAIQuantity,
+        @SAIUnitCost,
+        @SAITotal
+    </ActionSQL>
+  </UpdateMacro>
+  <DeleteMacro>
+    <ActionSQL>
+      DELETE FROM StockAdjustmentItem WHERE TransactionNo = @TransactionNo and ItemNo = @ItemNo
+    </ActionSQL>
+  </DeleteMacro>
+  <CiFieldExitMacro>
+    <FieldName>SAIQuantity</FieldName>
+    <FieldName>SAIUnitCost</FieldName>
+    <ActionSQL>select @SAIQuantity * cast(coalesce(@SAIUnitCost,0.00) as decimal(10,2)) as SAITotal</ActionSQL>
+  </CiFieldExitMacro>
+</CiTable>

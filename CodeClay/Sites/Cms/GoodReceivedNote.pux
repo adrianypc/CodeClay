@@ -1,0 +1,274 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CiTable>
+  <TableName>GoodReceivedNote</TableName>
+  <TableCaption>Good Received Note</TableCaption>
+  <RowKey>NoteNo</RowKey>
+  <DefaultView>Card</DefaultView>
+	<LayoutUrl>GoodReceivedNote.html</LayoutUrl>
+  <CiTextField>
+    <FieldName>sNoteNo</FieldName>
+    <Caption>GRN No.</Caption>
+    <Searchable>true</Searchable>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>sGRNIssuedBy</FieldName>
+    <Caption>Issued By</Caption>
+    <Searchable>true</Searchable>
+  </CiTextField>
+  <CiComboField>
+    <FieldName>sBranchCode</FieldName>
+    <Caption>Branch</Caption>
+    <Editable>true</Editable>
+    <Code>BranchCode</Code>
+    <Description>BranchName</Description>
+    <DropdownSQL>select BranchCode,BranchName from Branch </DropdownSQL>
+    <TextFieldName>BranchName</TextFieldName>
+    <Searchable>true</Searchable>
+  </CiComboField>
+  <CiDateField>
+    <FieldName>sGRNTransactionDate</FieldName>
+    <Caption>Date</Caption>
+    <Editable>true</Editable>
+    <ColumnFormat>dd/MM/yyyy</ColumnFormat>
+    <Searchable>true</Searchable>
+  </CiDateField>
+  <CiComboField>
+    <FieldName>sItemCode</FieldName>
+    <TextFieldName>ItemDescription</TextFieldName>
+    <Caption>Item Code</Caption>
+    <Editable>true</Editable>
+    <Code>ItemCode</Code>
+    <Description>ItemDescription</Description>
+    <DropdownSQL>select ItemCode,ItemDescription from ChargeItem where CIEnabled = 'Y'</DropdownSQL>
+    <Searchable>true</Searchable>
+  </CiComboField>
+  <CiTextField>
+    <FieldName>NoteNo</FieldName>
+    <Caption>GRN No.</Caption>
+    <Editable>false</Editable>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>GRNPostStatus</FieldName>
+    <Caption>Status</Caption>
+    <Editable>false</Editable>
+  </CiTextField>
+  <CiComboField>
+    <FieldName>BranchCode</FieldName>
+    <Caption>Branch</Caption>
+    <Editable>true</Editable>
+    <Code>BranchCode</Code>
+    <Description>BranchName</Description>
+    <DropdownSQL>select BranchCode,BranchName from Branch </DropdownSQL>
+    <TextFieldName>BranchName</TextFieldName>
+  </CiComboField>
+  <CiTextField>
+    <FieldName>GRNIssuedBy</FieldName>
+    <Caption>Issued By</Caption>
+    <Editable>false</Editable>
+  </CiTextField>
+  <CiComboField>
+    <FieldName>SupplierCode</FieldName>
+    <Caption>Supplier</Caption>
+    <Editable>true</Editable>
+    <Mandatory>true</Mandatory>
+    <Code>SupplierCode</Code>
+    <Description>SupplierName</Description>
+    <DropdownSQL>select SupplierCode,SupplierName from Supplier</DropdownSQL>
+    <TextFieldName>SupplierName</TextFieldName>
+  </CiComboField>
+  <CiDateField>
+    <FieldName>GRNTransactionDate</FieldName>
+    <Caption>Date</Caption>
+    <Editable>true</Editable>
+    <ColumnFormat>dd/MM/yyyy</ColumnFormat>
+  </CiDateField>
+  <CiTextField>
+    <FieldName>InvoiceNo</FieldName>
+    <Caption>Invoice No</Caption>
+    <Mandatory>true</Mandatory>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>Packing</FieldName>
+    <Caption>Packing</Caption>
+    <Mask>Currency</Mask>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>GRNDiscount</FieldName>
+    <Caption>Discount</Caption>
+    <Mask>Currency</Mask>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>SupplierDeliveryOrderNo</FieldName>
+    <Caption>Supp Do No</Caption>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>Commission</FieldName>
+    <Caption>Commission</Caption>
+    <Mask>Currency</Mask>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>InvoiceAmount</FieldName>
+    <Caption>Invoice Amt</Caption>
+    <Mask>Currency</Mask>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>Freight</FieldName>
+    <Caption>Freight</Caption>
+    <Mask>Currency</Mask>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>Handling</FieldName>
+    <Caption>Handling</Caption>
+    <Mask>Currency</Mask>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>Insurance</FieldName>
+    <Caption>Insurance</Caption>
+    <Mask>Currency</Mask>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>ShipmentOther</FieldName>
+    <Caption>Other</Caption>
+    <Mask>Currency</Mask>
+  </CiTextField>
+  <CiComboField>
+    <FieldName>GSTCode</FieldName>
+    <Caption>Code</Caption>
+    <Editable>true</Editable>
+    <DropdownSQL>select GSTCode from GST</DropdownSQL>
+  </CiComboField>
+  <CiNumericField>
+    <FieldName>GRNGSTRate</FieldName>
+    <Caption>Rate</Caption>
+    <Editable>false</Editable>
+  </CiNumericField>
+  <CiTextField>
+    <FieldName>GSTAmount</FieldName>
+    <Caption>Amount</Caption>
+    <Mask>Currency</Mask>
+    <Editable>false</Editable>
+  </CiTextField>
+  <CiComboField>
+    <FieldName>OriginalCurrency</FieldName>
+    <Caption>Currency</Caption>
+    <Editable>true</Editable>
+    <DropdownSQL>select CodeValue from CodeListItem where Category = 'Currency'</DropdownSQL>
+  </CiComboField>
+  <CiTextField>
+    <FieldName>InvoiceTotalCurrency</FieldName>
+    <Caption>Invoice Total</Caption>
+    <Mask>Currency</Mask>
+    <Editable>false</Editable>
+  </CiTextField>
+  <CiTable Src="GoodReceivedNoteItem.pux" />
+  <CiMemoField>
+    <FieldName>GRNRemarks</FieldName>
+    <Caption>Remarks</Caption>
+    <Editable>true</Editable>
+  </CiMemoField>
+  <CiFieldExitMacro>
+    <FieldName>InvoiceAmount</FieldName>
+    <FieldName>OriginalCurrency</FieldName>
+    <ActionSQL>
+        select coalesce(@Amount,0.00) as InvoiceTotalCurrency 
+        from ApplicationGlobals 
+        where (@LocalCurrency is null or @LocalCurrency = '' or LocalCurrency = @LocalCurrency)
+    </ActionSQL>
+  </CiFieldExitMacro>
+  <CiFieldExitMacro>
+    <FieldName>GSTCode</FieldName>
+    <FieldName>Packing</FieldName>
+    <FieldName>Commission</FieldName>
+    <FieldName>GRNDiscount</FieldName>
+    <ActionSQL>
+      SELECT coalesce((((coalesce(SUM(Amount),0.00) + coalesce(@Packing,0.00) + coalesce(@Commission,0.00)) 
+	              - coalesce(@GRNDiscount,0.00)) * (coalesce(@GRNGSTRate,0)/100)),0.00) as GSTAmount 
+      FROM GoodReceivedNoteItem 
+      WHERE NoteNo = @NoteNo
+    </ActionSQL>
+  </CiFieldExitMacro>
+  <DefaultMacro>
+    <ActionSQL>
+      SELECT
+      '' as NoteNo,
+      'ACRM' as BranchName,
+      'HQU' as BranchCode,
+      getdate() as GRNTransactionDate,
+      'Unposted' as GRNPostStatus,
+      0 as GRNGSTRate,
+      'SGD' as OriginalCurrency,
+      coalesce(OtherNames+' '+Surname,'') as GRNIssuedBy
+      FROM ApplicationUser
+      WHERE Email = @CI_UserEmail
+    </ActionSQL>
+  </DefaultMacro>
+  <SelectMacro>
+    <ActionSQL>
+      ?exec spGoodReceivedNote_search @sNoteNo,@sBranchCode,@sGRNIssuedBy,@sGRNTransactionDate,@sItemCode
+    </ActionSQL>
+  </SelectMacro>
+  <InsertMacro>
+	  <ActionSQL>
+      ?exec spGoodReceivedNote_upd 
+        @NoteNo ,
+        @BranchCode,
+        @GRNPostStatus,
+        @InvoiceNo,
+        @SupplierDeliveryOrderNo,
+        @Packing,
+        @Commission,
+        @InvoiceAmount,
+        @GSTCode,
+        @GRNGSTRate,
+        @GSTAmount,
+        @Freight,
+        @Handling,
+        @Insurance,
+        @GRNDiscount,
+        @ShipmentOther,
+        @InvoiceTotalCurrency,
+        @OriginalCurrency,
+        @GRNRemarks,
+        @SupplierCode,
+        @GRNIssuedBy,
+        @GRNTransactionDate
+    </ActionSQL>
+  </InsertMacro>
+  <UpdateMacro>
+	  <ActionSQL>
+      ?exec spGoodReceivedNote_upd 
+        @NoteNo ,
+        @BranchCode,
+        @GRNPostStatus,
+        @InvoiceNo,
+        @SupplierDeliveryOrderNo,
+        @Packing,
+        @Commission,
+        @InvoiceAmount,
+        @GSTCode,
+        @GRNGSTRate,
+        @GSTAmount,
+        @Freight,
+        @Handling,
+        @Insurance,
+        @GRNDiscount,
+        @ShipmentOther,
+        @InvoiceTotalCurrency,
+        @OriginalCurrency,
+        @GRNRemarks,
+        @SupplierCode,
+        @GRNIssuedBy,
+        @GRNTransactionDate
+    </ActionSQL>
+    <VisibleSQL>select 1 from GoodReceivedNote where NoteNo = @NoteNo and GRNPostStatus != 'Posted'</VisibleSQL>
+  </UpdateMacro>
+  <DeleteMacro>
+    <ActionSQL></ActionSQL>
+    <VisibleSQL>select 1 from GoodReceivedNote where NoteNo = @NoteNo and GRNPostStatus != 'Posted'</VisibleSQL>
+  </DeleteMacro>
+  <CiMacro>
+    <MacroName>Void</MacroName>
+    <ActionSQL>?exec spGoodReceivedNote_upd_Status @NoteNo,'Void'</ActionSQL>
+    <VisibleSQL>select 1 from GoodReceivedNote where NoteNo = @NoteNo and GRNPostStatus != 'Posted'</VisibleSQL>
+  </CiMacro>
+</CiTable>

@@ -59,7 +59,6 @@
 </dx:ASPxCardView>
 
 <dx:ASPxCardView ID="dxCard" ClientInstanceName="dxCard" runat="server" Theme="Aqua" DataSourceID="MyTableData" AutoGenerateColumns="false" Width="100%" KeyFieldName="RowKey" CssClass="cssSmallFont"
-    EnableCardsCache="true"
     OnInit="dxCard_Init" OnLoad="dxCard_Load" OnCustomJSProperties="dxCard_CustomJSProperties" OnCustomCallback="dxCard_CustomCallback" OnCustomColumnDisplayText="dxCard_CustomColumnDisplayText"
     OnInitNewCard ="dxCard_InitNewCard" OnCardInserting="dxCard_CardInserting"
     OnCancelCardEditing="dxCard_CancelCardEditing"  OnCardUpdating="dxCard_CardUpdating"
@@ -131,7 +130,7 @@
     <ClientSideEvents ToolbarItemClick="dxGrid_ToolbarItemClick" />
     <ClientSideEvents RowDblClick="dxGrid_RowDblClick" />
 	<ClientSideEvents ContextMenu="dxGrid_Contextmenu" />
-    <Settings ShowGroupPanel="true" ShowGroupedColumns="true" ShowTitlePanel="true" ShowFooter="true" />
+    <Settings ShowGroupPanel="true" ShowGroupedColumns="true" ShowTitlePanel="true" ShowFooter="true" VerticalScrollBarMode="Auto" />
     <SettingsBehavior ColumnResizeMode="Control" AllowSelectSingleRowOnly="true" AllowFocusedRow="true" AllowSelectByRowClick="true" ConfirmDelete="true" />
     <SettingsDetail AllowOnlyOneMasterRowExpanded="true" />
     <SettingsEditing Mode="Inline" NewItemRowPosition="Bottom" />

@@ -34,6 +34,7 @@ namespace CodeClay
         private CiMacro mInsertMacro = null;
         private CiMacro mDeleteMacro = null;
         private CiMacro mDefaultMacro = null;
+        private ArrayList mValidateSQL = new ArrayList();
 
         // --------------------------------------------------------------------------------------------------
         // Properties (PUX)
@@ -162,6 +163,27 @@ namespace CodeClay
             }
         }
 
+        [XmlElement("ValidateSQL")]
+        public string[] ValidateSQL
+        {
+            get
+            {
+                return (string[])mValidateSQL.ToArray(typeof(string));
+            }
+            set
+            {
+                if (value != null)
+                {
+                    string[] ValidateSQL = value;
+                    mValidateSQL.Clear();
+                    foreach (string sql in ValidateSQL)
+                    {
+                        mValidateSQL.Add(sql);
+                    }
+                }
+            }
+        }
+
         [XmlAnyElement("DataSource")]
         public XmlElement DataSource
         {
@@ -178,6 +200,12 @@ namespace CodeClay
         // --------------------------------------------------------------------------------------------------
         // Properties (Derived)
         // --------------------------------------------------------------------------------------------------
+
+        [XmlIgnore]
+        public override string ID
+        {
+            get { return TableName; }
+        }
 
         [XmlIgnore]
         public bool IsSearching
@@ -355,6 +383,21 @@ namespace CodeClay
 
 			return new CiFieldExitMacro[] { };
 		}
+
+        public virtual string RunValidateSQL(DataRow drParams)
+        {
+            foreach (string validateSQL in ValidateSQL)
+            {
+                DataTable dt = UiApplication.Me.GetBySQL(validateSQL, drParams);
+
+                if (dt != null && MyWebUtils.GetNumberOfRows(dt) > 0 && MyWebUtils.GetNumberOfColumns(dt) > 0)
+                {
+                    return MyUtils.Coalesce(dt.Rows[0][0], "").ToString();
+                }
+            }
+
+            return null;
+        }
     }
 
     public partial class UiTable : UiPlugin, IUiColumn
@@ -489,6 +532,10 @@ namespace CodeClay
 
         public string ErrorFieldName { get; set; } = null;
 
+        public string ErrorMessage { get; set; } = null;
+
+        public DataTable DataSource { get; set; } = null;
+
         // --------------------------------------------------------------------------------------------------
         // Event Handlers
         // --------------------------------------------------------------------------------------------------
@@ -613,18 +660,18 @@ namespace CodeClay
 
         protected void dxCard_CardValidating(object sender, ASPxCardViewDataValidationEventArgs e)
         {
-            ValidateData();
+            DoValidation();
         }
 
         protected void dxCard_CardInserting(object sender, DevExpress.Web.Data.ASPxDataInsertingEventArgs e)
         {
             dxCard.SettingsPager.SettingsTableLayout.RowsPerPage = 1;
-            e.Cancel = !StoreData("New");
+            e.Cancel = !ValidationOK("New");
         }
 
         protected void dxCard_CardUpdating(object sender, DevExpress.Web.Data.ASPxDataUpdatingEventArgs e)
         {
-            e.Cancel = !StoreData("Edit");
+            e.Cancel = !ValidationOK("Edit");
         }
 
         protected void dxCard_CancelCardEditing(object sender, ASPxStartCardEditingEventArgs e)
@@ -695,7 +742,6 @@ namespace CodeClay
                 if (pgCardTabs != null && pgCardTabs.TabPages.Count == 0 && CiTable != null)
                 {
                     pgCardTabs.ID = string.Format("pgCardTabs_{0}", CiTable.TableName);
-                    int i = 0;
                     foreach (CiTable ciChildTable in CiTable.Get<CiTable>())
                     {
                         IUiColumn uiColumn = this.CreateUiPlugin(ciChildTable) as IUiColumn;
@@ -728,6 +774,7 @@ namespace CodeClay
             if (UiParentTable == null)
             {
                 dxGrid.JSProperties["cpIsRootTable"] = true;
+                dxGrid.Settings.VerticalScrollableHeight = 400;
             }
 
             if (CiTable != null)
@@ -760,17 +807,17 @@ namespace CodeClay
 
         protected void dxGrid_RowValidating(object sender, DevExpress.Web.Data.ASPxDataValidationEventArgs e)
         {
-            ValidateData();
+            DoValidation();
         }
 
         protected void dxGrid_RowInserting(object sender, DevExpress.Web.Data.ASPxDataInsertingEventArgs e)
         {
-            e.Cancel = !StoreData("New");
+            e.Cancel = !ValidationOK("New");
         }
 
         protected void dxGrid_RowUpdating(object sender, DevExpress.Web.Data.ASPxDataUpdatingEventArgs e)
         {
-            e.Cancel = !StoreData("Edit");
+            e.Cancel = !ValidationOK("Edit");
         }
 
         protected void dxGrid_BeforeColumnSortingGrouping(object sender, ASPxGridViewBeforeColumnGroupingSortingEventArgs e)
@@ -1157,8 +1204,14 @@ namespace CodeClay
 
                 if (!isSearchMode && CiTable.LayoutXml != null)
                 {
-                    dxTable.Templates.Card = CreateLayout(false);
-                    dxTable.Templates.EditForm = CreateLayout(true);
+                    if (IsEditing)
+                    {
+                        dxTable.Templates.EditForm = CreateLayout(true);
+                    }
+                    else
+                    {
+                        dxTable.Templates.Card = CreateLayout(false);
+                    }
                 }
             }
         }
@@ -1311,7 +1364,8 @@ namespace CodeClay
                 CiMacro ciMacro = CiTable.DefaultMacro;
                 if (ciMacro != null)
                 {
-                    DataTable dt = ciMacro.RunSQL(drParams);
+                    ciMacro.Run(drParams);
+                    DataTable dt = ciMacro.ResultTable;
                     if (MyWebUtils.GetNumberOfRows(dt) > 0 && MyWebUtils.GetNumberOfColumns(dt) > 0)
                     {
                         DataRow drResult = dt.Rows[0];
@@ -1569,7 +1623,8 @@ namespace CodeClay
 				CiMacro ciMacro = CiTable.GetMacro(macroName);
                 if (ciMacro != null)
                 {
-                    script = ciMacro.Run(GetState());
+                    ciMacro.Run(GetState());
+                    script = ciMacro.ResultScript;
                 }
             }
 
@@ -1695,29 +1750,37 @@ namespace CodeClay
             dxGrid.JSProperties["cpCheckFocusedRow"] = MyUtils.IsEmpty(command);
         }
 
-        private void ValidateData()
+        private void DoValidation()
         {
             if (CiTable != null)
             {
+                // Check mandatory fields
                 foreach (CiField ciField in CiTable.CiFields)
                 {
                     string fieldName = ciField.FieldName;
                     if (ciField.Mandatory && MyUtils.IsEmpty(this[fieldName]))
                     {
                         ErrorFieldName = fieldName;
+                        ErrorMessage = "Please fill in the missing information";
                         break;
                     }
+                }
+
+                // Check validate SQL
+                if (MyUtils.IsEmpty(ErrorFieldName))
+                {
+                    ErrorMessage = CiTable.RunValidateSQL(GetState());
                 }
             }
         }
 
-        private bool StoreData(string command)
+        private bool ValidationOK(string command)
         {
             if (CiTable != null)
             {
                 string script = "";
 
-                if (!MyUtils.IsEmpty(ErrorFieldName))
+                if (!MyUtils.IsEmpty(ErrorMessage))
                 {
                     UiApplication.Me.SetCommandFired(CiTable.TableName, command);
 
@@ -1732,16 +1795,19 @@ namespace CodeClay
                         BuildGridToolbar();
                     }
 
-                    script += string.Format("SetEditorValue(\'{0}\', \'{1}\', \'{2}\'); ",
-                        CiTable.TableName,
-                        ErrorFieldName,
-                        "");
+                    if (!MyUtils.IsEmpty(ErrorFieldName))
+                    {
+                        script += string.Format("SetEditorValue(\'{0}\', \'{1}\', \'{2}\'); ",
+                          CiTable.TableName,
+                          ErrorFieldName,
+                          "");
 
-                    script += string.Format("SetEditorFocus(\'{0}\', \'{1}\'); ",
-                        CiTable.TableName,
-                        ErrorFieldName);
+                        script += string.Format("SetEditorFocus(\'{0}\', \'{1}\'); ",
+                            CiTable.TableName,
+                            ErrorFieldName);
+                    }
 
-                    script += "alert('Please fill in the missing information');";
+                    script += string.Format("alert('{0}');", ErrorMessage);
 
                     if (IsCardView)
                     {

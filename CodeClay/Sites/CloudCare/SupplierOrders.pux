@@ -41,7 +41,7 @@
     <ColumnFormat>dd/MM/yyyy</ColumnFormat>
   </CiDateField>
   <CiComboField>
-    <FieldName>SuppID</FieldName>
+    <FieldName>SupplierID</FieldName>
     <TextFieldName>SupplierName</TextFieldName>
     <Caption>Supplier</Caption>
     <Editable>true</Editable>
@@ -52,7 +52,7 @@
   <CiLinkField>
     <FieldName>OrderFileURL</FieldName>
     <Caption>Order File</Caption>
-    <Folder lang="sql">select 'SavedFiles\SupplierOrders\' + @SupplierID + '\F' + ltrim(str(@SupplierOrderNo))</Folder>
+    <Folder lang="sql">select 'SavedFiles\SupplierOrders\' + @SupplierID + '\F' + @SupplierOrderNo</Folder>
     <Width>50</Width>
   </CiLinkField>
   <CiTextField>
@@ -72,7 +72,7 @@
       select
       isnull(1 + max(SupplierOrderNo), 1) as SupplierOrderNo,
       convert(datetime,cast(getdate() as nvarchar(12)),103) as SupplierOrderDate,
-      coalesce(@SupplierID,1) as SuppID,
+      coalesce(@sSupplierID,1) as SupplierID,
       'Unique Health Products' as SupplierName,
       'Open' as Status
       from SupplierOrders
@@ -90,7 +90,7 @@
       ?exec spSupplierOrders_upd
       @SupplierOrderNo,
       @Status,
-      @SuppID,
+      @SupplierID,
       @SupplierOrderDate,
       @OrderFileURL,
       @Shipping,
@@ -103,7 +103,7 @@
       ?exec spSupplierOrders_upd
         @SupplierOrderNo,
         @Status,
-        @SuppID,
+        @SupplierID,
         @SupplierOrderDate,
         @OrderFileURL,
         @Shipping,
