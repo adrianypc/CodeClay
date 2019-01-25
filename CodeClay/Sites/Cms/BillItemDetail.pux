@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <CiTable>
-  <TableName>Bill Item Detail</TableName>
+  <TableName>BillItemDetail</TableName>
+  <TableCaption>Item Detail</TableCaption>
   <RowKey>ItemNo</RowKey>
   <DefaultView>Grid</DefaultView>
+  <BubbleUpdate>true</BubbleUpdate>
   <CiTextField>
     <FieldName>ItemNo</FieldName>
     <Caption>No</Caption>
@@ -12,13 +14,14 @@
     <FieldName>ItemCode</FieldName>
     <Caption>Item Code</Caption>
     <Editable>true</Editable>
+    <Width>12</Width>
     <DropdownSQL>select ItemCode,ItemDescription from ChargeItem where CIEnabled = 'Y'</DropdownSQL>
   </CiComboField>
   <CiComboField>
     <FieldName>ItemDescription</FieldName>
     <Caption>Description</Caption>
     <Editable>true</Editable>
-    <Width>35</Width>
+    <Width>30</Width>
     <DropdownSQL>select ItemDescription,ItemCode from ChargeItem where CIEnabled = 'Y'</DropdownSQL>
   </CiComboField>
   <CiTextField>
@@ -28,24 +31,30 @@
   <CiTextField>
     <FieldName>Strength</FieldName>
     <Caption>Strength</Caption>
+    <Width>8</Width>
   </CiTextField>
   <CiTextField>
     <FieldName>UnitOfMeasure</FieldName>
     <Caption>UOM</Caption>
   </CiTextField>
-  <CiTextField>
+  <CiNumericField>
     <FieldName>Quantity</FieldName>
     <Caption>Qty</Caption>
-  </CiTextField>
+  </CiNumericField>
   <CiTextField>
     <FieldName>UnitPrice</FieldName>
     <Caption>Unit $</Caption>
     <Mask>Currency</Mask>
+    <Width>10</Width>
+    <Editable lang="sql">select 1 from ChargeItem where ItemCode = @ItemCode and UnitPriceEditable = 'Y'</Editable>
   </CiTextField>
   <CiTextField>
     <FieldName>Amount</FieldName>
     <Caption>Charge $</Caption>
     <Mask>Currency</Mask>
+    <Width>10</Width>
+    <Editable>false</Editable>
+    <Summary>Sum</Summary>
   </CiTextField>
   <CiTextField>
     <FieldName>CBIGSTApplicable</FieldName>
@@ -71,6 +80,45 @@
     <FieldName>BillNo</FieldName>
     <Hidden>true</Hidden>
   </CiTextField>
+  <CiFieldExitMacro>
+    <FieldName>ItemCode</FieldName>
+    <ActionSQL>
+        select
+        ItemDescription,
+        RecommendedDose,
+        Strength,
+        UnitOfMeasure,
+        CIUnitPrice as UnitPrice,
+        GSTApplicable as CBIGSTApplicable,
+        UnitPriceEditable,
+        CIUnitPrice,
+        GSTApplicable
+        from ChargeItem
+        where ItemCode = @ItemCode
+    </ActionSQL>
+  </CiFieldExitMacro>
+  <CiFieldExitMacro>
+        <FieldName>ItemDescription</FieldName>
+        <ActionSQL>
+            select
+            ItemCode,
+            RecommendedDose,
+            Strength,
+            UnitOfMeasure,
+            CIUnitPrice as UnitPrice,
+            GSTApplicable as CBIGSTApplicable,
+            UnitPriceEditable,
+            GSTApplicable,
+            CIUnitPrice
+            from ChargeItem
+            where ItemDescription = @ItemDescription
+        </ActionSQL>
+    </CiFieldExitMacro>
+  <CiFieldExitMacro>
+      <FieldName>Quantity</FieldName>
+      <FieldName>UnitPrice</FieldName>
+      <ActionSQL>select cast(coalesce(@Quantity,0) * coalesce(@UnitPrice,0.00) as decimal(10,2)) as Amount</ActionSQL>
+  </CiFieldExitMacro>
   <DefaultMacro>
     <ActionSQL>
       select dbo.FnMaxClientBillItemNo(@BillNo) + 1 as ItemNo,

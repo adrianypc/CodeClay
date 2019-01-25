@@ -3,6 +3,7 @@ using System.Collections;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using System.Web.UI.HtmlControls;
 using System.Web.UI;
 using System.Xml.Serialization;
@@ -281,13 +282,29 @@ namespace CodeClay
             }
         }
 
-        public static CiPlugin CreateCiPlugin(string puxFile)
+        public static CiPlugin CreateCiPlugin(string pux, bool isFile = true)
         {
-            string puxPath = MyWebUtils.MapPath(MyWebUtils.ApplicationFolder + @"\" + puxFile);
-
-            if (File.Exists(puxPath))
+            if (isFile)
             {
-                string puxContents = File.ReadAllText(puxPath);
+                string puxPath = MyWebUtils.MapPath(MyWebUtils.ApplicationFolder + @"\" + pux);
+
+                if (File.Exists(puxPath))
+                {
+                    string puxContents = File.ReadAllText(puxPath);
+
+                    CiPlugin ciPlugin = CreateCiPlugin(puxContents, false);
+                    if (ciPlugin != null)
+                    {
+                        ciPlugin.PuxFile = pux;
+                    }
+
+                    return ciPlugin;
+                }
+            }
+            else
+            {
+                string puxContents = pux;
+
                 XElement pluginXML = XElement.Parse(puxContents);
                 string ciPluginName = pluginXML.Name.ToString();
                 Type pluginType = Type.GetType("CodeClay." + ciPluginName);
@@ -301,10 +318,6 @@ namespace CodeClay
                         try
                         {
                             CiPlugin ciPlugin = serializer.Deserialize(reader) as CiPlugin;
-                            if (ciPlugin != null)
-                            {
-                                ciPlugin.PuxFile = puxFile;
-                            }
 
                             return ciPlugin;
                         }
@@ -371,6 +384,7 @@ namespace CodeClay
         }
     }
 
+    [ParseChildren(false)]
     public class UiPlugin : UserControl
     {
         // --------------------------------------------------------------------------------------------------
@@ -491,6 +505,29 @@ namespace CodeClay
         {
             get
             {
+                if (CiPlugin != null)
+                {
+                    string[] rowKeyNames = CiPlugin.RowKeyNames;
+                    CiPlugin ciParentPlugin = CiPlugin.CiParentPlugin;
+
+                    if (rowKeyNames != null && ciParentPlugin != null)
+                    {
+                        rowKeyNames = rowKeyNames.Union(ciParentPlugin.RowKeyNames).ToArray();
+
+                        if (rowKeyNames.Contains(key))
+                        {
+                            object parentValue = (UiParentPlugin != null)
+                            ? UiParentPlugin.GetServerValue(key)
+                            : null;
+
+                            if (!MyUtils.IsEmpty(parentValue))
+                            {
+                                return parentValue;
+                            }
+                        }
+                    }
+                }
+
                 if (rowIndex == -1)
                 {
                     rowIndex = GetFocusedIndex();
@@ -514,19 +551,6 @@ namespace CodeClay
                 if (!MyUtils.IsEmpty(serverValue))
                 {
                     return serverValue;
-                }
-
-                CiPlugin ciParentPlugin = CiPlugin.CiParentPlugin;
-                string[] parentRowKeyNames = (ciParentPlugin != null) ? ciParentPlugin.RowKeyNames : new string[] { };
-                string[] rowKeyNames = CiPlugin.RowKeyNames.Concat(parentRowKeyNames).ToArray();
-
-                object parentValue = (CiPlugin != null && rowKeyNames.Contains(key) && UiParentPlugin != null)
-                  ? UiParentPlugin[key]
-                  : null;
-
-                if (!MyUtils.IsEmpty(parentValue))
-                {
-                    return parentValue;
                 }
 
                 object queryStringValue = MyWebUtils.QueryString[key];
@@ -572,6 +596,28 @@ namespace CodeClay
             }
 
             return dr;
+        }
+
+        // --------------------------------------------------------------------------------------------------
+        // Methods (override)
+        // --------------------------------------------------------------------------------------------------
+
+        protected override void AddParsedSubObject(object content)
+        {
+            LiteralControl literal = content as LiteralControl;
+            if (literal != null)
+            {
+                string textContent = MyUtils.Coalesce(literal.Text, "").ToString().Trim();
+                if (textContent.StartsWith("<Ci"))
+                {
+                    CiPlugin = CiPlugin.CreateCiPlugin(textContent, false);
+                }
+            }
+
+            if (CiPlugin == null)
+            {
+                base.AddParsedSubObject(content);
+            }
         }
     }
 
@@ -705,6 +751,7 @@ namespace CodeClay
                             UiPlugin uiPlugin = ciChildPlugin.CreateUiPlugin(UiPlugin.Page);
                             uiPlugin.UiParentPlugin = UiPlugin;
                             uiPlugin.ConfigureIn(container);
+                            uiPlugin.ID = "ui" + id;
 
                             control.Controls.Add(uiPlugin);
                         }

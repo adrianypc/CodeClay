@@ -12,7 +12,7 @@
 	<CiTextField>
 		<FieldName>BrandName</FieldName>
 		<Caption>Brand Name</Caption>
-		<EditableSQL>select 1 where @ExistingBrand is null</EditableSQL>
+		<Editable lang="sql">select 1 where @ExistingBrand is null</Editable>
 		<Width>20</Width>
 	</CiTextField>
 	<CiMemoField>

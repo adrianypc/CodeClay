@@ -1,0 +1,81 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<CiTable>
+	<TableName>CurrentCustomerOrders</TableName>
+	<TableCaption>Current Customer Orders</TableCaption>
+	<RowKey>CustomerOrderNo</RowKey>
+	<DefaultView>Grid</DefaultView>
+  <DoubleClickMacroName>CustomerOrderDetail</DoubleClickMacroName>
+  <CiTextField>
+    <FieldName>CustomerOrderNo</FieldName>
+    <Caption>Customer Order #</Caption>
+    <Editable>false</Editable>
+    <Width>10</Width>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>Status</FieldName>
+    <Caption>Status</Caption>
+    <Editable>false</Editable>
+    <Width>8</Width>
+  </CiTextField>
+  <CiComboField>
+    <FieldName>CustomerID</FieldName>
+    <TextFieldName>CustomerName</TextFieldName>
+    <Caption>Customer</Caption>
+    <Editable>false</Editable>
+    <Code>CustomerID</Code>
+    <Description>CustomerName</Description>
+    <DropdownSQL>select CustomerID,LastName+','+OtherNames as CustomerName from Customer</DropdownSQL>
+  </CiComboField>
+  <CiDateField>
+    <FieldName>OrderDate</FieldName>
+    <Caption>Order Date</Caption>
+    <Editable>false</Editable>
+    <ColumnFormat>dd/MM/yyyy</ColumnFormat>
+    <Width>7</Width>
+  </CiDateField>
+  <CiNumericField>
+    <FieldName>OrderAge</FieldName>
+    <Caption>Order Age (Days)</Caption>
+    <Editable>false</Editable>
+    <Width>10</Width>
+  </CiNumericField>
+  <CiMemoField>
+    <FieldName>DeliveryAddress</FieldName>
+    <Caption>Delivery Address</Caption>
+    <Editable>false</Editable>
+  </CiMemoField>
+  <CiTextField>
+    <FieldName>Email</FieldName>
+    <Caption>Email</Caption>
+    <Editable>false</Editable>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>Mobile</FieldName>
+    <Caption>Mobile</Caption>
+    <Editable>false</Editable>
+    <Width>10</Width>
+  </CiTextField>
+  <CiMemoField>
+    <FieldName>Comments</FieldName>
+    <Caption>Comments</Caption>
+    <Editable>false</Editable>
+  </CiMemoField>
+	<SelectMacro>
+		<ActionSQL>?exec spCustomerOrders_selbyStatus 'Active',0</ActionSQL>
+	</SelectMacro>
+  <CiMacro>
+    <MacroName>NewOrder</MacroName>
+    <Caption>New</Caption>
+    <ActionSQL>select 'New' as Command</ActionSQL>
+    <NavigateUrl>CustomerOrder.pux</NavigateUrl>
+    <NavigatePos>Popup</NavigatePos>
+    <Toolbar>true</Toolbar>
+  </CiMacro>
+  <CiMacro>
+    <MacroName>CustomerOrderDetail</MacroName>
+    <Caption>Customer Order Detail</Caption>
+    <ActionSQL>select @CustomerOrderNo as CustomerOrderNo, @CustomerID as CustomerID, 'Current' as CalledFrom</ActionSQL>
+    <NavigateUrl>CustomerOrder.pux</NavigateUrl>
+    <NavigatePos>Popup</NavigatePos>
+  </CiMacro>
+</CiTable>

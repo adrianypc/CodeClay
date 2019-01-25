@@ -1,0 +1,95 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<XtraReportsLayoutSerializer SerializerVersion="18.1.5.0" Ref="1" ControlType="DevExpress.XtraReports.UI.XtraReport, DevExpress.XtraReports.v18.1, Version=18.1.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" Name="XtraReport" PageWidth="850" PageHeight="1100" Version="18.1" DataSource="#Ref-0">
+  <Extensions>
+    <Item1 Ref="2" Key="DataSerializationExtension" Value="DataSetSerializer" />
+  </Extensions>
+  <Bands>
+    <Item1 Ref="3" ControlType="TopMarginBand" Name="topMarginBand1" />
+    <Item2 Ref="4" ControlType="ReportHeaderBand" Name="reportHeaderBand1" HeightF="45">
+      <Controls>
+        <Item1 Ref="5" ControlType="XRLabel" Name="label23" Text="Drug Label TEST" SizeF="638,33" LocationFloat="5.99, 6" StyleName="Title" />
+      </Controls>
+    </Item2>
+    <Item3 Ref="6" ControlType="DetailBand" Name="detailBand1" HeightF="273">
+      <Controls>
+        <Item1 Ref="7" ControlType="XRLabel" Name="label14" Text="label14" SizeF="463.32,23" LocationFloat="173.95, 56.25" Padding="2,2,0,0,100">
+          <DataBindings>
+            <Item1 Ref="8" PropertyName="Text" DataMember="ReportFields.Cautions" />
+          </DataBindings>
+        </Item1>
+        <Item2 Ref="9" ControlType="XRLabel" Name="label13" Text="label13" SizeF="471.23,23" LocationFloat="173.99, 31.26" Padding="2,2,0,0,100">
+          <DataBindings>
+            <Item1 Ref="10" PropertyName="Text" DataMember="ReportFields.BirthDate" />
+          </DataBindings>
+        </Item2>
+        <Item3 Ref="11" ControlType="XRLabel" Name="label1" Text="Allergy" SizeF="162,18" LocationFloat="6, 9" StyleName="FieldCaption" />
+        <Item4 Ref="12" ControlType="XRLabel" Name="label2" Text="Birth Date" SizeF="162,18" LocationFloat="6, 33" StyleName="FieldCaption" />
+        <Item5 Ref="13" ControlType="XRLabel" Name="label3" Text="Cautions" SizeF="162,18" LocationFloat="6, 57" StyleName="FieldCaption" />
+        <Item6 Ref="14" ControlType="XRLabel" Name="label4" Text="CIRemarks" SizeF="162,18" LocationFloat="6, 81" StyleName="FieldCaption" />
+        <Item7 Ref="15" ControlType="XRLabel" Name="label5" Text="Client Name" SizeF="162,18" LocationFloat="6, 105" StyleName="FieldCaption" />
+        <Item8 Ref="16" ControlType="XRLabel" Name="label6" Text="Dose" SizeF="162,18" LocationFloat="6, 129" StyleName="FieldCaption" />
+        <Item9 Ref="17" ControlType="XRLabel" Name="label7" Text="Frequency" SizeF="162,18" LocationFloat="6, 153" StyleName="FieldCaption" />
+        <Item10 Ref="18" ControlType="XRLabel" Name="label8" Text="Identity No" SizeF="162,18" LocationFloat="6, 177" StyleName="FieldCaption" />
+        <Item11 Ref="19" ControlType="XRLabel" Name="label9" Text="Issued Date" SizeF="162,18" LocationFloat="6, 201" StyleName="FieldCaption" />
+        <Item12 Ref="20" ControlType="XRLabel" Name="label10" Text="Item Description" SizeF="162,18" LocationFloat="6, 225" StyleName="FieldCaption" />
+        <Item13 Ref="21" ControlType="XRLabel" Name="label11" Text="Strength" SizeF="162,18" LocationFloat="6, 249" StyleName="FieldCaption" />
+        <Item14 Ref="22" ControlType="XRLabel" Name="label12" SizeF="470,18" LocationFloat="174, 9" StyleName="DataField">
+          <DataBindings>
+            <Item1 Ref="23" PropertyName="Text" DataMember="spDrugLabel_sel.Allergy" />
+          </DataBindings>
+        </Item14>
+        <Item15 Ref="24" ControlType="XRLabel" Name="label15" SizeF="470,18" LocationFloat="174, 81" StyleName="DataField">
+          <DataBindings>
+            <Item1 Ref="25" PropertyName="Text" DataMember="spDrugLabel_sel.CIRemarks" />
+          </DataBindings>
+        </Item15>
+        <Item16 Ref="26" ControlType="XRLabel" Name="label16" SizeF="470,18" LocationFloat="174, 105" StyleName="DataField">
+          <DataBindings>
+            <Item1 Ref="27" PropertyName="Text" DataMember="spDrugLabel_sel.ClientName" />
+          </DataBindings>
+        </Item16>
+        <Item17 Ref="28" ControlType="XRLabel" Name="label17" SizeF="470,18" LocationFloat="174, 129" StyleName="DataField">
+          <DataBindings>
+            <Item1 Ref="29" PropertyName="Text" DataMember="spDrugLabel_sel.Dose" />
+          </DataBindings>
+        </Item17>
+        <Item18 Ref="30" ControlType="XRLabel" Name="label18" SizeF="470,18" LocationFloat="174, 153" StyleName="DataField">
+          <DataBindings>
+            <Item1 Ref="31" PropertyName="Text" DataMember="spDrugLabel_sel.Frequency" />
+          </DataBindings>
+        </Item18>
+        <Item19 Ref="32" ControlType="XRLabel" Name="label19" SizeF="470,18" LocationFloat="174, 177" StyleName="DataField">
+          <DataBindings>
+            <Item1 Ref="33" PropertyName="Text" DataMember="spDrugLabel_sel.IdentityNo" />
+          </DataBindings>
+        </Item19>
+        <Item20 Ref="34" ControlType="XRLabel" Name="label20" SizeF="470,18" LocationFloat="174, 201" StyleName="DataField">
+          <DataBindings>
+            <Item1 Ref="35" PropertyName="Text" DataMember="spDrugLabel_sel.IssuedDate" />
+          </DataBindings>
+        </Item20>
+        <Item21 Ref="36" ControlType="XRLabel" Name="label21" SizeF="470,18" LocationFloat="174, 225" StyleName="DataField">
+          <DataBindings>
+            <Item1 Ref="37" PropertyName="Text" DataMember="spDrugLabel_sel.ItemDescription" />
+          </DataBindings>
+        </Item21>
+        <Item22 Ref="38" ControlType="XRLabel" Name="label22" SizeF="470,18" LocationFloat="174, 249" StyleName="DataField">
+          <DataBindings>
+            <Item1 Ref="39" PropertyName="Text" DataMember="spDrugLabel_sel.Strength" />
+          </DataBindings>
+        </Item22>
+        <Item23 Ref="40" ControlType="XRLine" Name="line1" SizeF="638,2" LocationFloat="6, 3" />
+      </Controls>
+    </Item3>
+    <Item4 Ref="41" ControlType="BottomMarginBand" Name="bottomMarginBand1" />
+  </Bands>
+  <StyleSheet>
+    <Item1 Ref="42" Name="Title" BorderStyle="Inset" Font="Times New Roman, 20pt, style=Bold" ForeColor="Maroon" BackColor="Transparent" BorderColor="Black" Sides="None" StringFormat="Near;Near;0;None;Character;Default" BorderWidthSerializable="1" />
+    <Item2 Ref="43" Name="FieldCaption" BorderStyle="Inset" Font="Arial, 10pt, style=Bold" ForeColor="Maroon" BackColor="Transparent" BorderColor="Black" Sides="None" StringFormat="Near;Near;0;None;Character;Default" BorderWidthSerializable="1" />
+    <Item3 Ref="44" Name="PageInfo" BorderStyle="Inset" Font="Times New Roman, 10pt, style=Bold" ForeColor="Black" BackColor="Transparent" BorderColor="Black" Sides="None" StringFormat="Near;Near;0;None;Character;Default" BorderWidthSerializable="1" />
+    <Item4 Ref="45" Name="DataField" BorderStyle="Inset" Padding="2,2,0,0,100" Font="Times New Roman, 10pt" ForeColor="Black" BackColor="Transparent" BorderColor="Black" Sides="None" StringFormat="Near;Near;0;None;Character;Default" BorderWidthSerializable="1" />
+  </StyleSheet>
+  <ObjectStorage>
+    <Item1 ObjectType="DevExpress.XtraReports.Serialization.ObjectStorageInfo, DevExpress.XtraReports.v18.1" Ref="0" Content="&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-16&quot;?&gt;&lt;ReportTable&gt;&lt;xs:schema id=&quot;ReportTable&quot; xmlns=&quot;&quot; xmlns:xs=&quot;http://www.w3.org/2001/XMLSchema&quot; xmlns:msdata=&quot;urn:schemas-microsoft-com:xml-msdata&quot;&gt;&lt;xs:element name=&quot;ReportTable&quot; msdata:IsDataSet=&quot;true&quot; msdata:UseCurrentLocale=&quot;true&quot;&gt;&lt;xs:complexType&gt;&lt;xs:choice minOccurs=&quot;0&quot; maxOccurs=&quot;unbounded&quot;&gt;&lt;xs:element name=&quot;ReportFields&quot;&gt;&lt;xs:complexType&gt;&lt;xs:sequence&gt;&lt;xs:element name=&quot;ClientName&quot; type=&quot;xs:string&quot; minOccurs=&quot;0&quot; /&gt;&lt;xs:element name=&quot;BirthDate&quot; type=&quot;xs:dateTime&quot; minOccurs=&quot;0&quot; /&gt;&lt;xs:element name=&quot;IdentityNo&quot; type=&quot;xs:string&quot; minOccurs=&quot;0&quot; /&gt;&lt;xs:element name=&quot;Allergy&quot; type=&quot;xs:string&quot; minOccurs=&quot;0&quot; /&gt;&lt;xs:element name=&quot;ItemDescription&quot; type=&quot;xs:string&quot; minOccurs=&quot;0&quot; /&gt;&lt;xs:element name=&quot;Strength&quot; type=&quot;xs:string&quot; minOccurs=&quot;0&quot; /&gt;&lt;xs:element name=&quot;Dose&quot; type=&quot;xs:string&quot; minOccurs=&quot;0&quot; /&gt;&lt;xs:element name=&quot;Frequency&quot; type=&quot;xs:string&quot; minOccurs=&quot;0&quot; /&gt;&lt;xs:element name=&quot;CIRemarks&quot; type=&quot;xs:string&quot; minOccurs=&quot;0&quot; /&gt;&lt;xs:element name=&quot;Cautions&quot; type=&quot;xs:string&quot; minOccurs=&quot;0&quot; /&gt;&lt;xs:element name=&quot;IssuedDate&quot; type=&quot;xs:dateTime&quot; minOccurs=&quot;0&quot; /&gt;&lt;/xs:sequence&gt;&lt;/xs:complexType&gt;&lt;/xs:element&gt;&lt;/xs:choice&gt;&lt;/xs:complexType&gt;&lt;/xs:element&gt;&lt;/xs:schema&gt;&lt;ReportFields&gt;&lt;ClientName&gt;TAN, MING LEE&lt;/ClientName&gt;&lt;BirthDate&gt;1991-08-04T19:25:26+08:00&lt;/BirthDate&gt;&lt;IdentityNo&gt;910804-01-5818&lt;/IdentityNo&gt;&lt;Allergy&gt;&lt;/Allergy&gt;&lt;ItemDescription&gt;UTROGESTAN&lt;/ItemDescription&gt;&lt;Strength&gt;250mg&lt;/Strength&gt;&lt;Dose&gt;1TAB&lt;/Dose&gt;&lt;Frequency&gt;3XD&lt;/Frequency&gt;&lt;CIRemarks&gt;After food.&lt;/CIRemarks&gt;&lt;Cautions&gt;May cause drowsiness. Do not drive or operate machinery after taking.&lt;/Cautions&gt;&lt;IssuedDate&gt;2018-08-16T12:33:33.083+08:00&lt;/IssuedDate&gt;&lt;/ReportFields&gt;&lt;ReportFields&gt;&lt;ClientName&gt;TAN, MING LEE&lt;/ClientName&gt;&lt;BirthDate&gt;1991-08-04T19:25:26+08:00&lt;/BirthDate&gt;&lt;IdentityNo&gt;910804-01-5818&lt;/IdentityNo&gt;&lt;Allergy&gt;&lt;/Allergy&gt;&lt;ItemDescription&gt;VIAGRA (4 TABS/BOX)&lt;/ItemDescription&gt;&lt;Strength&gt;50MG&lt;/Strength&gt;&lt;Dose&gt;&lt;/Dose&gt;&lt;Frequency&gt;&lt;/Frequency&gt;&lt;CIRemarks&gt;&lt;/CIRemarks&gt;&lt;Cautions&gt;&lt;/Cautions&gt;&lt;IssuedDate&gt;2018-08-16T12:33:33.083+08:00&lt;/IssuedDate&gt;&lt;/ReportFields&gt;&lt;/ReportTable&gt;" Type="System.Data.DataSet" />
+  </ObjectStorage>
+</XtraReportsLayoutSerializer>

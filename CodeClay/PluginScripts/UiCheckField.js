@@ -4,7 +4,7 @@
     var fieldName = dxCheckBox.name;
     var fieldValue = dxCheckBox.GetValue();
 
-    SetField(tableName, fieldName, fieldValue);
+    InitField(tableName, fieldName, fieldValue);
 
     RegisterEditor(dxCheckBox,
 		function () { return this.GetChecked(); },

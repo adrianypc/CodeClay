@@ -162,6 +162,11 @@
     <Editable lang="sql">select 1 from tblSingleton where @StockItem = 1</Editable>
   </CiTextField>
   <CiTextField>
+        <FieldName>RouteName</FieldName>
+        <Caption>Route</Caption>
+        <Editable lang="sql">select 1 from tblSingleton where @StockItem = 1</Editable>
+  </CiTextField>
+  <CiTextField>
     <FieldName>CIQuantity</FieldName>
     <Caption>Qty. on Hand</Caption>
     <Editable>false</Editable>
@@ -216,7 +221,7 @@
   </DefaultMacro>
   <SelectMacro>
     <ActionSQL>
-        ?exec spChargeItem_Search @sItemCode,@sItemDescription,@sSupplierCode
+        ?exec spChargeItem_Search_v2 @sItemCode,@sItemDescription,@sSupplierCode
     </ActionSQL>
   </SelectMacro>
   <InsertMacro>
@@ -250,7 +255,8 @@
 	    @ValueOnHand,
 	    @ReserveQuantity,
 	    @CIGRNQuantity,
-	    @IsPackageItem
+	    @IsPackageItem,
+        @RouteName
     </ActionSQL>
   </InsertMacro>
   <UpdateMacro>
@@ -284,7 +290,8 @@
 	    @ValueOnHand,
 	    @ReserveQuantity,
 	    @CIGRNQuantity,
-	    @IsPackageItem
+	    @IsPackageItem,
+        @RouteName
    </ActionSQL>
   </UpdateMacro>
 </CiTable>

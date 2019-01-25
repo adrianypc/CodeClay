@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<CiEmail>
+  <SelectSQL>
+    select  'adrianypc@codistri.com' as EmailAddress,
+            'Adrian' as Person,
+            'Chocolates' as Gift
+    from tblSingleton
+  </SelectSQL>
+  <From>hello@benatural.com.sg</From>
+  <To>@EmailAddress</To>
+  <UserName>hello@benatural.com.sg</UserName>
+  <Password>benatural!@#</Password>
+  <Host>mail.benatural.com.sg</Host>
+  <Port>2525</Port>
+  <Subject>Test email for @Person :-)</Subject>
+  <Body>Dear @Person,<br/>Please collect your <u>@Gift</u> from our store.</Body>
+  <IsHtml>true</IsHtml>
+</CiEmail>

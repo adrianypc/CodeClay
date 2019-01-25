@@ -33,6 +33,10 @@ namespace CodeClay
             {
                 MyWebUtils.QueryString = Request.QueryString;
             }
+            else
+            {
+                MyWebUtils.QueryString = new System.Collections.Specialized.NameValueCollection();
+            }
 
             if (MyWebUtils.IsPopup(this))
             {

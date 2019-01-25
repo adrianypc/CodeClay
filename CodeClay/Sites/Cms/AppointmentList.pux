@@ -104,13 +104,13 @@
             select @AppointmentNo as AppointmentNo
         </ActionSQL>
         <NavigateUrl>AppointmentDetail.pux</NavigateUrl>
-        <NavigatePos>NewTab</NavigatePos>
+        <NavigatePos>Popup</NavigatePos>
     </CiMacro>
     <CiMacro>
 	    <MacroName>Couple Detail</MacroName>
 	    <ActionSQL>select @ClientNo as sClientNo</ActionSQL>
 	    <NavigateUrl>Couple.pux</NavigateUrl>
-	    <NavigatePos>NewTab</NavigatePos>
+	    <NavigatePos>Popup</NavigatePos>
     </CiMacro>
     <CiMacro1>
         <MacroName>Tomorrow's List</MacroName>
@@ -122,11 +122,11 @@
         <Caption>New</Caption>
         <ActionSQL>
             select -1 as AppointmentNo,
-                  'New' as Mode,
+                  'New' as Command,
                   @sConsultantId as ConsultantId
         </ActionSQL>
         <NavigateUrl>AppointmentDetail.pux</NavigateUrl>
-        <NavigatePos>NewTab</NavigatePos>
+        <NavigatePos>Popup</NavigatePos>
     </CiMacro>
     <CiMacro>
         <MacroName>Confirmed</MacroName>
@@ -162,13 +162,14 @@
     </CiMacro>
     <CiMacro>
         <MacroName>Create Bill</MacroName>
-        <Caption>-&gt; Create Bill</Caption>
+        <Caption>Create Bill</Caption>
         <VisibleSQL>select 1 from Appointment where AppointmentNo = @AppointmentNo and AppointmentStatus = 'Arrived'</VisibleSQL>
         <ActionSQL>
-            select @AppointmentNo as AppointmentNo
+            select @ClientNo as ClientNo,
+                   'New' as Command
         </ActionSQL>
       <NavigateUrl>BillDetail.pux</NavigateUrl>
-      <NavigatePos>NewTab</NavigatePos>
+      <NavigatePos>Popup</NavigatePos>
     </CiMacro>
     <SelectMacro>
         <ActionSQL>

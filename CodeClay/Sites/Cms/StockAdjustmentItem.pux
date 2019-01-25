@@ -41,7 +41,7 @@
   <CiTextField>
     <FieldName>TransactionNo</FieldName>
     <Caption>Transaction No</Caption>
-    <Hidden>false</Hidden>
+    <Hidden>true</Hidden>
   </CiTextField>
   <CiTextField>
     <FieldName>SAIType</FieldName>

@@ -2,6 +2,14 @@
 <%@ Register Assembly="DevExpress.Web.v18.1, Version=18.1.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" Namespace="DevExpress.Web" TagPrefix="dx" %>
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
+    <style>   
+        input.dxeEditAreaSys,
+        select.dxeEditAreaSys,
+        textarea.dxeMemoEditAreaSys {
+            max-width: 2000px;
+        }
+    </style>
+
     <script>
     	var postponedCallbackRequired = false;
         var iframe;

@@ -245,8 +245,6 @@
     <Content Include="PluginScripts\UiCheckField.js" />
     <Content Include="PluginScripts\UiComboField.js" />
     <Content Include="PluginScripts\UiField.js" />
-    <Content Include="Sites\Cms\Test_CaseNotes.html" />
-    <Content Include="Sites\Cms\Test.html" />
     <Content Include="UiLinkField.ascx" />
     <Content Include="UiFieldExitMacro.ascx" />
     <Content Include="UiButtonField.ascx" />
@@ -258,6 +256,7 @@
     <Content Include="UiCheckField.ascx" />
     <Content Include="UiMemoField.ascx" />
     <Content Include="UiRadioField.ascx" />
+    <Content Include="UiEmail.ascx" />
     <Content Include="UiReport.ascx" />
     <Content Include="UiTable.ascx" />
     <Content Include="UiNumericField.ascx" />
@@ -527,6 +526,12 @@
     <Compile Include="UiRadioField.ascx.designer.cs">
       <DependentUpon>UiRadioField.ascx</DependentUpon>
     </Compile>
+    <Compile Include="UiEmail.ascx.cs">
+      <DependentUpon>UiEmail.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UiEmail.ascx.designer.cs">
+      <DependentUpon>UiEmail.ascx</DependentUpon>
+    </Compile>
     <Compile Include="UiReport.ascx.cs">
       <DependentUpon>UiReport.ascx</DependentUpon>
     </Compile>
@@ -621,6 +626,7 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="SavedFiles\" />
+    <Folder Include="Sites\" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201511231154443_Initial.resx">

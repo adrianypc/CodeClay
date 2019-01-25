@@ -4,16 +4,13 @@
 	<TableCaption>Suppliers</TableCaption>
 	<RowKey>SupplierID</RowKey>
 	<DefaultView>Grid</DefaultView>
-	<CiTextField>
-		<FieldName>sSupplierID</FieldName>
-		<Caption>Supplier ID</Caption>
-		<Searchable>true</Searchable>
-	</CiTextField>
+    <InsertRowAtBottom>false</InsertRowAtBottom>
 	<CiTextField>
 		<FieldName>SupplierID</FieldName>
 		<Caption>Supplier ID</Caption>
 		<Editable>false</Editable>
-	  </CiTextField>
+        <Searchable>true</Searchable>
+    </CiTextField>
 	<CiTextField>
 		<FieldName>SupplierName</FieldName>
 		<Caption>Supplier Name</Caption>
@@ -54,7 +51,7 @@
 		<Caption>Brand Info</Caption>
     <Hidden>true</Hidden>
 	</CiMemoField>
-  <CiTable Src="SupplierOrders.pux">
+  <CiTable Src="SupplierOrder.pux">
     <SelectMacro>
       <ActionSQL>?exec spSupplierOrders_selbySupplierID @SupplierID</ActionSQL>
     </SelectMacro>
@@ -63,7 +60,7 @@
 		<ActionSQL>select '-New-' as SupplierID, 0 as Points</ActionSQL>
 	</DefaultMacro>
 	<SelectMacro>
-		<ActionSQL>?exec spSupplier_sel @sSupplierID</ActionSQL>
+		<ActionSQL>?exec spSupplier_sel @SupplierID</ActionSQL>
 	</SelectMacro>
 	<InsertMacro>
 		<ActionSQL>

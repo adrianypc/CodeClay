@@ -33,6 +33,7 @@
     <Caption>Order Date</Caption>
     <Editable>true</Editable>
     <ColumnFormat>dd/MM/yyyy</ColumnFormat>
+    <Mandatory>true</Mandatory>
   </CiDateField>
   <CiDateField>
     <FieldName>DeliveryDate</FieldName>
@@ -48,11 +49,12 @@
     <Code>SupplierID</Code>
     <Description>SupplierName</Description>
     <DropdownSQL>select SupplierID,SupplierName from Supplier</DropdownSQL>
+    <Mandatory>true</Mandatory>
   </CiComboField>
   <CiLinkField>
     <FieldName>OrderFileURL</FieldName>
     <Caption>Order File</Caption>
-    <Folder lang="sql">select 'SavedFiles\SupplierOrders\' + @SupplierID + '\F' + @SupplierOrderNo</Folder>
+    <Folder lang="sql">select 'SavedFiles\SupplierOrders\' + @SupplierID + '\F' + ltrim(str(@SupplierOrderNo))</Folder>
     <Width>50</Width>
   </CiLinkField>
   <CiTextField>
@@ -66,13 +68,17 @@
     <Mask>Currency</Mask>
     <Editable>false</Editable>
   </CiTextField>
+  <CiTextField>
+    <FieldName>CallerLocation</FieldName>
+     <Hidden>true</Hidden>
+  </CiTextField>
   <CiTable Src="SupplierOrderItems.pux" />
   <DefaultMacro>
     <ActionSQL>
       select
       isnull(1 + max(SupplierOrderNo), 1) as SupplierOrderNo,
       convert(datetime,cast(getdate() as nvarchar(12)),103) as SupplierOrderDate,
-      coalesce(@sSupplierID,1) as SupplierID,
+      coalesce(@SupplierID,1) as SupplierID,
       'Unique Health Products' as SupplierName,
       'Open' as Status
       from SupplierOrders
@@ -97,9 +103,10 @@
       @TotalAmount,
       @DeliveryDate
     </ActionSQL>
-	</InsertMacro>
-	<UpdateMacro>
-		<ActionSQL>
+    <VisibleSQL>select distinct 1 from SupplierOrders where @CallerLocation is null</VisibleSQL>
+    </InsertMacro>
+  <UpdateMacro>
+    <ActionSQL>
       ?exec spSupplierOrders_upd
         @SupplierOrderNo,
         @Status,
@@ -139,7 +146,7 @@
   <CiFieldExitMacro>
     <FieldName>Shipping</FieldName>
     <ActionSQL>
-      select cast(@Shipping as decimal(10,2) + coalesce(sum(Price),0) as TotalAmount
+      select cast(@Shipping as decimal(10,2)) + coalesce(sum(Price),0) as TotalAmount
       from SupplierOrderItems where SupplierOrderNo = @SupplierOrderNo
     </ActionSQL>
   </CiFieldExitMacro>

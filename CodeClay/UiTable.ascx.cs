@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -28,7 +29,7 @@ namespace CodeClay
         // Member variables
         // --------------------------------------------------------------------------------------------------
 
-        private string mDataSource = "";
+        private DataSet mDataSet = new DataSet();
         private CiMacro mSelectMacro = null;
         private CiMacro mUpdateMacro = null;
         private CiMacro mInsertMacro = null;
@@ -48,6 +49,9 @@ namespace CodeClay
 
         [XmlElement("QuickInsert")]
         public bool QuickInsert { get; set; } = false;
+
+        [XmlElement("InsertRowAtBottom")]
+        public bool InsertRowAtBottom { get; set; } = true;
 
         [XmlElement("PageSize")]
         public int PageSize { get; set; } = 0;
@@ -190,11 +194,21 @@ namespace CodeClay
             get
             {
                 var x = new XmlDocument();
-                x.LoadXml(string.Format("<Root>{0}</Root>", mDataSource));
+                x.LoadXml(mDataSet.GetXml());
                 return x.DocumentElement;
             }
 
-            set { mDataSource = value.InnerXml; }
+            set
+            {
+                string innerXml = value.InnerXml;
+
+                if (!MyUtils.IsEmpty(innerXml))
+                {
+                    StringReader reader = new StringReader(innerXml);
+
+                    mDataSet.ReadXml(reader);
+                }
+            }
         }
 
         // --------------------------------------------------------------------------------------------------
@@ -214,6 +228,37 @@ namespace CodeClay
             {
                 return MyUtils.Coalesce(MyWebUtils.QueryStringCommand,
                     UiApplication.Me.GetCommandFired(TableName)) == "Search";
+            }
+        }
+
+        [XmlIgnore]
+        public DataTable DataTable
+        {
+            get
+            {
+                if (mDataSet != null && mDataSet.Tables.Count > 0)
+                {
+                    return mDataSet.Tables[0];
+                }
+
+                return null;
+            }
+
+            set
+            {
+                if (value != null)
+                {
+                    DataSet dataSet = value.DataSet;
+                    if (dataSet != null)
+                    {
+                        mDataSet = dataSet;
+                    }
+                    else
+                    {
+                        mDataSet = new DataSet();
+                        mDataSet.Tables.Add(value);
+                    }
+                }
             }
         }
 
@@ -240,7 +285,7 @@ namespace CodeClay
                     int totalVisibleFields = ciFields.Length;
                     foreach (CiField ciField in ciFields)
                     {
-                        if (!ciField.Visible)
+                        if (!ciField.IsVisible)
                         {
                             sortedFields[--totalVisibleFields] = ciField;
                         }
@@ -252,7 +297,7 @@ namespace CodeClay
 
                     foreach (CiField ciField in ciFields)
                     {
-                        if (ciField.Visible)
+                        if (ciField.IsVisible)
                         {
                             int fieldIndex = rowNumber * totalColumns + columnNumber;
 
@@ -270,7 +315,7 @@ namespace CodeClay
                 }
                 else
                 {
-                    sortedFields = ciFields.Where(c => !c.Searchable).ToArray();
+                    sortedFields = ciFields.Where(c => c.Browsable).ToArray();
                 }
 
                 return sortedFields;
@@ -457,6 +502,40 @@ namespace CodeClay
             }
         }
 
+        public bool IsParentEditing
+        {
+            get
+            {
+                return (UiParentTable != null && UiParentTable.IsEditing);
+            }
+        }
+
+        public bool IsChildEditing
+        {
+            get
+            {
+                if (CiTable != null)
+                {
+                    foreach (CiTable ciChildTable in CiTable.CiTables)
+                    {
+                        string command = UiApplication.Me.GetCommandFired(ciChildTable.TableName);
+
+                        bool isStartEditing = (command == "Edit") || (command == "New");
+
+                        bool isFinishEditing = (command == "Update") || (command == "Cancel");
+
+                        if (isStartEditing && !isFinishEditing)
+                        {
+                            return true;
+                        }
+                    }
+                }
+
+                return false;
+            }
+        }
+
+
         public bool IsBrowsing
         {
             get
@@ -517,24 +596,9 @@ namespace CodeClay
             get { return UiParentPlugin as UiTable; }
         }
 
-        public UiTable UiRootTable
-        {
-            get
-            {
-                if (UiParentTable != null)
-                {
-                    return UiParentTable.UiRootTable;
-                }
-
-                return this;
-            }
-        }
-
         public string ErrorFieldName { get; set; } = null;
 
         public string ErrorMessage { get; set; } = null;
-
-        public DataTable DataSource { get; set; } = null;
 
         // --------------------------------------------------------------------------------------------------
         // Event Handlers
@@ -586,7 +650,7 @@ namespace CodeClay
         {
             dxSearch.SettingsPager.SettingsTableLayout.RowsPerPage = 0;
 
-            DataRow drParams = GetState();
+            DataRow drParams = GetState(-2);
 
             foreach (DataColumn dcColumn in drParams.Table.Columns)
             {
@@ -648,6 +712,12 @@ namespace CodeClay
             if (CiTable != null)
             {
                 e.Properties["cpPuxFile"] = CiTable.PuxFile;
+            }
+
+            if (UiParentTable != null)
+            {
+                e.Properties["cpParentDisabledMacros"] = UiParentTable.GetDisabledMacros();
+                e.Properties["cpParentTableName"] = UiParentTable.CiTable.TableName;
             }
         }
 
@@ -774,7 +844,6 @@ namespace CodeClay
             if (UiParentTable == null)
             {
                 dxGrid.JSProperties["cpIsRootTable"] = true;
-                dxGrid.Settings.VerticalScrollableHeight = 400;
             }
 
             if (CiTable != null)
@@ -802,6 +871,12 @@ namespace CodeClay
             if (CiTable != null)
             {
                 e.Properties["cpPuxFile"] = CiTable.PuxFile;
+            }
+
+            if (UiParentTable != null)
+            {
+                e.Properties["cpParentDisabledMacros"] = UiParentTable.GetDisabledMacros();
+                e.Properties["cpParentTableName"] = UiParentTable.CiTable.TableName;
             }
         }
 
@@ -1223,6 +1298,9 @@ namespace CodeClay
                 dxTable.SettingsText.Title = CiTable.TableCaption;
                 dxTable.SettingsDetail.ShowDetailRow = (CiTable.Get<CiTable>().Length > 0);
                 dxTable.SettingsEditing.Mode = GridViewEditingMode.Inline;
+                dxTable.SettingsEditing.NewItemRowPosition = CiTable.InsertRowAtBottom
+                    ? GridViewNewItemRowPosition.Bottom
+                    : GridViewNewItemRowPosition.Top;
 
                 if (CiTable.PageSize > 0)
                 {
@@ -1274,7 +1352,7 @@ namespace CodeClay
                 GridViewDataColumn dxColumn = dxTable.DataColumns.Cast<GridViewDataColumn>()
                     .SingleOrDefault(c => c.FieldName == fieldName);
 
-                if (dxColumn == null && !ciField.Searchable)
+                if (dxColumn == null && ciField.Browsable)
                 {
                     dxColumn = ciField.CreateGridColumn(this);
 					dxColumn.FieldName = fieldName;
@@ -1290,7 +1368,7 @@ namespace CodeClay
             CardViewToolbar toolbar = dxCard.Toolbars[0];
             if (toolbar != null)
             {
-                ArrayList macroNames = GetVisibleMacros();
+                ArrayList macroNames = GetToolbarMacros();
 
                 // Setup standard toolbar buttons
                 foreach (CardViewToolbarItem button in toolbar.Items)
@@ -1323,7 +1401,7 @@ namespace CodeClay
             GridViewToolbar toolbar = dxGrid.Toolbars[0];
             if (toolbar != null)
             {
-                ArrayList macroNames = GetVisibleMacros();
+                ArrayList macroNames = GetToolbarMacros();
 
                 // Setup standard toolbar buttons
                 foreach (GridViewToolbarItem button in toolbar.Items)
@@ -1472,11 +1550,10 @@ namespace CodeClay
             return null;
         }
 
-        private ArrayList GetVisibleMacros()
+        private ArrayList GetToolbarMacros()
         {
             ArrayList macros = new ArrayList();
-            macros.Add("Inspect");
-            macros.Add("ExportToPdf");
+            macros.Add("More");
             macros.Add("Divider");
 
             if (CiTable != null)
@@ -1487,6 +1564,7 @@ namespace CodeClay
                 bool isBrowsing = IsBrowsing && !isEditing;
                 bool isTopTable = (UiParentTable == null);
                 bool isParentInserting = (UiParentTable != null) && UiParentTable.IsInserting;
+                DataRow drParams = GetState();
 
                 if (isSearchable && isBrowsing && isTopTable)
                 {
@@ -1520,12 +1598,32 @@ namespace CodeClay
                     {
                         if (ciMacro != null)
                         {
-							if (IsCardView || IsGridView && ciMacro.GetActionParameterNames().Count == 0)
+							if (IsCardView || IsGridView && ciMacro.Toolbar)
 							{
 								string macroName = ciMacro.MacroName;
 								macros.Add(macroName);
 							}
                         }
+                    }
+                }
+            }
+
+            return macros;
+        }
+
+        private ArrayList GetMenuMacros()
+        {
+            ArrayList macros = new ArrayList();
+
+            if (CiTable != null)
+            {
+                DataRow drParams = GetState();
+
+                foreach (CiMacro ciMacro in CiTable.CiMacros)
+                {
+                    if (IsGridView && ciMacro != null && !ciMacro.Toolbar && ciMacro.IsVisible(drParams))
+                    {
+                        macros.Add(ciMacro.MacroName);
                     }
                 }
             }
@@ -1541,20 +1639,22 @@ namespace CodeClay
             {
                 DataRow drParams = GetState();
 
+                bool isParentOrChildEditing = IsParentEditing || IsChildEditing;
+
                 CiMacro insertMacro = CiTable.InsertMacro;
-                if (insertMacro == null || !insertMacro.IsVisible(drParams))
+                if (insertMacro == null || !insertMacro.IsVisible(drParams) || isParentOrChildEditing)
                 {
                     disabledMacros += LIST_SEPARATOR + "New";
                 }
 
                 CiMacro updateMacro = CiTable.UpdateMacro;
-                if (updateMacro == null || !updateMacro.IsVisible(drParams) || !RecordsExist)
+                if (updateMacro == null || !updateMacro.IsVisible(drParams) || isParentOrChildEditing || !RecordsExist)
                 {
                     disabledMacros += LIST_SEPARATOR + "Edit";
                 }
 
                 CiMacro deleteMacro = CiTable.DeleteMacro;
-                if (deleteMacro == null || !deleteMacro.IsVisible(drParams) || !RecordsExist)
+                if (deleteMacro == null || !deleteMacro.IsVisible(drParams) || isParentOrChildEditing || !RecordsExist)
                 {
                     disabledMacros += LIST_SEPARATOR + "Delete";
                 }
@@ -1565,18 +1665,13 @@ namespace CodeClay
                     {
                         if (ciMacro != null)
                         {
-                            int numberOfSqlParameters = MyUtils.GetParameters(ciMacro.VisibleSQL).Count;
+                            int numberOfSqlParameters = ciMacro.GetMissingMacroParameters(drParams).Count;
                             bool visibleForRecord = RecordsExist && ciMacro.IsVisible(drParams);
+                            string macroName = ciMacro.MacroName;
 
-                            if (numberOfSqlParameters > 0 && !visibleForRecord)
+                            if ((numberOfSqlParameters > 0 && !visibleForRecord) || isParentOrChildEditing)
                             {
-                                string macroName = ciMacro.MacroName;
-                                if (disabledMacros.Length > 0)
-                                {
-                                    disabledMacros += LIST_SEPARATOR;
-                                }
-
-                                disabledMacros += macroName;
+                                disabledMacros += LIST_SEPARATOR + macroName;
                             }
                         }
                     }
@@ -1593,20 +1688,17 @@ namespace CodeClay
 
             if (IsBrowsing && CiTable != null)
             {
-                DataRow drParams = GetState();
                 string doubleClickMacroName = CiTable.DoubleClickMacroName;
 
-                foreach (CiMacro ciMacro in CiTable.CiMacros)
+                foreach (string macroName in GetMenuMacros())
                 {
-                    if (IsGridView && ciMacro != null && ciMacro.GetActionParameterNames().Count > 0 && ciMacro.IsVisible(drParams))
-                    {
-                        string macroName = ciMacro.MacroName;
-                        DevExpress.Web.MenuItem menuItem = dxPopupMenu.Items.Add(ciMacro.MacroCaption, macroName);
+                    CiMacro ciMacro = CiTable.GetMacro(macroName);
 
-                        if (doubleClickMacroName == macroName)
-                        {
-                            menuItem.Checked = true;
-                        }
+                    DevExpress.Web.MenuItem menuItem = dxPopupMenu.Items.Add(ciMacro.MacroCaption, macroName);
+
+                    if (doubleClickMacroName == macroName)
+                    {
+                        menuItem.Checked = true;
                     }
                 }
             }

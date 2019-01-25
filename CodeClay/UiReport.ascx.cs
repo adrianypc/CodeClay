@@ -112,7 +112,15 @@ namespace CodeClay
                 if (dt != null)
                 {
                     dt.TableName = "ReportFields";
-                    ds.Tables.Add(dt);
+
+                    if (dt.DataSet != null)
+                    {
+                        ds = dt.DataSet;
+                    }
+                    else
+                    {
+                        ds.Tables.Add(dt);
+                    }
                 }
 
                 return ds;

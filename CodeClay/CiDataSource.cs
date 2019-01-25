@@ -45,11 +45,7 @@ namespace CodeClay
                 }
                 else if (ciTable.DataSource != null)
                 {
-                    string dataSourceXML = ciTable.DataSource.OuterXml;
-                    if (!MyUtils.IsEmpty(dataSourceXML))
-                    {
-                        dt = MyWebUtils.ToDataTable(ciTable.DataSource.OuterXml);
-                    }
+                    dt = ciTable.DataTable;
                 }
 
                 foreach (CiField ciField in ciTable.CiFields)

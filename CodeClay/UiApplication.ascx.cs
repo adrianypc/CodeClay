@@ -118,7 +118,7 @@ namespace CodeClay
                 if (mDbConnection != null && mDbConnection.State != ConnectionState.Open)
                 {
                     string connectionString = MyWebUtils.IsConnectedToCPanel
-                        ? CiApplication.CPanelConnectionString
+                        ? Properties.Settings.Default.CPanelConnectionString
                         : CiApplication.ConnectionString;
 
                     mDbConnection.ConnectionString = connectionString;
@@ -307,7 +307,7 @@ namespace CodeClay
         {
             lock (mLock)
             {
-                DataTable dt = new DataTable();
+                DataTable dt = (new DataSet()).Tables.Add();
 
                 int lastSelectSQLIndex = sqlList.Length;
                 while (--lastSelectSQLIndex > -1)
@@ -396,7 +396,7 @@ namespace CodeClay
                                 else
                                 {
                                     lastRowAdded = 0;
-                                    dtResultTable = new DataTable();
+                                    dtResultTable = (new DataSet()).Tables.Add();
                                 }
 
                                 rowsFetched += Fill(dbCommand, dt);
@@ -418,7 +418,7 @@ namespace CodeClay
                         }
                         else
                         {
-                            dt = new DataTable();
+                            dt = (new DataSet()).Tables.Add();
                             Fill(dbCommand, null);
                         }
                     }

@@ -61,7 +61,7 @@ function dxEditLink_Init(sender, event) {
     var fieldName = dxEditLink.cpFieldName;
     var fieldValue = dxEditLink.cpShortNavigateUrl;
 
-    SetField(tableName, fieldName, fieldValue);
+    InitField(tableName, fieldName, fieldValue);
 }
 
 function dxUpload_Init(sender, event) {
@@ -102,7 +102,7 @@ function dxUpdateText_Init(sender, event) {
     dxUploadText = sender;
 }
 
-function dxUpdateText_LostFocus(sender, event) {
+function dxUpdateText_ValueChanged(sender, event) {
     dxUploadText = sender;
 
     var tableName = dxUploadText.cpTableName;

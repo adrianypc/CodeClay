@@ -59,6 +59,9 @@ namespace CodeClay
 			}
 		}
 
+        [XmlElement("Toolbar")]
+        public bool Toolbar { get; set; } = false;
+
         [XmlElement("ValidateSQL")]
         public string[] ValidateSQL
         {
@@ -152,7 +155,7 @@ namespace CodeClay
             return MyWebUtils.IsTrueSQL(VisibleSQL, drParams);
         }
 
-		public virtual ArrayList GetActionParameterNames()
+		public virtual ArrayList GetMacroParameters()
 		{
 			ArrayList sqlParams = new ArrayList();
 
@@ -161,20 +164,46 @@ namespace CodeClay
 				sqlParams = MyWebUtils.Merge(sqlParams, MyUtils.GetParameters(actionSQL));
 			}
 
-            if (CiTable != null)
+            sqlParams = MyWebUtils.Merge(sqlParams, MyUtils.GetParameters(VisibleSQL));
+
+            //if (CiTable != null)
+            //{
+            //    foreach (CiField ciField in CiTable.CiSearchableFields)
+            //    {
+            //        string fieldName = ciField.FieldName;
+            //        if (sqlParams.Contains(fieldName))
+            //        {
+            //            sqlParams.Remove(fieldName);
+            //        }
+            //    }
+            //}
+
+			return sqlParams;
+		}
+
+        public virtual ArrayList GetMissingMacroParameters(DataRow drParams)
+        {
+            ArrayList sqlParams = new ArrayList();
+
+            if (drParams != null)
             {
-                foreach (CiField ciField in CiTable.CiSearchableFields)
+                DataTable dt = drParams.Table;
+
+                if (dt != null)
                 {
-                    string fieldName = ciField.FieldName;
-                    if (sqlParams.Contains(fieldName))
+                    DataColumnCollection columnCollection = dt.Columns;
+                    foreach (string parameterName in GetMacroParameters())
                     {
-                        sqlParams.Remove(fieldName);
+                        if (!columnCollection.Contains(parameterName))
+                        {
+                            sqlParams.Add(parameterName);
+                        }
                     }
                 }
             }
 
-			return sqlParams;
-		}
+            return sqlParams;
+        }
 
         // --------------------------------------------------------------------------------------------------
         // Helpers
@@ -239,7 +268,7 @@ namespace CodeClay
                         parameterQueryString += "&";
                     }
 
-                    parameterQueryString += string.Format("{0}={1}", columnName, columnValue.ToString());
+                    parameterQueryString += string.Format("{0}={1}", columnName, columnValue.ToString().Trim());
                 }
             }
 

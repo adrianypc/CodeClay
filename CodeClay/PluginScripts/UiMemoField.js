@@ -4,12 +4,26 @@
     var fieldName = dxMemo.name;
     var fieldValue = dxMemo.GetText();
 
-    SetField(tableName, fieldName, fieldValue);
+    dxMemo.SetHeight(dxMemo.GetInputElement().scrollHeight + 5);
+
+    InitField(tableName, fieldName, fieldValue);
 
     RegisterEditor(dxMemo,
 		function () { return this.GetText(); },
 		function (value) { this.SetText(value); }
 	);
+}
+
+function dxMemo_KeyPress(sender, event) {
+    var dxMemo = sender;
+
+    if (dxMemo) {
+        switch (event.htmlEvent.keyCode) {
+            case 13:
+                dxMemo.SetHeight(dxMemo.GetInputElement().scrollHeight + 15);
+                break;
+        }
+    }
 }
 
 function dxMemo_ValueChanged(sender, event) {

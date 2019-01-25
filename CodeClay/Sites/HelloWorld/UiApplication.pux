@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<CiApplication>
+    <IsDesigner>true</IsDesigner>
+    <ProviderName>System.Data.SqlClient</ProviderName>
+    <ConnectionString>Password=cms123*;Persist Security Info=True;User ID=sa;Initial Catalog=CloudCareTest;Data Source=cccrmsm</ConnectionString>
+    <CiMenu>
+        <MenuName>Application</MenuName>
+        <CiMenu>
+            <MenuName>Hello</MenuName>
+            <PluginSrc>Hello.pux</PluginSrc>
+        </CiMenu>
+        <CiMenu>
+            <MenuName>World</MenuName>
+        </CiMenu>
+    </CiMenu>
+</CiApplication>

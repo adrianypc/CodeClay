@@ -1,0 +1,139 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<CiTable>
+	<TableName>SupplierOrder</TableName>
+	<TableCaption>Supplier Order</TableCaption>
+	<RowKey>SupplierOrderNo</RowKey>
+	<DefaultView>Card</DefaultView>
+  <CiTextField>
+    <FieldName>SupplierOrderNo</FieldName>
+    <Caption>Supplier Order #</Caption>
+    <Editable>false</Editable>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>Status</FieldName>
+    <Caption>Status</Caption>
+    <Editable>false</Editable>
+  </CiTextField>
+  <CiDateField>
+    <FieldName>SupplierOrderDate</FieldName>
+    <Caption>Order Date</Caption>
+    <Editable>true</Editable>
+    <ColumnFormat>dd/MM/yyyy</ColumnFormat>
+    <Mandatory>true</Mandatory>
+  </CiDateField>
+  <CiDateField>
+    <FieldName>DeliveryDate</FieldName>
+    <Caption>Delivery Date</Caption>
+    <Editable>true</Editable>
+    <ColumnFormat>dd/MM/yyyy</ColumnFormat>
+  </CiDateField>
+  <CiComboField>
+    <FieldName>SupplierID</FieldName>
+    <TextFieldName>SupplierName</TextFieldName>
+    <Caption>Supplier</Caption>
+    <Editable>true</Editable>
+    <Code>SupplierID</Code>
+    <Description>SupplierName</Description>
+    <DropdownSQL>select SupplierID,SupplierName from Supplier</DropdownSQL>
+    <Mandatory>true</Mandatory>
+  </CiComboField>
+  <CiLinkField>
+    <FieldName>OrderFileURL</FieldName>
+    <Caption>Order File</Caption>
+    <Folder lang="sql">select 'SavedFiles\SupplierOrders\' + @SupplierID + '\F' + ltrim(str(@SupplierOrderNo))</Folder>
+    <Width>50</Width>
+  </CiLinkField>
+  <CiTextField>
+    <FieldName>Shipping</FieldName>
+    <Caption>Shipping ($)</Caption>
+    <Mask>Currency</Mask>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>TotalAmount</FieldName>
+    <Caption>Total ($)</Caption>
+    <Mask>Currency</Mask>
+    <Editable>false</Editable>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>CalledFrom</FieldName>
+     <Hidden>true</Hidden>
+  </CiTextField>
+  <CiTable Src="SupplierOrderItems.pux" />
+  <DefaultMacro>
+    <ActionSQL>
+      select
+      isnull(1 + max(SupplierOrderNo), 1) as SupplierOrderNo,
+      convert(datetime,cast(getdate() as nvarchar(12)),103) as SupplierOrderDate,
+      coalesce(@SupplierID,1) as SupplierID,
+      'Unique Health Products' as SupplierName,
+      'Open' as Status
+      from SupplierOrders
+    </ActionSQL>
+  </DefaultMacro>
+  <SelectMacro>
+		<ActionSQL>?exec spSupplierOrders_sel @SupplierOrderNo, @SupplierID</ActionSQL>
+  </SelectMacro>
+  <InsertMacro>
+    <ActionSQL>
+      select  isnull(1 + max(SupplierOrderNo), 1) as SupplierOrderNo
+      from    SupplierOrders
+    </ActionSQL>
+		<ActionSQL>
+      ?exec spSupplierOrders_upd
+      @SupplierOrderNo,
+      @Status,
+      @SupplierID,
+      @SupplierOrderDate,
+      @OrderFileURL,
+      @Shipping,
+      @TotalAmount,
+      @DeliveryDate
+    </ActionSQL>
+    <VisibleSQL>select distinct 1 from SupplierOrders where @CalledFrom is null</VisibleSQL>
+    </InsertMacro>
+  <UpdateMacro>
+    <ActionSQL>
+      ?exec spSupplierOrders_upd
+        @SupplierOrderNo,
+        @Status,
+        @SupplierID,
+        @SupplierOrderDate,
+        @OrderFileURL,
+        @Shipping,
+        @TotalAmount,
+        @DeliveryDate
+    </ActionSQL>
+    <VisibleSQL>select 1 from SupplierOrders where SupplierOrderNo = @SupplierOrderNo and (Status != 'Received' or Status is null)</VisibleSQL>
+  </UpdateMacro>
+  <DeleteMacro>
+    <ActionSQL>exec spSupplierOrders_del @SupplierOrderNo</ActionSQL>
+    <VisibleSQL>select 1 from SupplierOrders where SupplierOrderNo = @SupplierOrderNo and (Status != 'Received' or Status is null)</VisibleSQL>
+  </DeleteMacro>
+  <CiMacro>
+    <MacroName>Submit</MacroName>
+    <ActionSQL>exec spSupplierOrders_Status_upd @SupplierOrderNo,'Active'</ActionSQL>
+    <ActionSQL>
+      select Status,
+      SupplierOrderDate
+      from SupplierOrders where SupplierOrderNo = @SupplierOrderNo
+    </ActionSQL>
+    <VisibleSQL>select 1 from SupplierOrders where SupplierOrderNo = @SupplierOrderNo and Status = 'Open'</VisibleSQL>
+  </CiMacro>
+  <CiMacro>
+    <MacroName>Received</MacroName>
+    <ActionSQL>exec spSupplierOrders_Status_upd @SupplierOrderNo,'Received'</ActionSQL>
+    <ActionSQL>
+      select Status,
+      DeliveryDate
+      from SupplierOrders where SupplierOrderNo = @SupplierOrderNo
+    </ActionSQL>
+    <VisibleSQL>select 1 from SupplierOrders where SupplierOrderNo = @SupplierOrderNo and Status = 'Active'</VisibleSQL>
+  </CiMacro>
+  <CiFieldExitMacro>
+    <FieldName>Shipping</FieldName>
+    <ActionSQL>
+      select cast(@Shipping as decimal(10,2)) + coalesce(sum(Price),0) as TotalAmount
+      from SupplierOrderItems where SupplierOrderNo = @SupplierOrderNo
+    </ActionSQL>
+  </CiFieldExitMacro>
+</CiTable>

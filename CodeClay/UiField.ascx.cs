@@ -18,12 +18,6 @@ namespace CodeClay
     public class CiField : CiPlugin
     {
         // --------------------------------------------------------------------------------------------------
-        // Member Variables
-        // --------------------------------------------------------------------------------------------------
-
-		private bool mSearchable = false;
-
-        // --------------------------------------------------------------------------------------------------
         // Properties (PUX)
         // --------------------------------------------------------------------------------------------------
 
@@ -73,18 +67,10 @@ namespace CodeClay
         public SummaryItemType Summary { get; set; } = SummaryItemType.None;
 
         [XmlElement("Searchable")]
-        public bool Searchable
-        {
-            get { return mSearchable; }
-            set
-            {
-                mSearchable = value;
-                if (mSearchable)
-                {
-                    Hidden = true;
-                }
-            }
-        }
+        public bool Searchable { get; set; } = false;
+
+        [XmlElement("Browsable")]
+        public bool Browsable { get; set; } = true;
 
         // --------------------------------------------------------------------------------------------------
         // Properties (Derived)
@@ -103,15 +89,20 @@ namespace CodeClay
         }
 
         [XmlIgnore]
-        public bool Visible
+        public bool IsSearching
         {
             get
             {
-                bool isSearching = (CiTable != null)
-                    ? (CiTable.IsSearching)
-                    : false;
+                return (CiTable != null) ? (CiTable.IsSearching) && Searchable : false;
+            }
+        }
 
-                return !isSearching && !Hidden || isSearching && Searchable;
+        [XmlIgnore]
+        public bool IsVisible
+        {
+            get
+            {
+                return IsSearching || (Browsable && !Hidden);
             }
         }
 
@@ -132,7 +123,7 @@ namespace CodeClay
                     {
                         if (Width == 0 && ColSpan == 1)
                         {
-                            int colCount = Visible ? CiTable.ColCount : 1;
+                            int colCount = IsVisible ? CiTable.ColCount : 1;
                             columnWidth = Unit.Percentage(100 / colCount);
                         }
                     }
@@ -222,6 +213,11 @@ namespace CodeClay
         // Methods (Virtual)
         // --------------------------------------------------------------------------------------------------
 
+        public virtual bool IsEditable(DataRow drParams)
+        {
+            return IsSearching || (Enabled && MyWebUtils.Eval<bool>(Editable, drParams));
+        }
+
         public virtual ArrayList GetLeaderFieldNames()
         {
             return MyUtils.GetParameters(MyWebUtils.GetSQLFromXml(Editable));
@@ -259,11 +255,11 @@ namespace CodeClay
 			{
 				string fieldName = dxColumn.FieldName;
 
-				dxColumn.Visible = Visible;
+				dxColumn.Visible = IsVisible;
 				dxColumn.Caption = Caption;
 				dxColumn.Width = ColumnWidth;
 
-				if (Visible)
+				if (IsVisible)
 				{
                     CardViewFormLayoutProperties layoutProperties = dxColumn.CardView.CardLayoutProperties;
                     CardViewColumnLayoutItem dxLayoutItem = layoutProperties.FindColumnItem(fieldName) as CardViewColumnLayoutItem;
@@ -276,7 +272,7 @@ namespace CodeClay
                         layoutProperties.Items.Add(dxLayoutItem);
                     }
 
-                    dxLayoutItem.Visible = Visible;
+                    dxLayoutItem.Visible = IsVisible;
 					dxLayoutItem.Caption = (Caption == "*") ? "" : Caption;
 					dxLayoutItem.RowSpan = RowSpan;
 					dxLayoutItem.ColSpan = ColSpan;
@@ -310,7 +306,7 @@ namespace CodeClay
 				HorizontalAlign left = System.Web.UI.WebControls.HorizontalAlign.Left;
 				VerticalAlign top = System.Web.UI.WebControls.VerticalAlign.Top;
 
-				dxColumn.Visible = Visible;
+				dxColumn.Visible = IsVisible;
 				dxColumn.Caption = Caption;
 				dxColumn.CellStyle.HorizontalAlign = left;
 				dxColumn.CellStyle.VerticalAlign = top;
@@ -562,7 +558,7 @@ namespace CodeClay
                 CiTable ciTable = CiField.CiTable;
                 string tableName = (ciTable != null) ? ciTable.TableName : "";
                 string fieldName = CiField.FieldName;
-                bool isEditable = CiField.Enabled && MyWebUtils.Eval<bool>(CiField.Editable, drParams);
+                bool isEditable = CiField.IsEditable(drParams);
                 object fieldValue = MyUtils.Coalesce(mEditor.Value, FieldValue);
 				string foreColor = CiField.ForeColor;
 
@@ -574,7 +570,7 @@ namespace CodeClay
                 mEditor.CssClass = "css" + fieldName;
                 mEditor.Width = CiField.EditorWidth;
                 mEditor.Value = fieldValue;
-                mEditor.Visible = CiField.Visible;
+                mEditor.Visible = CiField.IsVisible;
                 mEditor.BackColor = GetBackColor(isEditable);
 				
 				if (!MyUtils.IsEmpty(foreColor))
@@ -606,9 +602,6 @@ namespace CodeClay
                     {
                         eventHandlerName = mEditor.ClientInstanceName + "_ValueChanged";
                         mEditor.SetClientSideEventHandler("ValueChanged", FormatEvent(eventHandlerName));
-
-						eventHandlerName = "dxField_KeyPress";
-						mEditor.SetClientSideEventHandler("KeyPress", FormatEvent(eventHandlerName));
                     }
                 }
             }

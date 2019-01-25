@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CiTable>
+  <TableName>PostGoodReceivedNote</TableName>
+  <TableCaption>Post Good Received Note</TableCaption>
+  <RowKey>BranchCode</RowKey>
+  <DefaultView>Card</DefaultView>
+  <CiComboField>
+    <FieldName>sBranchCode</FieldName>
+    <TextFieldName>BranchName</TextFieldName>
+    <Caption>Branch</Caption>
+    <Code>BranchCode</Code>
+    <Description>BranchName</Description>
+    <DropdownSQL>select BranchCode,BranchName from Branch </DropdownSQL>
+    <Searchable>true</Searchable>
+  </CiComboField>
+  <CiComboField>
+    <FieldName>BranchCode</FieldName>
+    <TextFieldName>BranchName</TextFieldName>
+    <Caption>Branch</Caption>
+    <Code>BranchCode</Code>
+    <Description>BranchName</Description>
+    <DropdownSQL>select BranchCode,BranchName from Branch </DropdownSQL>
+  </CiComboField>
+  <CiTable Src="PostGoodReceivedNoteList.pux" />
+  <SelectMacro>
+    <ActionSQL>select BranchCode,BranchName from Branch where BranchCode = @sBranchCode</ActionSQL>
+  </SelectMacro>
+</CiTable>

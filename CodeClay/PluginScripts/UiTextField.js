@@ -4,7 +4,7 @@
     var fieldName = dxTextBox.name;
     var fieldValue = dxTextBox.GetText();
 
-    SetField(tableName, fieldName, fieldValue);
+    InitField(tableName, fieldName, fieldValue);
 
     RegisterEditor(dxTextBox,
 		function () { return this.GetText(); },

@@ -4,9 +4,11 @@ using System.Collections.Specialized;
 using System.Data;
 using System.IO;
 using System.Linq;
+using System.Security.Principal;
 using System.Text;
 using System.Web;
 using System.Web.Security;
+using System.Web.SessionState;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Xml;
@@ -34,8 +36,7 @@ namespace CodeClay
     public enum eTextMask
     {
         None = 0,
-        Currency,
-        Integer
+        Currency
     }
 
 	public enum eTableMode
@@ -398,20 +399,29 @@ namespace CodeClay
             if (page != null && !Properties.Settings.Default.AirplaneMode)
             {
                 string loginUrl = "~/Account/Login.aspx";
+                HttpSessionState mySession = page.Session;
+                int sessionCount = (mySession != null) ? mySession.Count : 0;
+                HttpResponse myResponse = page.Response;
+                IPrincipal myUser = page.User;
 
-                if (page.Session.Count == 0 && !page.IsCallback || !IsUserAuthorised() || UiApplication.Me == null)
+                if ((sessionCount == 0 && !page.IsCallback || !IsUserAuthorised() || UiApplication.Me == null) && myResponse != null)
                 {
-                    page.Response.Redirect(loginUrl);
+                    myResponse.Redirect(loginUrl);
                 }
-                else if (page.Session.Count == 0 && page.IsCallback)
+                else if (sessionCount == 0 && page.IsCallback)
                 {
                     FormsAuthentication.SignOut();
                     ASPxWebControl.RedirectOnCallback(loginUrl);
                 }
-                else if (!page.User.Identity.IsAuthenticated)
+                else if (myUser != null)
                 {
-                    FormsAuthentication.SignOut();
-                    FormsAuthentication.RedirectToLoginPage();
+                    IIdentity myIdentity = myUser.Identity;
+
+                    if (myIdentity != null && !myIdentity.IsAuthenticated)
+                    {
+                        FormsAuthentication.SignOut();
+                        FormsAuthentication.RedirectToLoginPage();
+                    }
                 }
             }
 

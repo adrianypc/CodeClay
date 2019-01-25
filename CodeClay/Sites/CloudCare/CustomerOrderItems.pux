@@ -97,7 +97,8 @@
     </VisibleSQL>
   </DeleteMacro>
   <CiFieldExitMacro>
-		<FieldName>Quantity</FieldName>
-		<ActionSQL>select	@Quantity * coalesce(UnitSellingPrice,0) as Amount from Product where	ProductID = @ProductID</ActionSQL>
+      <FieldName>Quantity</FieldName>
+      <FieldName>ProductID</FieldName>
+      <ActionSQL>select	@Quantity * coalesce(UnitSellingPrice,0) as Amount from Product where	ProductID = @ProductID</ActionSQL>
 	</CiFieldExitMacro>
 </CiTable>

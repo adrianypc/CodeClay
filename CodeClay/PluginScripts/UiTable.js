@@ -1,7 +1,6 @@
 ﻿var rootTable = null;
 var childTable = null;
-var grids = {};
-var cards = {};
+var tables = {};
 var popupMenus = {};
 var openMenuPanels = {};
 var clickMenuPanels = {};
@@ -30,7 +29,7 @@ function dxCard_Init(sender, event) {
     var tableName = dxCard.cpTableName;
 
     if (tableName) {
-    	cards[tableName] = dxCard;
+    	tables[tableName] = dxCard;
     }
 
     if (isRootTable) {
@@ -38,6 +37,7 @@ function dxCard_Init(sender, event) {
     }
 
     dxCard.SetFocusedCardIndex(0);
+    InitToolbar(dxCard, dxCard.cpDisabledMacros);
 }
 
 function dxCard_FocusedCardChanged(sender, event) {
@@ -66,9 +66,9 @@ function dxCard_EndCallback(sender, event) {
     	case "New":
     		RefreshFollowers(dxCard.cpFollowerFields);
 
-    	case "Search":
+        case "Search":
     	case "Edit":
-    		// Do nothing
+            // Do nothing
     		break;
 
         case "UpdateNew":
@@ -129,10 +129,7 @@ function dxCard_EndCallback(sender, event) {
     		break;
     }
 
-    InitToolbar(dxCard, dxCard.cpDisabledMacros);
-    if (childTable) {
-    	InitToolbar(childTable, childTable.cpDisabledMacros);
-    }
+    InitAllToolbars(dxCard);
 }
 
 function dxCard_ToolbarItemClick(sender, event) {
@@ -150,7 +147,7 @@ function dxGrid_Init(sender, event) {
     var tableName = dxGrid.cpTableName;
 
     if (tableName) {
-    	grids[tableName] = dxGrid;
+    	tables[tableName] = dxGrid;
     }
 
     if (isRootTable) {
@@ -218,7 +215,7 @@ function dxGrid_EndCallback(sender, event) {
                 eval(script);
             }
 
-            if (rootTable && rootTable.name != dxGrid.name && dxGrid.cpBubbleUpdate) {
+            if (rootTable && rootTable.name != dxGrid.name && dxGrid.cpBubbleUpdate && !dxGrid.cpIsInvalid) {
                 rootTable.PerformCallback(tableName);
                 childTable = dxGrid;
             }
@@ -246,10 +243,7 @@ function dxGrid_EndCallback(sender, event) {
             break;
     }
 
-    InitToolbar(dxGrid, dxGrid.cpDisabledMacros);
-    if (childTable) {
-    	InitToolbar(childTable, childTable.cpDisabledMacros);
-    }
+    InitAllToolbars(dxGrid);
 }
 
 function dxGrid_FocusedRowChanged(sender, event) {
@@ -325,6 +319,24 @@ function dxGrid_RowDblClick(sender, event) {
 // --------------------------------------------------------------------------------------------------
 // Toolbar functions
 // --------------------------------------------------------------------------------------------------
+
+function InitAllToolbars(table) {
+    var parentTableName = table.cpParentTableName;
+
+    if (parentTableName) {
+        var parentTable = tables[parentTableName];
+
+        if (parentTable) {
+            InitToolbar(parentTable, table.cpParentDisabledMacros);
+        }
+    }
+
+    InitToolbar(table, table.cpDisabledMacros);
+
+    if (childTable) {
+        InitToolbar(childTable, childTable.cpDisabledMacros);
+    }
+}
 
 function InitToolbar(table, disabledButtonList) {
     var toolbar = table.GetToolbar(0);

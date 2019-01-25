@@ -25,7 +25,7 @@ namespace CodeClay.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
         public bool AirplaneMode {
             get {
                 return ((bool)(this["AirplaneMode"]));
@@ -38,6 +38,17 @@ namespace CodeClay.Properties {
         public string ScriptFolder {
             get {
                 return ((string)(this["ScriptFolder"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Integrated Security=SSPI;Initial Catalog=CPanel;Data Source=(localdb)\\ProjectsV13" +
+            ";AttachDBFilename=C:\\Users\\adrianypc\\AppData\\Local\\Microsoft\\VisualStudio\\SSDT\\A" +
+            "dmin.mdf")]
+        public string CPanelConnectionString {
+            get {
+                return ((string)(this["CPanelConnectionString"]));
             }
         }
     }

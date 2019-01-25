@@ -12,7 +12,7 @@
 	<CiTextField>
 		<FieldName>BranchCode</FieldName>
 		<Caption>Branch Code</Caption>
-		<EditableSQL>select 1 where @ExistingBranch is null</EditableSQL>
+		<Editable lang="sql">select 1 where @ExistingBranch is null</Editable>
 	</CiTextField>
 	<CiTextField>
 		<FieldName>BranchDescription</FieldName>

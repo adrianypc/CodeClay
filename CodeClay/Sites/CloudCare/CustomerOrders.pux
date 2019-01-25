@@ -33,9 +33,10 @@
     <Caption>Order Date</Caption>
     <Editable>true</Editable>
     <ColumnFormat>dd/MM/yyyy</ColumnFormat>
+    <Mandatory>true</Mandatory>
   </CiDateField>
   <CiComboField>
-    <FieldName>CustID</FieldName>
+    <FieldName>CustomerID</FieldName>
     <TextFieldName>CustomerName</TextFieldName>
     <Caption>Customer</Caption>
     <Editable>true</Editable>
@@ -43,9 +44,29 @@
     <Description>CustomerName</Description>
     <DropdownSQL>select CustomerID,LastName+','+OtherNames as CustomerName from Customer</DropdownSQL>
   </CiComboField>
+  <CiTextField>
+    <FieldName>LastName</FieldName>
+    <Caption>Last Name</Caption>
+    <Mandatory>true</Mandatory>
+    <Editable lang="sql">select distinct 1 from Customer where @CustomerID is null</Editable>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>OtherNames</FieldName>
+    <Caption>Other Names</Caption>
+    <Mandatory>true</Mandatory>
+    <Editable lang="sql">select distinct 1 from Customer where @CustomerID is null</Editable>
+  </CiTextField>
+  <CiComboField>
+		<FieldName>BranchCode</FieldName>
+		<Caption>Branch</Caption>
+		<DropdownSQL>select Code from Dropdown where Category = 'Branch' order by Code</DropdownSQL>
+    <Mandatory>true</Mandatory>
+    <Editable lang="sql">select distinct 1 from Customer where @CustomerID is null</Editable>
+	</CiComboField>
   <CiMemoField>
     <FieldName>DeliveryAddress</FieldName>
     <Caption>Delivery Address</Caption>
+    <Mandatory>true</Mandatory>
   </CiMemoField>
   <CiComboField>
     <FieldName>DeliveryCountry</FieldName>
@@ -54,14 +75,17 @@
     <Code>Code</Code>
     <Description>Description</Description>
     <DropdownSQL>select  Description,Code from Dropdown where Category = 'Country' order by Code</DropdownSQL>
+    <Mandatory>true</Mandatory>
   </CiComboField>
   <CiTextField>
     <FieldName>DeliveryPostcode</FieldName>
     <Caption>Delivery Postcode</Caption>
+    <Mandatory>true</Mandatory>
   </CiTextField>
   <CiTextField>
     <FieldName>Email</FieldName>
     <Caption>Email</Caption>
+    <Mandatory>true</Mandatory>
   </CiTextField>
   <CiTextField>
     <FieldName>Mobile</FieldName>
@@ -96,15 +120,28 @@
     <Caption>Dispatched</Caption>
     <Editable>false</Editable>
   </CiTextField>
+  <CiTextField>
+     <FieldName>CalledFrom</FieldName>
+     <Hidden>true</Hidden>
+  </CiTextField>
   <CiTable Src="CustomerOrderItems.pux" />
   <DefaultMacro>
 		<ActionSQL>
-      select 
-        -1 as CustomerOrderNo,
-        convert(datetime,cast(getdate() as nvarchar(12)),103) as OrderDate,
-        'Active' as Status,
-        @CustomerID as CustID
-    </ActionSQL>
+            select t1.*,
+            coalesce(LastName,'') as LastName,
+            coalesce(OtherNames,'') as OtherNames,
+            coalesce(BranchCode,'') as BranchCode,
+            coalesce(Address,'') as DeliveryAddress,
+            coalesce(CountryCode,'') as DeliveryCountry,
+            coalesce(Postcode,'') as DeliveryPostcode,
+            coalesce(Email,'') as Email,
+            coalesce(Mobile,'') as Mobile
+            from
+            (select -1 as CustomerOrderNo, convert(datetime,cast(getdate() as nvarchar(12)),103) as OrderDate, 
+             'Active' as Status,@CustomerID as CustomerID)  t1
+            left outer join Customer C
+            on t1.CustomerID = C.CustomerID
+        </ActionSQL>
 	</DefaultMacro>
 	<SelectMacro>
 		<ActionSQL>?exec spCustomerOrders_sel @sCustomerOrderNo,@sCustomerID</ActionSQL>
@@ -115,7 +152,10 @@
       -1,
       @Status,
       @OrderDate,
-      @CustID,
+      @CustomerID,
+      @LastName,
+      @OtherNames,
+      @BranchCode,
       @DeliveryAddress,
       @DeliveryCountry,
       @DeliveryPostcode,
@@ -127,14 +167,18 @@
       @Courier,
       @CourierTrackingNo
     </ActionSQL>
-	</InsertMacro>
+    <VisibleSQL>select distinct 1 from CustomerOrders where @CalledFrom is null</VisibleSQL>
+  </InsertMacro>
 	<UpdateMacro>
     <ActionSQL>
         ?exec spCustomerOrders_upd
         @CustomerOrderNo,
         @Status,
         @OrderDate,
-        @CustID,
+        @CustomerID,
+        @LastName,
+        @OtherNames,
+        @BranchCode,
         @DeliveryAddress,
         @DeliveryCountry,
         @DeliveryPostcode,
@@ -170,16 +214,19 @@
     </ActionSQL>
 	</CiFieldExitMacro>
   <CiFieldExitMacro>
-    <FieldName>CustID</FieldName>
+    <FieldName>CustomerID</FieldName>
     <ActionSQL>
       select 
+        LastName as LastName,
+        OtherNames as OtherNames,
+        BranchCode as BranchCode,
         Address as DeliveryAddress,
         CountryCode as DeliveryCountry,
         Postcode as DeliveryPostcode,
         Email,
         Mobile
       from Customer
-      where CustomerID = @CustID
+      where CustomerID = @CustomerID
     </ActionSQL>
   </CiFieldExitMacro>
 </CiTable>

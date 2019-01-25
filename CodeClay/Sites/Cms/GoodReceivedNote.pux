@@ -271,4 +271,10 @@
     <ActionSQL>?exec spGoodReceivedNote_upd_Status @NoteNo,'Void'</ActionSQL>
     <VisibleSQL>select 1 from GoodReceivedNote where NoteNo = @NoteNo and GRNPostStatus != 'Posted'</VisibleSQL>
   </CiMacro>
+  <CiMacro>
+    <MacroName>Post</MacroName>
+    <ActionSQL>select 'HQU' as sBranchCode</ActionSQL>
+    <NavigateUrl>PostGoodReceivedNote.pux</NavigateUrl>
+    <NavigatePos>Popup</NavigatePos>
+  </CiMacro>
 </CiTable>

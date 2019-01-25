@@ -4,7 +4,7 @@
   <TableCaption>Stock Adjustment</TableCaption>
   <RowKey>TransactionNo</RowKey>
   <DefaultView>Card</DefaultView>
-  <LayoutUrl1>StockAdjustment.html</LayoutUrl1>
+  <LayoutUrl>StockAdjustment.html</LayoutUrl>
   <CiComboField>
     <FieldName>sTransactionType</FieldName>
     <Caption>Type</Caption>
@@ -137,5 +137,12 @@
     <MacroName>Void</MacroName>
     <ActionSQL>?exec spStockAdjustment_upd_Status @TransactionNo,'Void'</ActionSQL>
     <VisibleSQL>select 1 from StockAdjustment where TransactionNo = @TransactionNo and SAPostStatus != 'Posted'</VisibleSQL>
+  </CiMacro>
+  <CiMacro>
+    <MacroName>Post</MacroName>
+    <ActionSQL>select 'HQU' as sBranchCode</ActionSQL>
+    <NavigateUrl>PostStockAdjustment.pux</NavigateUrl>
+    <NavigatePos>Popup</NavigatePos>
+    <width>5</width>
   </CiMacro>
 </CiTable>

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<CiTable>
+  <TableName>MBillList</TableName>
+  <TableCaption>Male Bills</TableCaption>
+  <RowKey>ClientBillNo</RowKey>
+  <DefaultView>Grid</DefaultView>
+  <DoubleClickMacroName>BillDetail</DoubleClickMacroName>
+  <CiTextField>
+    <FieldName>MPatientNo</FieldName>
+    <Hidden>true</Hidden>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>ClientBillNo</FieldName>
+    <Caption>Bill No</Caption>
+    <Editable>false</Editable>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>PrescriptionNo</FieldName>
+    <Caption>Prescription No</Caption>
+    <Editable>false</Editable>
+  </CiTextField>
+  <CiDateField>
+    <FieldName>ClientBillDate</FieldName>
+    <Caption>Bill Date</Caption>
+    <Editable>false</Editable>
+    <ColumnFormat>dd/MM/yyyy</ColumnFormat>
+  </CiDateField>
+  <CiTextField>
+    <FieldName>TotalBillAmount</FieldName>
+    <Caption>Bill Amount</Caption>
+    <Editable>false</Editable>
+    <Mask>Currency</Mask>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>OutstandingAmount</FieldName>
+    <Caption>Outstanding Amt</Caption>
+    <Editable>false</Editable>
+    <Mask>Currency</Mask>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>CreditNoteNo</FieldName>
+    <Caption>CN/Rev</Caption>
+    <Editable>false</Editable>
+  </CiTextField>
+  <CiCheckField>
+    <FieldName>Printed</FieldName>
+    <Caption>Printed</Caption>
+    <Editable>false</Editable>
+  </CiCheckField>
+  <CiMacro>
+    <MacroName>NewBill</MacroName>
+    <Caption>New Bill</Caption>
+    <ActionSQL>select @MPatientNo as ClientNo,'New' as Command</ActionSQL>
+    <NavigateUrl>BillDetail.pux</NavigateUrl>
+    <NavigatePos>NewTab</NavigatePos>
+  </CiMacro>
+  <CiMacro>
+    <MacroName>BillDetail</MacroName>
+    <Caption>Bill Detail</Caption>
+    <ActionSQL>select @ClientBillNo as BillNo,'Edit' as Command</ActionSQL>
+    <NavigateUrl>BillDetail.pux</NavigateUrl>
+    <NavigatePos>NewTab</NavigatePos>
+  </CiMacro>
+  <SelectMacro>
+    <ActionSQL>
+      ?exec spClientBillList_sel @MPatientNo,'SI','SI'
+    </ActionSQL>
+  </SelectMacro>
+</CiTable>

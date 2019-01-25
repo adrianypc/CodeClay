@@ -3,16 +3,13 @@
 	<TableName>Products</TableName>
 	<TableCaption>Products</TableCaption>
 	<RowKey>ProductID</RowKey>
+    <InsertRowAtBottom>false</InsertRowAtBottom>
 	<DefaultView>Grid</DefaultView>
-	<CiTextField>
-		<FieldName>sProductID</FieldName>
-		<Caption>Product ID</Caption>
-		<Searchable>true</Searchable>
-	</CiTextField>
 	<CiTextField>
 		<FieldName>ProductID</FieldName>
 		<Caption>Product ID</Caption>
 		<Editable>false</Editable>
+        <Searchable>true</Searchable>
 	</CiTextField>
 	<CiTextField>
 		<FieldName>ProductName</FieldName>
@@ -31,51 +28,54 @@
 		<FieldName>UnitSellingPrice</FieldName>
 		<Caption>Unit Selling Price ($)</Caption>
 	</CiTextField>
-      <CiTable Src="Inventory.pux">
+    <CiCheckField>
+        <FieldName>IsActive</FieldName>
+        <Caption>Enabled</Caption>
+    </CiCheckField>
+    <CiTable Src="Inventory.pux">
 	    <SelectMacro>
 		    <ActionSQL>?exec spInventory_selbyProductID @ProductID</ActionSQL>
 	    </SelectMacro>
-  </CiTable>
+    </CiTable>
 	<CiMemoField>
 		<FieldName>ProductDescription</FieldName>
 		<Caption>Product Description</Caption>
-    <Hidden>true</Hidden>
+        <Hidden>true</Hidden>
 	</CiMemoField>
 	<CiComboField>
 		<FieldName>SupplierID</FieldName>
-    <Code>SupplierID</Code>
-    <Description>SupplierName</Description>
-    <TextFieldName>SupplierName</TextFieldName>
+        <Code>SupplierID</Code>
+        <Description>SupplierName</Description>
+        <TextFieldName>SupplierName</TextFieldName>
 		<Caption>Supplier</Caption>
 		<DropdownSQL>select SupplierID, SupplierName from Supplier order by SupplierID</DropdownSQL>
-    <Hidden>true</Hidden>
+        <Hidden>true</Hidden>
 	</CiComboField>
 	<CiTextField>
 		<FieldName>SupplierSKU</FieldName>
 		<Caption>Supplier SKU</Caption>
-    <Hidden>true</Hidden>
 	</CiTextField>
 	<CiNumericField>
 		<FieldName>ReorderThreshold</FieldName>
 		<Caption>Reorder Threshold</Caption>
-    <Hidden>true</Hidden>
+        <Hidden>true</Hidden>
 	</CiNumericField>
-  <DefaultMacro>
-		<ActionSQL>select '-New-' as ProductID</ActionSQL>
+    <DefaultMacro>
+		<ActionSQL>select '-New-' as ProductID, 1 as IsActive</ActionSQL>
 	</DefaultMacro>
 	<SelectMacro>
-  	<ActionSQL>?exec spProduct_sel @sProductID</ActionSQL>
+  	<ActionSQL>?exec spProduct_sel @ProductID</ActionSQL>
 	</SelectMacro>
 	<InsertMacro>
 		<ActionSQL>
 			?exec spProduct_ins @ProductName, @ProductDescription, @SupplierID, @SupplierSKU,
-				@ReorderThreshold, @UnitCostPrice, @UnitSellingPrice,@HealthTreeURL
+				@ReorderThreshold, @UnitCostPrice, @UnitSellingPrice,@HealthTreeURL,@IsActive
 		</ActionSQL>
 	</InsertMacro>
 	<UpdateMacro>
 		<ActionSQL>
-			exec spProduct_upd @ProductID, @ProductName, @ProductDescription, @SupplierID, @SupplierSKU,
-				@ReorderThreshold, @UnitCostPrice, @UnitSellingPrice,@HealthTreeURL
+			?exec spProduct_upd @ProductID, @ProductName, @ProductDescription, @SupplierID, @SupplierSKU,
+				@ReorderThreshold, @UnitCostPrice, @UnitSellingPrice,@HealthTreeURL,@IsActive
 		</ActionSQL>
 	</UpdateMacro>
 </CiTable>

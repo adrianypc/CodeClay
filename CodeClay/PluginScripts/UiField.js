@@ -12,52 +12,13 @@ function dxLabel_Init(sender, event) {
     var fieldName = dxLabel.name;
     var fieldValue = dxLabel.GetText();
 
-    SetField(tableName, fieldName, fieldValue);
+    InitField(tableName, fieldName, fieldValue);
 }
 
 function dxLabelPanel_Init(sender, event) {
     var dxLabelPanel = sender;
 
     RegisterPanel(dxLabelPanel);
-}
-
-function dxField_KeyPress(sender, event) {
-	var dxField = sender;
-
-	if (dxField) {
-		var tableName = dxField.cpTableName;
-		var dxGrid = null;
-
-		if (tableName) {
-			dxGrid = grids[tableName];
-		}
-
-		switch (event.htmlEvent.keyCode) {
-			case 29:
-				if (dxGrid) {
-					var fieldName = dxField.name;
-					var fieldValue = GetEditorValue(tableName, fieldName);
-
-					SetField(tableName, fieldName, fieldValue);
-
-					if (dxGrid.IsNewRowEditing()) {
-						dxGrid.Command = "UpdateNew";
-					}
-					else {
-						dxGrid.Command = "Update";
-					}
-					dxGrid.UpdateEdit();
-				}
-				break;
-
-			case 27:
-				if (dxGrid) {
-					dxGrid.Command = "Cancel";
-					dxGrid.CancelEdit();
-				}
-				break;
-		}
-	}
 }
 
 function dxFieldExitPanel_Init(sender, event) {
@@ -128,6 +89,12 @@ function GetField(tableName, fieldName) {
 	}
 
 	return null;
+}
+
+function InitField(tableName, fieldName, fieldValue) {
+    if (tableName && fieldName) {
+        dxClientState.Set(tableName + "." + fieldName, fieldValue);
+    }
 }
 
 function SetField(tableName, fieldName, fieldValue) {

@@ -1,0 +1,157 @@
+﻿<table>
+	<tr>
+		<td colspan="2">
+			<table>
+				<tr>
+					<td width="8%">Client No</td>
+                    <td width="12%" id="ClientNo" />
+                    <td width="10%">Name</td>
+                    <td width="15%" id="Name" />
+                    <td width="5%">Sex</td>
+                    <td width="10%" id="Gender" />
+                    <td widht="5%">NRIC</td>
+                    <td width="15%" id="NRIC" />
+                    <td width="5%">Company</td>
+                    <td width="15%" id="Company" />
+				</tr>
+                <tr>
+                    <td width="8%">Pres No</td>
+                    <td width="12%" id="PresNo" />
+                    <td width="8%">Doctor</td>
+                    <td width="17%" id="Doctor" />
+                    <td rowspan="5" width="5%" valign="top">Remarks</td>
+                    <td colspan="5" rowspan="5" width="50%" valign="top" id="Remarks" />
+                </tr>
+                <tr>
+                    <td width="8%">Date</td>
+                    <td width="12%" id="BillDate" />
+                    <td width="8%">Dispenser</td>
+                    <td width="17%" id="Dispenser" />
+                </tr>
+                <tr>
+                    <td width="8%">BillNo</td>
+                    <td width="12%" id="BillNo" />
+                    <td width="8%">Type</td>
+                    <td width="17%" id="BillType" />
+                </tr>
+                <tr>
+                    <td width="8%">Outstanding Balance</td>
+                    <td width="12%" id="OutstandingBalance" />
+                    <td width="8%">Available Deposit</td>
+                    <td width="17%" id="AvailableDeposit" />
+                </tr>
+                <tr>
+                    <td width="8%">Medisave Outstanding Balance</td>
+                    <td width="12%" id="MedisaveOutstandingBalance" />
+                    <td width="8%">Available Pre Payment</td>
+                    <td width="17%" id="AvailablePrepayment" />
+                </tr>
+			</table>
+		</td>
+	</tr>
+    <tr>
+        <td width="70%" valign="top">
+            <table>
+                <tr>
+                    <td id="BillItemDetail" width="100%"/>
+                </tr>
+            </table>
+            <table>
+                <tr>
+                    <td>Deposit</td>
+                    <td id="Deposit"></td>
+                    <td>Non-Taxable Amount</td>
+                    <td id="NonTaxableAmount" />
+                    <td>Total Excl GST</td>
+                    <td id="TotalExGST" />
+                </tr>
+                <tr>
+                    <td>Prepayment</td>
+                    <td id="Prepayment"></td>
+                    <td>Taxable Amount</td>
+                    <td id="TaxableAmount" />
+                    <td>GST</td>
+                    <td id="GST" />
+                </tr>
+                <tr>
+                    <td id="FSettlementButton" />
+                    <td id="FinalSettlement"></td>
+                    <td></td>
+                    <td></td>
+                    <td>Total Incl GST</td>
+                    <td id="TotalIncGST" />
+                </tr>
+            </table>
+        </td>
+        <td width="30%" valign="top">
+            <table style="border: 1px solid black;">
+                <tr>
+                    <td colspan="3" align="left">Payment</td>
+                </tr>
+                <tr>
+                    <td colspan="3"/>
+                </tr>
+                <tr>
+                    <td width="10%">Cash</td>
+                    <td width="10%"></td>
+                    <td width="10%" id="Cash" />
+                </tr>
+                <tr>
+                    <td>NETS</td>
+                    <td></td>
+                    <td id="Nets" />
+                </tr>
+                <tr>
+                    <td id="ChequeButton" />
+                    <td></td>
+                    <td id="Cheque" />
+                </tr>
+                <tr>
+                    <td>Credit Card 1</td>
+                    <td id="Card1Type"></td>
+                    <td id="Card1Amount" />
+                </tr>
+                <tr>
+                    <td>Credit Card 2</td>
+                    <td id="Card2Type"></td>
+                    <td id="Card2Amount" />
+                </tr>
+                <tr>
+                    <td>Corporate</td>
+                    <td></td>
+                    <td id="CorporateAmount" />
+                </tr>
+                <tr>
+                    <td id="InsuranceButton" />
+                    <td></td>
+                    <td id="InsuranceAmount" />
+                </tr>
+                <tr>
+                    <td id="DepositButton" />
+                    <td></td>
+                    <td id="PaymentDepositAmount" />
+                </tr>
+                <tr>
+                    <td id="PrepaymentButton" />
+                    <td></td>
+                    <td id="PaymentPrepaymentAmount" />
+                </tr>
+                <tr>
+                    <td>Medisave</td>
+                    <td></td>
+                    <td id="MedisaveAmount" />
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Total Paid</td>
+                    <td id="TotalPaid" />
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Outstanding</td>
+                    <td id="OutstandingAmount" />
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>

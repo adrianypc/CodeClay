@@ -4,7 +4,7 @@
     var fieldName = dxSpinEdit.name;
     var fieldValue = dxSpinEdit.GetText();
 
-    SetField(tableName, fieldName, fieldValue);
+    InitField(tableName, fieldName, fieldValue);
 
     RegisterEditor(dxSpinEdit,
 		function () { return this.GetNumber(); },

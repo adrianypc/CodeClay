@@ -4,38 +4,19 @@
 	<TableCaption>Inventory</TableCaption>
 	<RowKey>InventoryItemNo</RowKey>
 	<DefaultView>Grid</DefaultView>
-  <CiComboField>
-    <FieldName>sProductID</FieldName>
-    <Code>ProductID</Code>
-    <Description>ProductName</Description>
-    <TextFieldName>ProductName</TextFieldName>
-    <Caption>Product</Caption>
-    <DropdownSQL>select ProductID,ProductName from Product order by ProductID</DropdownSQL>
-    <Searchable>true</Searchable>
-  </CiComboField>
-  <CiComboField>
-    <FieldName>sBranchCode</FieldName>
-    <Code>Code</Code>
-    <Description>Description</Description>
-    <TextFieldName>BranchDescription</TextFieldName>
-    <Caption>Branch</Caption>
-    <DropdownSQL>
-      select Code,Description from Dropdown where Category = 'Branch'
-    </DropdownSQL>
-    <Searchable>true</Searchable>
-  </CiComboField>
   <CiTextField>
     <FieldName>InventoryItemNo</FieldName>
     <Hidden>true</Hidden>
   </CiTextField>
   <CiComboField>
-    <FieldName>ProdID</FieldName>
+    <FieldName>ProductID</FieldName>
     <TextFieldName>ProductName</TextFieldName>
     <Caption>Product</Caption>
     <Code>ProductID</Code>
     <Description>ProductName</Description>
     <DropdownSQL>select ProductID,ProductName from Product order by ProductID</DropdownSQL>
     <Editable>true</Editable>
+   <Searchable>true</Searchable>
   </CiComboField>
   <CiComboField>
     <FieldName>BranchCode</FieldName>
@@ -45,6 +26,7 @@
     <Description>Description</Description>
     <Editable>true</Editable>
     <DropdownSQL>select Code,Description from Dropdown where Category = 'Branch'</DropdownSQL>
+    <Searchable>true</Searchable>
   </CiComboField>
   <CiDateField>
     <FieldName>DateOfStocktake</FieldName>
@@ -58,59 +40,77 @@
   <CiNumericField>
     <FieldName>QuantityOrdered</FieldName>
     <Caption>Quantity Ordered</Caption>
+    <Editable>false</Editable>
   </CiNumericField>
   <CiNumericField>
     <FieldName>QuantityAllocated</FieldName>
     <Caption>Quantity Allocated</Caption>
+    <Editable>false</Editable>
   </CiNumericField>
   <CiNumericField>
     <FieldName>QuantityAvailable</FieldName>
     <Caption>Quantity Available</Caption>
+    <Editable>false</Editable>
   </CiNumericField>
+  <CiNumericField>
+    <FieldName>QuantityRefunded</FieldName>
+    <Caption>Quantity Refunded</Caption>
+    <Editable>false</Editable>
+  </CiNumericField>
+  <CiDateField>
+    <FieldName>ExpiryDate</FieldName>
+    <Caption>Expiry Date</Caption>
+    <ColumnFormat>dd/MM/yyyy</ColumnFormat>
+  </CiDateField>
   <DefaultMacro>
-		<ActionSQL>
+	<ActionSQL>
       select 
-        @ProductID as ProdID,
+        @ProductID as ProductID,
         getdate() as DateOfStocktake,
         0 as QuantityOnHand,
         0 as QuantityOrdered,
         0 as QuantityAllocated,
-        0 as QuantityAvailable
+        0 as QuantityAvailable,
+        0 as QuantityRefunded
     </ActionSQL>
 	</DefaultMacro>
 	<SelectMacro>
-	  <ActionSQL>?exec spInventory_sel @sProductID,@sBranchCode</ActionSQL>
+	  <ActionSQL>?exec spInventory_sel @ProductID,@BranchCode</ActionSQL>
 	</SelectMacro>
 	<InsertMacro>
-	  <ActionSQL>
-		  ?exec spInventory_upd 
+	<ActionSQL>
+       ?exec spInventory_upd 
         -1,
-        @ProdID,
+        @ProductID,
         @BranchCode,
         @DateOfStocktake,
         @QuantityOnHand,
         @QuantityOrdered,
         @QuantityAllocated,
-        @QuantityAvailable
+        @QuantityAvailable,
+        @QuantityRefunded,
+        @ExpiryDate
 	  </ActionSQL>
 	</InsertMacro>
   <UpdateMacro>
 	  <ActionSQL>
       ?exec spInventory_upd
         @InventoryItemNo,
-        @ProdID,
+        @ProductID,
         @BranchCode,
         @DateOfStocktake,
         @QuantityOnHand,
         @QuantityOrdered,
         @QuantityAllocated,
-        @QuantityAvailable
+        @QuantityAvailable,
+        @QuantityRefunded,
+        @ExpiryDate
     </ActionSQL>
     <VisibleSQL>select 1 from Inventory where InventoryItemNo = @InventoryItemNo</VisibleSQL>
   </UpdateMacro>
   <DeleteMacro>
     <ActionSQL>
-      DELETE FROM Inventory WHERE InventoryItemNo = @InventoryItemNo
+          DELETE FROM Inventory WHERE InventoryItemNo = @InventoryItemNo
     </ActionSQL>
     <VisibleSQL>select 1 from Inventory where InventoryItemNo = @InventoryItemNo</VisibleSQL>
   </DeleteMacro>

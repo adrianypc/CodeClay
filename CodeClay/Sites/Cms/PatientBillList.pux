@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <CiTable>
-  <TableName>Bill List</TableName>
+  <TableName>BillList</TableName>
   <TableCaption>Patient Bill Lists</TableCaption>
   <RowKey>ClientBillNo</RowKey>
   <DefaultView>Grid</DefaultView>
   <CiTextField>
-    <FieldName>sPatientNo</FieldName>
-    <Caption>Patient No</Caption>
-    <Searchable>true</Searchable>
+    <FieldName>PatientNo</FieldName>
+    <Hidden>true</Hidden>
   </CiTextField>
   <CiTextField>
     <FieldName>ClientBillNo</FieldName>

@@ -4,11 +4,7 @@
 	<TableCaption>Customers</TableCaption>
 	<RowKey>CustomerID</RowKey>
 	<DefaultView>Grid</DefaultView>
-	<CiTextField>
-		<FieldName>sCustomerID</FieldName>
-		<Caption>Customer ID</Caption>
-		<Searchable>true</Searchable>
-	</CiTextField>
+	<InsertRowAtBottom>false</InsertRowAtBottom>
 	<CiTextField>
 		<FieldName>CustomerID</FieldName>
 		<Caption>Customer ID</Caption>
@@ -22,11 +18,13 @@
 	  <CiTextField>
 		<FieldName>LastName</FieldName>
 		<Caption>Last Name</Caption>
-	  </CiTextField>
+        <Searchable>true</Searchable>
+      </CiTextField>
 	  <CiTextField>
 		<FieldName>OtherNames</FieldName>
 		<Caption>Other Names</Caption>
-	  </CiTextField>
+        <Searchable>true</Searchable>
+      </CiTextField>
 	  <CiDateField>
 		<FieldName>DateOfBirth</FieldName>
 		<Caption>Date of birth</Caption>
@@ -59,7 +57,8 @@
 	  <CiTextField>
 		<FieldName>Mobile</FieldName>
 		<Caption>Mobile</Caption>
-	  </CiTextField>
+        <Searchable>true</Searchable>
+      </CiTextField>
 	  <CiComboField>
 		<FieldName>Referrer</FieldName>
 		<Caption>Referrer</Caption>
@@ -71,7 +70,7 @@
 	  	<Editable>false</Editable>
       <Hidden>true</Hidden>
 	  </CiTextField>
-    <CiTable Src="CustomerOrders.pux">
+    <CiTable Src="CustomerOrder.pux">
 	    <SelectMacro>
 		    <ActionSQL>?exec spCustomerOrders_selbyCustomerID @CustomerID</ActionSQL>
 	    </SelectMacro>
@@ -80,7 +79,7 @@
 		<ActionSQL>select '-New-' as CustomerID, 0 as Points</ActionSQL>
 	  </DefaultMacro>
 	  <SelectMacro>
-		<ActionSQL>?exec spCustomer_sel @sCustomerID</ActionSQL>
+		<ActionSQL>?exec spCustomer_selbyNames_Mobile @LastName,@OtherNames,@Mobile</ActionSQL>
 	  </SelectMacro>
 	  <InsertMacro>
 		<ActionSQL>

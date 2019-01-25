@@ -56,7 +56,13 @@
 		<Caption>UOM</Caption>
 		<Width>10</Width>
 	</CiTextField>
-	<CiTextField>
+    <CiDateField>
+        <FieldName>ExpiryDate</FieldName>
+        <Caption>Expiry Date</Caption>
+        <Editable>true</Editable>
+        <ColumnFormat>dd/MM/yyyy</ColumnFormat>
+    </CiDateField>
+    <CiTextField>
 		<FieldName>UnitPrice</FieldName>
 		<Caption>Unit Price ($)</Caption>
 		<Width>9</Width>
@@ -112,7 +118,8 @@
 				Frequency,
 				Quantity,
 				UnitOfMeasure,
-				UnitPrice
+				UnitPrice,
+                ExpiryDate
 			)
 			values
 			(	@ClientNo,
@@ -127,7 +134,8 @@
 				@Frequency,
 				@Quantity,
 				@UnitOfMeasure,
-				@UnitPrice
+				@UnitPrice,
+                @ExpiryDate
 			)
 		</ActionSQL>
         <VisibleSQL>
@@ -150,7 +158,8 @@
 					    Frequency = @Frequency,
 					    Quantity = @Quantity,
 					    UnitOfMeasure = @UnitOfMeasure,
-					    UnitPrice = @UnitPrice
+					    UnitPrice = @UnitPrice,
+                        ExpiryDate = @ExpiryDate
 			where   ClientNo = @ClientNo
 			and     LogID = @LogID
 			and     PrescriptionItemID = @PrescriptionItemID

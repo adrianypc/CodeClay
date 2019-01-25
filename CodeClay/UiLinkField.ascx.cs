@@ -76,7 +76,7 @@ namespace CodeClay
 
         protected override void Page_Load(object sender, EventArgs e)
         {
-            mEditor = dxLink;
+            mEditor = dxUpdateText;
             base.Page_Load(sender, e);
 
             string defaultNavigateUrl = (CiLinkField != null) ? CiLinkField.DefaultValue : "";
@@ -105,7 +105,7 @@ namespace CodeClay
             dxEditLink.JSProperties["cpFieldName"] = fieldName;
             dxEditLink.JSProperties["cpShortNavigateUrl"] = navigateUrl;
 
-            dxDelete.Visible = folderExists && IsItemEditing;
+            deleteButtonPanel.Visible = folderExists && IsItemEditing;
             dxDelete.ClientVisible = !emptyUrl;
 
             dxUpload.Visible = folderExists && IsItemEditing;

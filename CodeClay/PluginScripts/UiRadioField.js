@@ -4,7 +4,7 @@
     var fieldName = dxRadioBox.name;
     var fieldValue = dxRadioBox.GetValue();
 
-    SetField(tableName, fieldName, fieldValue);
+    InitField(tableName, fieldName, fieldValue);
 
     RegisterEditor(dxRadioBox,
 		function () { return this.GetValue(); },

@@ -52,6 +52,11 @@ namespace CodeClay
             }
 
             Page.PreLoad += Page_PreLoad;
+
+            if (!IsPostBack)
+            {
+                MyWebUtils.QueryStringCommand = MyWebUtils.QueryString["Command"];
+            }
         }
 
         protected void Page_PreLoad(object sender, EventArgs e)

@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CiTable>
+  <TableName>PostStockAdjustmentList</TableName>
+  <TableCaption>List</TableCaption>
+  <RowKey>TransactionNo</RowKey>
+  <DefaultView>Grid</DefaultView>
+  <CiButtonField>
+    <FieldName>Post</FieldName>
+    <Caption>Post</Caption>
+    <CiMacro>
+      <MacroName>Post</MacroName>
+      <ActionSQL>select @TransactionNo as TransactionNo</ActionSQL>
+    </CiMacro>
+    <Width>10</Width>
+  </CiButtonField>
+  <CiTextField>
+    <FieldName>TransactionNo</FieldName>
+    <Caption>Transaction No</Caption>
+    <Editable>false</Editable>
+  </CiTextField>
+  <CiDateField>
+    <FieldName>TransactionDate</FieldName>
+    <Caption>Date</Caption>
+    <ColumnFormat>dd/MM/yyyy</ColumnFormat>
+    <Editable>false</Editable>
+  </CiDateField>
+  <CiTextField>
+    <FieldName>IssuedBy</FieldName>
+    <Caption>Issued By</Caption>
+    <Editable>false</Editable>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>SAPostStatus</FieldName>
+    <Caption>Status</Caption>
+    <Editable>false</Editable>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>BranchCode</FieldName>
+    <Hidden>true</Hidden>
+  </CiTextField>
+  <SelectMacro>
+    <ActionSQL>?exec spStockAdjustmentPost_sel @BranchCode</ActionSQL>
+  </SelectMacro>
+</CiTable>

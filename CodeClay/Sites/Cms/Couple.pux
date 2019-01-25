@@ -149,6 +149,8 @@
   <CiTable Src="MHistory.pux" />
   <CiTable Src="CoupleCaseNotes.pux" />
   <CiTable Src="ScannedFiles.pux" />
+  <CiTable Src="FBillList.pux" />
+  <CiTable Src="MBillList.pux" />
   <CiMacro>
 	  <MacroName>New Patient</MacroName>
     <ActionSQL>select 'New' as Command</ActionSQL>

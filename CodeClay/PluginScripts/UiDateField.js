@@ -4,7 +4,7 @@
     var fieldName = dxDateBox.name;
     var fieldValue = dxDateBox.GetDate();
 
-    SetField(tableName, fieldName, fieldValue);
+    InitField(tableName, fieldName, fieldValue);
 
     RegisterEditor(dxDateBox,
 		function () { return this.GetDate(); },

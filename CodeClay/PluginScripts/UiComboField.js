@@ -4,7 +4,7 @@
     var fieldName = dxComboBox.name;
     var fieldValue = dxComboBox.GetValue();
 
-    SetField(tableName, fieldName, fieldValue);
+    InitField(tableName, fieldName, fieldValue);
 
     RegisterEditor(dxComboBox,
 		function () { return this.GetText(); },

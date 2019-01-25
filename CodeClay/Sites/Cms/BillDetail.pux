@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <CiTable>
-  <TableName>Bill Detail</TableName>
+  <TableName>BillDetail</TableName>
   <TableCaption>Bill Detail</TableCaption>
   <RowKey>BillNo</RowKey>
   <DefaultView>Card</DefaultView>
-  <ColCount>3</ColCount>
+  <LayoutUrl>BillDetail.html</LayoutUrl>
   <CiTextField>
     <FieldName>BillNo</FieldName>
     <Caption>Bill No</Caption>
@@ -13,34 +13,32 @@
   <CiTextField>
     <FieldName>PresNo</FieldName>
     <Caption>Pres No</Caption>
+    <Mandatory>true</Mandatory>
+    <Editable lang="sql">select 1 from ClientBill where @BillNo = 'New'</Editable>
   </CiTextField>
   <CiTextField>
     <FieldName>ClientNo</FieldName>
     <Caption>Client No</Caption>
+    <Editable>false</Editable>
   </CiTextField>
   <CiTextField>
     <FieldName>Name</FieldName>
     <Caption>Name</Caption>
     <Editable>false</Editable>
   </CiTextField>
-  <CiComboField>
-    <FieldName>Gender</FieldName>
-    <Caption>Gender</Caption>
-    <Editable>false</Editable>
-    <Code>Gender</Code>
-    <Description>Description</Description>
-    <DataSource>
-      <DataItem Description="Male" Gender="M"   />
-      <DataItem Description="Female" Gender="F" />
-    </DataSource>
-  </CiComboField>
+  <CiTextField>
+     <FieldName>Gender</FieldName>
+     <Caption>Sex</Caption>
+     <Editable>false</Editable>
+  </CiTextField>
   <CiTextField>
     <FieldName>NRIC</FieldName>
-    <Caption>NRIC/Passport</Caption>
+    <Caption>NRIC</Caption>
     <Editable>false</Editable>
   </CiTextField>
   <CiComboField>
     <FieldName>Company</FieldName>
+    <TextFieldName>CompanyName</TextFieldName>
     <Caption>Company</Caption>
     <Editable>false</Editable>
     <Code>CustomerNo</Code>
@@ -50,9 +48,11 @@
   <CiTextField>
     <FieldName>Dispenser</FieldName>
     <Caption>Dispenser</Caption>
+    <Editable>false</Editable>
   </CiTextField>
   <CiComboField>
     <FieldName>Doctor</FieldName>
+    <TextFieldName>DoctorName</TextFieldName>
     <Caption>Doctor</Caption>
     <Editable>true</Editable>
     <Code>ConsultantId</Code>
@@ -64,35 +64,39 @@
     <Caption>Outstanding Balance</Caption>
     <Editable>false</Editable>
     <Value>0.00</Value>
+      <Mask>Currency</Mask>
   </CiTextField>
   <CiTextField>
     <FieldName>MedisaveOutstandingBalance</FieldName>
     <Caption>Medisave Outstanding Balance</Caption>
     <Editable>false</Editable>
     <Value>0.00</Value>
+      <Mask>Currency</Mask>
   </CiTextField>
   <CiTextField>
     <FieldName>AvailablePrepayment</FieldName>
     <Caption>Available Prepayment</Caption>
     <Editable>false</Editable>
     <Value>0.00</Value>
+      <Mask>Currency</Mask>
   </CiTextField>
   <CiTextField>
     <FieldName>AvailableDeposit</FieldName>
     <Caption>Available Deposit</Caption>
     <Editable>false</Editable>
     <Value>0.00</Value>
+      <Mask>Currency</Mask>
   </CiTextField>
   <CiDateField>
     <FieldName>BillDate</FieldName>
     <Caption>Date</Caption>
-    <Editable>true</Editable>
+    <Editable>false</Editable>
     <ColumnFormat>dd/MM/yyyy</ColumnFormat>
   </CiDateField>
   <CiRadioField>
     <FieldName>BillType</FieldName>
     <Caption>Bill Type</Caption>
-    <Editable>true</Editable>
+    <Editable lang="sql">select 1 from ClientBill where @BillNo = 'New'</Editable>
     <Code>BillTypeID</Code>
     <Description>BillTypeName</Description>
     <DataSource>
@@ -100,82 +104,107 @@
       <DataItem BillTypeName="Hospitalization" BillTypeID="CH" />
     </DataSource>
   </CiRadioField>
-  <CiTextField>
+  <CiMemoField>
     <FieldName>Remarks</FieldName>
     <Caption>Remark</Caption>
-  </CiTextField>
+  </CiMemoField>
   <CiTable Src="BillItemDetail.pux"/>
   <CiTextField>
     <FieldName>Deposit</FieldName>
     <Caption>Deposit</Caption>
     <Value>0.00</Value>
     <Editable>true</Editable>
+    <Mask>Currency</Mask>
   </CiTextField>
   <CiTextField>
     <FieldName>Prepayment</FieldName>
     <Caption>Prepayment</Caption>
     <Value>0.00</Value>
     <Editable>true</Editable>
+    <Mask>Currency</Mask>
+  </CiTextField>
+  <CiButtonField>
+      <FieldName>FSettlementButton</FieldName>
+      <Caption>F. Settlement</Caption>
+  </CiButtonField>
+  <CiTextField>
+    <FieldName>FinalSettlement</FieldName>
+    <Value>0.00</Value>
+    <Editable>false</Editable>
+      <Mask>Currency</Mask>
   </CiTextField>
   <CiTextField>
     <FieldName>NonTaxableAmount</FieldName>
     <Caption>Non-Taxable Amount</Caption>
+    <Mask>Currency</Mask>
     <Value>0.00</Value>
-    <Editable>true</Editable>
+    <Editable>false</Editable>
   </CiTextField>
   <CiTextField>
     <FieldName>TaxableAmount</FieldName>
     <Caption>Taxable Amount</Caption>
+    <Mask>Currency</Mask>
     <Value>0.00</Value>
-    <Editable>true</Editable>
+    <Editable>false</Editable>
   </CiTextField>
   <CiTextField>
     <FieldName>TotalExGST</FieldName>
     <Caption>Total Ex GST</Caption>
-    <Value>0.00</Value>
+    <Editable>false</Editable>
+    <Mask>Currency</Mask>
   </CiTextField>
   <CiTextField>
     <FieldName>GST</FieldName>
     <Caption>GST</Caption>
     <Value>0.00</Value>
+    <Editable>false</Editable>
+      <Mask>Currency</Mask>
   </CiTextField>
   <CiTextField>
     <FieldName>TotalIncGST</FieldName>
     <Caption>Total Inc GST</Caption>
     <Value>0.00</Value>
+    <Editable>false</Editable>
+      <Mask>Currency</Mask>
   </CiTextField>
   <CiTextField>
     <FieldName>Cash</FieldName>
     <Caption>Cash</Caption>
     <Editable>true</Editable>
     <Value>0.00</Value>
+      <Mask>Currency</Mask>
   </CiTextField>
   <CiTextField>
     <FieldName>Nets</FieldName>
     <Caption>Nets</Caption>
     <Editable>true</Editable>
     <Value>0.00</Value>
+      <Mask>Currency</Mask>
   </CiTextField>
   <CiTextField>
     <FieldName>ChequeBank</FieldName>
     <Caption>Cheque Bank</Caption>
-    <Editable>true</Editable>
+    <Hidden>true</Hidden>
   </CiTextField>
   <CiTextField>
     <FieldName>ChequeNo</FieldName>
     <Caption>Cheque No</Caption>
-    <Editable>true</Editable>
+    <Hidden>true</Hidden>
   </CiTextField>
   <CiTextField>
     <FieldName>ChequeRemarks</FieldName>
     <Caption>Cheque Remarks</Caption>
-    <Editable>true</Editable>
+    <Hidden>true</Hidden>
   </CiTextField>
+  <CiButtonField>
+    <FieldName>ChequeButton</FieldName>
+    <Caption>Cheque</Caption>
+  </CiButtonField>
   <CiTextField>
     <FieldName>Cheque</FieldName>
-    <Caption>Cheque</Caption>
-    <Editable>true</Editable>
+      <Editable>false</Editable>
     <Value>0.00</Value>
+      <Mask>Currency</Mask>
   </CiTextField>
   <CiComboField>
     <FieldName>Card1Type</FieldName>
@@ -190,6 +219,7 @@
     <Caption>Credit Card 1 Amount</Caption>
     <Value>0.00</Value>
     <Editable>true</Editable>
+      <Mask>Currency</Mask>
   </CiTextField>
   <CiComboField>
     <FieldName>Card2Type</FieldName>
@@ -204,26 +234,139 @@
     <Caption>Credit Card 2 Amount</Caption>
     <Value>0.00</Value>
     <Editable>true</Editable>
+      <Mask>Currency</Mask>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>CorporateAmount</FieldName>
+    <Caption>Corporate</Caption>
+    <Value>0.00</Value>
+    <Editable lang="sql">select 1 from Client where ClientNo = @ClientNo and (CustomerNo is not null or CustomerNo != '')</Editable>
+    <Mask>Currency</Mask>
+  </CiTextField>
+  <CiButtonField>
+    <FieldName>InsuranceButton</FieldName>
+    <Caption>Insurance</Caption>
+  </CiButtonField>
+  <CiTextField>
+    <FieldName>InsuranceAmount</FieldName>
+    <Value>0.00</Value>
+    <Editable>false</Editable>
+      <Mask>Currency</Mask>
+  </CiTextField>
+  <CiButtonField>
+    <FieldName>DepositButton</FieldName>
+    <Caption>Deposit</Caption>
+  </CiButtonField>
+  <CiTextField>
+    <FieldName>PaymentDepositAmount</FieldName>
+    <Value>0.00</Value>
+    <Editable>false</Editable>
+      <Mask>Currency</Mask>
+  </CiTextField>
+  <CiButtonField>
+    <FieldName>PrepaymentButton</FieldName>
+    <Caption>Pre Payment</Caption>
+  </CiButtonField>
+  <CiTextField>
+    <FieldName>PaymentPrepaymentAmount</FieldName>
+    <Value>0.00</Value>
+    <Editable>false</Editable>
+      <Mask>Currency</Mask>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>MedisaveAmount</FieldName>
+    <Caption>Medisave</Caption>
+    <Value>0.00</Value>
+    <Editable>false</Editable>
+      <Mask>Currency</Mask>
   </CiTextField>
   <CiTextField>
     <FieldName>TotalPaid</FieldName>
     <Caption>Total Paid</Caption>
     <Value>0.00</Value>
     <Editable>false</Editable>
+      <Mask>Currency</Mask>
   </CiTextField>
   <CiTextField>
     <FieldName>OutstandingAmount</FieldName>
     <Caption>Outstanding</Caption>
     <Value>0.00</Value>
     <Editable>false</Editable>
+      <Mask>Currency</Mask>
   </CiTextField>
-  <DefaultMacro>
+  <CiFieldExitMacro>
+    <FieldName>ClientNo</FieldName>
+    <ActionSQL>
+        select
+        C.ClientNo as ClientNo,
+        C.ClientOtherNames + ' '+ClientSurname as Name,
+        C.IdentityNo as NRIC,
+        C.CustomerNo as Company,
+        CU.CustomerName as CompanyName,
+        C.Sex as Gender
+        from Client C
+        left outer join Customer CU
+        on C.CustomerNo = CU.CustomerNo
+        where ClientNo = @ClientNo
+    </ActionSQL>
+  </CiFieldExitMacro>
+  <CiFieldExitMacro>
+    <FieldName>Deposit</FieldName>
+    <FieldName>Prepayment</FieldName>
+    <ActionSQL>
+        select
+        (select cast(coalesce(sum(CBIAmount),0) as decimal(10,2)) from ClientBillItem where ClientBillNo = @BillNo and CBIGSTApplicable = 'N') as CBINonTaxableAmount,
+        (select cast(coalesce(sum(CBIAmount),0) as decimal(10,2)) from ClientBillItem where ClientBillNo = @BillNo and CBIGSTApplicable = 'Y') as CBITaxableAmount,
+        (select cast(cast(coalesce(G.GSTRate,0.00) as decimal(10,2)) / 100 as decimal(10,2)) from GST G inner join ApplicationGlobals A on G.GSTCode = A.GSTCode) as GSTRate
+    </ActionSQL>
+    <ActionSQL>
+        select
+        cast(coalesce(@Deposit,0) as decimal(10,2)) + cast(coalesce(@Prepayment,0) as decimal(10,2)) + @CBINonTaxableAmount as NonTaxableAmount,
+        @CBITaxableAmount as TaxableAmount,
+        cast(coalesce(@Deposit,0) as decimal(10,2)) + cast(coalesce(@Prepayment,0) as decimal(10,2)) + @CBINonTaxableAmount + @CBITaxableAmount as TotalExGST,
+        cast(cast(@CBITaxableAmount as decimal(10,2)) * @GSTRate as decimal(10,2)) as GST,
+        cast(coalesce(@Deposit,0) as decimal(10,2)) + cast(coalesce(@Prepayment,0) as decimal(10,2)) +
+        cast(@CBINonTaxableAmount + @CBITaxableAmount + cast(@CBITaxableAmount as decimal(10,2)) * @GSTRate as decimal(10,2)) as TotalIncGST
+    </ActionSQL>
+  </CiFieldExitMacro>
+    <CiFieldExitMacro>
+        <FieldName>Cash</FieldName>
+        <FieldName>Nets</FieldName>
+        <FieldName>Card1Amount</FieldName>
+        <FieldName>Card2Amount</FieldName>
+        <FieldName>CorporateAmount</FieldName>
+        <ActionSQL>
+            Select
+            cast(coalesce(@Cash,0.00) as decimal(10,2)) +
+            cast(coalesce(@Nets,0.00) as decimal(10,2)) +
+            cast(coalesce(@Card1Amount,0.00) as decimal(10,2)) +
+            cast(coalesce(@Card2Amount,0.00) as decimal(10,2)) +
+            cast(coalesce(@CorporateAmount,0.00) as decimal(10,2)) as TotalBillPayment
+        </ActionSQL>
+        <ActionSQL>
+            select @TotalBillPayment as TotalPaid,
+                   @TotalIncGST - @TotalBillPayment as OutstandingAmount
+        </ActionSQL>
+    </CiFieldExitMacro>
+    <DefaultMacro>
     <ActionSQL>update TempIdentityRecord set ClientBillId = ClientBillId + 1</ActionSQL>
     <ActionSQL>
-      select dbo.FnTempIdentity('ClientBill',0) as BillNo,
-            convert(datetime,cast(getdate() as varchar(12)),103) as BillDate,
-            'CC' as BillType,
-            30 as Doctor
+        select 'New' as BillNo,
+        convert(datetime,cast(getdate() as varchar(12)),103) as BillDate,
+        'CC' as BillType,
+        61 as Doctor,
+        'Min Yu Lim' as DoctorName,
+        C.ClientNo as ClientNo,
+        C.ClientOtherNames + ' '+ClientSurname as Name,
+        C.IdentityNo as NRIC,
+        C.CustomerNo as Company,
+        CU.CustomerName as CompanyName,
+        C.Sex as Gender,
+        (select UserId from ApplicationUser where Email = @CI_UserEmail) as Dispenser
+        from Client C
+        left outer join Customer CU
+        on C.CustomerNo = CU.CustomerNo
+        where ClientNo = @ClientNo
     </ActionSQL>
   </DefaultMacro>
   <SelectMacro>
@@ -232,81 +375,81 @@
   <UpdateMacro>
     <VisibleSQL>select 1 from ClientBill where ClientBillNo = @BillNo</VisibleSQL>
     <ActionSQL>
-      ?exec spClientBill_upd 
-	      @BillNo,
-	      @BillDate,
-	      @PresNo,
-	      @Doctor,
-	      @Dispenser,
-	      @Remarks,
-	      @Deposit,
-	      @BillType,
-	      0.00,
-	      @NonTaxableAmount,
-	      @GST,
-	      @TotalIncGST,
-	      @OutstandingBalance,
-	      @TaxableAmount,
-	      @ClientNo,
-	      @Company,
-	      @Prepayment, 
-	      @Cash,
-	      @Nets,
-	      @Cheque,
-	      @ChequeBank,
-	      @ChequeNo,
-	      @ChequeRemarks,
-	      0.00,
-	      0.00,
-	      @Card1Amount,
-	      @Card1Type,
-	      @Card2Amount,
-	      @Card2Type,
-	      0.00,
-	      0.00,
-	      @TotalIncGST,
-	      @OutstandingAmount,
-	      0.00
-  </ActionSQL>
+        ?exec spClientBill_upd
+        @BillNo,
+        @BillDate,
+        @PresNo,
+        @Doctor,
+        @Dispenser,
+        @Remarks,
+        @Deposit,
+        @BillType,
+        @FinalSettlement,
+        @NonTaxableAmount,
+        @GST,
+        @TotalIncGST,
+        @OutstandingBalance,
+        @TaxableAmount,
+        @ClientNo,
+        @Company,
+        @Prepayment,
+        @Cash,
+        @Nets,
+        @Cheque,
+        @ChequeBank,
+        @ChequeNo,
+        @ChequeRemarks,
+        @MedisaveAmount,
+        @PaymentDepositAmount,
+        @Card1Amount,
+        @Card1Type,
+        @Card2Amount,
+        @Card2Type,
+        @CorporateAmount,
+        @InsuranceAmount,
+        @TotalIncGST,
+        @OutstandingAmount,
+        @PaymentPrepaymentAmount
+    </ActionSQL>
   </UpdateMacro>
   <InsertMacro>
     <VisibleSQL>select 1 from ClientBill where not exists (select 1 from ClientBill where ClientBillNo = @BillNo)</VisibleSQL>
     <ActionSQL>
-      ?exec spClientBill_upd 
-	      @BillNo,
-	      @BillDate,
-	      @PresNo,
-	      @Doctor,
-	      @Dispenser,
-	      @Remarks,
-	      @Deposit,
-	      @BillType,
-	      0.00,
-	      @NonTaxableAmount,
-	      @GST,
-	      @TotalIncGST,
-	      @OutstandingBalance,
-	      @TaxableAmount,
-	      @ClientNo,
-	      @Company,
-	      @Prepayment, 
-	      @Cash,
-	      @Nets,
-	      @Cheque,
-	      @ChequeBank,
-	      @ChequeNo,
-	      @ChequeRemarks,
-	      0.00,
-	      0.00,
-	      @Card1Amount,
-	      @Card1Type,
-	      @Card2Amount,
-	      @Card2Type,
-	      0.00,
-	      0.00,
-	      @TotalIncGST,
-	      @OutstandingAmount,
-	      0.00
+        ?exec spClientBill_upd
+        @BillNo,
+        @BillDate,
+        @PresNo,
+        @Doctor,
+        @Dispenser,
+        @Remarks,
+        @Deposit,
+        @BillType,
+        @FinalSettlement,
+        @NonTaxableAmount,
+        @GST,
+        @TotalIncGST,
+        @OutstandingBalance,
+        @TaxableAmount,
+        @ClientNo,
+        @Company,
+        @Prepayment,
+        @Cash,
+        @Nets,
+        @Cheque,
+        @ChequeBank,
+        @ChequeNo,
+        @ChequeRemarks,
+        @MedisaveAmount,
+        @PaymentDepositAmount,
+        @Card1Amount,
+        @Card1Type,
+        @Card2Amount,
+        @Card2Type,
+        @CorporateAmount,
+        @InsuranceAmount,
+        @TotalIncGST,
+        @OutstandingAmount,
+        @PaymentPrepaymentAmount
     </ActionSQL>
   </InsertMacro>
 </CiTable>

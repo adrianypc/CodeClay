@@ -3,10 +3,13 @@
   <Profiles />
   <Settings>
     <Setting Name="AirplaneMode" Type="System.Boolean" Scope="Application">
-      <Value Profile="(Default)">False</Value>
+      <Value Profile="(Default)">True</Value>
     </Setting>
     <Setting Name="ScriptFolder" Type="System.String" Scope="Application">
       <Value Profile="(Default)">PluginScripts</Value>
+    </Setting>
+    <Setting Name="CPanelConnectionString" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">Integrated Security=SSPI;Initial Catalog=CPanel;Data Source=(localdb)\ProjectsV13;AttachDBFilename=C:\Users\adrianypc\AppData\Local\Microsoft\VisualStudio\SSDT\Admin.mdf</Value>
     </Setting>
   </Settings>
 </SettingsFile>

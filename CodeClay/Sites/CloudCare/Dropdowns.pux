@@ -12,13 +12,13 @@
 	<CiTextField>
 		<FieldName>Category</FieldName>
 		<Caption>Category</Caption>
-		<EditableSQL>select 1 where @ExistingDropdown is null</EditableSQL>
+		<Editable lang="sql">select 1 where @ExistingDropdown is null</Editable>
 		<Width>10</Width>
 	</CiTextField>
 	<CiTextField>
 		<FieldName>Code</FieldName>
 		<Caption>Code</Caption>
-		<EditableSQL>select 1 where @ExistingDropdown is null</EditableSQL>
+		<Editable lang="sql">select 1 where @ExistingDropdown is null</Editable>
 		<Width>20</Width>
 	</CiTextField>
 	<CiTextField>

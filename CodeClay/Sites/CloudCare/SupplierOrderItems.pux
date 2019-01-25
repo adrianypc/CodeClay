@@ -113,6 +113,7 @@
   </DeleteMacro>
   <CiFieldExitMacro>
     <FieldName>Quantity</FieldName>
+    <FieldName>ProductID</FieldName>
     <ActionSQL>select	@Quantity * coalesce(UnitCostPrice,0) as Price from Product where	ProductID = @ProductID</ActionSQL>
   </CiFieldExitMacro>
 </CiTable>

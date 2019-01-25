@@ -49,7 +49,11 @@
     <Toolbars>
         <dx:CardViewToolbar ItemAlign="Right">
             <Items>
-                <dx:CardViewToolbarItem Name="Inspect" Text="Inspect" />
+                <dx:CardViewToolbarItem Name="More" Text="More">
+                    <Items>
+                        <dx:CardViewToolbarItem Name="Inspect" Text="Inspect" />
+                    </Items>
+                </dx:CardViewToolbarItem>
                 <dx:CardViewToolbarItem Name="Divider" Text="" Enabled="false" ItemStyle-Width="100%" />
                 <dx:CardViewToolbarItem Name="Update" Command="Update" Text="Ok" />
                 <dx:CardViewToolbarItem Name="Cancel" Command="Cancel" />
@@ -87,8 +91,12 @@
     <Toolbars>
         <dx:CardViewToolbar ItemAlign="Right">
             <Items>
-                <dx:CardViewToolbarItem Name="Inspect" Text="Inspect" />
-                <dx:CardViewToolbarItem Name="ExportToPdf" Command="ExportToPdf" />
+                <dx:CardViewToolbarItem Name="More" Text="More">
+                    <Items>
+                        <dx:CardViewToolbarItem Name="Inspect" Text="Inspect" />
+                        <dx:CardViewToolbarItem Name="ExportToPdf" Command="ExportToPdf" />
+                    </Items>
+                </dx:CardViewToolbarItem>
                 <dx:CardViewToolbarItem Name="Divider" Text="" Enabled="false" ItemStyle-Width="100%" />
                 <dx:CardViewToolbarItem Name="Search" Text="Search" />
                 <dx:CardViewToolbarItem Name="New" Command="New"/>
@@ -130,7 +138,7 @@
     <ClientSideEvents ToolbarItemClick="dxGrid_ToolbarItemClick" />
     <ClientSideEvents RowDblClick="dxGrid_RowDblClick" />
 	<ClientSideEvents ContextMenu="dxGrid_Contextmenu" />
-    <Settings ShowGroupPanel="true" ShowGroupedColumns="true" ShowTitlePanel="true" ShowFooter="true" VerticalScrollBarMode="Auto" />
+    <Settings ShowGroupPanel="true" ShowGroupedColumns="true" ShowTitlePanel="true" ShowFooter="true" />
     <SettingsBehavior ColumnResizeMode="Control" AllowSelectSingleRowOnly="true" AllowFocusedRow="true" AllowSelectByRowClick="true" ConfirmDelete="true" />
     <SettingsDetail AllowOnlyOneMasterRowExpanded="true" />
     <SettingsEditing Mode="Inline" NewItemRowPosition="Bottom" />
@@ -148,8 +156,12 @@
     <Toolbars>
         <dx:GridViewToolbar ItemAlign="Right" EnableAdaptivity="true">
             <Items>
-                <dx:GridViewToolbarItem Name="Inspect" Text="Inspect" />
-                <dx:GridViewToolbarItem Name="ExportToPdf" Command="ExportToPdf" />
+                <dx:GridViewToolbarItem Name="More" Text="More">
+                    <Items>
+                        <dx:GridViewToolbarItem Name="Inspect" Text="Inspect" />
+                        <dx:GridViewToolbarItem Name="ExportToPdf" Command="ExportToPdf" />
+                    </Items>
+                </dx:GridViewToolbarItem>
                 <dx:GridViewToolbarItem Name="Divider" Text="" Enabled="false"  ItemStyle-Width="100%" />
                 <dx:GridViewToolbarItem Name="Search" Text="Search" />
                 <dx:GridViewToolbarItem Name="New" Command="New" />
