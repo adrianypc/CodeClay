@@ -24,16 +24,19 @@
     <FieldName>IdentityNo</FieldName>
     <Caption>NRIC/Passport</Caption>
     <Editable lang="sql">select 1 from Client where @ClientNo is null</Editable>
+      <Mandatory>true</Mandatory>
   </CiTextField>
   <CiTextField>
     <FieldName>ClientSurname</FieldName>
-    <Caption>Last Name</Caption>
+    <Caption>Surname</Caption>
     <Editable lang="sql">select 1 from Client where @ClientNo is null</Editable>
+    <Mandatory>true</Mandatory>
   </CiTextField>
   <CiTextField>
     <FieldName>ClientOtherNames</FieldName>
-    <Caption>First Name</Caption>
+    <Caption>Other Names</Caption>
     <Editable lang="sql">select 1 from Client where @ClientNo is null and @IsNewPatient = 'True'</Editable>
+      <Mandatory>true</Mandatory>
   </CiTextField>
   <CiComboField>
     <FieldName>Sex</FieldName>
@@ -45,11 +48,13 @@
       <DataItem Description="Male" Gender="M"  />
       <DataItem Description="Female" Gender="F"   />
     </DataSource>
+      <Mandatory>true</Mandatory>
   </CiComboField>
   <CiTextField>
     <FieldName>AddressLine1</FieldName>
     <Caption>Address</Caption>
     <Editable lang="sql">select 1 from Client where @ClientNo is null and @IsNewPatient = 'True'</Editable>
+      <Mandatory>true</Mandatory>
   </CiTextField>
   <CiTextField>
     <FieldName>AddressLine2</FieldName>
@@ -116,6 +121,7 @@
     <Caption>Appt Time</Caption>
     <Editable>true</Editable>
     <DropdownSQL>?exec spAppointment_selTime @ConsultantId,@AppointmentDate,@AppointmentDuration,@AppointmentNo</DropdownSQL>
+      <Mandatory>true</Mandatory>
   </CiComboField>
   <CiTextField>
     <FieldName>Officer</FieldName>
@@ -160,7 +166,7 @@
       coalesce(@Pager,'') as Pager,
       'HQU' as BranchCode,
       getdate() as AppointmentDate,
-      @ConsultantId as ConsultantId,
+      coalesce(@ConsultantId,61) as ConsultantId,
       coalesce(@IsNewPatient,cast(1 as bit)) as IsNewPatient
     </ActionSQL>
   </DefaultMacro>

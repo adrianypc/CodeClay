@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<CiTable>
+	<TableName>ApplicationDetails</TableName>
+	<TableCaption>Application Details</TableCaption>
+	<DefaultView>Card</DefaultView>
+  <RowKey>AppID</RowKey>
+  <CiTextField>
+    <FieldName>AppID</FieldName>
+    <Caption>Application ID</Caption>
+    <Editable>false</Editable>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>AppName</FieldName>
+    <Caption>Application Name</Caption>
+    <Editable>false</Editable>
+  </CiTextField>
+  <CiLinkField>
+    <FieldName>AppUrl</FieldName>
+    <Caption>Url</Caption>
+    <Editable>false</Editable>
+  </CiLinkField>
+  <CiTable Src="ApplicationUserList.pux" />
+  <SelectMacro>
+    <ActionSQL>?exec spApplication_sel @AppID, @CI_UserEmail</ActionSQL>
+  </SelectMacro>
+</CiTable>

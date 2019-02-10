@@ -4,12 +4,12 @@
   <IsDesigner>true</IsDesigner>
   <ProviderName>System.Data.SqlClient</ProviderName>
   <ConnectionString>Data Source=(localdb)\ProjectsV13;Initial Catalog=CPanel;Integrated Security=True;Connect Timeout=30</ConnectionString>
+  <HomePluginSrc>ApplicationList.pux</HomePluginSrc>
   <CiMenu>
     <MenuName>Application</MenuName>
     <CiMenu>
       <MenuName>Application List</MenuName>
-      <PluginSrc>AppList.pux</PluginSrc>
+      <PluginSrc>ApplicationList.pux</PluginSrc>
     </CiMenu>
   </CiMenu>
-  <HomePluginSrc>AppList.pux</HomePluginSrc>
 </CiApplication>
