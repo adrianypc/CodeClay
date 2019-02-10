@@ -37,6 +37,7 @@
 		<FieldName>Strength</FieldName>
 		<Caption>Strength</Caption>
 		<Width>10</Width>
+        <Hidden>true</Hidden>
 	</CiTextField>
 	<CiComboField>
 		<FieldName>Dose</FieldName>
@@ -56,12 +57,22 @@
 		<Caption>UOM</Caption>
 		<Width>10</Width>
 	</CiTextField>
+    <CiTextField>
+        <FieldName>Duration</FieldName>
+        <Caption>Duration</Caption>
+        <Width>10</Width>
+    </CiTextField>
     <CiDateField>
         <FieldName>ExpiryDate</FieldName>
         <Caption>Expiry Date</Caption>
         <Editable>true</Editable>
         <ColumnFormat>dd/MM/yyyy</ColumnFormat>
     </CiDateField>
+    <CiTextField>
+        <FieldName>Route</FieldName>
+        <Caption>Route</Caption>
+        <Width>10</Width>
+    </CiTextField>
     <CiTextField>
 		<FieldName>UnitPrice</FieldName>
 		<Caption>Unit Price ($)</Caption>
@@ -119,7 +130,9 @@
 				Quantity,
 				UnitOfMeasure,
 				UnitPrice,
-                ExpiryDate
+                ExpiryDate,
+                Route,
+                Duration
 			)
 			values
 			(	@ClientNo,
@@ -135,7 +148,9 @@
 				@Quantity,
 				@UnitOfMeasure,
 				@UnitPrice,
-                @ExpiryDate
+                @ExpiryDate,
+                @Route,
+                @Duration
 			)
 		</ActionSQL>
         <VisibleSQL>
@@ -159,7 +174,9 @@
 					    Quantity = @Quantity,
 					    UnitOfMeasure = @UnitOfMeasure,
 					    UnitPrice = @UnitPrice,
-                        ExpiryDate = @ExpiryDate
+                        ExpiryDate = @ExpiryDate,
+                        Route = @Route,
+                        Duration = @Duration
 			where   ClientNo = @ClientNo
 			and     LogID = @LogID
 			and     PrescriptionItemID = @PrescriptionItemID

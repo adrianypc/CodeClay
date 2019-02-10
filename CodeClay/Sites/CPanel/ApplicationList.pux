@@ -1,0 +1,54 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<CiTable>
+	<TableName>ApplicationList</TableName>
+	<TableCaption>Application List</TableCaption>
+	<DefaultView>Grid</DefaultView>
+  <RowKey>AppID</RowKey>
+  <CiField>
+    <FieldName>AppID</FieldName>
+    <Caption>Application ID</Caption>
+  </CiField>
+  <CiTextField>
+    <FieldName>AppName</FieldName>
+    <Caption>Application Name</Caption>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>Role</FieldName>
+    <Caption>Role</Caption>
+    <Editable>false</Editable>
+  </CiTextField>
+  <CiLinkField>
+    <FieldName>AppUrl</FieldName>
+    <Caption>Url</Caption>
+    <Editable>false</Editable>
+  </CiLinkField>
+  <CiFieldExitMacro>
+    <FieldName>AppName</FieldName>
+    <ActionSQL>select 'Default.aspx?Application=' + @AppName as AppUrl</ActionSQL>
+  </CiFieldExitMacro>
+  <DefaultMacro>
+    <ActionSQL>
+      select  '- New -' as AppID,
+              'Owner' as Role
+    </ActionSQL>
+  </DefaultMacro>
+  <SelectMacro>
+    <ActionSQL>?exec spApplication_sel null, @CI_UserEmail</ActionSQL>
+  </SelectMacro>
+  <InsertMacro>
+    <ActionSQL>?exec spApplication_ins @AppName, @CI_UserEmail</ActionSQL>
+  </InsertMacro>
+  <UpdateMacro>
+    <ActionSQL>exec spApplication_upd @AppID, @AppName</ActionSQL>
+  </UpdateMacro>
+  <CiMacro>
+    <MacroName>Details</MacroName>
+    <Caption>Details</Caption>
+    <Toolbar>true</Toolbar>
+    <ActionSQL>
+      select  @AppID as AppID
+    </ActionSQL>
+    <NavigateUrl>ApplicationDetails.pux</NavigateUrl>
+    <NavigatePos>Popup</NavigatePos>
+  </CiMacro>
+</CiTable>
