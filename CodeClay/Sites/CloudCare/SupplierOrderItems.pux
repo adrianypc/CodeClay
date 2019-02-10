@@ -77,7 +77,7 @@
       @Price,
       @ExpiryDate
     </ActionSQL>
-    <VisibleSQL>select 1 from SupplierOrders where SupplierOrderNo = @SupplierOrderNo and Status not in ('Received','Cancelled')</VisibleSQL>
+    <VisibleSQL>select 1 from SupplierOrders where SupplierOrderNo = @SupplierOrderNo and Status != 'Received'</VisibleSQL>
 	</InsertMacro>
 	<UpdateMacro>
     <ActionSQL>
@@ -92,23 +92,23 @@
       @ExpiryDate
     </ActionSQL>
     <VisibleSQL>
-        select 1 from SupplierOrderItems SOI
-        inner join SupplierOrders SO
-        on SOI.SupplierOrderNo = SO.SupplierOrderNo
-        where SOI.SupplierOrderNo = @SupplierOrderNo
-        and SOI.SupplierOrderItemNo = @SupplierOrderItemNo
-        and SO.Status not in ('Received','Cancelled')
+      select 1 from SupplierOrderItems SOI
+      inner join SupplierOrders SO
+      on SOI.SupplierOrderNo = SO.SupplierOrderNo
+      where SOI.SupplierOrderNo = @SupplierOrderNo
+      and SOI.SupplierOrderItemNo = @SupplierOrderItemNo
+      and SO.Status != 'Received'
     </VisibleSQL>
   </UpdateMacro>
   <DeleteMacro>
     <ActionSQL>exec spSupplierOrderItems_del @SupplierOrderItemNo,@SupplierOrderNo</ActionSQL>
     <VisibleSQL>
-        select 1 from SupplierOrderItems SOI
-        inner join SupplierOrders SO
-        on SOI.SupplierOrderNo = SO.SupplierOrderNo
-        where SOI.SupplierOrderNo = @SupplierOrderNo
-        and SOI.SupplierOrderItemNo = @SupplierOrderItemNo
-        and SO.Status not in ('Received','Cancelled')
+      select 1 from SupplierOrderItems SOI
+      inner join SupplierOrders SO
+      on SOI.SupplierOrderNo = SO.SupplierOrderNo
+      where SOI.SupplierOrderNo = @SupplierOrderNo
+      and SOI.SupplierOrderItemNo = @SupplierOrderItemNo
+      and SO.Status != 'Received'
     </VisibleSQL>
   </DeleteMacro>
   <CiFieldExitMacro>

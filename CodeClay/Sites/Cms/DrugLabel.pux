@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <CiReport>
   <Url>DrugLabel.xml</Url>
-  <Designer>false</Designer>
+  <Designer>true</Designer>
   <ReportSQL>?exec spDrugLabel_sel @ClientNo, @LogID</ReportSQL>
 </CiReport>

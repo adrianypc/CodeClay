@@ -162,7 +162,7 @@
     </ActionSQL>
     <VisibleSQL>select distinct 1 from CustomerOrders where @CalledFrom is null</VisibleSQL>
   </InsertMacro>
-  <UpdateMacro>
+	<UpdateMacro>
     <ActionSQL>
         ?exec spCustomerOrders_upd
         @CustomerOrderNo,
@@ -185,9 +185,9 @@
         @WordpressOrderNo
     </ActionSQL>
     <VisibleSQL>
-        select 1 from CustomerOrders
-        where CustomerOrderNo = case when isnumeric(@CustomerOrderNo) = 1 then @CustomerOrderNo else -1 end
-        and Status = 'Active'
+        select 1 from CustomerOrders 
+        where CustomerOrderNo = case when isnumeric(@CustomerOrderNo) = 1 then @CustomerOrderNo else -1 end 
+        and (Status != 'Dispatched' or Status is null)
     </VisibleSQL>
   </UpdateMacro>
   <DeleteMacro>
@@ -195,7 +195,7 @@
     <VisibleSQL>
         select 1 from CustomerOrders
         where CustomerOrderNo = case when isnumeric(@CustomerOrderNo) = 1 then @CustomerOrderNo else -1 end
-        and Status = 'Active'
+        and (Status != 'Dispatched' or Status is null)
     </VisibleSQL>
   </DeleteMacro>
   <CiMacro>
@@ -211,25 +211,13 @@
         where CustomerOrderNo = case when isnumeric(@CustomerOrderNo) = 1 then @CustomerOrderNo else -1 end
         and Status = 'Active'</VisibleSQL>
   </CiMacro>
-  <CiMacro>
-    <MacroName>Cancel Order</MacroName>
-    <ActionSQL>exec spCustomerOrders_cancellation @CustomerOrderNo</ActionSQL>
-    <ActionSQL>
-        select Status from CustomerOrders where CustomerOrderNo = @CustomerOrderNo
-    </ActionSQL>
-    <VisibleSQL>
-        select 1 from CustomerOrders
-        where CustomerOrderNo = case when isnumeric(@CustomerOrderNo) = 1 then @CustomerOrderNo else -1 end
-        and @Status = 'Active'
-    </VisibleSQL>
-  </CiMacro>
   <CiFieldExitMacro>
 		<FieldName>Shipping</FieldName>
 		<ActionSQL>
         select cast(@Shipping as decimal(10,2)) + coalesce(sum(Amount),0) as TotalAmount 
         from CustomerOrderItems where CustomerOrderNo = @CustomerOrderNo
     </ActionSQL>
-  </CiFieldExitMacro>
+	</CiFieldExitMacro>
   <CiFieldExitMacro>
     <FieldName>CustomerID</FieldName>
     <ActionSQL>

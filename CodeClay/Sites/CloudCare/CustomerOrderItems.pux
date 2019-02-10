@@ -64,7 +64,7 @@
           @Quantity,
           @Amount
     </ActionSQL>
-    <VisibleSQL>select 1 from CustomerOrders where CustomerOrderNo = @CustomerOrderNo and Status not in ('Dispatched','Cancelled')</VisibleSQL>
+    <VisibleSQL>select 1 from CustomerOrders where CustomerOrderNo = @CustomerOrderNo and Status != 'Dispatched'</VisibleSQL>
 	</InsertMacro>
 	<UpdateMacro>
     <ActionSQL>
@@ -77,23 +77,23 @@
           @Amount
     </ActionSQL>
     <VisibleSQL>
-        select 1 from CustomerOrderItems COI
-        inner join CustomerOrders CO
-        on COI.CustomerOrderNo = CO.CustomerOrderNo
-        where COI.CustomerOrderNo = @CustomerOrderNo
-        and COI.ProductID = @ProductID
-        and CO.Status not in ('Dispatched','Cancelled')
+      select 1 from CustomerOrderItems COI
+      inner join CustomerOrders CO
+      on COI.CustomerOrderNo = CO.CustomerOrderNo
+      where COI.CustomerOrderNo = @CustomerOrderNo
+      and COI.ProductID = @ProductID
+      and CO.Status != 'Dispatched'
     </VisibleSQL>
   </UpdateMacro>
   <DeleteMacro>
     <ActionSQL>exec spCustomerOrderItems_del @CustomerOrderItemNo,@CustomerOrderNo</ActionSQL>
     <VisibleSQL>
-        select 1 from CustomerOrderItems COI
-        inner join CustomerOrders CO
-        on COI.CustomerOrderNo = CO.CustomerOrderNo
-        where COI.CustomerOrderNo = @CustomerOrderNo
-        and COI.CustomerOrderItemNo = @CustomerOrderItemNo
-        and CO.Status not in ('Dispatched','Cancelled')
+      select 1 from CustomerOrderItems COI
+      inner join CustomerOrders CO
+      on COI.CustomerOrderNo = CO.CustomerOrderNo
+      where COI.CustomerOrderNo = @CustomerOrderNo
+      and COI.CustomerOrderItemNo = @CustomerOrderItemNo
+      and CO.Status != 'Dispatched'
     </VisibleSQL>
   </DeleteMacro>
   <CiFieldExitMacro>

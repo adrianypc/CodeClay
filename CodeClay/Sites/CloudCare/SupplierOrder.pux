@@ -27,11 +27,6 @@
     <Editable>true</Editable>
     <ColumnFormat>dd/MM/yyyy</ColumnFormat>
   </CiDateField>
-  <CiCheckField>
-    <FieldName>IsTransferred</FieldName>
-    <Caption>Transfer Order</Caption>
-    <Editable lang="sql">select distinct 1 from SupplierOrders where @Status = 'Open' </Editable>
-  </CiCheckField>
   <CiComboField>
     <FieldName>SupplierID</FieldName>
     <TextFieldName>SupplierName</TextFieldName>
@@ -59,32 +54,6 @@
     <Mask>Currency</Mask>
     <Editable>false</Editable>
   </CiTextField>
-  <CiComboField>
-    <FieldName>CurrentCurrency</FieldName>
-    <TextFieldName>CurrencyName</TextFieldName>
-    <Caption>Currency Code</Caption>
-    <Editable>true</Editable>
-    <Code>CurrencyCode</Code>
-    <Description>CurrencyName</Description>
-    <DropdownSQL>select Description as CurrencyName,Code as CurrencyCode from Dropdown where Category='Currency'</DropdownSQL>
- </CiComboField>
- <CiLinkField>
-    <FieldName>ExchangeRateURL</FieldName>
-    <Caption>Exchange Rate URL</Caption>
-     <Editable>false</Editable>
-    <Width>50</Width>
- </CiLinkField>
- <CiTextField>
-    <FieldName>ConversionRate</FieldName>
-    <Caption>Conversion Rate</Caption>
-    <Editable lang="sql">select 1 from tblSingleton where @CurrentCurrency != 'SGD'</Editable>
- </CiTextField>
- <CiTextField>
-    <FieldName>TotalAmountInSGD</FieldName>
-    <Caption>Total (S$)</Caption>
-    <Mask>Currency</Mask>
-    <Editable>false</Editable>
- </CiTextField>
   <CiTextField>
     <FieldName>CalledFrom</FieldName>
      <Hidden>true</Hidden>
@@ -109,7 +78,7 @@
       select  isnull(1 + max(SupplierOrderNo), 1) as SupplierOrderNo
       from    SupplierOrders
     </ActionSQL>
-    <ActionSQL>
+		<ActionSQL>
       ?exec spSupplierOrders_upd
       @SupplierOrderNo,
       @Status,
@@ -118,17 +87,13 @@
       @OrderFileURL,
       @Shipping,
       @TotalAmount,
-      @DeliveryDate,
-      @IsTransferred,
-      @CurrentCurrency,
-      @ConversionRate,
-      @TotalAmountInSGD
+      @DeliveryDate
     </ActionSQL>
     <VisibleSQL>select distinct 1 from SupplierOrders where @CalledFrom is null</VisibleSQL>
     </InsertMacro>
   <UpdateMacro>
     <ActionSQL>
-        ?exec spSupplierOrders_upd
+      ?exec spSupplierOrders_upd
         @SupplierOrderNo,
         @Status,
         @SupplierID,
@@ -136,21 +101,17 @@
         @OrderFileURL,
         @Shipping,
         @TotalAmount,
-        @DeliveryDate,
-        @IsTransferred,
-        @CurrentCurrency,
-        @ConversionRate,
-        @TotalAmountInSGD
+        @DeliveryDate
     </ActionSQL>
-    <VisibleSQL>select 1 from SupplierOrders where SupplierOrderNo = @SupplierOrderNo and Status in ('Active','Open')</VisibleSQL>
+    <VisibleSQL>select 1 from SupplierOrders where SupplierOrderNo = @SupplierOrderNo and (Status != 'Received' or Status is null)</VisibleSQL>
   </UpdateMacro>
   <DeleteMacro>
     <ActionSQL>exec spSupplierOrders_del @SupplierOrderNo</ActionSQL>
-    <VisibleSQL>select 1 from SupplierOrders where SupplierOrderNo = @SupplierOrderNo and Status in ('Active','Open')</VisibleSQL>
+    <VisibleSQL>select 1 from SupplierOrders where SupplierOrderNo = @SupplierOrderNo and (Status != 'Received' or Status is null)</VisibleSQL>
   </DeleteMacro>
   <CiMacro>
     <MacroName>Submit</MacroName>
-    <ActionSQL>exec spSupplierOrders_Status_upd @SupplierOrderNo,'Active',@CI_UserEmail</ActionSQL>
+    <ActionSQL>exec spSupplierOrders_Status_upd @SupplierOrderNo,'Active'</ActionSQL>
     <ActionSQL>
       select Status,
       SupplierOrderDate
@@ -160,7 +121,7 @@
   </CiMacro>
   <CiMacro>
     <MacroName>Received</MacroName>
-    <ActionSQL>exec spSupplierOrders_Status_upd @SupplierOrderNo,'Received',@CI_UserEmail</ActionSQL>
+    <ActionSQL>exec spSupplierOrders_Status_upd @SupplierOrderNo,'Received'</ActionSQL>
     <ActionSQL>
       select Status,
       DeliveryDate
@@ -168,41 +129,11 @@
     </ActionSQL>
     <VisibleSQL>select 1 from SupplierOrders where SupplierOrderNo = @SupplierOrderNo and Status = 'Active'</VisibleSQL>
   </CiMacro>
-  <CiMacro>
-    <MacroName>Cancel Order</MacroName>
-    <ActionSQL>exec spSupplierOrders_cancellation @SupplierOrderNo</ActionSQL>
-    <ActionSQL>
-        select Status from SupplierOrders where SupplierOrderNo = @SupplierOrderNo
-    </ActionSQL>
-    <VisibleSQL>select 1 from SupplierOrders where SupplierOrderNo = @SupplierOrderNo and Status in ('Active','Open')</VisibleSQL>
-  </CiMacro>
   <CiFieldExitMacro>
     <FieldName>Shipping</FieldName>
     <ActionSQL>
-      select 
-        cast(@Shipping as decimal(10,2)) + coalesce(sum(Price),0) as TotalAmount
+      select cast(@Shipping as decimal(10,2)) + coalesce(sum(Price),0) as TotalAmount
       from SupplierOrderItems where SupplierOrderNo = @SupplierOrderNo
     </ActionSQL>
-  </CiFieldExitMacro>
-  <CiFieldExitMacro>
-    <FieldName>CurrentCurrency</FieldName>
-    <ActionSQL>
-        select
-        case when @CurrentCurrency = 'SGD' then 1.00 else @ConversionRate end as ConversionRate,
-        case when @CurrentCurrency = 'SGD' then @TotalAmount else @TotalAmountInSGD end as TotalAmountInSGD,
-        'https://www.xe.com/currencytables/?from='+@CurrentCurrency+'&amp;date='+CONVERT(char(10),@SupplierOrderDate ,126) as ExchangeRateURL
-    </ActionSQL>
-  </CiFieldExitMacro>
-  <CiFieldExitMacro>
-     <FieldName>ConversionRate</FieldName>
-     <ActionSQL>
-         select cast(@TotalAmount * @ConversionRate as decimal(10,2)) as TotalAmountInSGD
-     </ActionSQL>
-  </CiFieldExitMacro>
-  <CiFieldExitMacro>
-     <FieldName>IsTransferred</FieldName>
-     <ActionSQL>
-         select SupplierName,SupplierID from Supplier where SupplierName like '%HealthTree Australia%' and @IsTransferred = 1
-     </ActionSQL>
   </CiFieldExitMacro>
 </CiTable>

@@ -100,11 +100,6 @@ function dxUpload_FileUploadComplete(sender, event) {
 
 function dxUpdateText_Init(sender, event) {
     dxUploadText = sender;
-
-    RegisterEditor(dxUploadText,
-        function () { return this.GetText(); },
-        function (value) { this.SetText(value); }
-    );
 }
 
 function dxUpdateText_ValueChanged(sender, event) {

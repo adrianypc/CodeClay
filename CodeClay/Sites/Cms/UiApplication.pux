@@ -1,54 +1,56 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <CiApplication>
+  <AppName>CMS</AppName>
 	<IsDesigner>true</IsDesigner>
 	<ProviderName>System.Data.SqlClient</ProviderName>
+	<TEST_ConnectionString>Password=cms123*;Persist Security Info=True;User ID=sa;Initial Catalog=CMSTest;Data Source=cccrmsm</TEST_ConnectionString>
 	<ConnectionString>Integrated Security=SSPI;Initial Catalog=CMSTest;Data Source=(localdb)\ProjectsV13;AttachDBFilename=C:\Users\adrianypc\Documents\Databases\CMSTest.mdf</ConnectionString>
-    <HomePluginSrc>Couple.pux</HomePluginSrc>
-    <CiMenu>
+  <CPanelConnectionString >Integrated Security=SSPI;Initial Catalog=CPanel;Data Source=(localdb)\ProjectsV13;AttachDBFilename=C:\Users\adrianypc\AppData\Local\Microsoft\VisualStudio\SSDT\Admin.mdf</CPanelConnectionString >
+  <CiMenu>
 		<MenuName>Application</MenuName>
 		<CiMenu>
-			<MenuName>Doctors</MenuName>
-            <CiMenu>
-                <MenuName>Min Yu</MenuName>
-                <PluginSrc>Appointmentlist.pux&amp;FutureAppointment=false&amp;ConsultantID=61</PluginSrc>
-            </CiMenu>
-            <CiMenu>
-                <MenuName>Cheng Toh</MenuName>
-                <PluginSrc>Appointmentlist.pux&amp;FutureAppointment=false&amp;ConsultantID=56</PluginSrc>
-            </CiMenu>
-            <CiMenu>
-                <MenuName>Siew Hong</MenuName>
-                <PluginSrc>Appointmentlist.pux&amp;FutureAppointment=false&amp;ConsultantID=58</PluginSrc>
-            </CiMenu>
-            <CiMenu>
-                <MenuName>Suresh</MenuName>
-                <PluginSrc>Appointmentlist.pux&amp;FutureAppointment=false&amp;ConsultantID=59</PluginSrc>
-            </CiMenu>
-            <CiMenu>
-                <MenuName>Michelle</MenuName>
-                <PluginSrc>Appointmentlist.pux&amp;FutureAppointment=false&amp;ConsultantID=60</PluginSrc>
-            </CiMenu>
-        </CiMenu>
+			<MenuName>Doctor Appointments</MenuName>
+			<CiMenu>
+				<MenuName>Min Yu</MenuName>
+				<PluginSrc>Appointmentlist.pux&amp;sFutureAppointment=false&amp;sConsultantID=61</PluginSrc>
+			</CiMenu>
+			<CiMenu>
+				<MenuName>Cheng Toh</MenuName>
+				<PluginSrc>Appointmentlist.pux&amp;sFutureAppointment=false&amp;sConsultantID=56</PluginSrc>
+			</CiMenu>
+			<CiMenu>
+				<MenuName>Siew Hong</MenuName>
+				<PluginSrc>Appointmentlist.pux&amp;sFutureAppointment=false&amp;sConsultantID=58</PluginSrc>
+			</CiMenu>
+			<CiMenu>
+				<MenuName>Suresh</MenuName>
+				<PluginSrc>Appointmentlist.pux&amp;sFutureAppointment=false&amp;sConsultantID=59</PluginSrc>
+			</CiMenu>
+			<CiMenu>
+				<MenuName>Michelle</MenuName>
+				<PluginSrc>Appointmentlist.pux&amp;sFutureAppointment=false&amp;sConsultantID=60</PluginSrc>
+			</CiMenu>
+		</CiMenu>
 		<CiMenu>
 			<MenuName>Patients</MenuName>
 			<PluginSrc>Couple.pux</PluginSrc>
 		</CiMenu>
-        <CiMenu>
-            <MenuName>Inventory</MenuName>
-            <CiMenu>
-                <MenuName>Charge Item Master</MenuName>
-                <PluginSrc>ChargeItemMaster.pux</PluginSrc>
-            </CiMenu>
-            <CiMenu>
-                <MenuName>Stock Adjustment</MenuName>
-                <PluginSrc>StockAdjustment.pux</PluginSrc>
-            </CiMenu>
-            <CiMenu>
-                <MenuName>Good Received Note</MenuName>
-                <PluginSrc>GoodReceivedNote.pux</PluginSrc>
-            </CiMenu>
-        </CiMenu>
-	</CiMenu>
+    <CiMenu>
+      <MenuName>Inventory</MenuName>
+      <CiMenu>
+        <MenuName>Charge Item Master</MenuName>
+        <PluginSrc>ChargeItemMaster.pux</PluginSrc>
+      </CiMenu>
+      <CiMenu>
+        <MenuName>Stock Adjustment</MenuName>
+        <PluginSrc>StockAdjustment.pux</PluginSrc>
+      </CiMenu>
+      <CiMenu>
+        <MenuName>Good Received Note</MenuName>
+        <PluginSrc>GoodReceivedNote.pux</PluginSrc>
+      </CiMenu>
+    </CiMenu>
+  </CiMenu>
 	<LoginMacro>
 		<ActionSQL>exec spUser_Login @CI_UserEmail</ActionSQL>
 	</LoginMacro>

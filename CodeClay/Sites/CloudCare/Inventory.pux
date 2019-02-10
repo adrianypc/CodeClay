@@ -53,13 +53,8 @@
     <Editable>false</Editable>
   </CiNumericField>
   <CiNumericField>
-    <FieldName>QtyUnderReceived</FieldName>
-    <Caption>Qty Under Received</Caption>
-    <Editable>false</Editable>
-  </CiNumericField>
-  <CiNumericField>
-    <FieldName>QtyOverReceived</FieldName>
-    <Caption>Qty Over Received</Caption>
+    <FieldName>QuantityRefunded</FieldName>
+    <Caption>Quantity Refunded</Caption>
     <Editable>false</Editable>
   </CiNumericField>
   <CiDateField>
@@ -76,16 +71,15 @@
         0 as QuantityOrdered,
         0 as QuantityAllocated,
         0 as QuantityAvailable,
-        0 as QtyUnderReceived,
-        0 as QtyOverReceived
+        0 as QuantityRefunded
     </ActionSQL>
 	</DefaultMacro>
 	<SelectMacro>
 	  <ActionSQL>?exec spInventory_sel @ProductID,@BranchCode</ActionSQL>
 	</SelectMacro>
- <InsertMacro>
+	<InsertMacro>
 	<ActionSQL>
-      ?exec spInventory_upd
+       ?exec spInventory_upd 
         -1,
         @ProductID,
         @BranchCode,
@@ -94,14 +88,13 @@
         @QuantityOrdered,
         @QuantityAllocated,
         @QuantityAvailable,
-        @QtyUnderReceived,
-        @QtyOverReceived,
+        @QuantityRefunded,
         @ExpiryDate
-    </ActionSQL>
- </InsertMacro>
- <UpdateMacro>
-   <ActionSQL>
-    ?exec spInventory_upd
+	  </ActionSQL>
+	</InsertMacro>
+  <UpdateMacro>
+	  <ActionSQL>
+      ?exec spInventory_upd
         @InventoryItemNo,
         @ProductID,
         @BranchCode,
@@ -110,8 +103,7 @@
         @QuantityOrdered,
         @QuantityAllocated,
         @QuantityAvailable,
-        @QtyUnderReceived,
-        @QtyOverReceived,
+        @QuantityRefunded,
         @ExpiryDate
     </ActionSQL>
     <VisibleSQL>select 1 from Inventory where InventoryItemNo = @InventoryItemNo</VisibleSQL>

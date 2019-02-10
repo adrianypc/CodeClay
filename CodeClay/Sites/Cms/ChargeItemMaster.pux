@@ -162,6 +162,11 @@
     <Editable lang="sql">select 1 from tblSingleton where @StockItem = 1</Editable>
   </CiTextField>
   <CiTextField>
+        <FieldName>RouteName</FieldName>
+        <Caption>Route</Caption>
+        <Editable lang="sql">select 1 from tblSingleton where @StockItem = 1</Editable>
+  </CiTextField>
+  <CiTextField>
     <FieldName>CIQuantity</FieldName>
     <Caption>Qty. on Hand</Caption>
     <Editable>false</Editable>
@@ -250,7 +255,8 @@
 	    @ValueOnHand,
 	    @ReserveQuantity,
 	    @CIGRNQuantity,
-	    @IsPackageItem
+	    @IsPackageItem,
+        @RouteName
     </ActionSQL>
   </InsertMacro>
   <UpdateMacro>
@@ -284,7 +290,8 @@
 	    @ValueOnHand,
 	    @ReserveQuantity,
 	    @CIGRNQuantity,
-	    @IsPackageItem
+	    @IsPackageItem,
+        @RouteName
    </ActionSQL>
   </UpdateMacro>
 </CiTable>

@@ -484,20 +484,14 @@ function dxPopupMenu_ItemClick(sender, event) {
 	var dxPopupMenu = sender;
 	var menuItem = event.item;
 
-    if (dxPopupMenu && menuItem) {
-        var command = menuItem.name;
+	if (dxPopupMenu && menuItem) {
 		var tableName = dxPopupMenu.cpTableName;
 		var dxClickMenuPanel = clickMenuPanels[tableName];
-        var dxLoadingPanel = loadingPanels[tableName];
-        var dxTable = tables[tableName];
-
-        if (dxTable) {
-            dxTable.Command = command;
-        }
+		var dxLoadingPanel = loadingPanels[tableName];
 
 		if (dxClickMenuPanel) {
 			dxClickMenuPanel.Grid = dxPopupMenu.Grid;
-			dxClickMenuPanel.PerformCallback(command);
+			dxClickMenuPanel.PerformCallback(menuItem.name);
 		}
 
 		if (dxLoadingPanel) {
