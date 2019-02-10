@@ -52,6 +52,7 @@
                 <dx:CardViewToolbarItem Name="More" Text="More">
                     <Items>
                         <dx:CardViewToolbarItem Name="Inspect" Text="Inspect" />
+                        <dx:CardViewToolbarItem Name="DownloadPUX" Text="Download PUX" Command="Custom" Target="_blank" />
                     </Items>
                 </dx:CardViewToolbarItem>
                 <dx:CardViewToolbarItem Name="Divider" Text="" Enabled="false" ItemStyle-Width="100%" />
@@ -95,6 +96,7 @@
                     <Items>
                         <dx:CardViewToolbarItem Name="Inspect" Text="Inspect" />
                         <dx:CardViewToolbarItem Name="ExportToPdf" Command="ExportToPdf" />
+                        <dx:CardViewToolbarItem Name="DownloadPUX" Text="Download PUX" Command="Custom" Target="_blank" />
                     </Items>
                 </dx:CardViewToolbarItem>
                 <dx:CardViewToolbarItem Name="Divider" Text="" Enabled="false" ItemStyle-Width="100%" />
@@ -160,6 +162,7 @@
                     <Items>
                         <dx:GridViewToolbarItem Name="Inspect" Text="Inspect" />
                         <dx:GridViewToolbarItem Name="ExportToPdf" Command="ExportToPdf" />
+                        <dx:GridViewToolbarItem Name="DownloadPUX" Text="Download PUX" Command="Custom" Target="_blank" />
                     </Items>
                 </dx:GridViewToolbarItem>
                 <dx:GridViewToolbarItem Name="Divider" Text="" Enabled="false"  ItemStyle-Width="100%" />

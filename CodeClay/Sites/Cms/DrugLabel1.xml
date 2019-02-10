@@ -1,0 +1,92 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<XtraReportsLayoutSerializer SerializerVersion="18.1.5.0" Ref="1" ControlType="DevExpress.XtraReports.UI.XtraReport, DevExpress.XtraReports.v18.1, Version=18.1.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" Name="XtraReport" SnapGridSize="9.45" ReportUnit="Pixels" Margins="42, 42, 0, 0" PaperKind="Custom" PageWidth="427" PageHeight="1153" Version="18.1" DataSource="#Ref-0" Dpi="96">
+  <Extensions>
+    <Item1 Ref="2" Key="DataSerializationExtension" Value="DataSetSerializer" />
+  </Extensions>
+  <Bands>
+    <Item1 Ref="3" ControlType="TopMarginBand" Name="TopMargin1" HeightF="0" Dpi="96" Visible="false" />
+    <Item2 Ref="4" ControlType="DetailBand" Name="Detail" HeightF="185" Dpi="96">
+      <Controls>
+        <Item1 Ref="5" ControlType="XRPanel" Name="panel1" CanGrow="false" SizeF="336,170" LocationFloat="0, 0" Dpi="96" Borders="None">
+          <Controls>
+            <Item1 Ref="6" ControlType="XRLabel" Name="label11" Multiline="true" Text="label11" TextAlignment="MiddleLeft" SizeF="333.4,15" LocationFloat="2, 136" Dpi="96" Padding="2,2,0,0,96">
+              <ExpressionBindings>
+                <Item1 Ref="7" Expression="[ReportFields.Quantity]" PropertyName="Text" EventName="BeforePrint" />
+              </ExpressionBindings>
+              <StylePriority Ref="8" UseTextAlignment="false" />
+            </Item1>
+            <Item2 Ref="9" ControlType="XRLabel" Name="label10" Multiline="true" Text="label10" TextAlignment="MiddleLeft" SizeF="333.04,15" LocationFloat="2, 121" Dpi="96" Padding="2,2,0,0,96">
+              <ExpressionBindings>
+                <Item1 Ref="10" Expression="[ReportFields.IssuedDate]" PropertyName="Text" EventName="BeforePrint" />
+              </ExpressionBindings>
+              <StylePriority Ref="11" UseTextAlignment="false" />
+            </Item2>
+            <Item3 Ref="12" ControlType="XRLabel" Name="label9" Multiline="true" Text="label9" TextAlignment="MiddleLeft" SizeF="333.4,15" LocationFloat="2, 106" Dpi="96" Padding="2,2,0,0,96">
+              <ExpressionBindings>
+                <Item1 Ref="13" Expression="[ReportFields.Expiry]" PropertyName="Text" EventName="BeforePrint" />
+              </ExpressionBindings>
+              <StylePriority Ref="14" UseTextAlignment="false" />
+            </Item3>
+            <Item4 Ref="15" ControlType="XRLabel" Name="label8" CanGrow="false" Text="label8" TextAlignment="MiddleLeft" WordWrap="false" SizeF="219.01,15" LocationFloat="116, 91" Dpi="96" Padding="2,2,0,0,96">
+              <ExpressionBindings>
+                <Item1 Ref="16" Expression="[ReportFields.ItemDescription]" PropertyName="Text" EventName="BeforePrint" />
+              </ExpressionBindings>
+              <StylePriority Ref="17" UseTextAlignment="false" />
+            </Item4>
+            <Item5 Ref="18" ControlType="XRLabel" Name="label7" Multiline="true" CanGrow="false" Text="label7" TextAlignment="MiddleLeft" SizeF="113,15" LocationFloat="2, 91" Dpi="96" Padding="2,2,0,0,96">
+              <ExpressionBindings>
+                <Item1 Ref="19" Expression="[ReportFields.DispenseInstruction]" PropertyName="Text" EventName="BeforePrint" />
+              </ExpressionBindings>
+              <StylePriority Ref="20" UseTextAlignment="false" />
+            </Item5>
+            <Item6 Ref="21" ControlType="XRLabel" Name="label6" Multiline="true" Text="label6" TextAlignment="MiddleLeft" SizeF="333.04,15" LocationFloat="1, 76" Dpi="96" Padding="2,2,0,0,96">
+              <ExpressionBindings>
+                <Item1 Ref="22" Expression="[ReportFields.RouteName]" PropertyName="Text" EventName="BeforePrint" />
+              </ExpressionBindings>
+              <StylePriority Ref="23" UseTextAlignment="false" />
+            </Item6>
+            <Item7 Ref="24" ControlType="XRLabel" Name="label5" Multiline="true" Text="label5" TextAlignment="MiddleLeft" SizeF="333.04,15" LocationFloat="1, 61" Dpi="96" Padding="2,2,0,0,96">
+              <ExpressionBindings>
+                <Item1 Ref="25" Expression="[ReportFields.ClientNo]" PropertyName="Text" EventName="BeforePrint" />
+              </ExpressionBindings>
+              <StylePriority Ref="26" UseTextAlignment="false" />
+            </Item7>
+            <Item8 Ref="27" ControlType="XRLabel" Name="label4" Multiline="true" Text="label4" TextAlignment="MiddleLeft" SizeF="333.04,15" LocationFloat="1, 46" Dpi="96" Padding="2,2,0,0,96">
+              <ExpressionBindings>
+                <Item1 Ref="28" Expression="[ReportFields.ClientName]" PropertyName="Text" EventName="BeforePrint" />
+              </ExpressionBindings>
+              <StylePriority Ref="29" UseTextAlignment="false" />
+            </Item8>
+            <Item9 Ref="30" ControlType="XRLabel" Name="label3" Multiline="true" Text="label3" SizeF="333.04,15" LocationFloat="1, 31" Dpi="96" Padding="2,2,0,0,96">
+              <ExpressionBindings>
+                <Item1 Ref="31" Expression="[ReportFields.CompanyAddress2]" PropertyName="Text" EventName="BeforePrint" />
+              </ExpressionBindings>
+            </Item9>
+            <Item10 Ref="32" ControlType="XRLabel" Name="label2" Multiline="true" Text="label2" SizeF="334.04,15" LocationFloat="1, 15" Dpi="96" Padding="2,2,0,0,96">
+              <ExpressionBindings>
+                <Item1 Ref="33" Expression="[ReportFields.CompanyAddress1]" PropertyName="Text" EventName="BeforePrint" />
+              </ExpressionBindings>
+            </Item10>
+            <Item11 Ref="34" ControlType="XRLabel" Name="label1" Multiline="true" Text="label1" SizeF="335.04,15" LocationFloat="0, 0" Dpi="96" Padding="2,2,0,0,96">
+              <ExpressionBindings>
+                <Item1 Ref="35" Expression="[ReportFields.CompanyName]" PropertyName="Text" EventName="BeforePrint" />
+              </ExpressionBindings>
+            </Item11>
+          </Controls>
+          <StylePriority Ref="36" UseBorders="false" />
+        </Item1>
+      </Controls>
+    </Item2>
+    <Item3 Ref="37" ControlType="BottomMarginBand" Name="BottomMargin1" HeightF="0" Dpi="96" Visible="false" />
+  </Bands>
+  <StyleSheet>
+    <Item1 Ref="38" Name="Title" BorderStyle="Inset" Font="Times New Roman, 20pt, style=Bold" ForeColor="Maroon" BackColor="Transparent" BorderColor="Black" Sides="None" StringFormat="Near;Near;0;None;Character;Default" BorderWidthSerializable="1" />
+    <Item2 Ref="39" Name="FieldCaption" BorderStyle="Inset" Font="Arial, 10pt, style=Bold" ForeColor="Maroon" BackColor="Transparent" BorderColor="Black" Sides="None" StringFormat="Near;Near;0;None;Character;Default" BorderWidthSerializable="1" />
+    <Item3 Ref="40" Name="PageInfo" BorderStyle="Inset" Font="Times New Roman, 10pt, style=Bold" ForeColor="Black" BackColor="Transparent" BorderColor="Black" Sides="None" StringFormat="Near;Near;0;None;Character;Default" BorderWidthSerializable="1" />
+    <Item4 Ref="41" Name="DataField" BorderStyle="Inset" Padding="0,0,0,0,254" Font="Times New Roman, 10pt" ForeColor="Black" BackColor="Transparent" BorderColor="Black" Sides="None" StringFormat="Near;Near;0;None;Character;Default" BorderWidthSerializable="1" />
+  </StyleSheet>
+  <ReportPrintOptions Ref="42" DetailCount="6" DetailCountOnEmptyDataSource="0" />
+  <ObjectStorage>
+    <Item1 ObjectType="DevExpress.XtraReports.Serialization.ObjectStorageInfo, DevExpress.XtraReports.v18.1" Ref="0" Content="&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-16&quot;?&gt;&lt;NewDataSet&gt;&lt;xs:schema id=&quot;NewDataSet&quot; xmlns=&quot;&quot; xmlns:xs=&quot;http://www.w3.org/2001/XMLSchema&quot; xmlns:msdata=&quot;urn:schemas-microsoft-com:xml-msdata&quot;&gt;&lt;xs:element name=&quot;NewDataSet&quot; msdata:IsDataSet=&quot;true&quot; msdata:UseCurrentLocale=&quot;true&quot;&gt;&lt;xs:complexType&gt;&lt;xs:choice minOccurs=&quot;0&quot; maxOccurs=&quot;unbounded&quot;&gt;&lt;xs:element name=&quot;ReportFields&quot;&gt;&lt;xs:complexType&gt;&lt;xs:sequence&gt;&lt;xs:element name=&quot;CompanyName&quot; type=&quot;xs:string&quot; minOccurs=&quot;0&quot; /&gt;&lt;xs:element name=&quot;CompanyAddress1&quot; type=&quot;xs:string&quot; minOccurs=&quot;0&quot; /&gt;&lt;xs:element name=&quot;CompanyAddress2&quot; type=&quot;xs:string&quot; minOccurs=&quot;0&quot; /&gt;&lt;xs:element name=&quot;ClientName&quot; type=&quot;xs:string&quot; minOccurs=&quot;0&quot; /&gt;&lt;xs:element name=&quot;ClientNo&quot; type=&quot;xs:string&quot; minOccurs=&quot;0&quot; /&gt;&lt;xs:element name=&quot;RouteName&quot; type=&quot;xs:string&quot; minOccurs=&quot;0&quot; /&gt;&lt;xs:element name=&quot;ItemDescription&quot; type=&quot;xs:string&quot; minOccurs=&quot;0&quot; /&gt;&lt;xs:element name=&quot;DispenseInstruction&quot; type=&quot;xs:string&quot; minOccurs=&quot;0&quot; /&gt;&lt;xs:element name=&quot;Expiry&quot; type=&quot;xs:string&quot; minOccurs=&quot;0&quot; /&gt;&lt;xs:element name=&quot;IssuedDate&quot; type=&quot;xs:string&quot; minOccurs=&quot;0&quot; /&gt;&lt;xs:element name=&quot;Quantity&quot; type=&quot;xs:string&quot; minOccurs=&quot;0&quot; /&gt;&lt;/xs:sequence&gt;&lt;/xs:complexType&gt;&lt;/xs:element&gt;&lt;/xs:choice&gt;&lt;/xs:complexType&gt;&lt;/xs:element&gt;&lt;/xs:schema&gt;&lt;ReportFields&gt;&lt;CompanyName&gt;Advanced Centre for Reproductive Medicine Pte Ltd&lt;/CompanyName&gt;&lt;CompanyAddress1&gt;6A Napier Road #05-35 Gleneagles Hospital Annexe Block&lt;/CompanyAddress1&gt;&lt;CompanyAddress2&gt;Singapore 258500 Tel: 64743900&lt;/CompanyAddress2&gt;&lt;ClientName&gt;Name: TAN, MING LEE&lt;/ClientName&gt;&lt;ClientNo&gt;Patient No: HR047399&lt;/ClientNo&gt;&lt;RouteName&gt;Route: Small Injection&lt;/RouteName&gt;&lt;ItemDescription&gt;CETROTIDE 250MG&lt;/ItemDescription&gt;&lt;DispenseInstruction&gt;To Take / 1XDaily&lt;/DispenseInstruction&gt;&lt;Expiry&gt;Exp: 07/01/2020&lt;/Expiry&gt;&lt;IssuedDate&gt;Date: 16/01/2019&lt;/IssuedDate&gt;&lt;Quantity&gt;Quantity: 1  AMP&lt;/Quantity&gt;&lt;/ReportFields&gt;&lt;ReportFields&gt;&lt;CompanyName&gt;Advanced Centre for Reproductive Medicine Pte Ltd&lt;/CompanyName&gt;&lt;CompanyAddress1&gt;6A Napier Road #05-35 Gleneagles Hospital Annexe Block&lt;/CompanyAddress1&gt;&lt;CompanyAddress2&gt;Singapore 258500 Tel: 64743900&lt;/CompanyAddress2&gt;&lt;ClientName&gt;Name: TAN, MING LEE&lt;/ClientName&gt;&lt;ClientNo&gt;Patient No: HR047399&lt;/ClientNo&gt;&lt;RouteName&gt;Route: &lt;/RouteName&gt;&lt;ItemDescription&gt;GONAL F PEN 450IU&lt;/ItemDescription&gt;&lt;DispenseInstruction&gt;To Take / 1XDaily&lt;/DispenseInstruction&gt;&lt;Expiry&gt;Exp: 31/01/2019&lt;/Expiry&gt;&lt;IssuedDate&gt;Date: 16/01/2019&lt;/IssuedDate&gt;&lt;Quantity&gt;Quantity: 1  CARTRIDGE&lt;/Quantity&gt;&lt;/ReportFields&gt;&lt;ReportFields&gt;&lt;CompanyName&gt;Advanced Centre for Reproductive Medicine Pte Ltd&lt;/CompanyName&gt;&lt;CompanyAddress1&gt;6A Napier Road #05-35 Gleneagles Hospital Annexe Block&lt;/CompanyAddress1&gt;&lt;CompanyAddress2&gt;Singapore 258500 Tel: 64743900&lt;/CompanyAddress2&gt;&lt;ClientName&gt;Name: TAN, MING LEE&lt;/ClientName&gt;&lt;ClientNo&gt;Patient No: HR047399&lt;/ClientNo&gt;&lt;RouteName&gt;Route: &lt;/RouteName&gt;&lt;ItemDescription&gt;PROLACTA WITH DHA CAPSULES (60TABS)&lt;/ItemDescription&gt;&lt;DispenseInstruction&gt;To Take / 1XDaily&lt;/DispenseInstruction&gt;&lt;Expiry&gt;Exp: 28/02/2019&lt;/Expiry&gt;&lt;IssuedDate&gt;Date: 16/01/2019&lt;/IssuedDate&gt;&lt;Quantity&gt;Quantity: 1  BOX&lt;/Quantity&gt;&lt;/ReportFields&gt;&lt;ReportFields&gt;&lt;CompanyName&gt;Advanced Centre for Reproductive Medicine Pte Ltd&lt;/CompanyName&gt;&lt;CompanyAddress1&gt;6A Napier Road #05-35 Gleneagles Hospital Annexe Block&lt;/CompanyAddress1&gt;&lt;CompanyAddress2&gt;Singapore 258500 Tel: 64743900&lt;/CompanyAddress2&gt;&lt;ClientName&gt;Name: TAN, MING LEE&lt;/ClientName&gt;&lt;ClientNo&gt;Patient No: HR047399&lt;/ClientNo&gt;&lt;RouteName&gt;Route: &lt;/RouteName&gt;&lt;ItemDescription&gt;PROTEXIN BIO-KULT&lt;/ItemDescription&gt;&lt;DispenseInstruction&gt;To Take / 2XDaily&lt;/DispenseInstruction&gt;&lt;Expiry&gt;Exp: 26/04/2019&lt;/Expiry&gt;&lt;IssuedDate&gt;Date: 16/01/2019&lt;/IssuedDate&gt;&lt;Quantity&gt;Quantity: 1  BOX&lt;/Quantity&gt;&lt;/ReportFields&gt;&lt;ReportFields&gt;&lt;CompanyName&gt;Advanced Centre for Reproductive Medicine Pte Ltd&lt;/CompanyName&gt;&lt;CompanyAddress1&gt;6A Napier Road #05-35 Gleneagles Hospital Annexe Block&lt;/CompanyAddress1&gt;&lt;CompanyAddress2&gt;Singapore 258500 Tel: 64743900&lt;/CompanyAddress2&gt;&lt;ClientName&gt;Name: TAN, MING LEE&lt;/ClientName&gt;&lt;ClientNo&gt;Patient No: HR047399&lt;/ClientNo&gt;&lt;RouteName&gt;Route: &lt;/RouteName&gt;&lt;ItemDescription&gt;PROLACTA WITH DHA CAPSULES (60TABS)&lt;/ItemDescription&gt;&lt;DispenseInstruction&gt;To Take / 2XDaily&lt;/DispenseInstruction&gt;&lt;Expiry&gt;Exp: 31/08/2019&lt;/Expiry&gt;&lt;IssuedDate&gt;Date: 16/01/2019&lt;/IssuedDate&gt;&lt;Quantity&gt;Quantity: 1  BOX&lt;/Quantity&gt;&lt;/ReportFields&gt;&lt;ReportFields&gt;&lt;CompanyName&gt;Advanced Centre for Reproductive Medicine Pte Ltd&lt;/CompanyName&gt;&lt;CompanyAddress1&gt;6A Napier Road #05-35 Gleneagles Hospital Annexe Block&lt;/CompanyAddress1&gt;&lt;CompanyAddress2&gt;Singapore 258500 Tel: 64743900&lt;/CompanyAddress2&gt;&lt;ClientName&gt;Name: TAN, MING LEE&lt;/ClientName&gt;&lt;ClientNo&gt;Patient No: HR047399&lt;/ClientNo&gt;&lt;RouteName&gt;Route: &lt;/RouteName&gt;&lt;ItemDescription&gt;PROGYLUTON&lt;/ItemDescription&gt;&lt;DispenseInstruction&gt;To Take / 1XDaily&lt;/DispenseInstruction&gt;&lt;Expiry&gt;Exp: 31/01/2021&lt;/Expiry&gt;&lt;IssuedDate&gt;Date: 16/01/2019&lt;/IssuedDate&gt;&lt;Quantity&gt;Quantity: 1  PKT&lt;/Quantity&gt;&lt;/ReportFields&gt;&lt;/NewDataSet&gt;" Type="System.Data.DataSet" />
+  </ObjectStorage>
+</XtraReportsLayoutSerializer>

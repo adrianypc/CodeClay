@@ -70,8 +70,8 @@ namespace CodeClay
                     application = UiApplication.Me.CiApplication.AppName;
                 }
 
-                return MyUtils.Coalesce(application,
-                    QueryString["Application"],
+                return MyUtils.Coalesce(QueryString["Application"],
+                    application,
                     "CPanel");
             }
         }

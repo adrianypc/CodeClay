@@ -278,6 +278,7 @@ namespace CodeClay
                     }
                 }
 
+                PuxFile = ciPlugin.PuxFile;
                 CiPlugins = ciPlugin.CiPlugins;
             }
         }

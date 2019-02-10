@@ -9,16 +9,19 @@
     <FieldName>sClientNo</FieldName>
     <Caption>Patient No</Caption>
     <Searchable>true</Searchable>
-  </CiTextField>
-  <CiTextField>
-    <FieldName>sFirstName</FieldName>
-    <Caption>First Name</Caption>
-    <Searchable>true</Searchable>
+    <Browsable>false</Browsable>
   </CiTextField>
   <CiTextField>
     <FieldName>sLastName</FieldName>
-    <Caption>Last Name</Caption>
+    <Caption>Surname</Caption>
     <Searchable>true</Searchable>
+      <Browsable>false</Browsable>
+  </CiTextField>
+  <CiTextField>
+        <FieldName>sFirstName</FieldName>
+        <Caption>Other Names</Caption>
+        <Searchable>true</Searchable>
+      <Browsable>false</Browsable>
   </CiTextField>
   <CiComboField>
     <FieldName>sConsultantNo</FieldName>
@@ -27,12 +30,14 @@
     <Code>ConsultantId</Code>
     <Description>ConsultantName</Description>
     <DropdownSQL>select ConsultantOtherNames+' '+ConsultantSurname as ConsultantName,ConsultantId from Consultant where ConsultantEnabled = 'Y'</DropdownSQL>
+      <Browsable>false</Browsable>
   </CiComboField>
   <CiDateField>
     <FieldName>sAppointmentDate</FieldName>
     <Caption>Appointment Date</Caption>
     <Searchable>true</Searchable>
     <ColumnFormat>dd/MM/yyyy</ColumnFormat>
+      <Browsable>false</Browsable>
   </CiDateField>
   <CiField>
     <Value>

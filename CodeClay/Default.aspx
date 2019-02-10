@@ -29,6 +29,11 @@
     		}
     	}
 
+    	function dxPopup_Closing(sender, event) {
+    		if (dxPopup.IsVisible()) {
+    		}
+    	}
+
     	function iframe_ContentLoaded(event) {
     		dxLoadingPanel.Hide();
     	}
@@ -78,6 +83,7 @@
         Height="800" Width="1200">
         <ClientSideEvents Init="dxPopup_Init" />
         <ClientSideEvents Shown="dxPopup_Shown" />
+        <ClientSideEvents Closing="dxPopup_Closing" />
     </dx:ASPxPopupControl>
 
 </asp:Content>

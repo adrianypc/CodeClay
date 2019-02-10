@@ -1373,7 +1373,13 @@ namespace CodeClay
                 // Setup standard toolbar buttons
                 foreach (CardViewToolbarItem button in toolbar.Items)
                 {
-                    button.Visible = macroNames.IndexOf(button.Name) >= 0;
+                    string buttonName = button.Name;
+                    button.Visible = macroNames.IndexOf(buttonName) >= 0;
+
+                    if (buttonName == "More")
+                    {
+                        BuildMoreMenu(button);
+                    }
                 }
 
                 // Setup custom toolbar buttons
@@ -1406,7 +1412,13 @@ namespace CodeClay
                 // Setup standard toolbar buttons
                 foreach (GridViewToolbarItem button in toolbar.Items)
                 {
-                    button.Visible = macroNames.IndexOf(button.Name) >= 0;
+                    string buttonName = button.Name;
+                    button.Visible = macroNames.IndexOf(buttonName) >= 0;
+
+                    if (buttonName == "More")
+                    {
+                        BuildMoreMenu(button);
+                    }
                 }
 
 				// Setup custom toolbar buttons
@@ -1427,6 +1439,18 @@ namespace CodeClay
 					}
 				}
 			}
+        }
+
+        private void BuildMoreMenu(DevExpress.Web.MenuItem dxMoreMenu)
+        {
+            if (dxMoreMenu != null)
+            {
+                DevExpress.Web.MenuItem dxDownloadPUX = dxMoreMenu.Items.FindByName("DownloadPUX");
+                if (dxDownloadPUX != null)
+                {
+                    dxDownloadPUX.NavigateUrl = MyWebUtils.ApplicationFolder + @"\" + CiTable.PuxFile;
+                }
+            }
         }
 
         private string RunDefaultMacro(DevExpress.Web.Data.ASPxDataInitNewRowEventArgs e)
@@ -1665,11 +1689,9 @@ namespace CodeClay
                     {
                         if (ciMacro != null)
                         {
-                            int numberOfSqlParameters = ciMacro.GetMissingMacroParameters(drParams).Count;
-                            bool visibleForRecord = RecordsExist && ciMacro.IsVisible(drParams);
                             string macroName = ciMacro.MacroName;
 
-                            if ((numberOfSqlParameters > 0 && !visibleForRecord) || isParentOrChildEditing)
+                            if (!ciMacro.IsVisible(drParams)|| isParentOrChildEditing || !RecordsExist)
                             {
                                 disabledMacros += LIST_SEPARATOR + macroName;
                             }
