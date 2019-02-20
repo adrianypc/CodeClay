@@ -131,13 +131,16 @@ namespace CodeClay
                     }
                 }
 
-                dxComboBox.ValueField = MyUtils.IsEmpty(valueField)
-                    ? dxComboBox.Columns[0].FieldName
-                    : valueField;
+                if (dxComboBox.Columns.Count > 0)
+                {
+                    dxComboBox.ValueField = MyUtils.IsEmpty(valueField)
+                        ? dxComboBox.Columns[0].FieldName
+                        : valueField;
 
-                dxComboBox.TextField = MyUtils.IsEmpty(textField)
-                    ? dxComboBox.Columns[0].FieldName
-                    : textField;
+                    dxComboBox.TextField = MyUtils.IsEmpty(textField)
+                        ? dxComboBox.Columns[0].FieldName
+                        : textField;
+                }
             }
 
             // Select item in combobox, and cast from NON-STRING to STRING

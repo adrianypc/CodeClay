@@ -1691,7 +1691,7 @@ namespace CodeClay
                         {
                             string macroName = ciMacro.MacroName;
 
-                            if (!ciMacro.IsVisible(drParams)|| isParentOrChildEditing || !RecordsExist)
+                            if (!ciMacro.IsVisible(drParams)|| isParentOrChildEditing || (IsCardView && !RecordsExist))
                             {
                                 disabledMacros += LIST_SEPARATOR + macroName;
                             }

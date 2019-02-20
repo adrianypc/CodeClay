@@ -20,6 +20,7 @@
     <Editable>false</Editable>
   </CiLinkField>
   <CiTable Src="ApplicationUserList.pux" />
+  <CiTable Src="ScreenList.pux" />
   <SelectMacro>
     <ActionSQL>?exec spApplication_sel @AppID, @CI_UserEmail</ActionSQL>
   </SelectMacro>

@@ -1,0 +1,74 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<CiTable>
+	<TableName>ScreenList</TableName>
+	<TableCaption>Screen List</TableCaption>
+	<DefaultView>Grid</DefaultView>
+  <RowKey>AppID,ScreenID</RowKey>
+  <CiField>
+    <FieldName>AppID</FieldName>
+    <Caption>App ID</Caption>
+    <Hidden>true</Hidden>
+  </CiField>
+  <CiField>
+    <FieldName>AppID</FieldName>
+    <Caption>App ID</Caption>
+    <Hidden>true</Hidden>
+  </CiField>
+  <CiField>
+    <FieldName>AppName</FieldName>
+    <Caption>App Name</Caption>
+    <Hidden>true</Hidden>
+  </CiField>
+  <CiTextField>
+    <FieldName>ScreenID</FieldName>
+    <Caption>Screen ID</Caption>
+    <Editable>false</Editable>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>ScreenName</FieldName>
+    <Caption>Screen Name</Caption>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>Caption</FieldName>
+    <Caption>Caption</Caption>
+  </CiTextField>
+  <CiComboField>
+    <FieldName>DefaultView</FieldName>
+    <Caption>Default View</Caption>
+    <DropdownSQL>select Code from Dropdown where Category = 'View'</DropdownSQL>
+  </CiComboField>
+  <CiLinkField>
+    <FieldName>ScreenUrl</FieldName>
+    <Caption>Screen Url</Caption>
+    <Editable>false</Editable>
+  </CiLinkField>
+  <CiFieldExitMacro>
+    <FieldName>ScreenName</FieldName>
+    <ActionSQL>select 'Default.aspx?Application=' + @AppName + '&amp;PluginSrc=' + @ScreenName + '.pux' as ScreenUrl</ActionSQL>
+  </CiFieldExitMacro>
+  <DefaultMacro>
+    <ActionSQL>
+      select  '- New -' as ScreenID
+    </ActionSQL>
+  </DefaultMacro>
+  <SelectMacro>
+    <ActionSQL>?exec spScreen_sel @AppID, null</ActionSQL>
+  </SelectMacro>
+  <InsertMacro>
+    <ActionSQL>?exec spScreen_ins @AppID, @ScreenName, @Caption, @DefaultView</ActionSQL>
+  </InsertMacro>
+  <UpdateMacro>
+    <ActionSQL>exec spScreen_updShort @AppID, @ScreenID, @ScreenName, @Caption, @DefaultView</ActionSQL>
+  </UpdateMacro>
+  <CiMacro>
+    <MacroName>Details</MacroName>
+    <Caption>Details</Caption>
+    <Toolbar>true</Toolbar>
+    <ActionSQL>
+      select  @AppID as AppID,
+              @ScreenID as ScreenID
+    </ActionSQL>
+    <NavigateUrl>ScreenDetails.pux</NavigateUrl>
+    <NavigatePos>NewTab</NavigatePos>
+  </CiMacro>
+</CiTable>

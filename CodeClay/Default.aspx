@@ -30,7 +30,8 @@
     	}
 
     	function dxPopup_Closing(sender, event) {
-    		if (dxPopup.IsVisible()) {
+            if (dxPopup.IsVisible() && rootTable) {
+                rootTable.Refresh();
     		}
     	}
 

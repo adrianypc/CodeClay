@@ -626,7 +626,7 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="SavedFiles\" />
-    <Folder Include="Sites\" />
+    <Folder Include="Sites\TaskTracker\" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201511231154443_Initial.resx">

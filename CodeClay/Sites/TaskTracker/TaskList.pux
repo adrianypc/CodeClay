@@ -1,0 +1,55 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<CiTable>
+	<TableName>TaskList</TableName>
+	<TableCaption>Task List</TableCaption>
+	<DefaultView>Grid</DefaultView>
+  <RowKey>TaskID</RowKey>
+  <CiField>
+    <FieldName>TaskID</FieldName>
+    <Caption>Task ID</Caption>
+  </CiField>
+  <CiTextField>
+    <FieldName>TaskDescription</FieldName>
+    <Caption>Task Description</Caption>
+  </CiTextField>
+  <CiComboField>
+    <FieldName>Status</FieldName>
+    <Caption>Status</Caption>
+    <DropdownSQL>select Description from Dropdown where Category = 'Status' order by Code</DropdownSQL>
+  </CiComboField>
+  <SelectMacro>
+    <ActionSQL>
+      select  TaskID,
+              TaskDescription,
+              Status
+      from    Tasks
+      order by TaskID
+    </ActionSQL>
+  </SelectMacro>
+  <InsertMacro>
+    <ActionSQL>select isnull(max(TaskID), 0) + 1 as TaskID from Tasks</ActionSQL>
+    <ActionSQL>
+      insert into Tasks
+      ( TaskID,
+        TaskDescription,
+        ActionBy,
+        Status
+      )
+      values
+      ( @TaskID,
+        @TaskDescription,
+        @ActionBy,
+        @Status
+      )
+    </ActionSQL>
+  </InsertMacro>
+  <UpdateMacro>
+    <ActionSQL>
+      update Tasks
+      set     TaskDescription = @TaskDescription,
+              ActionBy = @ActionBy,
+              Status = @Status
+      where   TaskID = @TaskID
+    </ActionSQL>
+  </UpdateMacro>
+</CiTable>
