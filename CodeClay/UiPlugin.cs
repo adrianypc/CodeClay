@@ -24,6 +24,7 @@ namespace CodeClay
         // --------------------------------------------------------------------------------------------------
 
         public const string LIST_SEPARATOR = "|";
+        public const string PARAMETER_PREFIX = "P_";
 
         // --------------------------------------------------------------------------------------------------
         // Member variables
@@ -529,7 +530,7 @@ namespace CodeClay
                     }
                 }
 
-                if (rowIndex == -1)
+                if (rowIndex < 0)
                 {
                     rowIndex = GetFocusedIndex();
                 }
@@ -554,7 +555,8 @@ namespace CodeClay
                     return serverValue;
                 }
 
-                object queryStringValue = MyWebUtils.QueryString[key];
+                string prefix = CiPlugin.PARAMETER_PREFIX;
+                object queryStringValue = MyWebUtils.QueryString[key.StartsWith(prefix) ? key.Substring(prefix.Length) : key];
 
                 if (!MyUtils.IsEmpty(queryStringValue))
                 {

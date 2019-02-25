@@ -6,87 +6,83 @@
 	<DefaultView>Grid</DefaultView>
 	<InsertRowAtBottom>false</InsertRowAtBottom>
 	<CiTextField>
-		<FieldName>CustomerID</FieldName>
+    <FieldName>CustomerID</FieldName>
 		<Caption>Customer ID</Caption>
 		<Editable>false</Editable>
-	  </CiTextField>
-	  <CiComboField>
+	</CiTextField>
+	<CiComboField>
 		<FieldName>BranchCode</FieldName>
 		<Caption>Branch</Caption>
 		<DropdownSQL>select Code from Dropdown where Category = 'Branch' order by Code</DropdownSQL>
-	  </CiComboField>
-	  <CiTextField>
+	</CiComboField>
+	<CiTextField>
 		<FieldName>LastName</FieldName>
 		<Caption>Last Name</Caption>
-        <Searchable>true</Searchable>
-      </CiTextField>
-	  <CiTextField>
-		<FieldName>OtherNames</FieldName>
-		<Caption>Other Names</Caption>
-        <Searchable>true</Searchable>
-      </CiTextField>
-	  <CiDateField>
+    <Searchable>true</Searchable>
+  </CiTextField>
+	<CiTextField>
+	  <FieldName>OtherNames</FieldName>
+	  <Caption>Other Names</Caption>
+    <Searchable>true</Searchable>
+  </CiTextField>
+	<CiDateField>
 		<FieldName>DateOfBirth</FieldName>
 		<Caption>Date of birth</Caption>
-	  </CiDateField>
-	  <CiTextField>
+	</CiDateField>
+	<CiTextField>
 		<FieldName>Age</FieldName>
 		<Caption>Age</Caption>
 		<Computed>true</Computed>
 		<Editable>false</Editable>
 		<ValueSQL>select datediff(year, @DateOfBirth, getdate()) - 1</ValueSQL>
-	  </CiTextField>
-	  <CiMemoField>
+	</CiTextField>
+	<CiMemoField>
 		<FieldName>Address</FieldName>
 		<Caption>Address</Caption>
-	  </CiMemoField>
-	  <CiComboField>
+	</CiMemoField>
+	<CiComboField>
 		<FieldName>CountryCode</FieldName>
 		<TextFieldName>CountryName</TextFieldName>
 		<Caption>Country</Caption>
 		<DropdownSQL>select Code, Description from Dropdown where Category = 'Country' order by Code</DropdownSQL>
-	  </CiComboField>
-	  <CiTextField>
+	</CiComboField>
+	<CiTextField>
 		<FieldName>Postcode</FieldName>
 		<Caption>Postcode</Caption>
-	  </CiTextField>
-	  <CiTextField>
+	</CiTextField>
+	<CiTextField>
 		<FieldName>Email</FieldName>
 		<Caption>Email</Caption>
-	  </CiTextField>
-	  <CiTextField>
+	</CiTextField>
+	<CiTextField>
 		<FieldName>Mobile</FieldName>
 		<Caption>Mobile</Caption>
-        <Searchable>true</Searchable>
-      </CiTextField>
-	  <CiComboField>
+    <Searchable>true</Searchable>
+  </CiTextField>
+	<CiComboField>
 		<FieldName>Referrer</FieldName>
 		<Caption>Referrer</Caption>
 		<DropdownSQL>select Code from Dropdown where Category = 'Referrer' order by Code</DropdownSQL>
-	  </CiComboField>
-	  <CiTextField>
-  		<FieldName>Points</FieldName>
-	  	<Caption>Points</Caption>
-	  	<Editable>false</Editable>
-      <Hidden>true</Hidden>
-	  </CiTextField>
-    <CiTable Src="CustomerOrder.pux">
-	    <SelectMacro>
-		    <ActionSQL>?exec spCustomerOrders_selbyCustomerID @CustomerID</ActionSQL>
-	    </SelectMacro>
-    </CiTable>
-	  <DefaultMacro>
+	</CiComboField>
+	<CiTextField>
+  	<FieldName>Points</FieldName>
+	  <Caption>Points</Caption>
+	  <Editable>false</Editable>
+    <Hidden>true</Hidden>
+	</CiTextField>
+  <CiTable Src="CustomerOrder.pux" />
+	<DefaultMacro>
 		<ActionSQL>select '-New-' as CustomerID, 0 as Points</ActionSQL>
-	  </DefaultMacro>
-	  <SelectMacro>
+	</DefaultMacro>
+	<SelectMacro>
 		<ActionSQL>?exec spCustomer_selbyNames_Mobile @LastName,@OtherNames,@Mobile</ActionSQL>
-	  </SelectMacro>
-	  <InsertMacro>
+  </SelectMacro>
+	<InsertMacro>
 		<ActionSQL>
 		  ?exec spCustomer_ins @BranchCode, @LastName, @OtherNames, @DateOfBirth, @Address, @CountryCode,
 			@Postcode, @Email, @Mobile, @Referrer
 		</ActionSQL>
-	  </InsertMacro>
+	</InsertMacro>
 	<UpdateMacro>
 		<ActionSQL>
 			?exec spCustomer_upd @CustomerID, @BranchCode, @LastName, @OtherNames, @DateOfBirth, @Address, @CountryCode,

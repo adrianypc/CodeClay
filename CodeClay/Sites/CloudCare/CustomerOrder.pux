@@ -29,6 +29,7 @@
     <Code>CustomerID</Code>
     <Description>CustomerName</Description>
     <DropdownSQL>select CustomerID,LastName+','+OtherNames as CustomerName from Customer</DropdownSQL>
+    <Searchable>true</Searchable>
   </CiComboField>
   <CiTextField>
     <FieldName>LastName</FieldName>
@@ -43,8 +44,8 @@
     <Editable lang="sql">select distinct 1 from Customer where @CustomerID is null</Editable>
   </CiTextField>
   <CiComboField>
-	<FieldName>BranchCode</FieldName>
-	<Caption>Branch</Caption>
+    <FieldName>BranchCode</FieldName>
+    <Caption>Branch</Caption>
     <DropdownSQL>select Code from Dropdown where Category = 'Branch' order by Code</DropdownSQL>
     <Mandatory>true</Mandatory>
     <Editable lang="sql">select distinct 1 from Customer where @CustomerID is null</Editable>

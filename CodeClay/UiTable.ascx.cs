@@ -655,6 +655,16 @@ namespace CodeClay
             foreach (DataColumn dcColumn in drParams.Table.Columns)
             {
                 string columnName = dcColumn.ColumnName;
+
+                if (CiTable != null)
+                {
+                    CiField ciField = CiTable.GetField(columnName);
+                    if (ciField != null && ciField.Searchable)
+                    {
+                        columnName = ciField.SearchableFieldName;
+                    }
+                }
+
                 e.NewValues[columnName] = drParams[columnName];
             }
         }
@@ -1143,7 +1153,7 @@ namespace CodeClay
 
         public override DataRow GetState(int rowIndex = -1)
         {
-            if (rowIndex == -1)
+            if (rowIndex < 0)
             {
                 rowIndex = GetFocusedIndex();
             }
@@ -1157,42 +1167,47 @@ namespace CodeClay
 
                 foreach (CiField ciField in CiTable.CiFields)
                 {
-                    string fieldName = ciField.FieldName;
-
-                    object fieldValue = this[fieldName, rowIndex];
-
-                    if (!dcColumns.Contains(fieldName))
+                    for (int i = 0; i < (ciField.Searchable ? 2 : 1); i++)
                     {
-                        Type type = (!MyUtils.IsEmpty(fieldValue))
-                           ? fieldValue.GetType()
-                           : typeof(string);
+                        string fieldName = (i == 1)
+                            ? ciField.SearchableFieldName
+                            : ciField.FieldName;
 
-                        if (ciField.IsInstanceOf(typeof(CiDateField)))
+                        object fieldValue = this[fieldName, rowIndex];
+
+                        if (!dcColumns.Contains(fieldName))
                         {
-                            type = typeof(DateTime);
-                            fieldValue = !MyUtils.IsEmpty(fieldValue)
-                                ? Convert.ToDateTime(fieldValue)
-                                : Convert.DBNull;
-                        }
-                        else if (ciField.IsInstanceOf(typeof(CiCheckField)))
-                        {
-                            type = typeof(bool);
-                            fieldValue = !MyUtils.IsEmpty(fieldValue)
-                                ? Convert.ToBoolean(fieldValue)
-                                : Convert.DBNull;
-                        }
-                        else if (ciField.IsInstanceOf(typeof(CiTextField)) && ciField.Mask == eTextMask.Currency)
-                        {
-                            type = typeof(decimal);
-                            fieldValue = !MyUtils.IsEmpty(fieldValue)
-                                ? Convert.ToDecimal(fieldValue)
-                                : Convert.DBNull;
+                            Type type = (!MyUtils.IsEmpty(fieldValue))
+                               ? fieldValue.GetType()
+                               : typeof(string);
+
+                            if (ciField.IsInstanceOf(typeof(CiDateField)))
+                            {
+                                type = typeof(DateTime);
+                                fieldValue = !MyUtils.IsEmpty(fieldValue)
+                                    ? Convert.ToDateTime(fieldValue)
+                                    : Convert.DBNull;
+                            }
+                            else if (ciField.IsInstanceOf(typeof(CiCheckField)))
+                            {
+                                type = typeof(bool);
+                                fieldValue = !MyUtils.IsEmpty(fieldValue)
+                                    ? Convert.ToBoolean(fieldValue)
+                                    : Convert.DBNull;
+                            }
+                            else if (ciField.IsInstanceOf(typeof(CiTextField)) && ciField.Mask == eTextMask.Currency)
+                            {
+                                type = typeof(decimal);
+                                fieldValue = !MyUtils.IsEmpty(fieldValue)
+                                    ? Convert.ToDecimal(fieldValue)
+                                    : Convert.DBNull;
+                            }
+
+                            dcColumns.Add(fieldName, type);
                         }
 
-                        dcColumns.Add(fieldName, type);
+                        dr[fieldName] = fieldValue;
                     }
-
-                    dr[fieldName] = fieldValue;
                 }
 
                 if (UiParentTable != null)
@@ -1274,7 +1289,7 @@ namespace CodeClay
                 CiField[] ciFields = isSearchMode ? CiTable.CiSearchableFields : CiTable.CiBrowsableFields;
                 foreach (CiField ciField in ciFields)
                 {
-                    BuildCardColumn(dxTable, ciField);
+                    BuildCardColumn(dxTable, ciField, isSearchMode);
                 }
 
                 if (!isSearchMode && CiTable.LayoutXml != null)
@@ -1321,12 +1336,21 @@ namespace CodeClay
             }
         }
 
-        private void BuildCardColumn(ASPxCardView dxTable, CiField ciField)
+        private void BuildCardColumn(ASPxCardView dxTable, CiField ciField, bool isSearchMode)
         {
             if (ciField != null)
             {
                 string textFieldName = ciField.TextFieldName;
-                string fieldName = !MyUtils.IsEmpty(textFieldName) ? textFieldName : ciField.FieldName;
+                string fieldName = ciField.FieldName;
+
+                if (isSearchMode)
+                {
+                    fieldName = ciField.SearchableFieldName;
+                }
+                else if (!MyUtils.IsEmpty(textFieldName))
+                {
+                    fieldName = textFieldName;
+                }
 
                 CardViewColumn dxColumn = dxTable.Columns.Cast<CardViewColumn>()
                     .SingleOrDefault(c => c.FieldName == fieldName);
@@ -1529,7 +1553,7 @@ namespace CodeClay
         {
             if (CiTable != null)
             {
-                if (rowIndex == -1)
+                if (rowIndex < 0)
                 {
                     rowIndex = IsInserting ? -1 :
                         (CiTable.IsSearching ? 0 : dxCard.FocusedCardIndex);
@@ -1553,7 +1577,7 @@ namespace CodeClay
 
         private object GetGridValue(string key, int rowIndex = -1)
         {
-			if (rowIndex == -1)
+			if (rowIndex < 0)
 			{
 				rowIndex = IsInserting ? -1 :
 				   (CiTable.IsSearching ? 0 : dxGrid.FocusedRowIndex);

@@ -25,7 +25,7 @@ namespace CodeClay.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
         public bool AirplaneMode {
             get {
                 return ((bool)(this["AirplaneMode"]));

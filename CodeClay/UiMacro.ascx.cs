@@ -231,6 +231,27 @@ namespace CodeClay
                 return drParams.Table;
             }
 
+            ArrayList sqlList = new ArrayList();
+            if (CiTable != null && CiTable.CiParentTable == null && MacroName.ToUpper() == "SELECT")
+            {
+                foreach (string actionSQL in ActionSQL)
+                {
+                    string sql = actionSQL;
+                    foreach (CiField ciField in CiTable.CiSearchableFields)
+                    {
+                        string fieldName = ciField.FieldName;
+                        sql = sql.Replace("@" + fieldName, "@" + ciField.SearchableFieldName);
+                    }
+
+                    sqlList.Add(sql);
+                }
+            }
+
+            if (sqlList.Count > 0)
+            {
+                return UiApplication.Me.GetBySQL((string[])sqlList.ToArray(typeof(string)), drParams);
+            }
+
             return UiApplication.Me.GetBySQL(ActionSQL, drParams);
         }
 

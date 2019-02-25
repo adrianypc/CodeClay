@@ -3,7 +3,7 @@
 	<TableName>Inventory</TableName>
 	<TableCaption>Inventory</TableCaption>
 	<RowKey>InventoryItemNo</RowKey>
-	<DefaultView>Grid</DefaultView>
+	<DefaultView>Card</DefaultView>
   <CiTextField>
     <FieldName>InventoryItemNo</FieldName>
     <Hidden>true</Hidden>

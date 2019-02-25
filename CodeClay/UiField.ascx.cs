@@ -83,6 +83,12 @@ namespace CodeClay
         }
 
         [XmlIgnore]
+        public string SearchableFieldName
+        {
+            get { return PARAMETER_PREFIX + FieldName; }
+        }
+
+        [XmlIgnore]
         public bool IsLabel
         {
             get { return GetType() == typeof(CiField); }
@@ -557,7 +563,7 @@ namespace CodeClay
 
                 CiTable ciTable = CiField.CiTable;
                 string tableName = (ciTable != null) ? ciTable.TableName : "";
-                string fieldName = CiField.FieldName;
+                string fieldName = CiField.IsSearching ? CiField.SearchableFieldName : CiField.FieldName;
                 bool isEditable = CiField.IsEditable(drParams);
                 object fieldValue = MyUtils.Coalesce(mEditor.Value, FieldValue);
 				string foreColor = CiField.ForeColor;
