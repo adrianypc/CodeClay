@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Configuration;
+using System.Net.Mail;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Identity;
@@ -15,7 +17,15 @@ namespace CodeClay
         public Task SendAsync(IdentityMessage message)
         {
             // Plug in your email service here to send an email.
-            return Task.FromResult(0);
+            SmtpClient client = new SmtpClient();
+
+            MailMessage mail = new MailMessage("hello@benatural.com.sg", message.Destination);
+            mail.Subject = message.Subject;
+            mail.Body = message.Body;
+            mail.IsBodyHtml = true;
+
+            return client.SendMailAsync(mail);
+            //return Task.FromResult(0);
         }
     }
 

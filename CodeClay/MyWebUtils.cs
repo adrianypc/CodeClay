@@ -404,9 +404,13 @@ namespace CodeClay
                 HttpResponse myResponse = page.Response;
                 IPrincipal myUser = page.User;
 
-                if ((sessionCount == 0 && !page.IsCallback || !IsUserAuthorised() || UiApplication.Me == null) && myResponse != null)
+                if ((sessionCount == 0 && !page.IsCallback || UiApplication.Me == null) && myResponse != null)
                 {
                     myResponse.Redirect(loginUrl);
+                }
+                else if (myResponse != null && !IsUserAuthorised())
+                {
+                    myResponse.Redirect("~/Default.aspx?Application=" + GetAuthorisedApp());
                 }
                 else if (sessionCount == 0 && page.IsCallback)
                 {
@@ -444,6 +448,23 @@ namespace CodeClay
             MyWebUtils.IsConnectedToCPanel = false;
 
             return isUserAuthorised;
+        }
+
+        public static string GetAuthorisedApp()
+        {
+            string authorisedApp = "";
+
+            DataTable dt = new DataTable();
+            dt.Columns.Add("Application").DefaultValue = Application;
+
+            DataRow dr = dt.NewRow();
+            dt.Rows.Add(dr);
+
+            MyWebUtils.IsConnectedToCPanel = true;
+            authorisedApp = MyWebUtils.EvalSQL("select dbo.fnGetAuthorisedApp(@CI_UserEmail, @Application)", dr).ToString();
+            MyWebUtils.IsConnectedToCPanel = false;
+
+            return authorisedApp;
         }
 
         public static XmlElement CreateXmlElement(string name, object value)

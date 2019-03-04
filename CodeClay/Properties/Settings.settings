@@ -3,7 +3,7 @@
   <Profiles />
   <Settings>
     <Setting Name="AirplaneMode" Type="System.Boolean" Scope="Application">
-      <Value Profile="(Default)">True</Value>
+      <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="ScriptFolder" Type="System.String" Scope="Application">
       <Value Profile="(Default)">PluginScripts</Value>

@@ -44,8 +44,8 @@ namespace CodeClay
         [XmlElement("TableName")]
         public string TableName { get; set; } = "myTable";
 
-        [XmlElement("TableCaption")]
-        public string TableCaption { get; set; } = "My Caption";
+        [XmlAnyElement("TableCaption")]
+        public XmlElement TableCaption { get; set; } = MyWebUtils.CreateXmlElement("TableCaption", true);
 
         [XmlElement("QuickInsert")]
         public bool QuickInsert { get; set; } = false;
@@ -606,10 +606,10 @@ namespace CodeClay
 
         protected override void Page_Load(object sender, EventArgs e)
         {
-            if (!IsPostBack && CiTable != null && UiParentTable == null)
-            {
-                Page.Title = CiTable.TableCaption;
-            }
+            //if (!IsPostBack && CiTable != null && UiParentTable == null)
+            //{
+            //    Page.Title = CiTable.TableCaption;
+            //}
         }
 
         // --------------------------------------------------------------------------------------------------
@@ -1240,7 +1240,7 @@ namespace CodeClay
             if (pgCardTabs != null && CiTable != null)
             {
                 string tableName = CiTable.TableName;
-                string tableCaption = CiTable.TableCaption;
+                string tableCaption = MyWebUtils.Eval<string>(CiTable.TableCaption, GetState());
 
                 TabPage tabPage = pgCardTabs.TabPages.Add(tableName);
                 tabPage.Name = string.Format("pgCardTab_{0}", tableName);
@@ -1257,12 +1257,12 @@ namespace CodeClay
             ASPxPageControl pgGridTabs = container as ASPxPageControl;
             if (pgGridTabs != null && CiTable != null)
             {
+                string tableCaption = MyWebUtils.Eval<string>(CiTable.TableCaption, GetState());
                 TabPage tabPage = pgGridTabs.TabPages.Add(CiTable.TableName);
-                tabPage.Text = CiTable.TableCaption;
-                tabPage.ToolTip = CiTable.TableCaption;
-                tabPage.Controls.Add(this);
 
-                //ID += "_" + tabPage.Index.ToString();
+                tabPage.Text = tableCaption;
+                tabPage.ToolTip = tableCaption;
+                tabPage.Controls.Add(this);
             }
         }
 
@@ -1278,7 +1278,7 @@ namespace CodeClay
                 string titlePrefix = isSearchMode ? "Search for: " : "";
 
                 dxTable.Styles.TitlePanel.BackColor = isSearchMode ? Color.SpringGreen : Color.Transparent;
-                dxTable.SettingsText.Title = titlePrefix + CiTable.TableCaption;
+                dxTable.SettingsText.Title = titlePrefix + MyWebUtils.Eval<string>(CiTable.TableCaption, GetState());
 
                 dxTable.CardLayoutProperties.ColCount = totalColumns;
 
@@ -1310,7 +1310,7 @@ namespace CodeClay
         {
             if (CiTable != null)
             {
-                dxTable.SettingsText.Title = CiTable.TableCaption;
+                dxTable.SettingsText.Title = MyWebUtils.Eval<string>(CiTable.TableCaption, GetState());
                 dxTable.SettingsDetail.ShowDetailRow = (CiTable.Get<CiTable>().Length > 0);
                 dxTable.SettingsEditing.Mode = GridViewEditingMode.Inline;
                 dxTable.SettingsEditing.NewItemRowPosition = CiTable.InsertRowAtBottom

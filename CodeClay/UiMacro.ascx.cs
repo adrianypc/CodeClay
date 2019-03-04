@@ -166,18 +166,6 @@ namespace CodeClay
 
             sqlParams = MyWebUtils.Merge(sqlParams, MyUtils.GetParameters(VisibleSQL));
 
-            //if (CiTable != null)
-            //{
-            //    foreach (CiField ciField in CiTable.CiSearchableFields)
-            //    {
-            //        string fieldName = ciField.FieldName;
-            //        if (sqlParams.Contains(fieldName))
-            //        {
-            //            sqlParams.Remove(fieldName);
-            //        }
-            //    }
-            //}
-
 			return sqlParams;
 		}
 

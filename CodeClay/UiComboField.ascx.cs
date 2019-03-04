@@ -98,6 +98,8 @@ namespace CodeClay
 				dxComboBox.DropDownStyle = MyUtils.IsEmpty(CiComboField.InsertSQL)
 					? DropDownStyle.DropDownList
 					: DropDownStyle.DropDown;
+
+                dxComboBox.JSProperties["cpAlternateName"] = CiComboField.TextFieldName;
 			}
 
             if (DataSource != null)

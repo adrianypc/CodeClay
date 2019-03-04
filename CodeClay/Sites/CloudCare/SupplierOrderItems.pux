@@ -27,14 +27,16 @@
     <DropdownSQL>select ProductID,ProductName from Product</DropdownSQL>
   </CiComboField>
   <CiNumericField>
-		<FieldName>Quantity</FieldName>
-		<Caption>Quantity Ordered</Caption>
-		<Width>20</Width>
-	</CiNumericField>
+	<FieldName>Quantity</FieldName>
+	<Caption>Quantity Ordered</Caption>
+	<Width>20</Width>
+    <Editable lang="sql">select 1 from SupplierOrders where SupplierOrderNo = @SupplierOrderNo and status = 'Open'</Editable>
+  </CiNumericField>
   <CiNumericField>
     <FieldName>QuantityReceived</FieldName>
     <Caption>Quantity Received</Caption>
     <Width>20</Width>
+    <Editable lang="sql">select 1 from SupplierOrders where SupplierOrderNo = @SupplierOrderNo and status = 'Active'</Editable>
   </CiNumericField>
   <CiTextField>
     <FieldName>Price</FieldName>
@@ -46,7 +48,7 @@
   <CiDateField>
     <FieldName>ExpiryDate</FieldName>
     <Caption>Expiry Date</Caption>
-    <Editable>true</Editable>
+    <Editable lang="sql">select 1 from SupplierOrders where SupplierOrderNo = @SupplierOrderNo and status = 'Active'</Editable>
     <ColumnFormat>dd/MM/yyyy</ColumnFormat>
   </CiDateField>
   <DefaultMacro>
@@ -77,7 +79,7 @@
       @Price,
       @ExpiryDate
     </ActionSQL>
-    <VisibleSQL>select 1 from SupplierOrders where SupplierOrderNo = @SupplierOrderNo and Status not in ('Received','Cancelled')</VisibleSQL>
+    <VisibleSQL>select 1 from SupplierOrders where SupplierOrderNo = @SupplierOrderNo and Status not in ('Received','Cancelled','Active')</VisibleSQL>
 	</InsertMacro>
 	<UpdateMacro>
     <ActionSQL>

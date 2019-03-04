@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <CiTable>
     <TableName>Appointments</TableName>
-    <TableCaption>Appointments</TableCaption>
+    <TableCaption lang="sql">select 'Appointments for: Dr. ' + ConsultantSurname from Consultant where ConsultantId = @ConsultantId</TableCaption>
     <RowKey>AppointmentNo</RowKey>
     <DefaultView>Grid</DefaultView>
     <DoubleClickMacroName>Appointment Detail</DoubleClickMacroName>

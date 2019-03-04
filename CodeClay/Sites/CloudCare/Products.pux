@@ -9,7 +9,7 @@
 		<FieldName>ProductID</FieldName>
 		<Caption>Product ID</Caption>
 		<Editable>false</Editable>
-    <Searchable>true</Searchable>
+        <Searchable>true</Searchable>
 	</CiTextField>
 	<CiTextField>
 		<FieldName>ProductName</FieldName>

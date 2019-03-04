@@ -18,7 +18,7 @@
     <LoggedInTemplate>
         <dx:ASPxMenu ID="dxMenu" ClientInstanceName="dxMenu" runat="server" Theme="Aqua" AutoSeparators="RootOnly" AutoPostBack="false" Width="100%" OnInit="dxMenu_Init">
             <Items>
-                <dx:MenuItem Name="Home" Text="Home" NavigateUrl="~" ItemStyle-Width="8%"></dx:MenuItem>
+                <dx:MenuItem Name="Home" Text="Home" NavigateUrl="~/Default.aspx?Application=CPanel" ItemStyle-Width="8%"></dx:MenuItem>
                 <dx:MenuItem Name="About" Text="About" NavigateUrl="~/About" ItemStyle-Width="8%"></dx:MenuItem>
                 <dx:MenuItem Name="Contact" Text="Contact" NavigateUrl="~/Contact" ItemStyle-Width="8%"></dx:MenuItem>
                 <dx:MenuItem Name="Divider" Text=" " ItemStyle-Width="60%" Enabled="false"></dx:MenuItem>

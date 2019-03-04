@@ -14,7 +14,7 @@ namespace CodeClay.Account
         {
             RegisterHyperLink.NavigateUrl = "Register";
             // Enable this once you have account confirmation enabled for password reset functionality
-            //ForgotPasswordHyperLink.NavigateUrl = "Forgot";
+            ForgotPasswordHyperLink.NavigateUrl = "Forgot";
             OpenAuthLogin.ReturnUrl = Request.QueryString["ReturnUrl"];
             var returnUrl = HttpUtility.UrlEncode(Request.QueryString["ReturnUrl"]);
             if (!String.IsNullOrEmpty(returnUrl))
@@ -40,7 +40,9 @@ namespace CodeClay.Account
                     case SignInStatus.Success:
                         Session["JustLoggedIn"] = true;
                         //IdentityHelper.RedirectToReturnUrl(Request.QueryString["ReturnUrl"], Response);
-                        Response.Redirect("~/Default.aspx?" + MyWebUtils.QueryString);
+                        string queryString = MyWebUtils.QueryString.ToString();
+                        string prefix = (queryString.Length > 0) ? "?" : "";
+                        Response.Redirect("~/Default.aspx" + prefix + queryString);
                         break;
                     case SignInStatus.LockedOut:
                         Response.Redirect("/Account/Lockout");

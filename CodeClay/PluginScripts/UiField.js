@@ -54,10 +54,12 @@ function dxFieldExitPanel_EndCallback(sender, event) {
 function RegisterEditor(editor, getvalue_function, setvalue_function) {
 	if (editor) {
 		var tableName = editor.cpTableName;
-		var fieldName = editor.name;
+        var fieldName = editor.name;
+        var alternateFieldName = editor.cpAlternateName;
 
 		if (tableName) {
 			fieldName = tableName + "." + fieldName;
+            alternateFieldName = tableName + "." + alternateFieldName;
 		}
 
 		editor.GetEditorValue = getvalue_function;
@@ -66,6 +68,10 @@ function RegisterEditor(editor, getvalue_function, setvalue_function) {
 		if (editors && fieldName) {
 			editors[fieldName] = editor;
 		}
+
+        if (editors && alternateFieldName) {
+            editors[alternateFieldName] = editor;
+        }
 	}
 }
 

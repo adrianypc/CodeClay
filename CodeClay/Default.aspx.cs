@@ -29,14 +29,7 @@ namespace CodeClay
 
         protected void Page_PreInit(Object sender, EventArgs e)
         {
-            if (Request.QueryString.Count > 0)
-            {
-                MyWebUtils.QueryString = Request.QueryString;
-            }
-            else
-            {
-                MyWebUtils.QueryString = new System.Collections.Specialized.NameValueCollection();
-            }
+            MyWebUtils.QueryString = Request.QueryString;
 
             if (MyWebUtils.IsPopup(this))
             {
