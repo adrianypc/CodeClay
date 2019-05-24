@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<CiTable Src="CiTableDetails.pux">
+  <TableCaption lang="sql">select 'Table Design: ' + @TableName from Singleton</TableCaption>
+  <SelectMacro>
+    <ActionSQL>?exec spTable_selByName @AppName, @TableName</ActionSQL>
+  </SelectMacro>
+</CiTable>

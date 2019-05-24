@@ -68,13 +68,15 @@
   		<FieldName>Points</FieldName>
 	  	<Caption>Points</Caption>
 	  	<Editable>false</Editable>
-      <Hidden>true</Hidden>
-	  </CiTextField>
-    <CiTable Src="CustomerOrder.pux">
+        <Hidden>false</Hidden>
+        <Summary>Sum</Summary>
+        <Mask>Currency</Mask>
+      </CiTextField>
+      <CiTable Src="CustomerOrder.pux">
 	    <SelectMacro>
 		    <ActionSQL>?exec spCustomerOrders_selbyCustomerID @CustomerID</ActionSQL>
 	    </SelectMacro>
-    </CiTable>
+      </CiTable>
 	  <DefaultMacro>
 		<ActionSQL>select '-New-' as CustomerID, 0 as Points</ActionSQL>
 	  </DefaultMacro>
@@ -87,10 +89,10 @@
 			@Postcode, @Email, @Mobile, @Referrer
 		</ActionSQL>
 	  </InsertMacro>
-	<UpdateMacro>
+	  <UpdateMacro>
 		<ActionSQL>
 			?exec spCustomer_upd @CustomerID, @BranchCode, @LastName, @OtherNames, @DateOfBirth, @Address, @CountryCode,
 			@Postcode, @Email, @Mobile, @Referrer
 		</ActionSQL>
-	</UpdateMacro>
+	  </UpdateMacro>
 </CiTable>

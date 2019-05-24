@@ -15,6 +15,33 @@ namespace CodeClay
         // Methods (Override)
         // --------------------------------------------------------------------------------------------------
 
+        public override Type GetNativeType(object fieldValue)
+        {
+            return typeof(bool);
+        }
+
+        public override object GetNativeValue(object fieldValue)
+        {
+            if (MyUtils.IsEmpty(fieldValue))
+            {
+                fieldValue = Convert.DBNull;
+            }
+            else if (fieldValue.Equals("0"))
+            {
+                fieldValue = false;
+            }
+            else if (fieldValue.Equals("1"))
+            {
+                fieldValue = true;
+            }
+            else
+            {
+                fieldValue = Convert.ToBoolean(fieldValue);
+            }
+
+            return fieldValue;
+        }
+
         public override CardViewColumn CreateCardColumn(UiTable uiTable)
         {
             CardViewCheckColumn dxColumn = new CardViewCheckColumn();

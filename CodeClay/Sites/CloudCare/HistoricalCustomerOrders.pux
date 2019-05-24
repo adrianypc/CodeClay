@@ -9,6 +9,13 @@
     <FieldName>CustomerOrderNo</FieldName>
     <Caption>Customer Order #</Caption>
     <Editable>false</Editable>
+    <Hidden>true</Hidden>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>WordpressOrderNo</FieldName>
+    <Caption>Wordpress Order#</Caption>
+    <Editable>false</Editable>
+    <Width>10</Width>
   </CiTextField>
   <CiTextField>
     <FieldName>Status</FieldName>

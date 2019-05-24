@@ -53,6 +53,7 @@
     <ActionSQL>select @FPatientNo as ClientNo,'New' as Command</ActionSQL>
     <NavigateUrl>BillDetail.pux</NavigateUrl>
     <NavigatePos>Popup</NavigatePos>
+    <Toolbar>true</Toolbar>
   </CiMacro>
   <CiMacro>
     <MacroName>BillDetail</MacroName>

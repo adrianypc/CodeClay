@@ -36,12 +36,11 @@
     <FieldName>SupplierID</FieldName>
     <TextFieldName>SupplierName</TextFieldName>
     <Caption>Supplier</Caption>
-    <Code>SupplierID</Code>
+     <Code>SupplierID</Code>
     <Description>SupplierName</Description>
     <DropdownSQL>select SupplierID,SupplierName from Supplier</DropdownSQL>
     <Mandatory>true</Mandatory>
     <Editable lang="sql">select 1 from tblSingleton where cast(0 as bit) = @IsTransferred</Editable>
-    <VisibleSQL>select 1 from tblSingleton where cast(0 as bit) = @IsTransferred</VisibleSQL>
   </CiComboField>
   <CiLinkField>
     <FieldName>OrderFileURL</FieldName>
@@ -69,6 +68,7 @@
     <Code>CurrencyCode</Code>
     <Description>CurrencyName</Description>
     <DropdownSQL>select Description as CurrencyName,Code as CurrencyCode from Dropdown where Category='Currency'</DropdownSQL>
+    <Mandatory>true</Mandatory>
  </CiComboField>
  <CiLinkField>
     <FieldName>ExchangeRateURL</FieldName>
@@ -80,6 +80,7 @@
     <FieldName>ConversionRate</FieldName>
     <Caption>Conversion Rate</Caption>
     <Editable lang="sql">select 1 from tblSingleton where @CurrentCurrency != 'SGD'</Editable>
+    <Mandatory>true</Mandatory>
  </CiTextField>
  <CiTextField>
     <FieldName>TotalAmountInSGD</FieldName>
@@ -95,7 +96,7 @@
   <DefaultMacro>
     <ActionSQL>
       select
-      isnull(1 + max(SupplierOrderNo), 1) as SupplierOrderNo,
+      '-New-' as SupplierOrderNo,
       convert(datetime,cast(getdate() as nvarchar(12)),103) as SupplierOrderDate,
       coalesce(@SupplierID,1) as SupplierID,
       'Unique Health Products' as SupplierName,
@@ -147,11 +148,18 @@
         @TotalAmountInSGD,
         @ExchangeRateURL
     </ActionSQL>
-    <VisibleSQL>select 1 from SupplierOrders where SupplierOrderNo = @SupplierOrderNo and Status in ('Active','Open')</VisibleSQL>
+    <VisibleSQL>
+        select 1 from SupplierOrders
+        where SupplierOrderNo = case when isnumeric(@SupplierOrderNo) = 1 then @SupplierOrderNo else -1 end
+        and Status in ('Active','Open')</VisibleSQL>
   </UpdateMacro>
   <DeleteMacro>
     <ActionSQL>exec spSupplierOrders_del @SupplierOrderNo</ActionSQL>
-    <VisibleSQL>select 1 from SupplierOrders where SupplierOrderNo = @SupplierOrderNo and Status in ('Active','Open')</VisibleSQL>
+    <VisibleSQL>
+        select 1 from SupplierOrders
+        where SupplierOrderNo = case when isnumeric(@SupplierOrderNo) = 1 then @SupplierOrderNo else -1 end
+        and Status in ('Active','Open')
+    </VisibleSQL>
   </DeleteMacro>
   <CiMacro>
     <MacroName>Submit</MacroName>
@@ -161,7 +169,11 @@
       SupplierOrderDate
       from SupplierOrders where SupplierOrderNo = @SupplierOrderNo
     </ActionSQL>
-    <VisibleSQL>select 1 from SupplierOrders where SupplierOrderNo = @SupplierOrderNo and Status = 'Open'</VisibleSQL>
+    <VisibleSQL>
+        select 1 from SupplierOrders
+        where SupplierOrderNo = case when isnumeric(@SupplierOrderNo) = 1 then @SupplierOrderNo else -1 end
+        and Status = 'Open'
+    </VisibleSQL>
   </CiMacro>
   <CiMacro>
     <MacroName>Received</MacroName>
@@ -171,7 +183,11 @@
       DeliveryDate
       from SupplierOrders where SupplierOrderNo = @SupplierOrderNo
     </ActionSQL>
-    <VisibleSQL>select 1 from SupplierOrders where SupplierOrderNo = @SupplierOrderNo and Status = 'Active'</VisibleSQL>
+    <VisibleSQL>
+        select 1 from SupplierOrders
+        where SupplierOrderNo = case when isnumeric(@SupplierOrderNo) = 1 then @SupplierOrderNo else -1 end
+        and Status = 'Active'
+    </VisibleSQL>
   </CiMacro>
   <CiMacro>
     <MacroName>Cancel Order</MacroName>
@@ -179,7 +195,11 @@
     <ActionSQL>
         select Status from SupplierOrders where SupplierOrderNo = @SupplierOrderNo
     </ActionSQL>
-    <VisibleSQL>select 1 from SupplierOrders where SupplierOrderNo = @SupplierOrderNo and Status in ('Active','Open')</VisibleSQL>
+    <VisibleSQL>
+        select 1 from SupplierOrders
+        where SupplierOrderNo = case when isnumeric(@SupplierOrderNo) = 1 then @SupplierOrderNo else -1 end
+        and Status in ('Active','Open')
+    </VisibleSQL>
   </CiMacro>
   <CiFieldExitMacro>
     <FieldName>Shipping</FieldName>

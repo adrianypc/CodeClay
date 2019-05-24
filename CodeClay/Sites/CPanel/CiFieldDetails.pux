@@ -1,0 +1,109 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<CiTable>
+	<TableName>FieldDetails</TableName>
+  <TableCaption lang="sql">select Type + ' Field Design: ' + FieldName from CiField where AppID = @AppID and TableID = @TableID and FieldID = @FieldID</TableCaption>
+  <DefaultView>Card</DefaultView>
+  <RowKey>AppID,TableID,FieldID</RowKey>
+  <CiField>
+    <FieldName>AppID</FieldName>
+    <Caption>App ID</Caption>
+    <Hidden>true</Hidden>
+  </CiField>
+  <CiField>
+    <FieldName>TableID</FieldName>
+    <Caption>Table ID</Caption>
+    <Hidden>true</Hidden>
+  </CiField>
+  <CiTextField>
+    <FieldName>FieldID</FieldName>
+    <Caption>Field ID</Caption>
+    <Editable>false</Editable>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>TableName</FieldName>
+    <Caption>Table Name</Caption>
+    <Editable>false</Editable>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>FieldName</FieldName>
+    <Caption>Field Name</Caption>
+    <Editable>false</Editable>
+  </CiTextField>
+  <CiField>
+    <FieldName>Type</FieldName>
+    <Caption>Type</Caption>
+    <Hidden>true</Hidden>
+  </CiField>
+  <CiCheckField>
+    <FieldName>Mandatory</FieldName>
+    <Caption>Mandatory field?</Caption>
+    <Editable lang="sql">select 1 from Singleton where @Type is not null</Editable>
+  </CiCheckField>
+  <CiTextField>
+    <FieldName>Value</FieldName>
+    <Caption>Value</Caption>
+  </CiTextField>
+  <CiComboField>
+    <FieldName>ForeColor</FieldName>
+    <Caption>Fore Color</Caption>
+    <DropdownSQL>select Code from Dropdown where Category = 'Color'</DropdownSQL>
+    <Hidden>true</Hidden>
+  </CiComboField>
+  <CiNumericField>
+    <FieldName>RowSpan</FieldName>
+    <Caption>Row Span</Caption>
+    <Value>1</Value>
+    <Hidden>true</Hidden>
+  </CiNumericField>
+  <CiNumericField>
+    <FieldName>ColSpan</FieldName>
+    <Caption>Col Span</Caption>
+    <Value>1</Value>
+    <Hidden>true</Hidden>
+  </CiNumericField>
+  <CiNumericField>
+    <FieldName>Width</FieldName>
+    <Caption>Width</Caption>
+    <Value>10</Value>
+    <Hidden>true</Hidden>
+  </CiNumericField>
+  <CiComboField>
+    <FieldName>HorizontalAlign</FieldName>
+    <Caption>Horizontal Align</Caption>
+    <DropdownSQL>select Code from Dropdown where Category = 'HAlignType'</DropdownSQL>
+    <Value>Left</Value>
+    <Mandatory>true</Mandatory>
+    <Hidden>true</Hidden>
+  </CiComboField>
+  <CiComboField>
+    <FieldName>VerticalAlign</FieldName>
+    <Caption>Vertical Align</Caption>
+    <DropdownSQL>select Code from Dropdown where Category = 'VAlignType'</DropdownSQL>
+    <Value>Top</Value>
+    <Mandatory>true</Mandatory>
+    <Hidden>true</Hidden>
+  </CiComboField>
+  <CiComboField>
+    <FieldName>Summary</FieldName>
+    <Caption>Summary</Caption>
+    <DropdownSQL>select Code from Dropdown where Category = 'SummType'</DropdownSQL>
+    <Value>None</Value>
+    <Mandatory>true</Mandatory>
+    <Hidden>true</Hidden>
+  </CiComboField>
+  <SelectMacro>
+    <ActionSQL>?exec spField_sel @AppID, @TableID, @FieldID</ActionSQL>
+  </SelectMacro>
+  <UpdateMacro>
+    <ActionSQL>
+      exec spField_updLong @AppID, @TableID, @FieldID, @FieldName, @Mandatory, @Summary, @ForeColor,
+        @RowSpan, @ColSpan, @Width, @HorizontalAlign, @VerticalAlign, @Value,
+        @DropdownSQL, @InsertSQL, @Code, @Description, @DropdownWidth,
+        @Folder, @MinValue, @MaxValue, @Columns
+    </ActionSQL>
+    <ActionSQL>select @AppID as AppID, @TableID as TableID</ActionSQL>
+    <CiSerializeMacro>
+      <Direction>Download</Direction>
+    </CiSerializeMacro>
+  </UpdateMacro>
+</CiTable>

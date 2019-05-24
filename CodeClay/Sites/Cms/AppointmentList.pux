@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <CiTable>
     <TableName>Appointments</TableName>
-    <TableCaption lang="sql">select 'Appointments for: Dr. ' + ConsultantSurname from Consultant where ConsultantId = @ConsultantId</TableCaption>
+    <TableCaption lang="sql">select 'Appointments For Dr. ' + ConsultantOtherNames+' '+ConsultantSurname from Consultant where ConsultantID = @ConsultantId</TableCaption>
     <RowKey>AppointmentNo</RowKey>
     <DefaultView>Grid</DefaultView>
     <DoubleClickMacroName>Appointment Detail</DoubleClickMacroName>
@@ -91,13 +91,13 @@
         <MacroName>Couple Detail</MacroName>
         <ActionSQL>select @ClientNo as sClientNo</ActionSQL>
         <NavigateUrl>Couple.pux</NavigateUrl>
-        <NavigatePos>Popup</NavigatePos>
+        <NavigatePos>NewTab</NavigatePos>
         <VisibleSQL>select 1 from Client where ClientNo = @ClientNo</VisibleSQL>
     </CiMacro>
     <CiMacro>
         <MacroName>NewAppt</MacroName>
         <Caption>New</Caption>
-        <ActionSQL>select -1 as AppointmentNo,'New' as Command,@sConsultantId as ConsultantId
+        <ActionSQL>select -1 as AppointmentNo,'New' as Command,@ConsultantId as ConsultantId
         </ActionSQL>
         <NavigateUrl>AppointmentDetail.pux</NavigateUrl>
         <NavigatePos>Popup</NavigatePos>

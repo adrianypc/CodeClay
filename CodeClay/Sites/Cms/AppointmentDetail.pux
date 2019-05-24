@@ -2,9 +2,9 @@
 <CiTable>
   <TableName>Appointment Detail</TableName>
   <TableCaption>Appointment Detail</TableCaption>
-  <RowKey>AppointmentNo</RowKey>
+  <RowKey>AppointmentNo,ClientNo</RowKey>
   <DefaultView>Card</DefaultView>
-  <ColCount>2</ColCount>
+  <LayoutUrl>AppointmentDetail.html</LayoutUrl>
   <CiTextField>
     <FieldName>AppointmentNo</FieldName>
     <Caption>Appt No</Caption>
@@ -131,7 +131,6 @@
   <CiMemoField>
     <FieldName>AppointmentRemarks</FieldName>
     <Caption>Remarks</Caption>
-    <ColSpan>2</ColSpan>
     <Editable>true</Editable>
   </CiMemoField>
   <CiTextField>
@@ -152,22 +151,23 @@
   </CiTextField>
   <DefaultMacro>
     <ActionSQL>
-      select
-      coalesce(@ClientNo,'') as ClientNo,
-      coalesce(@IdentityNo,'') as IdentityNo,
-      coalesce(@ClientSurname,'') as ClientSurname,
-      coalesce(@ClientOtherNames,'') as ClientOtherNames,
-      coalesce(@Sex,'') as Sex,
-      coalesce(@AddressLine1,'') as AddressLine1,
-      coalesce(@AddressLine2,'') as AddressLine2,
-      coalesce(@AddressLine3,'') as AddressLine3,
-      coalesce(@PhoneHome,'') as PhoneHome,
-      coalesce(@Mobile,'') as Mobile,
-      coalesce(@Pager,'') as Pager,
-      'HQU' as BranchCode,
-      getdate() as AppointmentDate,
-      coalesce(@ConsultantId,61) as ConsultantId,
-      coalesce(@IsNewPatient,cast(1 as bit)) as IsNewPatient
+        select
+        coalesce(@ClientNo,'') as ClientNo,
+        coalesce(@IdentityNo,'') as IdentityNo,
+        coalesce(@ClientSurname,'') as ClientSurname,
+        coalesce(@ClientOtherNames,'') as ClientOtherNames,
+        coalesce(@Sex,'') as Sex,
+        coalesce(@AddressLine1,'') as AddressLine1,
+        coalesce(@AddressLine2,'') as AddressLine2,
+        coalesce(@AddressLine3,'') as AddressLine3,
+        coalesce(@PhoneHome,'') as PhoneHome,
+        coalesce(@Mobile,'') as Mobile,
+        coalesce(@Pager,'') as Pager,
+        'HQU' as BranchCode,
+        getdate() as AppointmentDate,
+        coalesce(@ConsultantId,61) as ConsultantId,
+        coalesce(@IsNewPatient,cast(1 as bit)) as IsNewPatient,
+        (select UserId from ApplicationUser where Email = @CI_UserEmail) as Officer
     </ActionSQL>
   </DefaultMacro>
   <SelectMacro>

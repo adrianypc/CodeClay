@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<CiTable Src="CiFieldDetails.pux">
+  <CiMemoField>
+    <FieldName>DropdownSQL</FieldName>
+    <Caption>Dropdown SQL</Caption>
+  </CiMemoField>
+  <CiTextField>
+    <FieldName>Code</FieldName>
+    <Caption>Code</Caption>
+    <Hidden>true</Hidden>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>Description</FieldName>
+    <Caption>Description</Caption>
+    <Hidden>true</Hidden>
+  </CiTextField>
+  <CiNumericField>
+    <FieldName>Columns</FieldName>
+    <Caption>Columns</Caption>
+  </CiNumericField>
+  <CiTextField>
+    <FieldName>Value</FieldName>
+    <Caption>Value</Caption>
+  </CiTextField>
+</CiTable>

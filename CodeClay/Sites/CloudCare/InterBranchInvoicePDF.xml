@@ -1,0 +1,47 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<XtraReportsLayoutSerializer SerializerVersion="18.1.5.0" Ref="1" ControlType="DevExpress.XtraReports.UI.XtraReport, DevExpress.XtraReports.v18.1, Version=18.1.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" Name="XtraReport" Margins="100, 100, 50, 0" PageWidth="850" PageHeight="1100" Version="18.1" DataSource="#Ref-0">
+  <Extensions>
+    <Item1 Ref="2" Key="DataSerializationExtension" Value="DataSetSerializer" />
+  </Extensions>
+  <Bands>
+    <Item1 Ref="3" ControlType="TopMarginBand" Name="TopMargin1" HeightF="50">
+      <Controls>
+        <Item1 Ref="4" ControlType="XRLabel" Name="label8" Multiline="true" Text="Total Price" TextAlignment="TopRight" SizeF="100,23" LocationFloat="550, 21.57" Padding="2,2,0,0,100">
+          <StylePriority Ref="5" UseTextAlignment="false" />
+        </Item1>
+        <Item2 Ref="6" ControlType="XRLabel" Name="label7" Multiline="true" Text="Item Description" SizeF="312,23" LocationFloat="210.41, 20.83" Padding="2,2,0,0,100" />
+        <Item3 Ref="7" ControlType="XRLabel" Name="label6" Multiline="true" Text="Line #" SizeF="84.04,23" LocationFloat="112.5, 20.83" Padding="2,2,0,0,100" />
+        <Item4 Ref="8" ControlType="XRLabel" Name="label5" Multiline="true" Text="Order #" SizeF="100,23" LocationFloat="0, 21.57" Padding="2,2,0,0,100" />
+      </Controls>
+    </Item1>
+    <Item2 Ref="9" ControlType="DetailBand" Name="Detail1" HeightF="28.91">
+      <Controls>
+        <Item1 Ref="10" ControlType="XRLabel" Name="label4" Multiline="true" Text="label4" TextAlignment="TopRight" SizeF="100,23" LocationFloat="550, 0" Padding="2,2,0,0,100">
+          <ExpressionBindings>
+            <Item1 Ref="11" Expression="[ReportFields.TotalPrice]" PropertyName="Text" EventName="BeforePrint" />
+          </ExpressionBindings>
+          <StylePriority Ref="12" UseTextAlignment="false" />
+        </Item1>
+        <Item2 Ref="13" ControlType="XRLabel" Name="label3" Multiline="true" Text="label3" SizeF="325.47,23" LocationFloat="210.41, 0" Padding="2,2,0,0,100">
+          <ExpressionBindings>
+            <Item1 Ref="14" Expression="[ReportFields.ItemDescription]" PropertyName="Text" EventName="BeforePrint" />
+          </ExpressionBindings>
+        </Item2>
+        <Item3 Ref="15" ControlType="XRLabel" Name="label2" Multiline="true" Text="label2" SizeF="84.05,23" LocationFloat="112.5, 0" Padding="2,2,0,0,100">
+          <ExpressionBindings>
+            <Item1 Ref="16" Expression="[ReportFields.LineNo]" PropertyName="Text" EventName="BeforePrint" />
+          </ExpressionBindings>
+        </Item3>
+        <Item4 Ref="17" ControlType="XRLabel" Name="label1" Multiline="true" Text="label1" SizeF="100,23" LocationFloat="0, 0" Padding="2,2,0,0,100">
+          <ExpressionBindings>
+            <Item1 Ref="18" Expression="[ReportFields.OrderNo]" PropertyName="Text" EventName="BeforePrint" />
+          </ExpressionBindings>
+        </Item4>
+      </Controls>
+    </Item2>
+    <Item3 Ref="19" ControlType="BottomMarginBand" Name="BottomMargin1" HeightF="0" Visible="false" />
+  </Bands>
+  <ObjectStorage>
+    <Item1 ObjectType="DevExpress.XtraReports.Serialization.ObjectStorageInfo, DevExpress.XtraReports.v18.1" Ref="0" Content="&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-16&quot;?&gt;&lt;NewDataSet&gt;&lt;xs:schema id=&quot;NewDataSet&quot; xmlns=&quot;&quot; xmlns:xs=&quot;http://www.w3.org/2001/XMLSchema&quot; xmlns:msdata=&quot;urn:schemas-microsoft-com:xml-msdata&quot;&gt;&lt;xs:element name=&quot;NewDataSet&quot; msdata:IsDataSet=&quot;true&quot; msdata:UseCurrentLocale=&quot;true&quot;&gt;&lt;xs:complexType&gt;&lt;xs:choice minOccurs=&quot;0&quot; maxOccurs=&quot;unbounded&quot;&gt;&lt;xs:element name=&quot;ReportFields&quot;&gt;&lt;xs:complexType&gt;&lt;xs:sequence&gt;&lt;xs:element name=&quot;OrderNo&quot; type=&quot;xs:int&quot; minOccurs=&quot;0&quot; /&gt;&lt;xs:element name=&quot;LineNo&quot; type=&quot;xs:int&quot; minOccurs=&quot;0&quot; /&gt;&lt;xs:element name=&quot;ItemDescription&quot; type=&quot;xs:string&quot; minOccurs=&quot;0&quot; /&gt;&lt;xs:element name=&quot;TotalPrice&quot; type=&quot;xs:decimal&quot; minOccurs=&quot;0&quot; /&gt;&lt;/xs:sequence&gt;&lt;/xs:complexType&gt;&lt;/xs:element&gt;&lt;/xs:choice&gt;&lt;/xs:complexType&gt;&lt;/xs:element&gt;&lt;/xs:schema&gt;&lt;ReportFields&gt;&lt;OrderNo&gt;1&lt;/OrderNo&gt;&lt;LineNo&gt;1&lt;/LineNo&gt;&lt;ItemDescription&gt;V-Flora Probiotic&lt;/ItemDescription&gt;&lt;TotalPrice&gt;0.00&lt;/TotalPrice&gt;&lt;/ReportFields&gt;&lt;ReportFields&gt;&lt;OrderNo&gt;2&lt;/OrderNo&gt;&lt;LineNo&gt;1&lt;/LineNo&gt;&lt;ItemDescription&gt;V-Flora Probiotic&lt;/ItemDescription&gt;&lt;TotalPrice&gt;0.00&lt;/TotalPrice&gt;&lt;/ReportFields&gt;&lt;ReportFields&gt;&lt;OrderNo&gt;3&lt;/OrderNo&gt;&lt;LineNo&gt;1&lt;/LineNo&gt;&lt;ItemDescription&gt;V-Flora Probiotic&lt;/ItemDescription&gt;&lt;TotalPrice&gt;0.00&lt;/TotalPrice&gt;&lt;/ReportFields&gt;&lt;ReportFields&gt;&lt;OrderNo&gt;6&lt;/OrderNo&gt;&lt;LineNo&gt;1&lt;/LineNo&gt;&lt;ItemDescription&gt;V-Flora Probiotic&lt;/ItemDescription&gt;&lt;TotalPrice&gt;0.00&lt;/TotalPrice&gt;&lt;/ReportFields&gt;&lt;ReportFields&gt;&lt;OrderNo&gt;6&lt;/OrderNo&gt;&lt;LineNo&gt;2&lt;/LineNo&gt;&lt;ItemDescription&gt;10 Pack Beeswax Wraps | The Mighty Bee Pack&lt;/ItemDescription&gt;&lt;TotalPrice&gt;0.00&lt;/TotalPrice&gt;&lt;/ReportFields&gt;&lt;ReportFields&gt;&lt;OrderNo&gt;7&lt;/OrderNo&gt;&lt;LineNo&gt;1&lt;/LineNo&gt;&lt;ItemDescription&gt;Keeko Morning Mint Oil Pulling&lt;/ItemDescription&gt;&lt;TotalPrice&gt;0.00&lt;/TotalPrice&gt;&lt;/ReportFields&gt;&lt;ReportFields&gt;&lt;OrderNo&gt;7&lt;/OrderNo&gt;&lt;LineNo&gt;2&lt;/LineNo&gt;&lt;ItemDescription&gt;Gentoo Glass (Grey&amp;amp;White) &lt;/ItemDescription&gt;&lt;TotalPrice&gt;0.00&lt;/TotalPrice&gt;&lt;/ReportFields&gt;&lt;ReportFields&gt;&lt;OrderNo&gt;9&lt;/OrderNo&gt;&lt;LineNo&gt;1&lt;/LineNo&gt;&lt;ItemDescription&gt;10 Pack Beeswax Wraps | The Mighty Bee Pack&lt;/ItemDescription&gt;&lt;TotalPrice&gt;0.00&lt;/TotalPrice&gt;&lt;/ReportFields&gt;&lt;ReportFields&gt;&lt;OrderNo&gt;15&lt;/OrderNo&gt;&lt;LineNo&gt;1&lt;/LineNo&gt;&lt;ItemDescription&gt;10 Pack Beeswax Wraps | The Mighty Bee Pack&lt;/ItemDescription&gt;&lt;TotalPrice&gt;0.00&lt;/TotalPrice&gt;&lt;/ReportFields&gt;&lt;ReportFields&gt;&lt;OrderNo&gt;19&lt;/OrderNo&gt;&lt;LineNo&gt;1&lt;/LineNo&gt;&lt;ItemDescription&gt;Baby Shusher&lt;/ItemDescription&gt;&lt;TotalPrice&gt;0.00&lt;/TotalPrice&gt;&lt;/ReportFields&gt;&lt;ReportFields&gt;&lt;OrderNo&gt;19&lt;/OrderNo&gt;&lt;LineNo&gt;2&lt;/LineNo&gt;&lt;ItemDescription&gt;Belly Blanket - Chic Cosmo&lt;/ItemDescription&gt;&lt;TotalPrice&gt;0.00&lt;/TotalPrice&gt;&lt;/ReportFields&gt;&lt;ReportFields&gt;&lt;OrderNo&gt;19&lt;/OrderNo&gt;&lt;LineNo&gt;3&lt;/LineNo&gt;&lt;ItemDescription&gt;Comvita Propolis Toothgel &lt;/ItemDescription&gt;&lt;TotalPrice&gt;0.00&lt;/TotalPrice&gt;&lt;/ReportFields&gt;&lt;ReportFields&gt;&lt;OrderNo&gt;25&lt;/OrderNo&gt;&lt;LineNo&gt;1&lt;/LineNo&gt;&lt;ItemDescription&gt;3 Pack Beeswax Wraps | Kitchen Basics Pack&lt;/ItemDescription&gt;&lt;TotalPrice&gt;374.11&lt;/TotalPrice&gt;&lt;/ReportFields&gt;&lt;ReportFields&gt;&lt;OrderNo&gt;28&lt;/OrderNo&gt;&lt;LineNo&gt;1&lt;/LineNo&gt;&lt;ItemDescription&gt;10 Pack Beeswax Wraps | The Mighty Bee Pack&lt;/ItemDescription&gt;&lt;TotalPrice&gt;170.00&lt;/TotalPrice&gt;&lt;/ReportFields&gt;&lt;/NewDataSet&gt;" Type="System.Data.DataSet" />
+  </ObjectStorage>
+</XtraReportsLayoutSerializer>

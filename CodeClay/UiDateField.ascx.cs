@@ -14,6 +14,18 @@ namespace CodeClay
         // Methods (Override)
         // --------------------------------------------------------------------------------------------------
 
+        public override Type GetNativeType(object fieldValue)
+        {
+            return typeof(DateTime);
+        }
+
+        public override object GetNativeValue(object fieldValue)
+        {
+            return !MyUtils.IsEmpty(fieldValue)
+                ? Convert.ToDateTime(fieldValue)
+                : Convert.DBNull;
+        }
+
         public override string GetUiPluginName()
         {
             if (!Enabled)

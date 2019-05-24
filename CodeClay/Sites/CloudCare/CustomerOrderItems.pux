@@ -36,19 +36,23 @@
     <Caption>Price ($)</Caption>
     <Width>20</Width>
     <Mask>Currency</Mask>
-    <Editable>false</Editable>
+    <Editable>true</Editable>
   </CiTextField>
+  <CiCheckField>
+    <FieldName>DropShipping</FieldName>
+    <Caption>Drop Shipping</Caption>
+  </CiCheckField>
   <DefaultMacro>
-		<ActionSQL>
+	<ActionSQL>
       select coalesce(1 + max(CustomerOrderItemNo), 1) as CustomerOrderItemNo,
              @CustomerOrderNo as CustomerOrderNo
       from CustomerOrderItems
       where CustomerOrderNo = @CustomerOrderNo
     </ActionSQL>
-	</DefaultMacro>
-	<SelectMacro>
+  </DefaultMacro>
+  <SelectMacro>
 		<ActionSQL>?exec spCustomerOrderItems_selbyCustomerOrderNo @CustomerOrderNo</ActionSQL>
-	</SelectMacro>
+   </SelectMacro>
 	<InsertMacro>
 		<ActionSQL>
         select coalesce(1 + max(CustomerOrderItemNo), 1) as CustomerOrderItemNo
@@ -62,7 +66,8 @@
           @CurrentProductID,
           @ProductID,
           @Quantity,
-          @Amount
+          @Amount,
+          @DropShipping
     </ActionSQL>
     <VisibleSQL>select 1 from CustomerOrders where CustomerOrderNo = @CustomerOrderNo and Status not in ('Dispatched','Cancelled')</VisibleSQL>
 	</InsertMacro>
@@ -74,7 +79,8 @@
           @CurrentProductID,
           @ProductID,
           @Quantity,
-          @Amount
+          @Amount,
+          @DropShipping
     </ActionSQL>
     <VisibleSQL>
         select 1 from CustomerOrderItems COI

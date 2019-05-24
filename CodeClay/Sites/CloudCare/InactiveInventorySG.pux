@@ -2,7 +2,7 @@
 <CiTable>
   <TableName>InactiveInventorySG</TableName>
   <TableCaption>Inventory SG (Inactive)</TableCaption>
-  <RowKey>InventoryItemNo</RowKey>
+  <RowKey>InventoryItemNo,ProductID,BranchCode</RowKey>
   <DefaultView>Grid</DefaultView>
   <CiTextField>
     <FieldName>InventoryItemNo</FieldName>
@@ -66,6 +66,11 @@
     <Caption>Qty Over Received</Caption>
     <Editable>false</Editable>
   </CiNumericField>
+  <CiTable Src="InactiveInventory.pux">
+    <SelectMacro>
+       <ActionSQL>?exec spInventory_Inactive_sel @ProductID,@BranchCode</ActionSQL>
+    </SelectMacro>
+  </CiTable>
   <DefaultMacro>
 	<ActionSQL>
       select 

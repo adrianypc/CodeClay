@@ -2,7 +2,7 @@
 <CiApplication>
   <IsDesigner>true</IsDesigner>
   <ProviderName>System.Data.SqlClient</ProviderName>
-  <ConnectionString>Integrated Security=SSPI;Initial Catalog=CloudCare;Data Source=(localdb)\ProjectsV13;AttachDBFilename=C:\Users\adrianypc\Documents\Databases\CloudCare.mdf</ConnectionString>
+  <ConnectionString>Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\adrianypc\Documents\Databases\CloudCare.mdf;Initial Catalog=CloudCare;Integrated Security=True;Connect Timeout=30</ConnectionString>
   <HomePluginSrc>CurrentCustomerOrders.pux</HomePluginSrc>
   <CiMenu>
     <MenuName>Application</MenuName>
@@ -48,6 +48,17 @@
           </CiMenu>
       </CiMenu>
       <CiMenu>
+          <MenuName>Inter-Branch Invoices</MenuName>
+          <CiMenu>
+              <MenuName>Current</MenuName>
+              <PluginSrc>InterBranchInvoice.pux</PluginSrc>
+          </CiMenu>
+          <CiMenu>
+              <MenuName>Historical</MenuName>
+              <PluginSrc>HistoricalInterBranchInvoices.pux</PluginSrc>
+          </CiMenu>
+      </CiMenu>
+      <CiMenu>
           <MenuName>Inventory</MenuName>
           <CiMenu>
               <MenuName>Inventory AU (Active)</MenuName>
@@ -65,6 +76,10 @@
               <MenuName>Inventory SG (Inactive)</MenuName>
               <PluginSrc>InactiveInventorySG.pux</PluginSrc>
           </CiMenu>
+      </CiMenu>
+      <CiMenu>
+          <MenuName>Quarterly Customer Sale Report</MenuName>
+          <PluginSrc>CustomerSalesReport.pux</PluginSrc>
       </CiMenu>
       <CiMenu>
           <MenuName>Setup</MenuName>

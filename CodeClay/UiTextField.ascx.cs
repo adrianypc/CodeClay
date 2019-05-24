@@ -2,6 +2,7 @@
 using System.Web.UI.WebControls;
 
 // Extra references
+using CodistriCore;
 using DevExpress.Web;
 using System.Drawing;
 using System.Xml.Serialization;
@@ -14,6 +15,30 @@ namespace CodeClay
         // --------------------------------------------------------------------------------------------------
         // Methods (Override)
         // --------------------------------------------------------------------------------------------------
+
+        public override Type GetNativeType(object fieldValue)
+        {
+            if (Mask == eTextMask.Currency)
+            {
+                return typeof(decimal);
+            }
+
+            return base.GetNativeType(fieldValue);
+        }
+
+        public override object GetNativeValue(object fieldValue)
+        {
+            fieldValue = base.GetNativeValue(fieldValue);
+
+            if (Mask == eTextMask.Currency)
+            {
+                fieldValue = !MyUtils.IsEmpty(fieldValue)
+                    ? Convert.ToDecimal(fieldValue)
+                    : Convert.DBNull;
+            }
+
+            return fieldValue;
+        }
 
         public override CardViewColumn CreateCardColumn(UiTable uiTable)
         {

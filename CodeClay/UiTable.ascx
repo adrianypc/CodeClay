@@ -30,6 +30,7 @@
     OnInit="dxSearch_Init" OnLoad="dxSearch_Load" OnCustomJSProperties="dxSearch_CustomJSProperties"
     OnInitNewCard="dxSearch_InitNewCard" OnCardInserting="dxSearch_CardInserting" OnCancelCardEditing="dxSearch_CancelCardEditing">
     <ClientSideEvents Init="dxSearch_Init" />
+    <ClientSideEvents EndCallback="dxSearch_EndCallback" />
     <ClientSideEvents ToolbarItemClick="dxSearch_ToolbarItemClick" />
     <Settings ShowTitlePanel="true" />
     <SettingsBehavior AllowFocusedCard="true" AllowSelectByCardClick="true" ConfirmDelete="true"  />
@@ -52,12 +53,12 @@
                 <dx:CardViewToolbarItem Name="More" Text="More">
                     <Items>
                         <dx:CardViewToolbarItem Name="Inspect" Text="Inspect" />
-                        <dx:CardViewToolbarItem Name="DownloadPUX" Text="Download PUX" Command="Custom" Target="_blank" />
+                        <dx:CardViewToolbarItem Name="Designer" Text="Designer" Command="Custom" Target="_blank" />
                     </Items>
                 </dx:CardViewToolbarItem>
                 <dx:CardViewToolbarItem Name="Divider" Text="" Enabled="false" ItemStyle-Width="100%" />
-                <dx:CardViewToolbarItem Name="Update" Command="Update" Text="Ok" />
-                <dx:CardViewToolbarItem Name="Cancel" Command="Cancel" />
+                <dx:CardViewToolbarItem Name="Update" Command="Update" Text="Accept" Image-IconID="actions_apply_16x16" />
+                <dx:CardViewToolbarItem Name="Cancel" Command="Cancel" Image-IconID="actions_cancel_16x16" />
             </Items>
         </dx:CardViewToolbar>
     </Toolbars>
@@ -96,16 +97,16 @@
                     <Items>
                         <dx:CardViewToolbarItem Name="Inspect" Text="Inspect" />
                         <dx:CardViewToolbarItem Name="ExportToPdf" Command="ExportToPdf" />
-                        <dx:CardViewToolbarItem Name="DownloadPUX" Text="Download PUX" Command="Custom" Target="_blank" />
+                        <dx:CardViewToolbarItem Name="Designer" Text="Designer" Command="Custom" Target="_blank" />
                     </Items>
                 </dx:CardViewToolbarItem>
-                <dx:CardViewToolbarItem Name="Divider" Text="" Enabled="false" ItemStyle-Width="100%" />
                 <dx:CardViewToolbarItem Name="Search" Text="Search" />
                 <dx:CardViewToolbarItem Name="New" Command="New"/>
                 <dx:CardViewToolbarItem Name="Edit" Command="Edit"/>
                 <dx:CardViewToolbarItem Name="Delete" Command="Delete"/>
-                <dx:CardViewToolbarItem Name="Update" Command="Update" Text="Ok" />
-                <dx:CardViewToolbarItem Name="Cancel" Command="Cancel"/>
+                <dx:CardViewToolbarItem Name="Divider" Text="" Enabled="false" ItemStyle-Width="100%" />
+                <dx:CardViewToolbarItem Name="Update" Command="Update" Text="Accept" Image-IconID="actions_apply_16x16" />
+                <dx:CardViewToolbarItem Name="Cancel" Command="Cancel" Image-IconID="actions_cancel_16x16" />
             </Items>
         </dx:CardViewToolbar>
     </Toolbars>
@@ -147,7 +148,7 @@
     <SettingsLoadingPanel Mode="ShowAsPopup" />
     <SettingsPager Mode="ShowAllRecords" />
     <SettingsText Title="Loading screen ..." />
-    <SettingsExport EnableClientSideExportAPI="true" />
+    <SettingsExport EnableClientSideExportAPI="true" ExcelExportMode="WYSIWYG" />
     <Styles>
         <LoadingPanel CssClass="cssLoadingPanel" HorizontalAlign="Center" VerticalAlign="Middle" />
         <TitlePanel Font-Bold="true" />
@@ -162,16 +163,17 @@
                     <Items>
                         <dx:GridViewToolbarItem Name="Inspect" Text="Inspect" />
                         <dx:GridViewToolbarItem Name="ExportToPdf" Command="ExportToPdf" />
-                        <dx:GridViewToolbarItem Name="DownloadPUX" Text="Download PUX" Command="Custom" Target="_blank" />
+                        <dx:GridViewToolbarItem Name="ExportToXlsx" Command="ExportToXlsx" />
+                        <dx:GridViewToolbarItem Name="Designer" Text="Designer" Command="Custom" Target="_blank" />
                     </Items>
                 </dx:GridViewToolbarItem>
-                <dx:GridViewToolbarItem Name="Divider" Text="" Enabled="false"  ItemStyle-Width="100%" />
                 <dx:GridViewToolbarItem Name="Search" Text="Search" />
                 <dx:GridViewToolbarItem Name="New" Command="New" />
                 <dx:GridViewToolbarItem Name="Edit" Command="Edit" />
                 <dx:GridViewToolbarItem Name="Delete" Command="Delete" />
-                <dx:GridViewToolbarItem Name="Update" Command="Update" Text="Ok" />
-                <dx:GridViewToolbarItem Name="Cancel" Command="Cancel" />
+                <dx:GridViewToolbarItem Name="Divider" Text="" Enabled="false"  ItemStyle-Width="100%" />
+                <dx:GridViewToolbarItem Name="Update" Command="Update" Text="Accept" Image-IconID="actions_apply_16x16" />
+                <dx:GridViewToolbarItem Name="Cancel" Command="Cancel" Image-IconID="actions_cancel_16x16" />
             </Items>
         </dx:GridViewToolbar>
     </Toolbars>

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Configuration;
+using System.Net.Configuration;
 using System.Net.Mail;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -8,6 +9,8 @@ using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin;
 using Microsoft.Owin.Security;
+
+// Extra references
 using CodeClay.Models;
 
 namespace CodeClay
@@ -16,16 +19,22 @@ namespace CodeClay
     {
         public Task SendAsync(IdentityMessage message)
         {
-            // Plug in your email service here to send an email.
+            SmtpSection secObj = (SmtpSection)ConfigurationManager.GetSection("system.net/mailSettings/smtp");
             SmtpClient client = new SmtpClient();
 
-            MailMessage mail = new MailMessage("hello@benatural.com.sg", message.Destination);
-            mail.Subject = message.Subject;
-            mail.Body = message.Body;
-            mail.IsBodyHtml = true;
+            // Specify the from and to email address
+            MailMessage mailMessage = new MailMessage(secObj.From, message.Destination);
 
-            return client.SendMailAsync(mail);
-            //return Task.FromResult(0);
+            // Specify the email body
+            mailMessage.IsBodyHtml = true;
+            mailMessage.Body = message.Body;
+
+            // Specify the email Subject
+            mailMessage.Subject = message.Subject;
+
+            client.Send(mailMessage);
+
+            return Task.FromResult(0);
         }
     }
 

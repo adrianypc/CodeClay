@@ -69,13 +69,13 @@ namespace CodeClay
 
         public static  string GetResetPasswordRedirectUrl(string code, HttpRequest request)
         {
-            var absoluteUri = "/Account/ResetPassword?" + CodeKey + "=" + HttpUtility.UrlEncode(code);
+            var absoluteUri = GetApplicationAccountUrl(request) + "ResetPassword?" + CodeKey + "=" + HttpUtility.UrlEncode(code);
             return new Uri(request.Url, absoluteUri).AbsoluteUri.ToString();
         }
 
         public static  string GetUserConfirmationRedirectUrl(string code, string userId, HttpRequest request)
         {
-            var absoluteUri = "/Account/Confirm?" + CodeKey + "=" + HttpUtility.UrlEncode(code) + "&" + UserIdKey + "=" + HttpUtility.UrlEncode(userId);
+            var absoluteUri = GetApplicationAccountUrl(request) + "Confirm?" + CodeKey + "=" + HttpUtility.UrlEncode(code) + "&" + UserIdKey + "=" + HttpUtility.UrlEncode(userId);
             return new Uri(request.Url, absoluteUri).AbsoluteUri.ToString();
         }
 
@@ -94,6 +94,17 @@ namespace CodeClay
             {
                 response.Redirect("~/");
             }
+        }
+
+        private static string GetApplicationAccountUrl(HttpRequest request)
+        {
+            string url = request.Url.ToString();
+            string accountFolderName = "/Account/";
+
+            int pos = url.IndexOf(accountFolderName);
+            url = url.Substring(0, pos);
+
+            return url + accountFolderName;
         }
     }
 }

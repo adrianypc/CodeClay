@@ -232,6 +232,7 @@
     <Content Include="Account\TwoFactorAuthenticationSignIn.aspx" />
     <Content Include="Account\VerifyPhoneNumber.aspx" />
     <Content Include="CodeClay.css" />
+    <Content Include="PluginScripts\UiSerializeMacro.js" />
     <Content Include="PluginScripts\UiLinkField.js" />
     <Content Include="PluginScripts\UiButtonField.js" />
     <Content Include="PluginScripts\UiRadioField.js" />
@@ -245,6 +246,7 @@
     <Content Include="PluginScripts\UiCheckField.js" />
     <Content Include="PluginScripts\UiComboField.js" />
     <Content Include="PluginScripts\UiField.js" />
+    <Content Include="UiSerializeMacro.ascx" />
     <Content Include="UiLinkField.ascx" />
     <Content Include="UiFieldExitMacro.ascx" />
     <Content Include="UiButtonField.ascx" />
@@ -327,6 +329,9 @@
     <Content Include="Scripts\jquery-1.10.2.min.map" />
     <Content Include="Site.Mobile.Master" />
     <Content Include="Site.Popup.Master" />
+    <Content Include="Sites\TaskTracker\Dropdown.pux">
+      <SubType>Designer</SubType>
+    </Content>
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
       <SubType>Designer</SubType>
@@ -459,6 +464,12 @@
     </Compile>
     <Compile Include="Site.Popup.Master.designer.cs">
       <DependentUpon>Site.Popup.Master</DependentUpon>
+    </Compile>
+    <Compile Include="UiSerializeMacro.ascx.cs">
+      <DependentUpon>UiSerializeMacro.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UiSerializeMacro.ascx.designer.cs">
+      <DependentUpon>UiSerializeMacro.ascx</DependentUpon>
     </Compile>
     <Compile Include="UiLinkField.ascx.cs">
       <DependentUpon>UiLinkField.ascx</DependentUpon>
@@ -626,7 +637,6 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="SavedFiles\" />
-    <Folder Include="Sites\TaskTracker\" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201511231154443_Initial.resx">

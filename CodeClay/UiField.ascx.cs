@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
+using System.Linq;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Xml;
+using System.Xml.Linq;
 using System.Xml.Serialization;
 
 // Extra references
@@ -219,6 +222,16 @@ namespace CodeClay
         // Methods (Virtual)
         // --------------------------------------------------------------------------------------------------
 
+        public virtual Type GetNativeType(object fieldValue)
+        {
+            return (!MyUtils.IsEmpty(fieldValue)) ? fieldValue.GetType() : typeof(string);
+        }
+
+        public virtual object GetNativeValue(object fieldValue)
+        {
+            return fieldValue;
+        }
+
         public virtual bool IsEditable(DataRow drParams)
         {
             return IsSearching || (Enabled && MyWebUtils.Eval<bool>(Editable, drParams));
@@ -265,36 +278,33 @@ namespace CodeClay
 				dxColumn.Caption = Caption;
 				dxColumn.Width = ColumnWidth;
 
-				if (IsVisible)
-				{
-                    CardViewFormLayoutProperties layoutProperties = dxColumn.CardView.CardLayoutProperties;
-                    CardViewColumnLayoutItem dxLayoutItem = layoutProperties.FindColumnItem(fieldName) as CardViewColumnLayoutItem;
+                CardViewFormLayoutProperties layoutProperties = dxColumn.CardView.CardLayoutProperties;
+                CardViewColumnLayoutItem dxLayoutItem = layoutProperties.FindColumnItem(fieldName) as CardViewColumnLayoutItem;
 
-                    if (dxLayoutItem == null)
-                    {
-                        dxLayoutItem = new CardViewColumnLayoutItem();
-                        dxLayoutItem.Name = fieldName;
-                        dxLayoutItem.ColumnName = fieldName;
-                        layoutProperties.Items.Add(dxLayoutItem);
-                    }
+                if (dxLayoutItem == null)
+                {
+                    dxLayoutItem = new CardViewColumnLayoutItem();
+                    dxLayoutItem.Name = fieldName;
+                    dxLayoutItem.ColumnName = fieldName;
+                    layoutProperties.Items.Add(dxLayoutItem);
+                }
 
-                    dxLayoutItem.Visible = IsVisible;
-					dxLayoutItem.Caption = (Caption == "*") ? "" : Caption;
-					dxLayoutItem.RowSpan = RowSpan;
-					dxLayoutItem.ColSpan = ColSpan;
-					dxLayoutItem.Width = ColumnWidth;
-					dxLayoutItem.HorizontalAlign = HorizontalAlign;
-					dxLayoutItem.VerticalAlign = VerticalAlign;
-					dxLayoutItem.ShowCaption = !MyUtils.IsEmpty(Caption)
-						? DevExpress.Utils.DefaultBoolean.True
-						: DevExpress.Utils.DefaultBoolean.False;
-					dxLayoutItem.NestedControlCellStyle.CssClass =
-						HasBorder(dxColumn.CardView.NamingContainer as UiTable)
-						? "cssFieldBorderStyle"
-						: "";
-				}
+                dxLayoutItem.Visible = IsVisible;
+                dxLayoutItem.Caption = (Caption == "*") ? "" : Caption;
+                dxLayoutItem.RowSpan = RowSpan;
+                dxLayoutItem.ColSpan = ColSpan;
+                dxLayoutItem.Width = ColumnWidth;
+                dxLayoutItem.HorizontalAlign = HorizontalAlign;
+                dxLayoutItem.VerticalAlign = VerticalAlign;
+                dxLayoutItem.ShowCaption = !MyUtils.IsEmpty(Caption)
+                    ? DevExpress.Utils.DefaultBoolean.True
+                    : DevExpress.Utils.DefaultBoolean.False;
+                dxLayoutItem.NestedControlCellStyle.CssClass =
+                    HasBorder(dxColumn.CardView.NamingContainer as UiTable)
+                    ? "cssFieldBorderStyle"
+                    : "";
 
-				DevExpress.Data.SummaryItemType summaryItemType = Summary;
+                DevExpress.Data.SummaryItemType summaryItemType = Summary;
 				if (summaryItemType != DevExpress.Data.SummaryItemType.None)
 				{
 					ASPxCardViewSummaryItem item = new ASPxCardViewSummaryItem(FieldName, summaryItemType);
@@ -398,7 +408,7 @@ namespace CodeClay
                         fieldValue = CiField.ToString(fieldValue);
                     }
 
-                    fieldValue = MyUtils.Coalesce(fieldValue, CiField.DefaultValue);
+                    fieldValue = MyUtils.Coalesce(fieldValue, CiField.Value);
                 }
 
                 return fieldValue;
@@ -630,6 +640,159 @@ namespace CodeClay
             }
 
             return backColor;
+        }
+    }
+    
+    public class XiField : XiPlugin
+    {
+        // --------------------------------------------------------------------------------------------------
+        // Constructor
+        // --------------------------------------------------------------------------------------------------
+
+        public XiField()
+        {
+            PluginType = typeof(CiField);
+        }
+
+        // --------------------------------------------------------------------------------------------------
+        // Properties
+        // --------------------------------------------------------------------------------------------------
+
+        public bool IsRowKeyChecked { get; set; } = false;
+
+        // --------------------------------------------------------------------------------------------------
+        // Methods (Override)
+        // --------------------------------------------------------------------------------------------------
+
+        protected override string GetPluginTypeName(DataRow drPluginDefinition)
+        {
+            string pluginTypeName = "CiField";
+
+            if (drPluginDefinition.Table.Columns.Contains("Type"))
+            {
+                object objFieldType = MyUtils.Coalesce(drPluginDefinition["Type"], "");
+
+                pluginTypeName = "Ci" + objFieldType.ToString() + "Field";
+            }
+
+            return pluginTypeName;
+        }
+
+        protected override DataTable GetPluginDefinitions(DataRow drPluginKey)
+        {
+            return MyWebUtils.GetBySQL("?exec spField_sel @AppID, @TableID", drPluginKey, true);
+        }
+
+        protected override List<XElement> GetPluginDefinitions(List<XElement> xElements)
+        {
+            if (xElements != null)
+            {
+                return xElements.FindAll(el => el.Name.ToString().EndsWith("Field"));
+            }
+
+            return null;
+        }
+
+        protected override void DeletePluginDefinitions(DataRow drPluginKey)
+        {
+            MyWebUtils.GetBySQL("exec spField_del @AppID, @TableID", drPluginKey, true);
+        }
+
+        protected override void WriteToDB(DataRow drPluginDefinition)
+        {
+            string insertColumnNames = "@AppID, @TableID, @FieldName, @Caption, @Type, @Width, @InRowKey";
+            string insertSQL = string.Format("?exec spField_ins {0}", insertColumnNames);
+
+            object objFieldID = MyWebUtils.EvalSQL(insertSQL, drPluginDefinition, true);
+            if (!MyUtils.IsEmpty(objFieldID))
+            {
+                drPluginDefinition["FieldID"] = objFieldID;
+
+                string updateColumnNames = "@AppID, @TableID, @FieldID, @FieldName, @Mandatory" +
+                    ", @Summary, @ForeColor, @RowSpan, @ColSpan, @Width, @HorizontalAlign" +
+                    ", @VerticalAlign, @Value, @DropdownSQL, @InsertSQL, @Code, @Description" +
+                    ", @DropdownWidth, @Folder, @MinValue, @MaxValue, @Columns";
+                string updateSQL = string.Format("exec spField_updLong {0}", updateColumnNames);
+
+                MyWebUtils.GetBySQL(updateSQL, drPluginDefinition, true);
+            }
+        }
+
+        protected override void DownloadDerivedValues(DataRow drPluginDefinition, XElement xPluginDefinition)
+        {
+            if (drPluginDefinition != null && xPluginDefinition != null && !IsRowKeyChecked)
+            {
+                IsRowKeyChecked = true;
+
+                DataTable dtParent = drPluginDefinition.Table;
+                XElement xParent = xPluginDefinition.Parent;
+
+                if (dtParent != null && xParent != null)
+                {
+                    XElement xRowKey = xParent.Element("RowKey");
+                    if (xRowKey != null)
+                    {
+                        string rowKey = xRowKey.Value;
+
+                        foreach (DataRow drField in dtParent.Rows)
+                        {
+                            object objInRowKey = drField["InRowKey"];
+                            bool inRowKey = false;
+
+                            if (!MyUtils.IsEmpty(objInRowKey))
+                            {
+                                inRowKey = Convert.ToBoolean(objInRowKey);
+                            }
+
+                            if (inRowKey)
+                            {
+                                if (!MyUtils.IsEmpty(rowKey))
+                                {
+                                    rowKey += ",";
+                                }
+
+                                rowKey += drField["FieldName"];
+
+                                xRowKey.Value = rowKey;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        protected override void UploadDerivedValues(DataRow drPluginDefinition, XElement xPluginDefinition)
+        {
+            DataColumnCollection dcPluginColumns = drPluginDefinition.Table.Columns;
+
+            if (drPluginDefinition != null && xPluginDefinition != null)
+            {
+                if (dcPluginColumns.Contains("Type"))
+                {
+                    string fieldType = xPluginDefinition.Name.ToString();
+                    drPluginDefinition["Type"] = fieldType.Substring(2, fieldType.Length - 7);
+                }
+
+                if (dcPluginColumns.Contains("InRowKey"))
+                {
+                    XElement xFieldName = xPluginDefinition.Element("FieldName");
+
+                    XElement xParentPluginDefinition = xPluginDefinition.Parent;
+
+                    if (xParentPluginDefinition != null)
+                    {
+                        XElement xRowKey = xParentPluginDefinition.Element("RowKey");
+                        if (xRowKey != null)
+                        {
+                            string[] rowKeyNames = xRowKey.Value.Split(',');
+
+                            drPluginDefinition["InRowKey"] = (xFieldName != null) &&
+                                (rowKeyNames != null) &&
+                                rowKeyNames.Contains(xFieldName.Value);
+                        }
+                    }
+                }
+            }
         }
     }
 }

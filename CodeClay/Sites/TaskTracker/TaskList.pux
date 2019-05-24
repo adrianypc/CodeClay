@@ -1,55 +1,172 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <CiTable>
-	<TableName>TaskList</TableName>
-	<TableCaption>Task List</TableCaption>
-	<DefaultView>Grid</DefaultView>
+  <TableName>TaskList</TableName>
+  <TableCaption>My Task List</TableCaption>
+  <DefaultView>Grid</DefaultView>
+  <LayoutUrl></LayoutUrl>
+  <PageSize>100</PageSize>
+  <ColCount>3</ColCount>
+  <BubbleUpdate>false</BubbleUpdate>
+  <QuickInsert>false</QuickInsert>
+  <InsertRowAtBottom>true</InsertRowAtBottom>
   <RowKey>TaskID</RowKey>
   <CiField>
     <FieldName>TaskID</FieldName>
     <Caption>Task ID</Caption>
+    <Hidden>false</Hidden>
+    <Editable>true</Editable>
+    <Mandatory>false</Mandatory>
+    <Computed>false</Computed>
+    <Searchable>false</Searchable>
+    <Browsable>true</Browsable>
+    <Summary>None</Summary>
+    <ForeColor></ForeColor>
+    <RowSpan>1</RowSpan>
+    <ColSpan>1</ColSpan>
+    <Width>5</Width>
+    <HorizontalAlign>Left</HorizontalAlign>
+    <VerticalAlign>Top</VerticalAlign>
+    <Value></Value>
   </CiField>
   <CiTextField>
     <FieldName>TaskDescription</FieldName>
     <Caption>Task Description</Caption>
+    <Hidden>false</Hidden>
+    <Editable>true</Editable>
+    <Mandatory>true</Mandatory>
+    <Computed>false</Computed>
+    <Searchable>false</Searchable>
+    <Browsable>true</Browsable>
+    <Summary>None</Summary>
+    <ForeColor></ForeColor>
+    <RowSpan>1</RowSpan>
+    <ColSpan>1</ColSpan>
+    <Width>35</Width>
+    <HorizontalAlign>Left</HorizontalAlign>
+    <VerticalAlign>Top</VerticalAlign>
+    <Value>Create ...</Value>
   </CiTextField>
+  <CiComboField>
+    <FieldName>TaskType</FieldName>
+    <Caption>Task Type</Caption>
+    <Hidden>false</Hidden>
+    <Editable>true</Editable>
+    <Mandatory>true</Mandatory>
+    <Computed>false</Computed>
+    <Searchable>false</Searchable>
+    <Browsable>true</Browsable>
+    <Summary>None</Summary>
+    <ForeColor></ForeColor>
+    <RowSpan>2</RowSpan>
+    <ColSpan>1</ColSpan>
+    <Width>15</Width>
+    <HorizontalAlign>Left</HorizontalAlign>
+    <VerticalAlign>Top</VerticalAlign>
+    <Value>DEV</Value>
+    <DropdownSQL>select Description from Dropdown where Category = 'TaskType' order by Code</DropdownSQL>
+    <InsertSQL>insert into Dropdown (Code, Description, Category) values (@TaskType, @TaskType, 'TaskType')</InsertSQL>
+    <Code></Code>
+    <Description></Description>
+    <DropdownWidth>200</DropdownWidth>
+  </CiComboField>
   <CiComboField>
     <FieldName>Status</FieldName>
     <Caption>Status</Caption>
-    <DropdownSQL>select Description from Dropdown where Category = 'Status' order by Code</DropdownSQL>
+    <Hidden>false</Hidden>
+    <Editable>true</Editable>
+    <Mandatory>false</Mandatory>
+    <Computed>false</Computed>
+    <Searchable>false</Searchable>
+    <Browsable>true</Browsable>
+    <Summary>None</Summary>
+    <ForeColor></ForeColor>
+    <RowSpan>2</RowSpan>
+    <ColSpan>1</ColSpan>
+    <Width>10</Width>
+    <HorizontalAlign>Left</HorizontalAlign>
+    <VerticalAlign>Top</VerticalAlign>
+    <Value></Value>
+    <DropdownSQL>select Description from Dropdown where Category = 'TaskStatus' order by Code</DropdownSQL>
+    <InsertSQL></InsertSQL>
+    <Code></Code>
+    <Description></Description>
+    <DropdownWidth>0</DropdownWidth>
   </CiComboField>
+  <CiMemoField>
+    <FieldName>Notes</FieldName>
+    <Caption>Notes</Caption>
+    <Hidden>false</Hidden>
+    <Editable>true</Editable>
+    <Mandatory>false</Mandatory>
+    <Computed>false</Computed>
+    <Searchable>false</Searchable>
+    <Browsable>true</Browsable>
+    <Summary>None</Summary>
+    <ForeColor></ForeColor>
+    <RowSpan>1</RowSpan>
+    <ColSpan>1</ColSpan>
+    <Width>25</Width>
+    <HorizontalAlign>Left</HorizontalAlign>
+    <VerticalAlign>Top</VerticalAlign>
+    <Value></Value>
+  </CiMemoField>
+  <CiDateField>
+    <FieldName>EndDate</FieldName>
+    <Caption>Due Date</Caption>
+    <Hidden>false</Hidden>
+    <Editable>true</Editable>
+    <Mandatory>false</Mandatory>
+    <Computed>false</Computed>
+    <Searchable>false</Searchable>
+    <Browsable>true</Browsable>
+    <Summary>None</Summary>
+    <ForeColor></ForeColor>
+    <RowSpan>1</RowSpan>
+    <ColSpan>1</ColSpan>
+    <Width>10</Width>
+    <HorizontalAlign>Left</HorizontalAlign>
+    <VerticalAlign>Top</VerticalAlign>
+    <Value></Value>
+  </CiDateField>
   <SelectMacro>
-    <ActionSQL>
-      select  TaskID,
-              TaskDescription,
-              Status
-      from    Tasks
-      order by TaskID
-    </ActionSQL>
+    <MacroName>Select</MacroName>
+    <Caption>-</Caption>
+    <NavigateUrl></NavigateUrl>
+    <NavigatePos></NavigatePos>
+    <Confirm>false</Confirm>
+    <ActionSQL>select TaskID, TaskDescription, TaskType, Status, Project, EndDate, Billable, Hours, Notes from Tasks order by TaskID</ActionSQL>
   </SelectMacro>
-  <InsertMacro>
-    <ActionSQL>select isnull(max(TaskID), 0) + 1 as TaskID from Tasks</ActionSQL>
-    <ActionSQL>
-      insert into Tasks
-      ( TaskID,
-        TaskDescription,
-        ActionBy,
-        Status
-      )
-      values
-      ( @TaskID,
-        @TaskDescription,
-        @ActionBy,
-        @Status
-      )
-    </ActionSQL>
-  </InsertMacro>
   <UpdateMacro>
-    <ActionSQL>
-      update Tasks
-      set     TaskDescription = @TaskDescription,
-              ActionBy = @ActionBy,
-              Status = @Status
-      where   TaskID = @TaskID
-    </ActionSQL>
+    <MacroName>Update</MacroName>
+    <Caption>-</Caption>
+    <NavigateUrl></NavigateUrl>
+    <NavigatePos></NavigatePos>
+    <Confirm>false</Confirm>
+    <ActionSQL>update Tasks set TaskDescription = @TaskDescription, TaskType = @TaskType, Status = @Status, Project = @Project, EndDate = @EndDate, Billable = @Billable, Hours = @Hours, Notes = @Notes where TaskID = @TaskID</ActionSQL>
   </UpdateMacro>
+  <DeleteMacro>
+    <MacroName>Delete</MacroName>
+    <Caption>-</Caption>
+    <NavigateUrl></NavigateUrl>
+    <NavigatePos></NavigatePos>
+    <Confirm>false</Confirm>
+    <ActionSQL>delete from Tasks where TaskID = @TaskID</ActionSQL>
+  </DeleteMacro>
+  <InsertMacro>
+    <MacroName>Insert</MacroName>
+    <Caption>-</Caption>
+    <NavigateUrl></NavigateUrl>
+    <NavigatePos></NavigatePos>
+    <Confirm>false</Confirm>
+    <ActionSQL>select isnull(max(TaskID), 0) + 1 as TaskID from Tasks</ActionSQL>
+    <ActionSQL>insert into Tasks (TaskID, TaskDescription, TaskType, Status, Project, EndDate, Billable, Hours, Notes) values (@TaskID, @TaskDescription, @TaskType, @Status, @Project, @EndDate, @Billable, @Hours, @Notes)</ActionSQL>
+  </InsertMacro>
+  <CompleteMacro>
+    <MacroName>Complete</MacroName>
+    <Caption>Complete Task</Caption>
+    <NavigateUrl></NavigateUrl>
+    <NavigatePos></NavigatePos>
+    <Confirm>true</Confirm>
+    <ActionSQL>update Tasks set Status = 'Complete' where TaskID = @TaskID</ActionSQL>
+  </CompleteMacro>
 </CiTable>

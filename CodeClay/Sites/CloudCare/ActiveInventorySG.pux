@@ -1,73 +1,80 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="utf-8" ?>
 <CiTable>
-   <TableName>ActiveInventorySG</TableName>
-   <TableCaption>Inventory SG (Active)</TableCaption>
-   <RowKey>InventoryItemNo</RowKey>
-   <DefaultView>Grid</DefaultView>
-   <CiTextField>
-      <FieldName>InventoryItemNo</FieldName>
-      <Hidden>true</Hidden>
-   </CiTextField>
-   <CiComboField>
-      <FieldName>ProductID</FieldName>
-      <TextFieldName>ProductName</TextFieldName>
-      <Caption>Product</Caption>
-      <Code>ProductID</Code>
-      <Description>ProductName</Description>
-      <DropdownSQL>select ProductID,ProductName from Product order by ProductID</DropdownSQL>
-      <Editable>false</Editable>
-      <Searchable>true</Searchable>
-   </CiComboField>
-   <CiComboField>
-      <FieldName>BranchCode</FieldName>
-      <TextFieldName>BranchDescription</TextFieldName>
-      <Caption>Branch</Caption>
-      <Code>Code</Code>
-      <Description>Description</Description>
-      <Editable>false</Editable>
-      <DropdownSQL>select Code,Description from Dropdown where Category = 'Branch'</DropdownSQL>
-   </CiComboField>
-   <CiDateField>
-      <FieldName>DateOfStocktake</FieldName>
-      <Caption>Date Of Stocktake</Caption>
-      <ColumnFormat>dd/MM/yyyy</ColumnFormat>
-   </CiDateField>
-   <CiDateField>
-      <FieldName>ExpiryDate</FieldName>
-      <Caption>Expiry Date</Caption>
-      <ColumnFormat>dd/MM/yyyy</ColumnFormat>
-   </CiDateField>
-   <CiNumericField>
-      <FieldName>QuantityOnHand</FieldName>
-      <Caption>Quantity on Hand</Caption>
-   </CiNumericField>
-   <CiNumericField>
-      <FieldName>QuantityOrdered</FieldName>
-      <Caption>Quantity Ordered</Caption>
-      <Editable>false</Editable>
-   </CiNumericField>
-   <CiNumericField>
-      <FieldName>QuantityAllocated</FieldName>
-      <Caption>Quantity Allocated</Caption>
-      <Editable>false</Editable>
-   </CiNumericField>
-   <CiNumericField>
-      <FieldName>QuantityAvailable</FieldName>
-      <Caption>Quantity Available</Caption>
-      <Editable>false</Editable>
-   </CiNumericField>
-   <CiNumericField>
-      <FieldName>QtyUnderReceived</FieldName>
-      <Caption>Qty Under Received</Caption>
-      <Editable>false</Editable>
-   </CiNumericField>
-   <CiNumericField>
-      <FieldName>QtyOverReceived</FieldName>
-      <Caption>Qty Over Received</Caption>
-      <Editable>false</Editable>
-   </CiNumericField>
-   <DefaultMacro>
-      <ActionSQL>select 
+  <TableName>ActiveInventorySG</TableName>
+  <TableCaption>Inventory SG (Active)</TableCaption>
+  <RowKey>InventoryItemNo,ProductID,BranchCode</RowKey>
+  <DefaultView>Grid</DefaultView>
+  <DoubleClickMacroName>StocklevelUpdate</DoubleClickMacroName>
+  <CiTextField>
+    <FieldName>InventoryItemNo</FieldName>
+    <Hidden>true</Hidden>
+  </CiTextField>
+  <CiComboField>
+    <FieldName>ProductID</FieldName>
+    <TextFieldName>ProductName</TextFieldName>
+    <Caption>Product</Caption>
+    <Code>ProductID</Code>
+    <Description>ProductName</Description>
+    <DropdownSQL>select ProductID,ProductName from Product order by ProductID</DropdownSQL>
+    <Editable>false</Editable>
+   <Searchable>true</Searchable>
+  </CiComboField>
+  <CiComboField>
+    <FieldName>BranchCode</FieldName>
+    <TextFieldName>BranchDescription</TextFieldName>
+    <Caption>Branch</Caption>
+    <Code>Code</Code>
+    <Description>Description</Description>
+    <Editable>false</Editable>
+    <DropdownSQL>select Code,Description from Dropdown where Category = 'Branch'</DropdownSQL>
+  </CiComboField>
+  <CiDateField>
+    <FieldName>DateOfStocktake</FieldName>
+    <Caption>Date Of Stocktake</Caption>
+    <ColumnFormat>dd/MM/yyyy</ColumnFormat>
+  </CiDateField>
+  <CiDateField>
+     <FieldName>ExpiryDate</FieldName>
+     <Caption>Expiry Date</Caption>
+     <ColumnFormat>dd/MM/yyyy</ColumnFormat>
+  </CiDateField>
+  <CiNumericField>
+		<FieldName>QuantityOnHand</FieldName>
+		<Caption>Quantity on Hand</Caption>
+  </CiNumericField>
+  <CiNumericField>
+    <FieldName>QuantityOrdered</FieldName>
+    <Caption>Quantity Ordered</Caption>
+    <Editable>false</Editable>
+  </CiNumericField>
+  <CiNumericField>
+    <FieldName>QuantityAllocated</FieldName>
+    <Caption>Quantity Allocated</Caption>
+    <Editable>false</Editable>
+  </CiNumericField>
+  <CiNumericField>
+    <FieldName>QuantityAvailable</FieldName>
+    <Caption>Quantity Available</Caption>
+    <Editable>false</Editable>
+  </CiNumericField>
+  <CiNumericField>
+    <FieldName>QtyUnderReceived</FieldName>
+    <Caption>Qty Under Received</Caption>
+    <Editable>false</Editable>
+  </CiNumericField>
+  <CiNumericField>
+    <FieldName>QtyOverReceived</FieldName>
+    <Caption>Qty Over Received</Caption>
+    <Editable>false</Editable>
+  </CiNumericField>
+  <CiTable Src="InactiveInventory.pux">
+    <SelectMacro>
+       <ActionSQL>?exec spInventory_Inactive_sel @ProductID,@BranchCode</ActionSQL>
+    </SelectMacro>
+  </CiTable>
+  <DefaultMacro>
+	<ActionSQL>
+      select 
         @ProductID as ProductID,
         getdate() as DateOfStocktake,
         0 as QuantityOnHand,
@@ -75,13 +82,15 @@
         0 as QuantityAllocated,
         0 as QuantityAvailable,
         0 as QtyUnderReceived,
-        0 as QtyOverReceived</ActionSQL>
-   </DefaultMacro>
-   <SelectMacro>
-      <ActionSQL>?exec spInventory_selbyStatusAndBranch 'HT-SG','Y',@ProductID</ActionSQL>
-   </SelectMacro>
-   <InsertMacro>
-      <ActionSQL>?exec spInventory_upd
+        0 as QtyOverReceived
+    </ActionSQL>
+	</DefaultMacro>
+	<SelectMacro>
+	  <ActionSQL>?exec spInventory_selbyStatusAndBranch 'HT-SG','Y',@ProductID</ActionSQL>
+	</SelectMacro>
+ <InsertMacro>
+	<ActionSQL>
+      ?exec spInventory_upd
         -1,
         @ProductID,
         @BranchCode,
@@ -92,10 +101,12 @@
         @QuantityAvailable,
         @QtyUnderReceived,
         @QtyOverReceived,
-        @ExpiryDate</ActionSQL>
-   </InsertMacro>
-   <UpdateMacro>
-      <ActionSQL>?exec spInventory_upd
+        @ExpiryDate
+    </ActionSQL>
+ </InsertMacro>
+ <UpdateMacro>
+   <ActionSQL>
+    ?exec spInventory_upd
         @InventoryItemNo,
         @ProductID,
         @BranchCode,
@@ -106,11 +117,19 @@
         @QuantityAvailable,
         @QtyUnderReceived,
         @QtyOverReceived,
-        @ExpiryDate</ActionSQL>
-      <VisibleSQL>select 1 from Inventory where InventoryItemNo = @InventoryItemNo</VisibleSQL>
-   </UpdateMacro>
-   <DeleteMacro>
-      <ActionSQL>DELETE FROM Inventory WHERE InventoryItemNo = @InventoryItemNo</ActionSQL>
-      <VisibleSQL>select 1 from Inventory where InventoryItemNo = @InventoryItemNo</VisibleSQL>
-   </DeleteMacro>
+        @ExpiryDate
+    </ActionSQL>
+    <VisibleSQL>select 1 from Inventory where InventoryItemNo = @InventoryItemNo</VisibleSQL>
+  </UpdateMacro>
+  <DeleteMacro>
+    <ActionSQL>
+          DELETE FROM Inventory WHERE InventoryItemNo = @InventoryItemNo
+    </ActionSQL>
+    <VisibleSQL>select 1 from Inventory where InventoryItemNo = @InventoryItemNo</VisibleSQL>
+  </DeleteMacro>
+  <CiMacro>
+    <MacroName>StocklevelUpdate</MacroName>
+    <Caption>Stock level is correct TODAY</Caption>
+    <ActionSQL>?exec spInventory_upd_datestocktake @InventoryItemNo</ActionSQL>
+   </CiMacro>
 </CiTable>

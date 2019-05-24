@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<CiComboField>
+    <FieldName>ApptTime</FieldName>
+    <Caption>Appt Time</Caption>
+    <Editable>true</Editable>
+    <DropdownSQL>?exec spAppointment_selTime 58,'19 Jan 2019',10,null</DropdownSQL>
+</CiComboField>

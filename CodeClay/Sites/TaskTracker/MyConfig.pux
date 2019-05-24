@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CiTable>
+  <TableName>MyConfig</TableName>
+  <TableCaption>Configuration</TableCaption>
+  <DefaultView>Grid</DefaultView>
+  <LayoutUrl></LayoutUrl>
+  <PageSize>50</PageSize>
+  <ColCount>1</ColCount>
+  <BubbleUpdate>false</BubbleUpdate>
+  <QuickInsert>false</QuickInsert>
+  <InsertRowAtBottom>true</InsertRowAtBottom>
+  <RowKey>MaxNumUser</RowKey>
+  <CiNumericField>
+    <FieldName>MaxNumUser</FieldName>
+    <Caption>Maximum Number of Users</Caption>
+    <Hidden>false</Hidden>
+    <Editable>true</Editable>
+    <Mandatory>false</Mandatory>
+    <Computed>false</Computed>
+    <Searchable>false</Searchable>
+    <Browsable>true</Browsable>
+    <Summary></Summary>
+    <ForeColor></ForeColor>
+    <RowSpan></RowSpan>
+    <ColSpan></ColSpan>
+    <Width></Width>
+    <HorizontalAlign></HorizontalAlign>
+    <VerticalAlign></VerticalAlign>
+    <DefaultValue></DefaultValue>
+    <MinValue></MinValue>
+    <MaxValue></MaxValue>
+  </CiNumericField>
+</CiTable>

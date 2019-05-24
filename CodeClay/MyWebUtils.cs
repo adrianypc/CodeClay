@@ -227,11 +227,11 @@ namespace CodeClay
             return false;
         }
 
-        public static bool IsTrueSQL(string SQL, DataRow drParams)
+        public static bool IsTrueSQL(string SQL, DataRow drParams, bool isCPanel = false)
         {
             if (!MyUtils.IsEmpty(SQL))
             {
-                DataTable dt = GetBySQL(SQL, drParams);
+                DataTable dt = GetBySQL(SQL, drParams, isCPanel);
 
                 if (MyWebUtils.GetNumberOfRows(dt) > 0 && MyWebUtils.GetNumberOfColumns(dt) > 0)
                 {
@@ -244,16 +244,28 @@ namespace CodeClay
             return true;
         }
 
-        public static DataTable GetBySQL(string SQL, DataRow drParams)
+        public static DataTable GetBySQL(string SQL, DataRow drParams, bool isCPanel = false)
         {
-            return UiApplication.Me.GetBySQL(SQL, drParams);
+            if (isCPanel)
+            {
+                MyWebUtils.IsConnectedToCPanel = true;
+            }
+
+            DataTable dt = UiApplication.Me.GetBySQL(SQL, drParams);
+
+            if (isCPanel)
+            {
+                MyWebUtils.IsConnectedToCPanel = false;
+            }
+
+            return dt;
         }
 
-        public static object EvalSQL(string SQL, DataRow drParams)
+        public static object EvalSQL(string SQL, DataRow drParams, bool isCPanel = false)
         {
             if (!MyUtils.IsEmpty(SQL))
             {
-                DataTable dt = GetBySQL(SQL, drParams);
+                DataTable dt = GetBySQL(SQL, drParams, isCPanel);
 
                 if (MyWebUtils.GetNumberOfRows(dt) > 0 && MyWebUtils.GetNumberOfColumns(dt) > 0)
                 {
@@ -408,10 +420,6 @@ namespace CodeClay
                 {
                     myResponse.Redirect(loginUrl);
                 }
-                else if (myResponse != null && !IsUserAuthorised())
-                {
-                    myResponse.Redirect("~/Default.aspx?Application=" + GetAuthorisedApp());
-                }
                 else if (sessionCount == 0 && page.IsCallback)
                 {
                     FormsAuthentication.SignOut();
@@ -426,6 +434,10 @@ namespace CodeClay
                         FormsAuthentication.SignOut();
                         FormsAuthentication.RedirectToLoginPage();
                     }
+                    else if (myResponse != null && !IsUserAuthorised())
+                    {
+                        myResponse.Redirect("~/Default.aspx?Application=" + GetAuthorisedApp());
+                    }
                 }
             }
 
@@ -435,36 +447,24 @@ namespace CodeClay
 
         public static bool IsUserAuthorised()
         {
-            bool isUserAuthorised = true;
-
             DataTable dt = new DataTable();
             dt.Columns.Add("Application").DefaultValue = Application;
 
             DataRow dr = dt.NewRow();
             dt.Rows.Add(dr);
 
-            MyWebUtils.IsConnectedToCPanel = true;
-            isUserAuthorised = MyWebUtils.IsTrueSQL("select dbo.fnIsAppOk(@CI_UserEmail, @Application)", dr);
-            MyWebUtils.IsConnectedToCPanel = false;
-
-            return isUserAuthorised;
+            return MyWebUtils.IsTrueSQL("select dbo.fnIsAppOk(@CI_UserEmail, @Application)", dr, true);
         }
 
         public static string GetAuthorisedApp()
         {
-            string authorisedApp = "";
-
             DataTable dt = new DataTable();
             dt.Columns.Add("Application").DefaultValue = Application;
 
             DataRow dr = dt.NewRow();
             dt.Rows.Add(dr);
 
-            MyWebUtils.IsConnectedToCPanel = true;
-            authorisedApp = MyWebUtils.EvalSQL("select dbo.fnGetAuthorisedApp(@CI_UserEmail, @Application)", dr).ToString();
-            MyWebUtils.IsConnectedToCPanel = false;
-
-            return authorisedApp;
+            return MyWebUtils.EvalSQL("select dbo.fnGetAuthorisedApp(@CI_UserEmail, @Application)", dr, true).ToString();
         }
 
         public static XmlElement CreateXmlElement(string name, object value)

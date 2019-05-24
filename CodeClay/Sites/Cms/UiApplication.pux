@@ -2,57 +2,57 @@
 <CiApplication>
 	<IsDesigner>true</IsDesigner>
 	<ProviderName>System.Data.SqlClient</ProviderName>
-	<ConnectionString>Integrated Security=SSPI;Initial Catalog=CMSTest;Data Source=(localdb)\ProjectsV13;AttachDBFilename=C:\Users\adrianypc\Documents\Databases\CMSTest.mdf</ConnectionString>
-    <HomePluginSrc>Couple.pux</HomePluginSrc>
+	<ConnectionString>Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\adrianypc\Documents\Databases\CMSTest.mdf;Initial Catalog=CMSTest;Integrated Security=True;Connect Timeout=30</ConnectionString>
+  <HomePluginSrc>PatientSearch.pux</HomePluginSrc>
+  <CiMenu>
+    <MenuName>Application</MenuName>
     <CiMenu>
-		<MenuName>Application</MenuName>
-		<CiMenu>
-			<MenuName>Doctors</MenuName>
-            <CiMenu>
-                <MenuName>Min Yu</MenuName>
-                <PluginSrc>Appointmentlist.pux&amp;FutureAppointment=false&amp;ConsultantID=61</PluginSrc>
-            </CiMenu>
-            <CiMenu>
-                <MenuName>Cheng Toh</MenuName>
-                <PluginSrc>Appointmentlist.pux&amp;FutureAppointment=false&amp;ConsultantID=56</PluginSrc>
-            </CiMenu>
-            <CiMenu>
-                <MenuName>Siew Hong</MenuName>
-                <PluginSrc>Appointmentlist.pux&amp;FutureAppointment=false&amp;ConsultantID=58</PluginSrc>
-            </CiMenu>
-            <CiMenu>
-                <MenuName>Suresh</MenuName>
-                <PluginSrc>Appointmentlist.pux&amp;FutureAppointment=false&amp;ConsultantID=59</PluginSrc>
-            </CiMenu>
-            <CiMenu>
-                <MenuName>Michelle</MenuName>
-                <PluginSrc>Appointmentlist.pux&amp;FutureAppointment=false&amp;ConsultantID=60</PluginSrc>
-            </CiMenu>
-        </CiMenu>
-		<CiMenu>
-			<MenuName>Patients</MenuName>
-			<PluginSrc>Couple.pux</PluginSrc>
-		</CiMenu>
-        <CiMenu>
-            <MenuName>Inventory</MenuName>
-            <CiMenu>
-                <MenuName>Charge Item Master</MenuName>
-                <PluginSrc>ChargeItemMaster.pux</PluginSrc>
-            </CiMenu>
-            <CiMenu>
-                <MenuName>Stock Adjustment</MenuName>
-                <PluginSrc>StockAdjustment.pux</PluginSrc>
-            </CiMenu>
-            <CiMenu>
-                <MenuName>Good Received Note</MenuName>
-                <PluginSrc>GoodReceivedNote.pux</PluginSrc>
-            </CiMenu>
-        </CiMenu>
-	</CiMenu>
-	<LoginMacro>
-		<ActionSQL>exec spUser_Login @CI_UserEmail</ActionSQL>
-	</LoginMacro>
-	<LogoutMacro>
-		<ActionSQL>exec spUser_Logout @CI_UserEmail</ActionSQL>
-	</LogoutMacro>
+      <MenuName>Doctors</MenuName>
+      <CiMenu>
+        <MenuName>Min Yu</MenuName>
+        <PluginSrc>Appointmentlist.pux&amp;FutureAppointment=false&amp;ConsultantID=61</PluginSrc>
+      </CiMenu>
+      <CiMenu>
+        <MenuName>Cheng Toh</MenuName>
+        <PluginSrc>Appointmentlist.pux&amp;FutureAppointment=false&amp;ConsultantID=56</PluginSrc>
+      </CiMenu>
+      <CiMenu>
+        <MenuName>Siew Hong</MenuName>
+        <PluginSrc>Appointmentlist.pux&amp;FutureAppointment=false&amp;ConsultantID=58</PluginSrc>
+      </CiMenu>
+      <CiMenu>
+        <MenuName>Suresh</MenuName>
+        <PluginSrc>Appointmentlist.pux&amp;FutureAppointment=false&amp;ConsultantID=59</PluginSrc>
+      </CiMenu>
+      <CiMenu>
+        <MenuName>Michelle</MenuName>
+        <PluginSrc>Appointmentlist.pux&amp;FutureAppointment=false&amp;ConsultantID=60</PluginSrc>
+      </CiMenu>
+    </CiMenu>
+    <CiMenu>
+      <MenuName>Patients</MenuName>
+      <PluginSrc>PatientSearch.pux&amp;Command=Search</PluginSrc>
+    </CiMenu>
+    <CiMenu>
+      <MenuName>Inventory</MenuName>
+      <CiMenu>
+        <MenuName>Charge Item Master</MenuName>
+        <PluginSrc>ChargeItemMaster.pux</PluginSrc>
+      </CiMenu>
+      <CiMenu>
+        <MenuName>Stock Adjustment</MenuName>
+        <PluginSrc>StockAdjustment.pux</PluginSrc>
+      </CiMenu>
+      <CiMenu>
+        <MenuName>Good Received Note</MenuName>
+        <PluginSrc>GoodReceivedNote.pux</PluginSrc>
+      </CiMenu>
+    </CiMenu>
+  </CiMenu>
+  <LoginMacro>
+    <ActionSQL>exec spUser_Login @CI_UserEmail</ActionSQL>
+  </LoginMacro>
+  <LogoutMacro>
+    <ActionSQL>exec spUser_Logout @CI_UserEmail</ActionSQL>
+  </LogoutMacro>
 </CiApplication>

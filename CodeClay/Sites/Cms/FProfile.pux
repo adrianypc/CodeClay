@@ -297,4 +297,29 @@
     <FieldName>FCountryCode</FieldName>
     <ActionSQL>select CountryName as FCountry from Country where CountryCode = @FCountryCode</ActionSQL>
   </CiFieldExitMacro>
+  <CiMacro>
+    <MacroName>NewAppointment</MacroName>
+    <Caption>New Appointment</Caption>
+    <ActionSQL>
+        select
+        ClientNo,
+        IdentityNo,
+        ClientSurname,
+        ClientOtherNames,
+        Sex,
+        AddressLine1,
+        AddressLine2,
+        AddressLine3,
+        PhoneHome,
+        Mobile,
+        Pager,
+        cast(0 as bit) as IsNewPatient,
+        'New' as Command
+        from Client
+        where ClientNo = @FPatientNo
+    </ActionSQL>
+    <NavigateUrl>AppointmentDetail.pux</NavigateUrl>
+    <NavigatePos>Popup</NavigatePos>
+    <Toolbar>true</Toolbar>
+  </CiMacro>
 </CiTable>

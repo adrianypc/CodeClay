@@ -63,7 +63,7 @@
 		<ActionSQL>?exec spSupplierOrderItems_selbySupplierOrderNo @SupplierOrderNo</ActionSQL>
 	</SelectMacro>
 	<InsertMacro>
-		<ActionSQL>
+	<ActionSQL>
       select coalesce(1 + max(SupplierOrderItemNo), 1) as SupplierOrderItemNo
       from SupplierOrderItems
       where SupplierOrderNo = @SupplierOrderNo

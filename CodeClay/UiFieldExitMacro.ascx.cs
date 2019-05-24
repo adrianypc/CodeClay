@@ -56,10 +56,19 @@ namespace CodeClay
 			get { return CiTable == null; }
 		}
 
-		// --------------------------------------------------------------------------------------------------
-		// Methods (Override)
-		// --------------------------------------------------------------------------------------------------
-		
+        [XmlIgnore]
+        protected DataRow InputParams { get; set; } = null;
+
+        // --------------------------------------------------------------------------------------------------
+        // Methods (Override)
+        // --------------------------------------------------------------------------------------------------
+
+        public override void Run(DataRow drParams)
+        {
+            InputParams = drParams;
+            base.Run(drParams);
+        }
+
         protected override string GetResultScript(DataTable dt)
         {
             string script = "";
@@ -67,18 +76,33 @@ namespace CodeClay
                 ? dt.Rows[0]
                 : null;
 
+            DataColumnCollection dcInputColumns = (InputParams != null)
+                ? InputParams.Table.Columns
+                : null;
+
             if (drParams != null)
             {
                 foreach (DataColumn dc in drParams.Table.Columns)
                 {
                     string columnName = dc.ColumnName;
-                    string columnValue = MyUtils.Coalesce(drParams[dc], "").ToString();
+                    object objColumnValue = drParams[dc];
+                    string strColumnValue = MyUtils.Coalesce(objColumnValue, "").ToString();
 
-                    columnValue = HttpUtility.JavaScriptStringEncode(columnValue);
+                    if (columnName.StartsWith("_"))
+                    {
+                        columnName = columnName.Substring(1);
+                        strColumnValue = FillTemplate(strColumnValue);
+                    }
+                    else if (dcInputColumns != null && dcInputColumns.Contains(columnName))
+                    {
+                        InputParams[columnName] = objColumnValue;
+                    }
+
+                    strColumnValue = HttpUtility.JavaScriptStringEncode(strColumnValue);
 
                     if (IsTest)
                     {
-                        script += string.Format("alert(\'{0} = {1}\'); ", columnName, columnValue);
+                        script += string.Format("alert(\'{0} = {1}\'); ", columnName, strColumnValue);
                     }
                     else if (!FieldNames.Contains(columnName) && CiTable != null)
                     {
@@ -86,12 +110,30 @@ namespace CodeClay
                         script += string.Format("SetEditorValue(\'{0}\', \'{1}\', \'{2}\'); ",
                             CiTable.TableName,
                             columnName,
-                            columnValue);
+                            strColumnValue);
                     }
                 }
             }
 
             return script;
+        }
+
+        // --------------------------------------------------------------------------------------------------
+        // Helpers
+        // --------------------------------------------------------------------------------------------------
+
+        private string FillTemplate(string template)
+        {
+            if (InputParams != null)
+            {
+                foreach (DataColumn dc in InputParams.Table.Columns)
+                {
+                    string columnName = dc.ColumnName;
+                    template = template.Replace("{" + columnName + "}", InputParams[columnName].ToString());
+                }
+            }
+
+            return template;
         }
     }
 

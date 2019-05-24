@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<CiTable Src="CiFieldDetails.pux">
+  <CiNumericField>
+    <FieldName>MinValue</FieldName>
+    <Caption>Min Value</Caption>
+  </CiNumericField>
+  <CiNumericField>
+    <FieldName>MaxValue</FieldName>
+    <Caption>Max Value</Caption>
+  </CiNumericField>
+  <CiNumericField>
+    <FieldName>Value</FieldName>
+    <Caption>Value</Caption>
+  </CiNumericField>
+</CiTable>

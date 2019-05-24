@@ -1,13 +1,13 @@
 ﻿using System;
+using System.Drawing;
+using System.IO;
 using System.Web.UI;
+using System.Xml;
+using System.Xml.Serialization;
 
 // Extra references
 using CodistriCore;
 using DevExpress.Web;
-using System.Drawing;
-using System.IO;
-using System.Xml;
-using System.Xml.Serialization;
 
 namespace CodeClay
 {
@@ -79,7 +79,7 @@ namespace CodeClay
             mEditor = dxUpdateText;
             base.Page_Load(sender, e);
 
-            string defaultNavigateUrl = (CiLinkField != null) ? CiLinkField.DefaultValue : "";
+            string defaultNavigateUrl = (CiLinkField != null) ? CiLinkField.Value : "";
             bool folderExists = (CiLinkField != null) && (CiLinkField.Folder != null);
             string tableName = (CiTable != null) ? CiTable.TableName : "";
             string fieldName = (CiLinkField != null) ? CiLinkField.FieldName : "";

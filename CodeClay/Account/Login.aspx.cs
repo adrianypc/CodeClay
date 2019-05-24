@@ -40,9 +40,17 @@ namespace CodeClay.Account
                     case SignInStatus.Success:
                         Session["JustLoggedIn"] = true;
                         //IdentityHelper.RedirectToReturnUrl(Request.QueryString["ReturnUrl"], Response);
-                        string queryString = MyWebUtils.QueryString.ToString();
-                        string prefix = (queryString.Length > 0) ? "?" : "";
-                        Response.Redirect("~/Default.aspx" + prefix + queryString);
+                        if (MyWebUtils.QueryString != null)
+                        {
+                            string queryString = MyWebUtils.QueryString.ToString();
+                            string prefix = (queryString.Length > 0) ? "?" : "";
+                            Response.Redirect("~/Default.aspx" + prefix + queryString);
+                        }
+                        else
+                        {
+                            FailureText.Text = "Please go back to login page and retry";
+                            ErrorMessage.Visible = true;
+                        }
                         break;
                     case SignInStatus.LockedOut:
                         Response.Redirect("/Account/Lockout");

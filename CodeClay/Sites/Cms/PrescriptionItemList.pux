@@ -4,9 +4,9 @@
 	<TableCaption>Prescription Items</TableCaption>
 	<DefaultView>Grid</DefaultView>
 	<RowKey>ClientNo,LogID,PrescriptionItemID</RowKey>
-  <QuickInsert>true</QuickInsert>
+    <QuickInsert>true</QuickInsert>
 	<CiField>
-	<FieldName>ClientNo</FieldName>
+	    <FieldName>ClientNo</FieldName>
 		<Caption>Patient No</Caption>
 		<Hidden>true</Hidden>
 	</CiField>
@@ -18,7 +18,7 @@
 	<CiField>
 		<FieldName>PrescriptionItemID</FieldName>
 		<Caption>ID</Caption>
-		<Width>2</Width>
+		<Width>3</Width>
 	</CiField>
 	<CiComboField>
 		<FieldName>ItemCode</FieldName>
@@ -27,39 +27,56 @@
 			select ItemCode, ItemDescription from ChargeItem where CIEnabled = 'Y' and StockItem = 'Y' order by ItemCode
 		</DropdownSQL>
         <DropdownWidth>800</DropdownWidth>
-		<Width>10</Width>
+		<Width>7</Width>
 	</CiComboField>
 	<CiTextField>
 		<FieldName>ItemDescription</FieldName>
 		<Caption>Description</Caption>
+        <Editable>false</Editable>
+        <Width>15</Width>
 	</CiTextField>
 	<CiTextField>
 		<FieldName>Strength</FieldName>
 		<Caption>Strength</Caption>
-		<Width>10</Width>
-        <Hidden>true</Hidden>
+		<Width>7</Width>
 	</CiTextField>
-	<CiComboField>
+	<CiTextField>
 		<FieldName>Dose</FieldName>
 		<Caption>Dose</Caption>
-		<Width>7</Width>
-		<DropdownSQL>select TextItem from TextListItem where Category = 'Dose_' + @ItemCode order by TextItem</DropdownSQL>
-		<InsertSQL>insert into TextListItem (Category, TextItem) values ('Dose_' + @ItemCode, @Dose)</InsertSQL>
-	</CiComboField>
+		<Width>5</Width>
+	</CiTextField>
 	<CiComboField>
 		<FieldName>Frequency</FieldName>
 		<Caption>Frequency</Caption>
 		<Width>7</Width>
-		<DropdownSQL>select CodeValue from CodeListItem where Category = 'RecommendedFrequencies' order by CodeValue</DropdownSQL>
+        <Code>CodeValue</Code>
+        <Description>CodeDescription</Description>
+		<DropdownSQL>select CodeValue,CodeDescription from CodeListItem where Category = 'RecommendedFrequencies' order by CodeValue</DropdownSQL>
 	</CiComboField>
+    <CiTextField>
+        <FieldName>FreqName</FieldName>
+        <Hidden>true</Hidden>
+    </CiTextField>
 	<CiTextField>
 		<FieldName>UnitOfMeasure</FieldName>
 		<Caption>UOM</Caption>
-		<Width>10</Width>
+		<Width>5</Width>
+        <Editable>false</Editable>
 	</CiTextField>
-    <CiTextField>
+    <CiNumericField>
         <FieldName>Duration</FieldName>
         <Caption>Duration</Caption>
+        <Width>7</Width>
+    </CiNumericField>
+    <CiComboField>
+        <FieldName>DurationType</FieldName>
+        <Caption>Duration Type</Caption>
+        <Width>10</Width>
+        <DropdownSQL>select TextItem from TextListItem where Category = 'DurationType' order by TextItem</DropdownSQL>
+    </CiComboField>
+    <CiTextField>
+        <FieldName>InstructionForLabel</FieldName>
+        <Caption>Instruction For Label</Caption>
         <Width>10</Width>
     </CiTextField>
     <CiDateField>
@@ -68,11 +85,12 @@
         <Editable>true</Editable>
         <ColumnFormat>dd/MM/yyyy</ColumnFormat>
     </CiDateField>
-    <CiTextField>
+    <CiComboField>
         <FieldName>Route</FieldName>
         <Caption>Route</Caption>
-        <Width>10</Width>
-    </CiTextField>
+        <Width>5</Width>
+        <DropdownSQL>select TextItem from TextListItem where Category = 'Route' order by TextItem</DropdownSQL>
+    </CiComboField>
     <CiTextField>
 		<FieldName>UnitPrice</FieldName>
 		<Caption>Unit Price ($)</Caption>
@@ -83,16 +101,22 @@
 		<FieldName>Quantity</FieldName>
 		<Caption>Quantity</Caption>
 		<Width>7</Width>
+        <Editable>false</Editable>
 	</CiNumericField>
 	<CiTextField>
 		<FieldName>TotalPrice</FieldName>
 		<Caption>Total Price ($)</Caption>
-		<Width>9</Width>
+		<Width>10</Width>
 		<Mask>Currency</Mask>
 		<Summary>Sum</Summary>
-    <Editable>false</Editable>
+        <Editable>false</Editable>
+        <Width>13</Width>
 	</CiTextField>
-	<DefaultMacro>
+    <CiTextField>
+        <FieldName>Instruction</FieldName>
+        <Hidden>true</Hidden>
+    </CiTextField>
+    <DefaultMacro>
 		<ActionSQL>
 			select  @ClientNo as ClientNo,
 					@LogID as LogID
@@ -100,13 +124,17 @@
 	</DefaultMacro>
 	<SelectMacro>
 		<ActionSQL>
-			select  *,
-              UnitPrice * Quantity as TotalPrice
-			from	  PrescriptionItem
-			where   ClientNo = @ClientNo
-			and     LogID = @LogID
-			order by PrescriptionItemID
-		</ActionSQL>
+            select  P.*,
+            P.UnitPrice * P.Quantity as TotalPrice,
+            C.CodeDescription as FreqName
+            from	  PrescriptionItem P
+            left outer join CodeListItem C
+            on P.Frequency = C.CodeValue collate SQL_Latin1_General_CP1_CI_AS
+            and C.Category = 'RecommendedFrequencies'
+            where   ClientNo = @ClientNo
+            and     LogID = @LogID
+            order by PrescriptionItemID
+        </ActionSQL>
 	</SelectMacro>
 	<InsertMacro>
 		<ActionSQL>
@@ -132,7 +160,9 @@
 				UnitPrice,
                 ExpiryDate,
                 Route,
-                Duration
+                Duration,
+                DurationType,
+                InstructionForLabel
 			)
 			values
 			(	@ClientNo,
@@ -150,7 +180,9 @@
 				@UnitPrice,
                 @ExpiryDate,
                 @Route,
-                @Duration
+                @Duration,
+                @DurationType,
+                @InstructionForLabel
 			)
 		</ActionSQL>
         <VisibleSQL>
@@ -164,7 +196,7 @@
 	<UpdateMacro>
 		<ActionSQL>
 			update  PrescriptionItem
-			set     LastChangedDate = getdate(),
+			set         LastChangedDate = getdate(),
 					    LastChangedBy = dbo.FnGetUserId(@CI_UserEmail),
 					    ItemCode = @ItemCode,
 					    ItemDescription = @ItemDescription,
@@ -176,7 +208,9 @@
 					    UnitPrice = @UnitPrice,
                         ExpiryDate = @ExpiryDate,
                         Route = @Route,
-                        Duration = @Duration
+                        Duration = @Duration,
+                        DurationType = @DurationType,
+                        InstructionForLabel = @InstructionForLabel
 			where   ClientNo = @ClientNo
 			and     LogID = @LogID
 			and     PrescriptionItemID = @PrescriptionItemID
@@ -192,22 +226,45 @@
 	<CiFieldExitMacro>
 		<FieldName>ItemCode</FieldName>
 		<ActionSQL>
-			select	ItemDescription,
-					    Strength,
-					    RecommendedDose as Dose,
-					    RecommendedFrequency as Frequency,
-					    UnitOfMeasure,
-					    CiUnitPrice as UnitPrice,
-              CiUnitPrice * @Quantity as TotalPrice
-			from    ChargeItem
-			where   ItemCode = @ItemCode
-		</ActionSQL>
+            select
+            C.ItemDescription,
+            C.Strength,
+            C.RecommendedFrequency as Frequency,
+            CI.CodeDescription as FreqName,
+            C.Instruction as _InstructionForLabel,
+            C.UnitOfMeasure,
+            C.CiUnitPrice as UnitPrice,
+            C.CiUnitPrice * @Quantity as TotalPrice
+            from    ChargeItem C
+            left outer join CodeListItem CI
+            on C.RecommendedFrequency = CI.CodeValue collate SQL_Latin1_General_CP1_CI_AS
+            and CI.Category = 'RecommendedFrequencies'
+            where   ItemCode = @ItemCode
+        </ActionSQL>
 	</CiFieldExitMacro>
-  <CiFieldExitMacro>
-    <FieldName>Quantity</FieldName>
-    <FieldName>UnitPrice</FieldName>
-    <ActionSQL>
-      select  @UnitPrice * @Quantity as TotalPrice
-    </ActionSQL>
-  </CiFieldExitMacro>
+    <CiFieldExitMacro>
+        <FieldName>Quantity</FieldName>
+        <FieldName>UnitPrice</FieldName>
+        <ActionSQL>
+           select  @UnitPrice * @Quantity as TotalPrice
+        </ActionSQL>
+    </CiFieldExitMacro>
+    <CiFieldExitMacro>
+        <FieldName>Dose</FieldName>
+        <FieldName>Frequency</FieldName>
+        <FieldName>Duration</FieldName>
+        <FieldName>DurationType</FieldName>
+        <ActionSQL>
+            ?exec spCalQuantity_on_PrescriptionItem @Dose,@Frequency,@Duration,@DurationType,@ItemCode,@UnitPrice
+        </ActionSQL>
+    </CiFieldExitMacro>
+    <CiFieldExitMacro>
+        <FieldName>Dose</FieldName>
+        <FieldName>Frequency</FieldName>
+        <ActionSQL>select CodeDescription as FreqName from CodeListItem where Category = 'RecommendedFrequencies' and CodeValue = @Frequency</ActionSQL>
+        <ActionSQL>
+            select @FreqName as FreqName,Instruction as _InstructionForLabel from ChargeItem where ItemCode = @ItemCode
+        </ActionSQL>
+    </CiFieldExitMacro>
+
 </CiTable>

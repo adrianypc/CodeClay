@@ -85,7 +85,7 @@ function RegisterPanel(editorPanel) {
 
 		if (editorPanels && formattedFieldName) {
 			editorPanels[formattedFieldName] = editorPanel;
-		}
+        }
 	}
 }
 

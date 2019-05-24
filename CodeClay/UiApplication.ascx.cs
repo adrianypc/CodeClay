@@ -229,6 +229,10 @@ namespace CodeClay
                 case "CI_AppName":
                     variableValue = CiApplication.AppName;
                     break;
+
+                case "CI_SiteFolder":
+                    variableValue = Server.MapPath("Sites");
+                    break;
             }
 
             return variableValue;
@@ -238,7 +242,7 @@ namespace CodeClay
         {
             DataTable dt = new DataTable();
 
-            string[] columnNames = { "CI_UserEmail", "CI_Now", "CI_AppName" };
+            string[] columnNames = { "CI_UserEmail", "CI_Now", "CI_AppName", "CI_SiteFolder" };
             foreach (string columnName in columnNames)
             {
                 dt.Columns.Add(columnName).DefaultValue = GetSystemVariable(columnName);

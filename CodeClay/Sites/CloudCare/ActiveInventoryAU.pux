@@ -2,8 +2,9 @@
 <CiTable>
   <TableName>ActiveInventoryAU</TableName>
   <TableCaption>Inventory AU (Active)</TableCaption>
-  <RowKey>InventoryItemNo</RowKey>
+  <RowKey>InventoryItemNo,ProductID,BranchCode</RowKey>
   <DefaultView>Grid</DefaultView>
+  <DoubleClickMacroName>StocklevelUpdate</DoubleClickMacroName>
   <CiTextField>
     <FieldName>InventoryItemNo</FieldName>
     <Hidden>true</Hidden>
@@ -66,6 +67,11 @@
     <Caption>Qty Over Received</Caption>
     <Editable>false</Editable>
   </CiNumericField>
+  <CiTable Src="InactiveInventory.pux">
+     <SelectMacro>
+       <ActionSQL>?exec spInventory_Inactive_sel @ProductID,@BranchCode</ActionSQL>
+     </SelectMacro>
+  </CiTable>
   <DefaultMacro>
 	<ActionSQL>
       select 
@@ -121,4 +127,9 @@
     </ActionSQL>
     <VisibleSQL>select 1 from Inventory where InventoryItemNo = @InventoryItemNo</VisibleSQL>
   </DeleteMacro>
+  <CiMacro>
+    <MacroName>StocklevelUpdate</MacroName>
+    <Caption>Stock level is correct TODAY</Caption>
+    <ActionSQL>?exec spInventory_upd_datestocktake @InventoryItemNo</ActionSQL>
+  </CiMacro>
 </CiTable>

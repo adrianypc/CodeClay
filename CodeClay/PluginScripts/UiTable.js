@@ -14,6 +14,19 @@ function dxSearch_Init(sender, event) {
 	CopyState(dxClientState, dxBackupClientState);
 }
 
+function dxSearch_EndCallback(sender, event) {
+    var dxSearch = sender;
+    var command = dxSearch.Command;
+    var tableName = dxSearch.cpTableName;
+
+    switch (command) {
+        case "Update":
+        case "Cancel":
+            // For cosmetic purposes when clicking on Inspect button
+            ClearState(tableName);
+    }
+}
+
 function dxSearch_ToolbarItemClick(sender, event) {
 	ClickToolbar(sender, event, true);
 }
@@ -29,7 +42,7 @@ function dxCard_Init(sender, event) {
     var tableName = dxCard.cpTableName;
 
     if (tableName) {
-    	tables[tableName] = dxCard;
+        tables[tableName] = dxCard;
     }
 
     if (isRootTable) {
@@ -61,6 +74,12 @@ function dxCard_EndCallback(sender, event) {
     var dxCard = sender;
     var tableName = dxCard.cpTableName;
     var command = dxCard.Command;
+    var script = dxCard.cpScript;
+
+    if (script) {
+        dxCard.cpScript = null;
+        eval(script);
+    }
 
     switch (command) {
     	case "New":
@@ -73,12 +92,6 @@ function dxCard_EndCallback(sender, event) {
 
         case "UpdateNew":
             var insertedRowIndex = dxCard.cpInsertedRowIndex;
-            var script = dxCard.cpScript;
-
-            if (script) {
-                dxCard.cpScript = null;
-                eval(script);
-            }
 
             if (insertedRowIndex && insertedRowIndex >= 0) {
                 dxCard.GotoPage(insertedRowIndex);
@@ -93,13 +106,6 @@ function dxCard_EndCallback(sender, event) {
             break;
 
         case "Update":
-            var script = dxCard.cpScript;
-
-            if (script) {
-                dxCard.cpScript = null;
-                eval(script);
-            }
-
             if (rootTable && rootTable.name != dxCard.name && dxCard.cpBubbleUpdate && !dxCard.cpIsInvalid) {
                 rootTable.PerformCallback(tableName);
                 childTable = dxCard;
@@ -107,7 +113,6 @@ function dxCard_EndCallback(sender, event) {
             else {
                 childTable = null;
             }
-            break;
 
     	case "Cancel":
     	case "Delete":
@@ -116,13 +121,7 @@ function dxCard_EndCallback(sender, event) {
     		break;
 
     	default:
-    		var script = dxCard.cpScript;
-    		dxCard.cpScript = null;
-
-    		if (script) {
-    			eval(script);
-    		}
-    		else if (command) {
+    		if (command) {
     			dxCard.Command = null;
     			dxCard.Refresh();
     		}
@@ -190,57 +189,50 @@ function dxGrid_EndCallback(sender, event) {
     var tableName = dxGrid.cpTableName;
     var quickInsert = dxGrid.cpQuickInsert;
     var command = dxGrid.Command;
+    var script = dxGrid.cpScript;
+    dxGrid.cpScript = null;
 
-    switch (command) {
-        case "New":
-            RefreshFollowers(dxGrid.cpFollowerFields);
-        	break;
+    if (script) {
+        eval(script);
+    }
+    else {
+        switch (command) {
+            case "New":
+                RefreshFollowers(dxGrid.cpFollowerFields);
+                break;
 
-        case "Edit":
-            if (dxGrid.ExpandedRowIndex >= 0 && dxGrid.ExpandedRowIndex != dxGrid.GetFocusedRowIndex()) {
-                dxGrid.CollapseAllDetailRows();
-            }
-            break;
+            case "Edit":
+                if (dxGrid.ExpandedRowIndex >= 0 && dxGrid.ExpandedRowIndex != dxGrid.GetFocusedRowIndex()) {
+                    dxGrid.CollapseAllDetailRows();
+                }
+                break;
 
-        case "UpdateNew":
-            if (quickInsert && confirm("Do you wish to add a blank row?")) {
-                dxGrid.Command = "New";
-                dxGrid.AddNewRow();
-            }
-        case "Update":
-            var script = dxGrid.cpScript;
+            case "UpdateNew":
+                if (quickInsert && confirm("Do you wish to add a blank row?")) {
+                    dxGrid.Command = "New";
+                    dxGrid.AddNewRow();
+                }
+            case "Update":
+                if (rootTable && rootTable.name != dxGrid.name && dxGrid.cpBubbleUpdate && !dxGrid.cpIsInvalid) {
+                    rootTable.PerformCallback(tableName);
+                    childTable = dxGrid;
+                }
+                else {
+                    childTable = null;
+                }
 
-            if (script) {
-                dxGrid.cpScript = null;
-                eval(script);
-            }
+            case "Cancel":
+            case "Delete":
+                ClearState(tableName);
+                break;
 
-            if (rootTable && rootTable.name != dxGrid.name && dxGrid.cpBubbleUpdate && !dxGrid.cpIsInvalid) {
-                rootTable.PerformCallback(tableName);
-                childTable = dxGrid;
-            }
-            else {
-                childTable = null;
-            }
-            break;
-
-		case "Cancel":
-    	case "Delete":
-            ClearState(tableName);
-            break;
-
-        default:
-            var script = dxGrid.cpScript;
-            dxGrid.cpScript = null;
-
-            if (script) {
-                eval(script);
-            }
-            else if (command) {
-                dxGrid.Command = null;
-                dxGrid.Refresh();
-            }
-            break;
+            default:
+                if (command) {
+                    dxGrid.Command = null;
+                    dxGrid.Refresh();
+                }
+                break;
+        }
     }
 
     InitAllToolbars(dxGrid);
@@ -409,13 +401,15 @@ function ClickToolbar(table, event, isSearching) {
             break;
 
         case "Cancel":
+            CopyState(dxBackupClientState, dxClientState);
             if (isSearching) {
-                CopyState(dxBackupClientState, dxClientState);
                 Navigate(puxFile);
             }
             break;
 
+        case "More":
         case "ExportToPdf":
+        case "ExportToXlsx":
             event.processOnServer = false;
             break;
 

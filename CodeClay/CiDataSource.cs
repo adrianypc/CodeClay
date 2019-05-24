@@ -37,7 +37,7 @@ namespace CodeClay
             {
                 if (parameters != null && parameters.GetType() == typeof(bool))
                 {
-                    dt = new DataTable();
+                    // Do nothing
                 }
                 else if (ciTable.SelectMacro != null)
                 {
@@ -48,32 +48,12 @@ namespace CodeClay
                     dt = ciTable.DataTable;
                 }
 
-                foreach (CiField ciField in ciTable.CiFields)
+                if (dt == null)
                 {
-                    string fieldName = ciField.FieldName;
-                    if (!dt.Columns.Contains(fieldName))
-                    {
-                        string defaultValue = ciField.DefaultValue;
-                        string expression = "";
-
-                        if (ciField.Computed)
-                        {
-							expression = defaultValue;
-						}
-                        else
-                        {
-                            if (MyUtils.IsEmpty(defaultValue) && drParams != null && drParams.Table.Columns.Contains(fieldName))
-                            {
-                                defaultValue = drParams[fieldName].ToString();
-                            }
-
-                            expression = string.Format("'{0}'", defaultValue);
-                        }
-
-						DataColumn dc = dt.Columns.Add(fieldName);
-                        dc.Expression = expression;
-                    }
+                    dt = new DataTable();
                 }
+
+                AddExpressionColumns(ciTable, dt, drParams);
 
                 if (MyWebUtils.GetNumberOfColumns(dt) > 0 && !dt.Columns.Contains("RowKey"))
                 {
@@ -89,7 +69,7 @@ namespace CodeClay
             DataRow drParams = parameters as DataRow;
 
             CiTable ciTable = table as CiTable;
-            if (ciTable != null)
+            if (ciTable != null && drParams != null)
             {
                 RunMacro(ciTable.UpdateMacro, drParams);
             }
@@ -227,6 +207,39 @@ namespace CodeClay
             }
 
             return rowKeyExpression;
+        }
+
+        private void AddExpressionColumns(CiTable ciTable, DataTable dt, DataRow drParams)
+        {
+            if (ciTable != null)
+            {
+                foreach (CiField ciField in ciTable.CiFields)
+                {
+                    string fieldName = ciField.FieldName;
+                    if (!dt.Columns.Contains(fieldName))
+                    {
+                        string defaultValue = ciField.Value;
+                        string expression = "";
+
+                        if (ciField.Computed)
+                        {
+                            expression = defaultValue;
+                        }
+                        else
+                        {
+                            if (MyUtils.IsEmpty(defaultValue) && drParams != null && drParams.Table.Columns.Contains(fieldName))
+                            {
+                                defaultValue = drParams[fieldName].ToString();
+                            }
+
+                            expression = string.Format("'{0}'", defaultValue);
+                        }
+
+                        DataColumn dc = dt.Columns.Add(fieldName);
+                        dc.Expression = expression;
+                    }
+                }
+            }
         }
     }
 }

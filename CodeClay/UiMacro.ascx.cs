@@ -1,8 +1,12 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Data;
+using System.IO;
+using System.Linq;
 using System.Web;
 using System.Xml;
+using System.Xml.Linq;
 using System.Xml.Serialization;
 
 // Extra references
@@ -11,13 +15,13 @@ using CodistriCore;
 namespace CodeClay
 {
     [XmlType("CiMacro")]
-    public class CiMacro: CiPlugin
+    public class CiMacro : CiPlugin
     {
         // --------------------------------------------------------------------------------------------------
         // Member Variables
         // --------------------------------------------------------------------------------------------------
 
-		private string mMacroCaption = "";
+        private string mMacroCaption = "";
         private ArrayList mValidateSQL = new ArrayList();
         private ArrayList mActionSQL = new ArrayList();
 
@@ -27,6 +31,9 @@ namespace CodeClay
 
         [XmlElement("MacroName")]
         public string MacroName { get; set; } = "";
+
+        [XmlElement("IconID")]
+        public string IconID { get; set; } = "actions_task_16x16devav";
 
         [XmlElement("Confirm")]
         public bool Confirm { get; set; } = false;
@@ -41,23 +48,23 @@ namespace CodeClay
         public string NavigatePos { get; set; } = "";
 
         [XmlElement("Caption")]
-		public string MacroCaption
-		{
-			get
-			{
-				if (MyUtils.IsEmpty(mMacroCaption))
-				{
-					return MacroName;
-				}
+        public string Caption
+        {
+            get
+            {
+                if (MyUtils.IsEmpty(mMacroCaption))
+                {
+                    return MacroName;
+                }
 
-				return mMacroCaption;
-			}
+                return mMacroCaption;
+            }
 
-			set
-			{
-				mMacroCaption = value;
-			}
-		}
+            set
+            {
+                mMacroCaption = value;
+            }
+        }
 
         [XmlElement("Toolbar")]
         public bool Toolbar { get; set; } = false;
@@ -130,7 +137,16 @@ namespace CodeClay
             set { CiParentPlugin = value; }
         }
 
-		// --------------------------------------------------------------------------------------------------
+        [XmlIgnore]
+        public CiMacro[] CiMacros
+        {
+            get
+            {
+                return CiPlugins.Where(c => (c as CiMacro) != null).Select(c => c as CiMacro).ToArray();
+            }
+        }
+
+        // --------------------------------------------------------------------------------------------------
         // Methods (Virtual)
         // --------------------------------------------------------------------------------------------------
 
@@ -141,6 +157,8 @@ namespace CodeClay
             if (MyUtils.IsEmpty(ErrorMessage))
             {
                 ResultTable = RunActionSQL(drParams);
+
+                ResultTable = RunChildMacros(ResultTable);
 
                 ResultScript = GetResultScript(ResultTable);
             }
@@ -155,19 +173,19 @@ namespace CodeClay
             return MyWebUtils.IsTrueSQL(VisibleSQL, drParams);
         }
 
-		public virtual ArrayList GetMacroParameters()
-		{
-			ArrayList sqlParams = new ArrayList();
+        public virtual ArrayList GetMacroParameters()
+        {
+            ArrayList sqlParams = new ArrayList();
 
-			foreach (string actionSQL in ActionSQL)
-			{
-				sqlParams = MyWebUtils.Merge(sqlParams, MyUtils.GetParameters(actionSQL));
-			}
+            foreach (string actionSQL in ActionSQL)
+            {
+                sqlParams = MyWebUtils.Merge(sqlParams, MyUtils.GetParameters(actionSQL));
+            }
 
             sqlParams = MyWebUtils.Merge(sqlParams, MyUtils.GetParameters(VisibleSQL));
 
-			return sqlParams;
-		}
+            return sqlParams;
+        }
 
         public virtual ArrayList GetMissingMacroParameters(DataRow drParams)
         {
@@ -197,7 +215,7 @@ namespace CodeClay
         // Helpers
         // --------------------------------------------------------------------------------------------------
 
-        private string RunValidateSQL(DataRow drParams)
+        protected string RunValidateSQL(DataRow drParams)
         {
             foreach (string validateSQL in ValidateSQL)
             {
@@ -212,7 +230,7 @@ namespace CodeClay
             return null;
         }
 
-        private DataTable RunActionSQL(DataRow drParams)
+        protected DataTable RunActionSQL(DataRow drParams)
         {
             if (ActionSQL != null && ActionSQL.Length == 1 && ActionSQL[0] == "*")
             {
@@ -243,6 +261,47 @@ namespace CodeClay
             return UiApplication.Me.GetBySQL(ActionSQL, drParams);
         }
 
+        protected DataTable RunChildMacros(DataTable dtInput)
+        {
+            DataTable dtOutput = dtInput;
+
+            foreach (CiMacro ciMacro in CiMacros)
+            {
+                if (dtInput != null)
+                {
+                    dtOutput = null;
+
+                    foreach (DataRow drInput in dtInput.Rows)
+                    {
+                        ciMacro.Run(drInput);
+                        DataTable dtResult = ciMacro.ResultTable;
+
+                        if (dtOutput == null)
+                        {
+                            dtOutput = dtResult;
+                        }
+                        else if (dtOutput != null && dtResult != null)
+                        {
+                            foreach (DataRow drResult in dtResult.Rows)
+                            {
+                                dtOutput.Rows.Add(drResult);
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    ciMacro.Run(null);
+
+                    dtOutput = ciMacro.ResultTable;
+                }
+
+                dtInput = dtOutput;
+            }
+
+            return dtOutput;
+        }
+
         protected virtual string GetResultScript(DataTable dt)
         {
             string navigateUrl = NavigateUrl;
@@ -252,8 +311,13 @@ namespace CodeClay
                 ? dt.Rows[0]
                 : null;
 
+            if (MyUtils.IsEmpty(navigateUrl) && dt != null && dt.Columns.Contains("NavigateUrl") && drParams != null)
+            {
+                navigateUrl = MyUtils.Coalesce(drParams["NavigateUrl"], "").ToString();
+            }
+
             // Reformat URL if navigateUrl refers to a PUX file
-            if (!MyUtils.IsEmpty(navigateUrl) && navigateUrl.EndsWith(".pux"))
+            if (!MyUtils.IsEmpty(navigateUrl) && !navigateUrl.Contains(@"\") && navigateUrl.EndsWith(".pux"))
             {
                 string popupQueryParameter = (NavigatePos == "Popup") ? "IsPopup=Y&" : "";
                 navigateUrl = string.Format("Default.aspx?Application={0}&{1}PluginSrc={2}", MyWebUtils.Application, popupQueryParameter, navigateUrl);
@@ -263,21 +327,24 @@ namespace CodeClay
             string parameterQueryString = "";
             if (drParams != null)
             {
-                foreach (DataColumn dc in drParams.Table.Columns)
+                foreach (DataColumn dc in dt.Columns)
                 {
                     string columnName = dc.ColumnName;
-                    object columnValue = MyUtils.Coalesce(drParams[dc], "");
-
-                    if (!isPuxUrl)
+                    if (columnName != "NavigateUrl")
                     {
-                        parameterQueryString += "?";
-                    }
-                    else
-                    {
-                        parameterQueryString += "&";
-                    }
+                        object columnValue = MyUtils.Coalesce(drParams[dc], "");
 
-                    parameterQueryString += string.Format("{0}={1}", columnName, columnValue.ToString().Trim());
+                        if (!isPuxUrl)
+                        {
+                            parameterQueryString += "?";
+                        }
+                        else
+                        {
+                            parameterQueryString += "&";
+                        }
+
+                        parameterQueryString += string.Format("{0}={1}", columnName, columnValue.ToString().Trim());
+                    }
                 }
             }
 
@@ -322,11 +389,11 @@ namespace CodeClay
             set { CiPlugin = value; }
         }
 
-		public UiTable UiTable
-		{
-			get { return UiParentPlugin as UiTable; }
-			set { UiParentPlugin = value; }
-		}
+        public UiTable UiTable
+        {
+            get { return UiParentPlugin as UiTable; }
+            set { UiParentPlugin = value; }
+        }
 
         // --------------------------------------------------------------------------------------------------
         // Event Handlers
@@ -350,13 +417,187 @@ namespace CodeClay
         // --------------------------------------------------------------------------------------------------
 
         public virtual DataRow GetState()
-		{
-			if (UiTable != null)
-			{
-				return UiTable.GetState();
-			}
+        {
+            if (UiTable != null)
+            {
+                return UiTable.GetState();
+            }
 
-			return base.GetState();
-		}
+            return base.GetState();
+        }
+    }
+
+    public class XiMacro : XiPlugin
+    {
+        // --------------------------------------------------------------------------------------------------
+        // Constructor
+        // --------------------------------------------------------------------------------------------------
+
+        public XiMacro()
+        {
+            PluginType = typeof(CiMacro);
+        }
+
+        // --------------------------------------------------------------------------------------------------
+        // Properties
+        // --------------------------------------------------------------------------------------------------
+
+        public List<string> ActionSQL = new List<string>();
+
+        // --------------------------------------------------------------------------------------------------
+        // Methods (Override)
+        // --------------------------------------------------------------------------------------------------
+
+        protected override string GetPluginTypeName(DataRow drPluginDefinition)
+        {
+            string pluginTypeName = "CiMacro";
+
+            if (drPluginDefinition.Table.Columns.Contains("Type"))
+            {
+                object objFieldType = MyUtils.Coalesce(drPluginDefinition["Type"], "");
+
+                pluginTypeName = objFieldType.ToString();
+
+                switch (pluginTypeName.ToUpper())
+                {
+                    case "SELECT":
+                    case "INSERT":
+                    case "UPDATE":
+                    case "DELETE":
+                        pluginTypeName = drPluginDefinition["MacroName"].ToString() + "Macro";
+                        break;
+
+                    default:
+                        pluginTypeName = "CiMacro";
+                        break;
+                }
+            }
+
+            return pluginTypeName;
+        }
+
+        protected override Type GetPluginType(string pluginTypeName)
+        {
+            return typeof(CiMacro);
+        }
+
+        protected override DataTable GetPluginDefinitions(DataRow drPluginKey)
+        {
+            return MyWebUtils.GetBySQL("?exec spMacro_sel @AppID, @TableID", drPluginKey, true);
+        }
+
+        protected override List<XElement> GetPluginDefinitions(List<XElement> xElements)
+        {
+            if (xElements != null)
+            {
+                return xElements.FindAll(el => el.Name.ToString().EndsWith("Macro"));
+            }
+
+            return null;
+        }
+
+        protected override void DeletePluginDefinitions(DataRow drPluginKey)
+        {
+            MyWebUtils.GetBySQL("exec spMacro_del @AppID, @TableID", drPluginKey, true);
+        }
+
+        protected override void WriteToDB(DataRow drPluginDefinition)
+        {
+            string insertColumnNames = "@AppID, @TableID, @MacroName, @Caption, @Type";
+            string insertSQL = string.Format("?exec spMacro_ins {0}", insertColumnNames);
+
+            object objMacroID = MyWebUtils.EvalSQL(insertSQL, drPluginDefinition, true);
+            if (!MyUtils.IsEmpty(objMacroID))
+            {
+                drPluginDefinition["MacroID"] = objMacroID;
+
+                string updateColumnNames = "@AppID, @TableID, @MacroID, @NavigateUrl" +
+                    ", @NavigatePos, @Confirm";
+                string updateSQL = string.Format("exec spMacro_updLong {0}", updateColumnNames);
+
+                MyWebUtils.GetBySQL(updateSQL, drPluginDefinition, true);
+
+                StoreActionSQL(drPluginDefinition);
+            }
+        }
+
+        protected override void DownloadDerivedValues(DataRow drPluginDefinition, XElement xPluginDefinition)
+        {
+            if (drPluginDefinition != null && xPluginDefinition != null)
+            {
+                if (drPluginDefinition.Table.Columns.Contains("Type"))
+                {
+                    if (MyUtils.Coalesce(drPluginDefinition["Type"], "").ToString() == "Toolbar")
+                    {
+                        XElement xToolbar = new XElement("Toolbar");
+                        xToolbar.Value = "true";
+                        xPluginDefinition.Add(xToolbar);
+                    }
+                }
+
+                DataTable dtActionSQL = MyWebUtils.GetBySQL("?exec spSQL_sel 'CiMacro', 'ActionSQL', @AppID, @TableID, @MacroID", drPluginDefinition, true);
+                if (dtActionSQL != null)
+                {
+                    foreach (DataRow drActionSQL in dtActionSQL.Rows)
+                    {
+                        XElement xActionSQL = new XElement("ActionSQL");
+                        xActionSQL.Value = drActionSQL["SQL"].ToString();
+                        xPluginDefinition.Add(xActionSQL);
+                    }
+                }
+            }
+        }
+
+        protected override void UploadDerivedValues(DataRow drPluginDefinition, XElement xPluginDefinition)
+        {
+            if (drPluginDefinition != null && xPluginDefinition != null)
+            {
+                string pluginName = xPluginDefinition.Name.ToString();
+                switch (pluginName)
+                {
+                    case "SelectMacro":
+                    case "InsertMacro":
+                    case "UpdateMacro":
+                    case "DeleteMacro":
+                        string macroName = pluginName.Substring(0, 6);
+                        drPluginDefinition["MacroName"] = macroName;
+                        drPluginDefinition["Caption"] = "-";
+                        drPluginDefinition["Type"] = macroName;
+                        break;
+                }
+
+                ActionSQL.Clear();
+                foreach (XElement xActionSQL in xPluginDefinition.Elements("ActionSQL"))
+                {
+                    ActionSQL.Add(xActionSQL.Value);
+                }
+            }
+        }
+
+        // --------------------------------------------------------------------------------------------------
+        // Helpers
+        // --------------------------------------------------------------------------------------------------
+
+        private void StoreActionSQL(DataRow drActionSQL)
+        {
+            if (drActionSQL != null)
+            {
+                DataTable dt = drActionSQL.Table;
+
+                if (dt != null && !dt.Columns.Contains("SQL"))
+                {
+                    dt.Columns.Add("SQL");
+                }
+
+                MyWebUtils.GetBySQL("exec spSQL_del 'CiMacro', 'ActionSQL', @AppID, @TableID, @MacroID", drActionSQL, true);
+
+                foreach (string actionSQL in ActionSQL)
+                {
+                    drActionSQL["SQL"] = actionSQL;
+                    MyWebUtils.GetBySQL("exec spSQL_ins 'CiMacro', 'ActionSQL', @AppID, @TableID, @MacroID, @SQL", drActionSQL, true);
+                }
+
+            }
+        }
     }
 }

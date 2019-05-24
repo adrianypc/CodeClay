@@ -1,21 +1,26 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <CiTable>
-	<TableName>ApplicationList</TableName>
+	<TableName>CiApplicationList</TableName>
 	<TableCaption>Application List</TableCaption>
 	<DefaultView>Grid</DefaultView>
   <RowKey>AppID</RowKey>
-  <CiField>
+  <DoubleClickMacroName>Details</DoubleClickMacroName>
+  <CiTextField>
     <FieldName>AppID</FieldName>
     <Caption>Application ID</Caption>
-  </CiField>
+    <Width>10</Width>
+    <Editable>false</Editable>
+  </CiTextField>
   <CiTextField>
     <FieldName>AppName</FieldName>
     <Caption>Application Name</Caption>
+    <Width>20</Width>
   </CiTextField>
   <CiTextField>
     <FieldName>Role</FieldName>
     <Caption>Role</Caption>
     <Editable>false</Editable>
+    <Width>20</Width>
   </CiTextField>
   <CiLinkField>
     <FieldName>AppUrl</FieldName>
@@ -43,12 +48,11 @@
   </UpdateMacro>
   <CiMacro>
     <MacroName>Details</MacroName>
-    <Caption>Details</Caption>
-    <Toolbar>true</Toolbar>
+    <Caption>Application Details</Caption>
     <ActionSQL>
       select  @AppID as AppID
     </ActionSQL>
-    <NavigateUrl>ApplicationDetails.pux</NavigateUrl>
-    <NavigatePos>Popup</NavigatePos>
+    <NavigateUrl>CiApplicationDetails.pux</NavigateUrl>
+    <NavigatePos>NewTab</NavigatePos>
   </CiMacro>
 </CiTable>

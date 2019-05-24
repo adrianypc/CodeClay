@@ -1,0 +1,63 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<CiTable>
+	<TableName>SQLList</TableName>
+	<TableCaption lang="sql">select @SQLType</TableCaption>
+	<DefaultView>Grid</DefaultView>
+  <RowKey>AppID,TableID,MacroID,LineNum</RowKey>
+  <CiField>
+    <FieldName>EntityType</FieldName>
+    <Hidden>true</Hidden>
+  </CiField>
+  <CiField>
+    <FieldName>SQLType</FieldName>
+    <Hidden>true</Hidden>
+  </CiField>
+  <CiField>
+    <FieldName>AppID</FieldName>
+    <Caption>App ID</Caption>
+    <Hidden>true</Hidden>
+  </CiField>
+  <CiField>
+    <FieldName>TableID</FieldName>
+    <Caption>Table ID</Caption>
+    <Hidden>true</Hidden>
+  </CiField>
+  <CiField>
+    <FieldName>MacroID</FieldName>
+    <Caption>Macro ID</Caption>
+    <Hidden>true</Hidden>
+  </CiField>
+  <CiField>
+    <FieldName>LineNum</FieldName>
+    <Caption>Line#</Caption>
+    <Width>5</Width>
+  </CiField>
+  <CiMemoField>
+    <FieldName>SQL</FieldName>
+    <Caption>SQL</Caption>
+  </CiMemoField>
+  <SelectMacro>
+    <ActionSQL>?exec spSQL_sel @EntityType, @SQLType, @AppID, @TableID, @MacroID</ActionSQL>
+  </SelectMacro>
+  <InsertMacro>
+    <ActionSQL>exec spSQL_ins @EntityType, @SQLType, @AppID, @TableID, @MacroID, @SQL</ActionSQL>
+    <ActionSQL>select @AppID as AppID, @TableID as TableID</ActionSQL>
+    <CiSerializeMacro>
+      <Direction>Download</Direction>
+    </CiSerializeMacro>
+  </InsertMacro>
+  <UpdateMacro>
+    <ActionSQL>exec spSQL_upd @EntityType, @SQLType, @AppID, @TableID, @MacroID, @LineNum, @SQL</ActionSQL>
+    <ActionSQL>select @AppID as AppID, @TableID as TableID</ActionSQL>
+    <CiSerializeMacro>
+      <Direction>Download</Direction>
+    </CiSerializeMacro>
+  </UpdateMacro>
+  <DeleteMacro>
+    <ActionSQL>exec spSQL_del @EntityType, @SQLType, @AppID, @TableID, @MacroID, @LineNum</ActionSQL>
+    <ActionSQL>select @AppID as AppID, @TableID as TableID</ActionSQL>
+    <CiSerializeMacro>
+      <Direction>Download</Direction>
+    </CiSerializeMacro>
+  </DeleteMacro>
+</CiTable>

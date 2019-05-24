@@ -285,15 +285,22 @@
     <Caption>Total Paid</Caption>
     <Value>0.00</Value>
     <Editable>false</Editable>
-      <Mask>Currency</Mask>
+    <Mask>Currency</Mask>
   </CiTextField>
   <CiTextField>
     <FieldName>OutstandingAmount</FieldName>
     <Caption>Outstanding</Caption>
     <Value>0.00</Value>
     <Editable>false</Editable>
-      <Mask>Currency</Mask>
+    <Mask>Currency</Mask>
   </CiTextField>
+  <CiFieldExitMacro>
+    <FieldName>PresNo</FieldName>
+    <ValidationSQL>
+        select 'This ChargeSlip is already in used. Please use another.'
+        from ChargeSlip where SlipNo = (RIGHT('0000000' + CAST((@PresNo) as varchar(7)),7)) and @BillNo = 'New'
+    </ValidationSQL>
+  </CiFieldExitMacro>
   <CiFieldExitMacro>
     <FieldName>ClientNo</FieldName>
     <ActionSQL>
@@ -317,7 +324,10 @@
         select
         (select cast(coalesce(sum(CBIAmount),0) as decimal(10,2)) from ClientBillItem where ClientBillNo = @BillNo and CBIGSTApplicable = 'N') as CBINonTaxableAmount,
         (select cast(coalesce(sum(CBIAmount),0) as decimal(10,2)) from ClientBillItem where ClientBillNo = @BillNo and CBIGSTApplicable = 'Y') as CBITaxableAmount,
-        (select cast(cast(coalesce(G.GSTRate,0.00) as decimal(10,2)) / 100 as decimal(10,2)) from GST G inner join ApplicationGlobals A on G.GSTCode = A.GSTCode) as GSTRate
+        (select cast(cast(coalesce(G.GSTRate,0.00) as decimal(10,2)) / 100 as decimal(10,2)) from GST G inner join ApplicationGlobals A on G.GSTCode = A.GSTCode) as GSTRate,
+        (select cast(coalesce(@Cash,0.00) as decimal(10,2)) + cast(coalesce(@Nets,0.00) as decimal(10,2)) +
+                cast(coalesce(@Card1Amount,0.00) as decimal(10,2)) + cast(coalesce(@Card2Amount,0.00) as decimal(10,2)) +
+                cast(coalesce(@CorporateAmount,0.00) as decimal(10,2))) as TotalBillPayment
     </ActionSQL>
     <ActionSQL>
         select
@@ -326,10 +336,13 @@
         cast(coalesce(@Deposit,0) as decimal(10,2)) + cast(coalesce(@Prepayment,0) as decimal(10,2)) + @CBINonTaxableAmount + @CBITaxableAmount as TotalExGST,
         cast(cast(@CBITaxableAmount as decimal(10,2)) * @GSTRate as decimal(10,2)) as GST,
         cast(coalesce(@Deposit,0) as decimal(10,2)) + cast(coalesce(@Prepayment,0) as decimal(10,2)) +
-        cast(@CBINonTaxableAmount + @CBITaxableAmount + cast(@CBITaxableAmount as decimal(10,2)) * @GSTRate as decimal(10,2)) as TotalIncGST
+        cast(@CBINonTaxableAmount + @CBITaxableAmount + cast(@CBITaxableAmount as decimal(10,2)) * @GSTRate as decimal(10,2)) as TotalIncGST,
+        @TotalBillPayment as TotalPaid,
+        (cast(coalesce(@Deposit,0) as decimal(10,2)) + cast(coalesce(@Prepayment,0) as decimal(10,2)) +
+        cast(@CBINonTaxableAmount + @CBITaxableAmount + cast(@CBITaxableAmount as decimal(10,2)) * @GSTRate as decimal(10,2))) - @TotalBillPayment as OutstandingAmount
     </ActionSQL>
   </CiFieldExitMacro>
-    <CiFieldExitMacro>
+  <CiFieldExitMacro>
         <FieldName>Cash</FieldName>
         <FieldName>Nets</FieldName>
         <FieldName>Card1Amount</FieldName>
@@ -348,7 +361,7 @@
                    @TotalIncGST - @TotalBillPayment as OutstandingAmount
         </ActionSQL>
     </CiFieldExitMacro>
-    <DefaultMacro>
+  <DefaultMacro>
     <ActionSQL>update TempIdentityRecord set ClientBillId = ClientBillId + 1</ActionSQL>
     <ActionSQL>
         select 'New' as BillNo,

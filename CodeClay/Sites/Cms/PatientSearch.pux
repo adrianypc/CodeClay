@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<CiTable>
+  <TableName>PatientSearch</TableName>
+  <TableCaption>Patients</TableCaption>
+  <RowKey>sClientNo</RowKey>
+  <DefaultView>Grid</DefaultView>
+  <DoubleClickMacroName>Couple</DoubleClickMacroName>
+  <CiTextField>
+    <FieldName>sClientNo</FieldName>
+    <Caption>Patient No</Caption>
+    <Searchable>true</Searchable>
+    <Browsable>true</Browsable>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>NRIC</FieldName>
+    <Caption>NRIC/Passport</Caption>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>sLastName</FieldName>
+    <Caption>Surname</Caption>
+    <Searchable>true</Searchable>
+    <Browsable>true</Browsable>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>sFirstName</FieldName>
+    <Caption>Other Names</Caption>
+    <Searchable>true</Searchable>
+    <Browsable>true</Browsable>
+  </CiTextField>
+  <CiComboField>
+    <FieldName>sConsultantNo</FieldName>
+    <Caption>Consultant</Caption>
+    <Searchable>true</Searchable>
+    <Code>ConsultantId</Code>
+    <Description>ConsultantName</Description>
+    <DropdownSQL>select ConsultantOtherNames+' '+ConsultantSurname as ConsultantName,ConsultantId from Consultant where ConsultantEnabled = 'Y'</DropdownSQL>
+    <Browsable>false</Browsable>
+  </CiComboField>
+  <CiDateField>
+    <FieldName>sAppointmentDate</FieldName>
+    <Caption>Appointment Date</Caption>
+    <Searchable>true</Searchable>
+    <ColumnFormat>dd/MM/yyyy</ColumnFormat>
+    <Browsable>false</Browsable>
+  </CiDateField>
+  <CiTextField>
+    <FieldName>Phone</FieldName>
+    <Caption>Phone</Caption>
+  </CiTextField>
+  <SelectMacro>
+    <ActionSQL>
+        ?exec spClientSearch_with_Appt @sClientNo, @sFirstName, @sLastName, @sConsultantNo, @sAppointmentDate
+    </ActionSQL>
+  </SelectMacro>
+  <CiMacro>
+    <MacroName>Couple</MacroName>
+    <Caption>Patient File</Caption>
+    <ActionSQL>select @sClientNo as sClientNo</ActionSQL>
+    <NavigateUrl>Couple.pux</NavigateUrl>
+    <NavigatePos>NewTab</NavigatePos>
+  </CiMacro>
+  <CiMacro>
+    <MacroName>NewAppointment</MacroName>
+    <Caption>New Appointment</Caption>
+    <ActionSQL>
+        select
+            ClientNo,
+            IdentityNo,
+            ClientSurname,
+            ClientOtherNames,
+            Sex,
+            AddressLine1,
+            AddressLine2,
+            AddressLine3,
+            PhoneHome,
+            Mobile,
+            Pager,
+            cast(0 as bit) as IsNewPatient,
+            'New' as Command
+        from Client
+        where ClientNo = @sClientNo
+    </ActionSQL>
+    <VisibleSQL>select 1 from Client where ClientNo = @sClientNo</VisibleSQL>
+    <NavigateUrl>AppointmentDetail.pux</NavigateUrl>
+    <NavigatePos>Popup</NavigatePos>
+    <Toolbar>true</Toolbar>
+  </CiMacro>
+
+</CiTable>

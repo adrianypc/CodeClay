@@ -9,12 +9,12 @@
 		<FieldName>SupplierID</FieldName>
 		<Caption>Supplier ID</Caption>
 		<Editable>false</Editable>
-        <Searchable>true</Searchable>
     </CiTextField>
 	<CiTextField>
 		<FieldName>SupplierName</FieldName>
 		<Caption>Supplier Name</Caption>
-	</CiTextField>
+        <Searchable>true</Searchable>
+    </CiTextField>
 	<CiComboField>
 		<FieldName>BranchCode</FieldName>
 		<Caption>Branch</Caption>
@@ -60,7 +60,7 @@
 		<ActionSQL>select '-New-' as SupplierID, 0 as Points</ActionSQL>
 	</DefaultMacro>
 	<SelectMacro>
-		<ActionSQL>?exec spSupplier_sel @SupplierID</ActionSQL>
+		<ActionSQL>?exec spSupplier_selbyName @SupplierName</ActionSQL>
 	</SelectMacro>
 	<InsertMacro>
 		<ActionSQL>

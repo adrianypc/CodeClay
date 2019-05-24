@@ -83,6 +83,11 @@
     <Mask>Currency</Mask>
   </CiTextField>
   <CiTextField>
+    <FieldName>Discount</FieldName>
+    <Caption>Discount ($)</Caption>
+    <Mask>Currency</Mask>
+  </CiTextField>
+  <CiTextField>
     <FieldName>TotalAmount</FieldName>
     <Caption>Total ($)</Caption>
     <Mask>Currency</Mask>
@@ -115,6 +120,7 @@
      <Hidden>true</Hidden>
   </CiTextField>
   <CiTable Src="CustomerOrderItems.pux" />
+  <CiTable Src="DropShipping.pux" />
   <DefaultMacro>
 	 <ActionSQL>
          select t1.*,
@@ -158,7 +164,8 @@
           @Comments,
           @Courier,
           @CourierTrackingNo,
-          @WordpressOrderNo
+          @WordpressOrderNo,
+          @Discount
     </ActionSQL>
     <VisibleSQL>select distinct 1 from CustomerOrders where @CalledFrom is null</VisibleSQL>
   </InsertMacro>
@@ -182,7 +189,8 @@
         @Comments,
         @Courier,
         @CourierTrackingNo,
-        @WordpressOrderNo
+        @WordpressOrderNo,
+        @Discount
     </ActionSQL>
     <VisibleSQL>
         select 1 from CustomerOrders
@@ -225,8 +233,9 @@
   </CiMacro>
   <CiFieldExitMacro>
 		<FieldName>Shipping</FieldName>
+        <FieldName>Discount</FieldName>
 		<ActionSQL>
-        select cast(@Shipping as decimal(10,2)) + coalesce(sum(Amount),0) as TotalAmount 
+        select (cast(@Shipping as decimal(10,2)) + coalesce(sum(Amount),0)) - cast(@Discount as decimal(10,2)) as TotalAmount 
         from CustomerOrderItems where CustomerOrderNo = @CustomerOrderNo
     </ActionSQL>
   </CiFieldExitMacro>

@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <CiTable>
-	<TableName>ApplicationDetails</TableName>
-	<TableCaption>Application Details</TableCaption>
+	<TableName>CiApplicationDetails</TableName>
+	<TableCaption lang="sql">select 'Application Design: ' + AppName from Application where AppID = @AppID</TableCaption>
 	<DefaultView>Card</DefaultView>
   <RowKey>AppID</RowKey>
   <CiTextField>
@@ -20,7 +20,7 @@
     <Editable>false</Editable>
   </CiLinkField>
   <CiTable Src="ApplicationUserList.pux" />
-  <CiTable Src="ScreenList.pux" />
+  <CiTable Src="CiTableList.pux" />
   <SelectMacro>
     <ActionSQL>?exec spApplication_sel @AppID, @CI_UserEmail</ActionSQL>
   </SelectMacro>
