@@ -35,13 +35,30 @@
     <Hidden>true</Hidden>
   </CiField>
   <CiCheckField>
+    <FieldName>Editable</FieldName>
+    <Caption>Editable field?</Caption>
+    <Editable lang="sql">select 1 from Singleton where @Type is not null</Editable>
+  </CiCheckField>
+  <CiCheckField>
     <FieldName>Mandatory</FieldName>
     <Caption>Mandatory field?</Caption>
     <Editable lang="sql">select 1 from Singleton where @Type is not null</Editable>
   </CiCheckField>
+  <CiCheckField>
+    <FieldName>Hidden</FieldName>
+    <Caption>Invisible field?</Caption>
+  </CiCheckField>
+  <CiCheckField>
+    <FieldName>Searchable</FieldName>
+    <Caption>Can search on this field?</Caption>
+  </CiCheckField>
   <CiTextField>
     <FieldName>Value</FieldName>
-    <Caption>Value</Caption>
+    <Caption>Default Value</Caption>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>ColumnFormat</FieldName>
+    <Caption>Colum Format Expression</Caption>
   </CiTextField>
   <CiComboField>
     <FieldName>ForeColor</FieldName>
@@ -96,10 +113,10 @@
   </SelectMacro>
   <UpdateMacro>
     <ActionSQL>
-      exec spField_updLong @AppID, @TableID, @FieldID, @FieldName, @Mandatory, @Summary, @ForeColor,
+      exec spField_updLong @AppID, @TableID, @FieldID, @FieldName, @Editable, @Mandatory, @Hidden, @Searchable, @Summary, @ForeColor,
         @RowSpan, @ColSpan, @Width, @HorizontalAlign, @VerticalAlign, @Value,
-        @DropdownSQL, @InsertSQL, @Code, @Description, @DropdownWidth,
-        @Folder, @MinValue, @MaxValue, @Columns
+        @DropdownSQL, @InsertSQL, @Code, @Description, @TextFieldName, @DropdownWidth,
+        @Folder, @MinValue, @MaxValue, @Columns, @ColumnFormat
     </ActionSQL>
     <ActionSQL>select @AppID as AppID, @TableID as TableID</ActionSQL>
     <CiSerializeMacro>

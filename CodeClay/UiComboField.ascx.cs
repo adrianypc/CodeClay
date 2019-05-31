@@ -37,7 +37,7 @@ namespace CodeClay
         public string Description { get; set; } = "";
 
         [XmlElement("DropdownWidth")]
-        public int DropdownWidth { get; set; }
+        public int DropdownWidth { get; set; } = 100;
 
         [XmlAnyElement("DataSource")]
         public XmlElement DataSource

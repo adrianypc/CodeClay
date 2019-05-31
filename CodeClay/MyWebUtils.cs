@@ -475,6 +475,20 @@ namespace CodeClay
 
             return elem;
         }
+
+        public static string GetXmlChildValue(XElement xElement, string childName)
+        {
+            if (xElement != null)
+            {
+                XElement xChildElement = xElement.Element(childName);
+                if (xChildElement != null)
+                {
+                    return MyUtils.Coalesce(xChildElement.Value, "");
+                }
+            }
+
+            return "";
+        }
     }
 
 

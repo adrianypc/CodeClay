@@ -24,6 +24,11 @@
     <Value>0</Value>
     <Mandatory>true</Mandatory>
   </CiNumericField>
+  <CiComboField>
+    <FieldName>TextFieldName</FieldName>
+    <Caption>Description Field</Caption>
+    <DropdownSQL>select FieldName from CiField where AppID = @AppID and TableID = @TableID order by FieldName</DropdownSQL>
+  </CiComboField>
   <CiTextField>
     <FieldName>Value</FieldName>
     <Caption>Value</Caption>

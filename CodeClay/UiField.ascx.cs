@@ -33,6 +33,9 @@ namespace CodeClay
         [XmlElement("Caption")]
         public string Caption { get; set; } = "";
 
+        [XmlElement("ColumnFormat")]
+        public string ColumnFormat { get; set; } = "";
+
         [XmlElement("Mask")]
 		public eTextMask Mask { get; set; } = eTextMask.None;
 
@@ -708,10 +711,10 @@ namespace CodeClay
             {
                 drPluginDefinition["FieldID"] = objFieldID;
 
-                string updateColumnNames = "@AppID, @TableID, @FieldID, @FieldName, @Mandatory" +
-                    ", @Summary, @ForeColor, @RowSpan, @ColSpan, @Width, @HorizontalAlign" +
-                    ", @VerticalAlign, @Value, @DropdownSQL, @InsertSQL, @Code, @Description" +
-                    ", @DropdownWidth, @Folder, @MinValue, @MaxValue, @Columns";
+                string updateColumnNames = "@AppID, @TableID, @FieldID, @FieldName, @Editable, @Mandatory" +
+                    ", @Hidden, @Searchable, @Summary, @ForeColor, @RowSpan, @ColSpan, @Width, @HorizontalAlign" +
+                    ", @VerticalAlign, @Value, @DropdownSQL, @InsertSQL, @Code, @Description, @TextFieldName" +
+                    ", @DropdownWidth, @Folder, @MinValue, @MaxValue, @Columns, @ColumnFormat";
                 string updateSQL = string.Format("exec spField_updLong {0}", updateColumnNames);
 
                 MyWebUtils.GetBySQL(updateSQL, drPluginDefinition, true);

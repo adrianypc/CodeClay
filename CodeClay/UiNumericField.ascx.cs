@@ -16,10 +16,10 @@ namespace CodeClay
         // --------------------------------------------------------------------------------------------------
 
         [XmlElement("MinValue")]
-        public string MinValue { get; set; } = "";
+        public int MinValue { get; set; } = 0;
 
         [XmlElement("MaxValue")]
-        public string MaxValue { get; set; } = "";
+        public int MaxValue { get; set; } = int.MaxValue;
 
 		// --------------------------------------------------------------------------------------------------
 		// Methods (Override)
@@ -64,18 +64,8 @@ namespace CodeClay
 
             if (CiNumericField != null)
             {
-                decimal minValue;
-                decimal maxValue;
-
-                if (Decimal.TryParse(CiNumericField.MinValue, out minValue))
-                {
-                    dxSpinEdit.MinValue = minValue;
-                }
-
-                if (Decimal.TryParse(CiNumericField.MaxValue, out maxValue))
-                {
-                    dxSpinEdit.MaxValue = maxValue;
-                }
+                dxSpinEdit.MinValue = Convert.ToDecimal(CiNumericField.MinValue);
+                dxSpinEdit.MaxValue = Convert.ToDecimal(CiNumericField.MaxValue);
             }
         }
 

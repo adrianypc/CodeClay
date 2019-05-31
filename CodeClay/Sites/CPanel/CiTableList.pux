@@ -56,13 +56,17 @@
   </SelectMacro>
   <InsertMacro>
     <ActionSQL>?exec spTable_ins @AppID, @TableName, @Caption, @DefaultView</ActionSQL>
-    <ActionSQL>select @AppID as AppID, @TableID as TableID, 'Serialize' as Direction</ActionSQL>
-    <CiSerializeMacro1 />
+    <ActionSQL>select @AppID as AppID, @TableID as TableID</ActionSQL>
+    <CiSerializeMacro>
+      <Direction>Download</Direction>
+    </CiSerializeMacro>
   </InsertMacro>
   <UpdateMacro>
     <ActionSQL>exec spTable_updShort @AppID, @TableID, @TableName, @Caption, @DefaultView</ActionSQL>
-    <ActionSQL>select @AppID as AppID, @TableID as TableID, 'Serialize' as Direction</ActionSQL>
-    <CiSerializeMacro />
+    <ActionSQL>select @AppID as AppID, @TableID as TableID</ActionSQL>
+    <CiSerializeMacro>
+      <Direction>Download</Direction>
+    </CiSerializeMacro>
   </UpdateMacro>
   <CiMacro>
     <MacroName>Details</MacroName>

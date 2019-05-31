@@ -9,7 +9,15 @@
 
         switch (position) {
             case "Popup":
-                window.ShowPopup(url);
+                var width;
+                var height;
+
+                if (tokens.length > 3) {
+                    width = tokens[2];
+                    height = tokens[3];
+                }
+
+                window.ShowPopup(url, width, height);
                 break;
 
             case "Parent":

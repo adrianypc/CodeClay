@@ -195,44 +195,43 @@ function dxGrid_EndCallback(sender, event) {
     if (script) {
         eval(script);
     }
-    else {
-        switch (command) {
-            case "New":
-                RefreshFollowers(dxGrid.cpFollowerFields);
-                break;
 
-            case "Edit":
-                if (dxGrid.ExpandedRowIndex >= 0 && dxGrid.ExpandedRowIndex != dxGrid.GetFocusedRowIndex()) {
-                    dxGrid.CollapseAllDetailRows();
-                }
-                break;
+    switch (command) {
+        case "New":
+            RefreshFollowers(dxGrid.cpFollowerFields);
+            break;
 
-            case "UpdateNew":
-                if (quickInsert && confirm("Do you wish to add a blank row?")) {
-                    dxGrid.Command = "New";
-                    dxGrid.AddNewRow();
-                }
-            case "Update":
-                if (rootTable && rootTable.name != dxGrid.name && dxGrid.cpBubbleUpdate && !dxGrid.cpIsInvalid) {
-                    rootTable.PerformCallback(tableName);
-                    childTable = dxGrid;
-                }
-                else {
-                    childTable = null;
-                }
+        case "Edit":
+            if (dxGrid.ExpandedRowIndex >= 0 && dxGrid.ExpandedRowIndex != dxGrid.GetFocusedRowIndex()) {
+                dxGrid.CollapseAllDetailRows();
+            }
+            break;
 
-            case "Cancel":
-            case "Delete":
-                ClearState(tableName);
-                break;
+        case "UpdateNew":
+            if (quickInsert && !dxGrid.cpIsInvalid && confirm("Do you wish to add a blank row?")) {
+                dxGrid.Command = "New";
+                dxGrid.AddNewRow();
+            }
+        case "Update":
+            if (rootTable && rootTable.name != dxGrid.name && dxGrid.cpBubbleUpdate && !dxGrid.cpIsInvalid) {
+                rootTable.PerformCallback(tableName);
+                childTable = dxGrid;
+            }
+            else {
+                childTable = null;
+            }
 
-            default:
-                if (command) {
-                    dxGrid.Command = null;
-                    dxGrid.Refresh();
-                }
-                break;
-        }
+        case "Cancel":
+        case "Delete":
+            ClearState(tableName);
+            break;
+
+        default:
+            if (command) {
+                dxGrid.Command = null;
+                dxGrid.Refresh();
+            }
+            break;
     }
 
     InitAllToolbars(dxGrid);

@@ -26,24 +26,26 @@ namespace CodeClay
         // Methods (Override)
         // --------------------------------------------------------------------------------------------------
 
-        public override void Run(DataRow drParams)
+        protected override string RunValidateSQL(DataRow drParams)
         {
-            if (drParams != null)
-            {
-                ResultTable = drParams.Table;
+            string message = base.RunValidateSQL(drParams);
 
-                ResultScript = GetResultScript(ResultTable);
+            if (MyUtils.IsEmpty(message))
+            {
+                if (Direction != DirectionTypes.Download && Direction != DirectionTypes.Upload)
+                {
+                    message = "Unknown serializer direction";
+                }
             }
+
+            return message;
         }
 
-        protected override string GetResultScript(DataTable dt)
+        protected override DataTable RunActionSQL(DataRow drParams)
         {
-            string script = "alert('Nothing to serialize')";
-            DataRow drParams = (MyWebUtils.GetNumberOfRows(dt) > 0)
-                ? dt.Rows[0]
-                : null;
+            DataTable dt = base.RunActionSQL(drParams);
 
-            string message = "Unknown serializer direction";
+            string message = "";
 
             XiTable xiTable = new XiTable();
             string puxUrl = xiTable.GetPuxUrl(drParams);
@@ -61,9 +63,9 @@ namespace CodeClay
                     break;
             }
 
-            script = string.Format("alert('{0}')", message);
+            ResultScript = string.Format("alert('{0}')", message);
 
-            return script;
+            return dt;
         }
     }
 

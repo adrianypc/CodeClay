@@ -100,7 +100,7 @@
                         <dx:CardViewToolbarItem Name="Designer" Text="Designer" Command="Custom" Target="_blank" />
                     </Items>
                 </dx:CardViewToolbarItem>
-                <dx:CardViewToolbarItem Name="Search" Text="Search" />
+                <dx:CardViewToolbarItem Name="Search" Text="Search" Image-IconID="actions_search_16x16devav" />
                 <dx:CardViewToolbarItem Name="New" Command="New"/>
                 <dx:CardViewToolbarItem Name="Edit" Command="Edit"/>
                 <dx:CardViewToolbarItem Name="Delete" Command="Delete"/>
@@ -167,7 +167,7 @@
                         <dx:GridViewToolbarItem Name="Designer" Text="Designer" Command="Custom" Target="_blank" />
                     </Items>
                 </dx:GridViewToolbarItem>
-                <dx:GridViewToolbarItem Name="Search" Text="Search" />
+                <dx:GridViewToolbarItem Name="Search" Text="Search" Image-IconID="actions_search_16x16devav"  />
                 <dx:GridViewToolbarItem Name="New" Command="New" />
                 <dx:GridViewToolbarItem Name="Edit" Command="Edit" />
                 <dx:GridViewToolbarItem Name="Delete" Command="Delete" />

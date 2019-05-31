@@ -49,6 +49,11 @@
     <Caption>Display [New] row at bottom of Grid</Caption>
     <Editable lang="sql">select 1 from Singleton where @DefaultView = 'Grid'</Editable>
   </CiCheckField>
+  <CiComboField>
+    <FieldName>DoubleClickMacroName</FieldName>
+    <Caption>Macro to run when double clicking on row of Grid</Caption>
+    <DropdownSQL>select MacroName from CiMacro where Type = 'Menu' order by MacroName</DropdownSQL>
+  </CiComboField>
   <CiCheckField>
     <FieldName>BubbleUpdate</FieldName>
     <Caption>Refresh if child tables are updated</Caption>
@@ -71,7 +76,7 @@
   <UpdateMacro>
     <ActionSQL>
       exec spTable_updLong @AppID, @TableID, @TableName, @Caption, @DefaultView,
-        @LayoutUrl, @PageSize, @ColCount, @BubbleUpdate, @QuickInsert, @InsertRowAtBottom
+        @LayoutUrl, @PageSize, @ColCount, @BubbleUpdate, @QuickInsert, @InsertRowAtBottom, @DoubleClickMacroName
     </ActionSQL>
     <ActionSQL>select @AppID as AppID, @TableID as TableID</ActionSQL>
     <CiSerializeMacro>
@@ -97,6 +102,6 @@
       select  @AppID as AppID, @TableID as TableID
     </ActionSQL>
     <NavigateUrl>SerializeMacro.pux</NavigateUrl>
-    <NavigatePos>Popup</NavigatePos>
+    <NavigatePos>Popup|600|200</NavigatePos>
   </CiMacro>
 </CiTable>

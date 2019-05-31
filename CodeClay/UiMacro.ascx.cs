@@ -211,11 +211,7 @@ namespace CodeClay
             return sqlParams;
         }
 
-        // --------------------------------------------------------------------------------------------------
-        // Helpers
-        // --------------------------------------------------------------------------------------------------
-
-        protected string RunValidateSQL(DataRow drParams)
+        protected virtual string RunValidateSQL(DataRow drParams)
         {
             foreach (string validateSQL in ValidateSQL)
             {
@@ -230,7 +226,7 @@ namespace CodeClay
             return null;
         }
 
-        protected DataTable RunActionSQL(DataRow drParams)
+        protected virtual DataTable RunActionSQL(DataRow drParams)
         {
             if (ActionSQL != null && ActionSQL.Length == 1 && ActionSQL[0] == "*")
             {
@@ -261,7 +257,7 @@ namespace CodeClay
             return UiApplication.Me.GetBySQL(ActionSQL, drParams);
         }
 
-        protected DataTable RunChildMacros(DataTable dtInput)
+        protected virtual DataTable RunChildMacros(DataTable dtInput)
         {
             DataTable dtOutput = dtInput;
 
@@ -319,7 +315,9 @@ namespace CodeClay
             // Reformat URL if navigateUrl refers to a PUX file
             if (!MyUtils.IsEmpty(navigateUrl) && !navigateUrl.Contains(@"\") && navigateUrl.EndsWith(".pux"))
             {
-                string popupQueryParameter = (NavigatePos == "Popup") ? "IsPopup=Y&" : "";
+                bool isPopup = !MyUtils.IsEmpty(NavigatePos) && NavigatePos.StartsWith("Popup");
+
+                string popupQueryParameter = isPopup ? "IsPopup=Y&" : "";
                 navigateUrl = string.Format("Default.aspx?Application={0}&{1}PluginSrc={2}", MyWebUtils.Application, popupQueryParameter, navigateUrl);
                 isPuxUrl = true;
             }
@@ -442,7 +440,8 @@ namespace CodeClay
         // Properties
         // --------------------------------------------------------------------------------------------------
 
-        public List<string> ActionSQL = new List<string>();
+        private List<string> mActionSQL = new List<string>();
+        private List<string> mVisibleSQL = new List<string>();
 
         // --------------------------------------------------------------------------------------------------
         // Methods (Override)
@@ -464,6 +463,7 @@ namespace CodeClay
                     case "INSERT":
                     case "UPDATE":
                     case "DELETE":
+                    case "DEFAULT":
                         pluginTypeName = drPluginDefinition["MacroName"].ToString() + "Macro";
                         break;
 
@@ -517,7 +517,8 @@ namespace CodeClay
 
                 MyWebUtils.GetBySQL(updateSQL, drPluginDefinition, true);
 
-                StoreActionSQL(drPluginDefinition);
+                StoreSQL("ActionSQL", mActionSQL, drPluginDefinition);
+                StoreSQL("VisibleSQL", mVisibleSQL, drPluginDefinition);
             }
         }
 
@@ -527,11 +528,20 @@ namespace CodeClay
             {
                 if (drPluginDefinition.Table.Columns.Contains("Type"))
                 {
-                    if (MyUtils.Coalesce(drPluginDefinition["Type"], "").ToString() == "Toolbar")
+                    string macroType = MyUtils.Coalesce(drPluginDefinition["Type"], "").ToString();
+                    if (macroType == "Toolbar")
                     {
                         XElement xToolbar = new XElement("Toolbar");
                         xToolbar.Value = "true";
                         xPluginDefinition.Add(xToolbar);
+                    }
+                    else if ("Select,Insert,Update,Delete,Default".Contains(macroType))
+                    {
+                        if (xPluginDefinition.Name == macroType + "Macro")
+                        {
+                            xPluginDefinition.Element("MacroName").Remove();
+                            xPluginDefinition.Element("Caption").Remove();
+                        }
                     }
                 }
 
@@ -543,6 +553,17 @@ namespace CodeClay
                         XElement xActionSQL = new XElement("ActionSQL");
                         xActionSQL.Value = drActionSQL["SQL"].ToString();
                         xPluginDefinition.Add(xActionSQL);
+                    }
+                }
+
+                DataTable dtVisibleSQL = MyWebUtils.GetBySQL("?exec spSQL_sel 'CiMacro', 'VisibleSQL', @AppID, @TableID, @MacroID", drPluginDefinition, true);
+                if (dtVisibleSQL != null)
+                {
+                    foreach (DataRow drVisibleSQL in dtVisibleSQL.Rows)
+                    {
+                        XElement xVisibleSQL = new XElement("VisibleSQL");
+                        xVisibleSQL.Value = drVisibleSQL["SQL"].ToString();
+                        xPluginDefinition.Add(xVisibleSQL);
                     }
                 }
             }
@@ -559,17 +580,38 @@ namespace CodeClay
                     case "InsertMacro":
                     case "UpdateMacro":
                     case "DeleteMacro":
-                        string macroName = pluginName.Substring(0, 6);
+                    case "DefaultMacro":
+                        string macroName = pluginName.Substring(0, pluginName.Length - 5);
                         drPluginDefinition["MacroName"] = macroName;
                         drPluginDefinition["Caption"] = "-";
                         drPluginDefinition["Type"] = macroName;
                         break;
+
+                    case "CiMacro":
+                        drPluginDefinition["MacroName"] = MyWebUtils.GetXmlChildValue(xPluginDefinition, "MacroName");
+                        drPluginDefinition["Caption"] = MyWebUtils.GetXmlChildValue(xPluginDefinition, "Caption");
+
+                        if (MyWebUtils.GetXmlChildValue(xPluginDefinition, "Toolbar").ToUpper() == "TRUE")
+                        {
+                            drPluginDefinition["Type"] = "Toolbar";
+                        }
+                        else
+                        {
+                            drPluginDefinition["Type"] = "Menu";
+                        }
+                        break;
                 }
 
-                ActionSQL.Clear();
+                mActionSQL.Clear();
                 foreach (XElement xActionSQL in xPluginDefinition.Elements("ActionSQL"))
                 {
-                    ActionSQL.Add(xActionSQL.Value);
+                    mActionSQL.Add(xActionSQL.Value);
+                }
+
+                mVisibleSQL.Clear();
+                foreach (XElement xVisibleSQL in xPluginDefinition.Elements("VisibleSQL"))
+                {
+                    mVisibleSQL.Add(xVisibleSQL.Value);
                 }
             }
         }
@@ -591,10 +633,35 @@ namespace CodeClay
 
                 MyWebUtils.GetBySQL("exec spSQL_del 'CiMacro', 'ActionSQL', @AppID, @TableID, @MacroID", drActionSQL, true);
 
-                foreach (string actionSQL in ActionSQL)
+                foreach (string actionSQL in mActionSQL)
                 {
                     drActionSQL["SQL"] = actionSQL;
                     MyWebUtils.GetBySQL("exec spSQL_ins 'CiMacro', 'ActionSQL', @AppID, @TableID, @MacroID, @SQL", drActionSQL, true);
+                }
+
+            }
+        }
+
+        private void StoreSQL(string sqlType, List<string> sqlList, DataRow drSQL)
+        {
+            if (drSQL != null)
+            {
+                DataTable dt = drSQL.Table;
+
+                if (dt != null && !dt.Columns.Contains("SQL"))
+                {
+                    dt.Columns.Add("SQL");
+                }
+
+                string deleteSQL = string.Format("exec spSQL_del 'CiMacro', '{0}', @AppID, @TableID, @MacroID", sqlType);
+                MyWebUtils.GetBySQL(deleteSQL, drSQL, true);
+
+                foreach (string sql in sqlList)
+                {
+                    drSQL["SQL"] = sql;
+
+                    string insertSQL = string.Format("exec spSQL_ins 'CiMacro', '{0}', @AppID, @TableID, @MacroID, @SQL", sqlType);
+                    MyWebUtils.GetBySQL(insertSQL, drSQL, true);
                 }
 
             }

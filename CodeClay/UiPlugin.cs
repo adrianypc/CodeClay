@@ -1004,7 +1004,11 @@ namespace CodeClay
                         if (!MyUtils.IsEmpty(xPropertyName) && IsConfigurableProperty(pluginType, xPropertyName))
                         {
                             object dPropertyValue = drPluginDefinition[dPropertyName];
-                            xPluginDefinition.Add(new XElement(xPropertyName, dPropertyValue));
+
+                            if (!IsEqualToDefaultValue(pluginType, xPropertyName, dPropertyValue))
+                            {
+                                xPluginDefinition.Add(new XElement(xPropertyName, dPropertyValue));
+                            }
                         }
                     }
 
@@ -1043,7 +1047,8 @@ namespace CodeClay
 
                     foreach (XiPlugin xiChildPlugin in GetXiChildPlugins())
                     {
-                        xiChildPlugin.UploadFromXml(drPluginDefinition, xPluginDefinition.Elements().ToList<XElement>());
+                        DataRow drChildKey = GetRowKeyValues(drPluginDefinition, xPluginDefinition);
+                        xiChildPlugin.UploadFromXml(drChildKey, xPluginDefinition.Elements().ToList<XElement>());
                     }
                 }
             }
@@ -1078,6 +1083,30 @@ namespace CodeClay
             return false;
         }
 
+        private bool IsEqualToDefaultValue(Type pluginType, string xPropertyName, object dPropertyValue)
+        {
+            if (pluginType != null)
+            {
+                CiPlugin ciPlugin = Activator.CreateInstance(pluginType) as CiPlugin;
+
+                PropertyInfo p = pluginType.GetProperty(xPropertyName);
+                string dPropertyName = GetDPropertyName(xPropertyName);
+
+                Attribute a = p.GetCustomAttribute(typeof(XmlAnyElementAttribute)) as Attribute;
+                object defaultPropertyValue = p.GetValue(ciPlugin);
+
+                string dPropertyValueString = MyUtils.Coalesce(dPropertyValue, "").ToString();
+                string defaultPropertyValueString = MyUtils.Coalesce(defaultPropertyValue, "").ToString();
+
+                if (dPropertyValueString == defaultPropertyValueString)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         private string GetApplicationName(DataRow drAppKey)
         {
             DataTable dt = MyWebUtils.GetBySQL("?exec spApplication_sel @AppID", drAppKey, true);
@@ -1090,6 +1119,31 @@ namespace CodeClay
                 {
                     return objAppName.ToString();
                 }
+            }
+
+            return null;
+        }
+
+        private DataRow GetRowKeyValues(DataRow drPluginDefinition, XElement xPluginDefinition)
+        {
+            XElement xRowKey = xPluginDefinition.Element("RowKey");
+
+            if (xRowKey != null)
+            {
+                DataRow drKey = MyUtils.CloneDataRow(drPluginDefinition);
+                DataColumnCollection dcKeyColumns = drKey.Table.Columns;
+                string[] rowKeyNames = ("AppID,TableID,FieldID,MacroID," + xRowKey.Value).Split(',');                
+
+                foreach (DataColumn dcKeyColumn in drPluginDefinition.Table.Columns)
+                {
+                    string columnName = dcKeyColumn.ColumnName;
+                    if (!rowKeyNames.Contains(columnName))
+                    {
+                        dcKeyColumns.Remove(columnName);
+                    }
+                }
+
+                return drKey;
             }
 
             return null;

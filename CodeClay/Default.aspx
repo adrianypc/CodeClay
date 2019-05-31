@@ -39,8 +39,17 @@
     		dxLoadingPanel.Hide();
     	}
 
-        function ShowPopup(url) {
+        function ShowPopup(url, width, height) {
             dxPopup.SetContentUrl(url);
+
+            if (width) {
+                dxPopup.SetWidth(width);
+            }
+
+            if (height) {
+                dxPopup.SetHeight(height);
+            }
+
             dxPopup.Show();
         }
 

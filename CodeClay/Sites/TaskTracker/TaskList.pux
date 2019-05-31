@@ -23,7 +23,7 @@
     <ForeColor></ForeColor>
     <RowSpan>1</RowSpan>
     <ColSpan>1</ColSpan>
-    <Width>5</Width>
+    <Width>10</Width>
     <HorizontalAlign>Left</HorizontalAlign>
     <VerticalAlign>Top</VerticalAlign>
     <Value></Value>
@@ -41,7 +41,7 @@
     <ForeColor></ForeColor>
     <RowSpan>1</RowSpan>
     <ColSpan>1</ColSpan>
-    <Width>35</Width>
+    <Width>65</Width>
     <HorizontalAlign>Left</HorizontalAlign>
     <VerticalAlign>Top</VerticalAlign>
     <Value>Create ...</Value>
@@ -92,27 +92,9 @@
     <Description></Description>
     <DropdownWidth>0</DropdownWidth>
   </CiComboField>
-  <CiMemoField>
-    <FieldName>Notes</FieldName>
-    <Caption>Notes</Caption>
-    <Hidden>false</Hidden>
-    <Editable>true</Editable>
-    <Mandatory>false</Mandatory>
-    <Computed>false</Computed>
-    <Searchable>false</Searchable>
-    <Browsable>true</Browsable>
-    <Summary>None</Summary>
-    <ForeColor></ForeColor>
-    <RowSpan>1</RowSpan>
-    <ColSpan>1</ColSpan>
-    <Width>25</Width>
-    <HorizontalAlign>Left</HorizontalAlign>
-    <VerticalAlign>Top</VerticalAlign>
-    <Value></Value>
-  </CiMemoField>
   <CiDateField>
     <FieldName>EndDate</FieldName>
-    <Caption>Due Date</Caption>
+    <Caption>End Date</Caption>
     <Hidden>false</Hidden>
     <Editable>true</Editable>
     <Mandatory>false</Mandatory>
@@ -134,7 +116,7 @@
     <NavigateUrl></NavigateUrl>
     <NavigatePos></NavigatePos>
     <Confirm>false</Confirm>
-    <ActionSQL>select TaskID, TaskDescription, TaskType, Status, Project, EndDate, Billable, Hours, Notes from Tasks order by TaskID</ActionSQL>
+    <ActionSQL>select TaskID, TaskDescription, TaskType, Status, Project, EndDate, Billable, Hours from Tasks order by TaskID</ActionSQL>
   </SelectMacro>
   <UpdateMacro>
     <MacroName>Update</MacroName>
@@ -142,7 +124,7 @@
     <NavigateUrl></NavigateUrl>
     <NavigatePos></NavigatePos>
     <Confirm>false</Confirm>
-    <ActionSQL>update Tasks set TaskDescription = @TaskDescription, TaskType = @TaskType, Status = @Status, Project = @Project, EndDate = @EndDate, Billable = @Billable, Hours = @Hours, Notes = @Notes where TaskID = @TaskID</ActionSQL>
+    <ActionSQL>update Tasks set TaskDescription = @TaskDescription, TaskType = @TaskType, Status = @Status, Project = @Project, EndDate = @EndDate, Billable = @Billable, Hours = @Hours where TaskID = @TaskID</ActionSQL>
   </UpdateMacro>
   <DeleteMacro>
     <MacroName>Delete</MacroName>
@@ -159,14 +141,15 @@
     <NavigatePos></NavigatePos>
     <Confirm>false</Confirm>
     <ActionSQL>select isnull(max(TaskID), 0) + 1 as TaskID from Tasks</ActionSQL>
-    <ActionSQL>insert into Tasks (TaskID, TaskDescription, TaskType, Status, Project, EndDate, Billable, Hours, Notes) values (@TaskID, @TaskDescription, @TaskType, @Status, @Project, @EndDate, @Billable, @Hours, @Notes)</ActionSQL>
+    <ActionSQL>insert into Tasks (TaskID, TaskDescription, TaskType, Status, Project, EndDate, Billable, Hours) values (@TaskID, @TaskDescription, @TaskType, @Status, @Project, @EndDate, @Billable, @Hours)</ActionSQL>
   </InsertMacro>
-  <CompleteMacro>
+  <CiMacro>
     <MacroName>Complete</MacroName>
     <Caption>Complete Task</Caption>
     <NavigateUrl></NavigateUrl>
     <NavigatePos></NavigatePos>
     <Confirm>true</Confirm>
+    <Toolbar>true</Toolbar>
     <ActionSQL>update Tasks set Status = 'Complete' where TaskID = @TaskID</ActionSQL>
-  </CompleteMacro>
+  </CiMacro>
 </CiTable>
