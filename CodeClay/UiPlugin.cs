@@ -38,15 +38,6 @@ namespace CodeClay
         private string mDefaultValue = "";
 
         // --------------------------------------------------------------------------------------------------
-        // Constructor
-        // --------------------------------------------------------------------------------------------------
-
-        public CiPlugin()
-        {
-            mSrc = string.Format("Ui{0}.pux", GetType().Name.Substring(2));
-        }
-
-        // --------------------------------------------------------------------------------------------------
         // Properties (PUX)
         // --------------------------------------------------------------------------------------------------
 
@@ -359,7 +350,7 @@ namespace CodeClay
 
                             return ciPlugin;
                         }
-                        catch (Exception ex)
+                        catch (Exception)
                         {
                             // Do nothing, NULL will be returned
                         }
@@ -539,33 +530,64 @@ namespace CodeClay
             // Do nothing
         }
 
+        public virtual object GetParentValue(string key)
+        {
+            if (CiPlugin != null)
+            {
+                string[] rowKeyNames = CiPlugin.RowKeyNames;
+                CiPlugin ciParentPlugin = CiPlugin.CiParentPlugin;
+
+                if (rowKeyNames != null && ciParentPlugin != null)
+                {
+                    rowKeyNames = rowKeyNames.Union(ciParentPlugin.RowKeyNames).ToArray();
+
+                    if (rowKeyNames.Contains(key))
+                    {
+                        object parentValue = (UiParentPlugin != null)
+                        ? UiParentPlugin.GetServerValue(key)
+                        : null;
+
+                        if (!MyUtils.IsEmpty(parentValue))
+                        {
+                            return parentValue;
+                        }
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        public virtual object GetQueryStringValue(string key)
+        {
+            string prefix = CiPlugin.PARAMETER_PREFIX;
+            object queryStringValue = MyWebUtils.QueryString[key.StartsWith(prefix) ? key.Substring(prefix.Length) : key];
+
+            if (!MyUtils.IsEmpty(queryStringValue))
+            {
+                return queryStringValue;
+            }
+
+            return null;
+        }
+
+        public virtual object GetChildValue(string key)
+        {
+            CiPlugin ciChildPlugin = CiPlugin.GetById(key);
+
+            if (ciChildPlugin != null)
+            {
+                return ciChildPlugin.Value;
+            }
+
+            return null;
+        }
+
+
         public virtual object this[string key, int rowIndex = -1]
         {
             get
             {
-                if (CiPlugin != null)
-                {
-                    string[] rowKeyNames = CiPlugin.RowKeyNames;
-                    CiPlugin ciParentPlugin = CiPlugin.CiParentPlugin;
-
-                    if (rowKeyNames != null && ciParentPlugin != null)
-                    {
-                        rowKeyNames = rowKeyNames.Union(ciParentPlugin.RowKeyNames).ToArray();
-
-                        if (rowKeyNames.Contains(key))
-                        {
-                            object parentValue = (UiParentPlugin != null)
-                            ? UiParentPlugin.GetServerValue(key)
-                            : null;
-
-                            if (!MyUtils.IsEmpty(parentValue))
-                            {
-                                return parentValue;
-                            }
-                        }
-                    }
-                }
-
                 if (rowIndex < 0)
                 {
                     rowIndex = GetFocusedIndex();
@@ -584,29 +606,11 @@ namespace CodeClay
                     return clientValue;
                 }
 
-                object serverValue = GetServerValue(key, rowIndex);
-
-                if (!MyUtils.IsEmpty(serverValue))
-                {
-                    return serverValue;
-                }
-
-                string prefix = CiPlugin.PARAMETER_PREFIX;
-                object queryStringValue = MyWebUtils.QueryString[key.StartsWith(prefix) ? key.Substring(prefix.Length) : key];
-
-                if (!MyUtils.IsEmpty(queryStringValue))
-                {
-                    return queryStringValue;
-                }
-
-                CiPlugin ciChildPlugin = CiPlugin.GetById(key);
-
-                if (ciChildPlugin != null)
-                {
-                    return ciChildPlugin.Value;
-                }
-
-                return null;
+                return MyUtils.Coalesce(
+                    GetServerValue(key, rowIndex),
+                    GetQueryStringValue(key),
+                    GetParentValue(key),
+                    GetChildValue(key));
             }
 
             set
@@ -888,9 +892,115 @@ namespace CodeClay
             return null;
         }
 
+        public void DownloadToXml(DataRow drKey, XElement xPluginDefinition)
+        {
+            XElement xSavedPluginDefinition = xPluginDefinition;
+
+            DataTable dtPluginDefinitions = GetPluginDefinitions(drKey);
+            if (dtPluginDefinitions != null)
+            {
+                foreach (DataRow drPluginDefinition in dtPluginDefinitions.Rows)
+                {
+                    string pluginTypeName = GetPluginTypeName(drPluginDefinition);
+                    if (!MyUtils.IsEmpty(pluginTypeName))
+                    {
+                        Type pluginType = GetPluginType(pluginTypeName);
+
+                        if (xPluginDefinition.Name == "Root")
+                        {
+                            xPluginDefinition.Name = pluginTypeName;
+                        }
+                        else
+                        {
+                            xPluginDefinition = new XElement(pluginTypeName);
+                            xSavedPluginDefinition.Add(xPluginDefinition);
+                        }
+
+                        foreach (DataColumn dcPluginProperty in drPluginDefinition.Table.Columns)
+                        {
+                            string dPropertyName = dcPluginProperty.ColumnName;
+                            string xPropertyName = GetXPropertyName(dPropertyName);
+
+                            if (!MyUtils.IsEmpty(xPropertyName))
+                            {
+                                bool isAttribute = xPropertyName.StartsWith("@");
+                                if (isAttribute)
+                                {
+                                    xPropertyName = xPropertyName.Substring(1);
+                                }
+
+                                if (IsConfigurableProperty(pluginType, xPropertyName))
+                                {
+                                    object dPropertyValue = drPluginDefinition[dPropertyName];
+
+                                    if (!IsEqualToDefaultValue(pluginType, xPropertyName, dPropertyValue))
+                                    {
+                                        if (isAttribute)
+                                        {
+                                            xPluginDefinition.Add(new XAttribute(xPropertyName, dPropertyValue));
+                                        }
+                                        else
+                                        {
+                                            xPluginDefinition.Add(new XElement(xPropertyName, dPropertyValue));
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        DownloadDerivedValues(drPluginDefinition, xPluginDefinition);
+
+                        foreach (XiPlugin xiChildPlugin in GetXiChildPlugins())
+                        {
+                            xiChildPlugin.DownloadToXml(drPluginDefinition, xPluginDefinition);
+                        }
+                    }
+                }
+            }
+        }
+
+        public void UploadFromXml(DataRow drKey, List<XElement> xElements)
+        {
+            DeletePluginDefinitions(drKey);
+
+            // Should be empty, only need structure of record
+            DataTable dtPluginDefinitions = GetPluginDefinitions(drKey);
+            dtPluginDefinitions.Rows.Clear();
+            DataColumnCollection dcPluginColumns = dtPluginDefinitions.Columns;
+            DataRow drPluginDefinition = dtPluginDefinitions.NewRow();
+            dtPluginDefinitions.Rows.Add(drPluginDefinition);
+
+            List<XElement> xPluginDefinitions = GetPluginDefinitions(xElements);
+
+            if (xPluginDefinitions != null)
+            {
+                foreach (XElement xPluginDefinition in xPluginDefinitions)
+                {
+                    SetupDefaultValues(drPluginDefinition, xPluginDefinition);
+                    SetupKeyValues(drPluginDefinition, drKey);
+                    SetupXmlValues(drPluginDefinition, xPluginDefinition);
+                    UploadDerivedValues(drPluginDefinition, xPluginDefinition);
+
+                    WriteToDB(drPluginDefinition);
+
+                    foreach (XiPlugin xiChildPlugin in GetXiChildPlugins())
+                    {
+                        DataRow drChildKey = GetRowKeyValues(drPluginDefinition, xPluginDefinition);
+                        xiChildPlugin.UploadFromXml(drChildKey, xPluginDefinition.Elements().ToList<XElement>());
+                    }
+                }
+            }
+        }
+
         // --------------------------------------------------------------------------------------------------
         // Methods (Virtual)
         // --------------------------------------------------------------------------------------------------
+
+        protected virtual bool IsPluginTypeOk(Type pluginType)
+        {
+            return pluginType != null && PluginType != null &&
+                (pluginType.IsSubclassOf(PluginType) || pluginType == PluginType);
+        }
 
         protected virtual string GetPluginTypeName(DataRow drPluginDefinition)
         {
@@ -974,86 +1084,6 @@ namespace CodeClay
         // Helpers
         // --------------------------------------------------------------------------------------------------
 
-        protected void DownloadToXml(DataRow drKey, XElement xPluginDefinition)
-        {
-            XElement xSavedPluginDefinition = xPluginDefinition;
-
-            DataTable dtPluginDefinitions = GetPluginDefinitions(drKey);
-            if (dtPluginDefinitions != null)
-            {
-                foreach (DataRow drPluginDefinition in dtPluginDefinitions.Rows)
-                {
-                    string pluginTypeName = GetPluginTypeName(drPluginDefinition);
-                    Type pluginType = GetPluginType(pluginTypeName);
-
-                    if (xPluginDefinition.Name == "Root")
-                    {
-                        xPluginDefinition.Name = pluginTypeName;
-                    }
-                    else
-                    {
-                        xPluginDefinition = new XElement(pluginTypeName);
-                        xSavedPluginDefinition.Add(xPluginDefinition);
-                    }
-
-                    foreach (DataColumn dcPluginProperty in drPluginDefinition.Table.Columns)
-                    {
-                        string dPropertyName = dcPluginProperty.ColumnName;
-                        string xPropertyName = GetXPropertyName(dPropertyName);
-
-                        if (!MyUtils.IsEmpty(xPropertyName) && IsConfigurableProperty(pluginType, xPropertyName))
-                        {
-                            object dPropertyValue = drPluginDefinition[dPropertyName];
-
-                            if (!IsEqualToDefaultValue(pluginType, xPropertyName, dPropertyValue))
-                            {
-                                xPluginDefinition.Add(new XElement(xPropertyName, dPropertyValue));
-                            }
-                        }
-                    }
-
-                    DownloadDerivedValues(drPluginDefinition, xPluginDefinition);
-
-                    foreach (XiPlugin xiChildPlugin in GetXiChildPlugins())
-                    {
-                        xiChildPlugin.DownloadToXml(drPluginDefinition, xPluginDefinition);
-                    }
-                }
-            }
-        }
-
-        protected void UploadFromXml(DataRow drKey, List<XElement> xElements)
-        {
-            DeletePluginDefinitions(drKey);
-
-            // Should be empty, only need structure of record
-            DataTable dtPluginDefinitions = GetPluginDefinitions(drKey);
-            DataColumnCollection dcPluginColumns = dtPluginDefinitions.Columns;
-            DataRow drPluginDefinition = dtPluginDefinitions.NewRow();
-            dtPluginDefinitions.Rows.Add(drPluginDefinition);
-
-            List<XElement> xPluginDefinitions = GetPluginDefinitions(xElements);
-
-            if (xPluginDefinitions != null)
-            {
-                foreach (XElement xPluginDefinition in xPluginDefinitions)
-                {
-                    SetupDefaultValues(drPluginDefinition, xPluginDefinition);
-                    SetupKeyValues(drPluginDefinition, drKey);
-                    SetupXmlValues(drPluginDefinition, xPluginDefinition);
-                    UploadDerivedValues(drPluginDefinition, xPluginDefinition);
-
-                    WriteToDB(drPluginDefinition);
-
-                    foreach (XiPlugin xiChildPlugin in GetXiChildPlugins())
-                    {
-                        DataRow drChildKey = GetRowKeyValues(drPluginDefinition, xPluginDefinition);
-                        xiChildPlugin.UploadFromXml(drChildKey, xPluginDefinition.Elements().ToList<XElement>());
-                    }
-                }
-            }
-        }
-
         protected string GetSqlParameterList(DataRow dr)
         {
             string sqlParameterList = "";
@@ -1065,12 +1095,6 @@ namespace CodeClay
             }
 
             return sqlParameterList;
-        }
-
-        private bool IsPluginTypeOk(Type pluginType)
-        {
-            return pluginType != null && PluginType != null &&
-                (pluginType.IsSubclassOf(PluginType) || pluginType == PluginType);
         }
 
         private bool IsConfigurableProperty(Type pluginType, string propertyName)
@@ -1128,25 +1152,22 @@ namespace CodeClay
         {
             XElement xRowKey = xPluginDefinition.Element("RowKey");
 
-            if (xRowKey != null)
+            string rowKeyFromXml = (xRowKey != null) ? xRowKey.Value : "";
+
+            DataRow drKey = MyUtils.CloneDataRow(drPluginDefinition);
+            DataColumnCollection dcKeyColumns = drKey.Table.Columns;
+            string[] rowKeyNames = ("AppID,TableID,FieldID,MacroID," + rowKeyFromXml).Split(',');
+
+            foreach (DataColumn dcKeyColumn in drPluginDefinition.Table.Columns)
             {
-                DataRow drKey = MyUtils.CloneDataRow(drPluginDefinition);
-                DataColumnCollection dcKeyColumns = drKey.Table.Columns;
-                string[] rowKeyNames = ("AppID,TableID,FieldID,MacroID," + xRowKey.Value).Split(',');                
-
-                foreach (DataColumn dcKeyColumn in drPluginDefinition.Table.Columns)
+                string columnName = dcKeyColumn.ColumnName;
+                if (!rowKeyNames.Contains(columnName))
                 {
-                    string columnName = dcKeyColumn.ColumnName;
-                    if (!rowKeyNames.Contains(columnName))
-                    {
-                        dcKeyColumns.Remove(columnName);
-                    }
+                    dcKeyColumns.Remove(columnName);
                 }
-
-                return drKey;
             }
 
-            return null;
+            return drKey;
         }
 
         private void SetupDefaultValues(DataRow drPluginDefinition, XElement xPluginDefinition)
@@ -1165,12 +1186,12 @@ namespace CodeClay
 
                     if (!MyUtils.IsEmpty(dPropertyName) && drPluginDefinition.Table.Columns.Contains(dPropertyName))
                     {
-                        Attribute a = p.GetCustomAttribute(typeof(XmlAnyElementAttribute)) as Attribute;
+                        XmlSqlElementAttribute a = p.GetCustomAttribute(typeof(XmlSqlElementAttribute)) as XmlSqlElementAttribute;
                         object dPropertyValue = p.GetValue(ciPlugin);
 
                         if (a != null)
                         {
-                            dPropertyValue = MyWebUtils.Eval<bool>(dPropertyValue as XmlElement, null);
+                            dPropertyValue = MyWebUtils.Eval(dPropertyValue as XmlElement, null, a.Type);
                         }
 
                         drPluginDefinition[dPropertyName] = dPropertyValue;
@@ -1206,6 +1227,18 @@ namespace CodeClay
             {
                 DataTable dtPluginDefinition = drPluginDefinition.Table;
 
+                foreach (XAttribute xPluginProperty in xPluginDefinition.Attributes())
+                {
+                    string xPropertyName = xPluginProperty.Name.ToString();
+                    object xPropertyValue = xPluginProperty.Value;
+                    string dPropertyName = GetDPropertyName(xPropertyName);
+
+                    if (!MyUtils.IsEmpty(dPropertyName) && dtPluginDefinition.Columns.Contains(dPropertyName))
+                    {
+                        drPluginDefinition[dPropertyName] = MyUtils.Coalesce(xPropertyValue, Convert.DBNull);
+                    }
+                }
+
                 foreach (XElement xPluginProperty in xPluginDefinition.Elements())
                 {
                     string xPropertyName = xPluginProperty.Name.ToString();
@@ -1214,9 +1247,7 @@ namespace CodeClay
 
                     if (!MyUtils.IsEmpty(dPropertyName) && dtPluginDefinition.Columns.Contains(dPropertyName))
                     {
-                        drPluginDefinition[dPropertyName] = !MyUtils.IsEmpty(xPropertyValue)
-                            ? xPropertyValue
-                            : Convert.DBNull;
+                        drPluginDefinition[dPropertyName] = MyUtils.Coalesce(xPropertyValue, Convert.DBNull);
                     }
                 }
             }

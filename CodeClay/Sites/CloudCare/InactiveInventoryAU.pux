@@ -89,7 +89,7 @@
 	</SelectMacro>
  <InsertMacro>
 	<ActionSQL>
-      ?exec spInventory_upd
+        ?exec spInventory_upd
         -1,
         @ProductID,
         @BranchCode,
@@ -100,24 +100,26 @@
         @QuantityAvailable,
         @QtyUnderReceived,
         @QtyOverReceived,
-        @ExpiryDate
+        @ExpiryDate,
+        @CI_UserEmail
     </ActionSQL>
  </InsertMacro>
  <UpdateMacro>
    <ActionSQL>
-    ?exec spInventory_upd
-        @InventoryItemNo,
-        @ProductID,
-        @BranchCode,
-        @DateOfStocktake,
-        @QuantityOnHand,
-        @QuantityOrdered,
-        @QuantityAllocated,
-        @QuantityAvailable,
-        @QtyUnderReceived,
-        @QtyOverReceived,
-        @ExpiryDate
-    </ActionSQL>
+       ?exec spInventory_upd
+       @InventoryItemNo,
+       @ProductID,
+       @BranchCode,
+       @DateOfStocktake,
+       @QuantityOnHand,
+       @QuantityOrdered,
+       @QuantityAllocated,
+       @QuantityAvailable,
+       @QtyUnderReceived,
+       @QtyOverReceived,
+       @ExpiryDate,
+       @CI_UserEmail
+   </ActionSQL>
     <VisibleSQL>select 1 from Inventory where InventoryItemNo = @InventoryItemNo</VisibleSQL>
   </UpdateMacro>
   <DeleteMacro>
@@ -126,4 +128,10 @@
     </ActionSQL>
     <VisibleSQL>select 1 from Inventory where InventoryItemNo = @InventoryItemNo</VisibleSQL>
   </DeleteMacro>
+  <CiFieldExitMacro>
+    <FieldName>QuantityOnHand</FieldName>
+    <ActionSQL>
+            select (coalesce(@QuantityOnHand,0) + coalesce(@QuantityOrdered,0)) - coalesce(@QuantityAllocated,0) as QuantityAvailable
+    </ActionSQL>
+  </CiFieldExitMacro>
 </CiTable>

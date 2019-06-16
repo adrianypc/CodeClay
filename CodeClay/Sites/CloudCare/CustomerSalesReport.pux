@@ -20,17 +20,29 @@
     <Mask>Currency</Mask>
     <Editable>true</Editable>
   </CiTextField>
+  <CiTextField>
+     <FieldName>StartDate</FieldName>
+     <Caption>From Date</Caption>
+     <Editable>false</Editable>
+  </CiTextField>
+  <CiTextField>
+     <FieldName>EndDate</FieldName>
+     <Caption>To Date</Caption>
+     <Editable>false</Editable>
+  </CiTextField>
   <DefaultMacro>
 	 <ActionSQL>
          SELECT
-            CONVERT(VARCHAR(7), getdate(), 111) as RunMonth,
-            SUM(coalesce(tab.TotalTrans,0)) as TotalTrans,
-            SUM(coalesce(tab.TotalAmount,0)) as TotalAmount
+             CONVERT(VARCHAR(7), getdate(), 111) as RunMonth,
+             SUM(coalesce(tab.TotalTrans,0)) as TotalTrans,
+             SUM(coalesce(tab.TotalAmount,0)) as TotalAmount,
+             CAST(DATEADD(mm, DATEDIFF(mm, 0,GETDATE())-3, 0) as nvarchar(12)) as StartDate,
+             CAST(DATEADD(mm, DATEDIFF(mm, 0, GETDATE()), 0) as nvarchar(12)) as EndDate
          FROM
          (SELECT
-            CONVERT(VARCHAR(7), OrderDate, 111) AS OrderMonth,
-            count(*) as TotalTrans,
-            sum(coalesce(TotalAmount,0)) as TotalAmount
+         CONVERT(VARCHAR(7), OrderDate, 111) AS OrderMonth,
+         count(*) as TotalTrans,
+         sum(coalesce(TotalAmount,0)) as TotalAmount
          FROM CustomerOrders
          WHERE OrderDate &gt;= DATEADD(mm, DATEDIFF(mm, 0,GETDATE())-3, 0)
          and OrderDate &lt; DATEADD(mm, DATEDIFF(mm, 0, GETDATE()), 0)
@@ -39,9 +51,12 @@
      </ActionSQL>
 	</DefaultMacro>
 	<SelectMacro>
-		<ActionSQL>
-            select RunMonth,TotalTrans,TotalAmount from QuarterlyCustomerSale order by RunMonth desc
-        </ActionSQL>
+	 <ActionSQL>
+        select  RunMonth,TotalTrans,TotalAmount,
+                cast(StartDate as nvarchar(12)) as StartDate,
+                cast(EndDate as nvarchar(12)) as EndDate 
+        from QuarterlyCustomerSale order by RunMonth desc
+     </ActionSQL>
 	</SelectMacro>
 	<InsertMacro>
       <ActionSQL>

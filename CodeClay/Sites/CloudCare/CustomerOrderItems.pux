@@ -37,6 +37,7 @@
     <Width>20</Width>
     <Mask>Currency</Mask>
     <Editable>true</Editable>
+    <Mandatory>true</Mandatory>
   </CiTextField>
   <CiCheckField>
     <FieldName>DropShipping</FieldName>
@@ -105,6 +106,12 @@
   <CiFieldExitMacro>
       <FieldName>Quantity</FieldName>
       <FieldName>ProductID</FieldName>
-      <ActionSQL>select	@Quantity * coalesce(UnitSellingPrice,0) as Amount from Product where	ProductID = @ProductID</ActionSQL>
+      <ActionSQL>
+          select
+              case when IsDropShipping = 'Y' then cast(1 as bit) else cast(0 as bit) end as DropShipping
+              @Quantity * coalesce(UnitSellingPrice,0) as Amount
+          from Product 
+          where	ProductID = @ProductID
+      </ActionSQL>
 	</CiFieldExitMacro>
 </CiTable>

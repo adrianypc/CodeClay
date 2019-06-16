@@ -18,7 +18,7 @@ namespace CodeClay
         // Properties (PUX)
         // --------------------------------------------------------------------------------------------------
 
-        [XmlAnyElement("Folder")]
+        [XmlSqlElement("Folder", typeof(string))]
         public XmlElement Folder { get; set; } = null;
 
         // --------------------------------------------------------------------------------------------------

@@ -1,0 +1,60 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<CiTable>
+	<TableName>TriggerFieldList</TableName>
+	<TableCaption>Trigger Fields</TableCaption>
+	<DefaultView>Grid</DefaultView>
+  <RowKey>AppID,TableID,MacroID,OldFieldID</RowKey>
+  <CiField>
+    <FieldName>AppID</FieldName>
+    <Caption>App ID</Caption>
+    <Hidden>true</Hidden>
+  </CiField>
+  <CiField>
+    <FieldName>TableID</FieldName>
+    <Caption>Table ID</Caption>
+    <Hidden>true</Hidden>
+  </CiField>
+  <CiField>
+    <FieldName>MacroID</FieldName>
+    <Caption>Macro ID</Caption>
+    <Hidden>true</Hidden>
+  </CiField>
+  <CiField>
+    <FieldName>OldFieldID</FieldName>
+    <Caption>Old Field ID</Caption>
+    <Hidden>true</Hidden>
+  </CiField>
+  <CiComboField>
+    <FieldName>FieldID</FieldName>
+    <Caption>Field ID</Caption>
+    <Code>FieldID</Code>
+    <Description>FieldName</Description>
+    <TextFieldName>DisplayFieldName</TextFieldName>
+    <DropdownSQL>select FieldID, FieldName from CiField where AppID = @AppID and TableID = @TableID and Type != 'Table' order by FieldID</DropdownSQL>
+    <DropdownWidth>300</DropdownWidth>
+  </CiComboField>
+  <SelectMacro>
+    <ActionSQL>?exec spTriggerField_sel @AppID, @TableID, @MacroID</ActionSQL>
+  </SelectMacro>
+  <InsertMacro>
+    <ActionSQL>exec spTriggerField_ins @AppID, @TableID, @MacroID, @FieldID</ActionSQL>
+    <ActionSQL>select @AppID as AppID, @TableID as TableID</ActionSQL>
+    <CiSerializeMacro>
+      <Direction>Download</Direction>
+    </CiSerializeMacro>
+  </InsertMacro>
+  <UpdateMacro>
+    <ActionSQL>exec spTriggerField_upd @AppID, @TableID, @MacroID, @FieldID, @OldFieldID</ActionSQL>
+    <ActionSQL>select @AppID as AppID, @TableID as TableID</ActionSQL>
+    <CiSerializeMacro>
+      <Direction>Download</Direction>
+    </CiSerializeMacro>
+  </UpdateMacro>
+  <DeleteMacro>
+    <ActionSQL>exec spTriggerField_del @AppID, @TableID, @MacroID, @FieldID</ActionSQL>
+    <ActionSQL>select @AppID as AppID, @TableID as TableID</ActionSQL>
+    <CiSerializeMacro>
+      <Direction>Download</Direction>
+    </CiSerializeMacro>
+  </DeleteMacro>
+</CiTable>

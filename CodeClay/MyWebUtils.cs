@@ -13,6 +13,7 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Xml;
 using System.Xml.Linq;
+using System.Xml.Serialization;
 
 // Extra references
 using CodistriCore;
@@ -22,10 +23,24 @@ using DevExpress.XtraReports.Native;
 namespace CodeClay
 {
     // --------------------------------------------------------------------------------------------------
+    // Custom attributes
+    // --------------------------------------------------------------------------------------------------
+
+    public class XmlSqlElementAttribute: XmlAnyElementAttribute
+    {
+        public Type Type { get; set; } = null;
+
+        public XmlSqlElementAttribute(string name, Type type): base(name)
+        {
+            Type = type;
+        }
+    }
+
+    // --------------------------------------------------------------------------------------------------
     // Enumerations
     // --------------------------------------------------------------------------------------------------
 
-	public enum eLangType
+    public enum eLangType
     {
         literal = 0,
         column,
@@ -295,6 +310,13 @@ namespace CodeClay
 
         public static T Eval<T>(XmlElement expressionElement, DataRow drParams)
         {
+            object result = Eval(expressionElement, drParams, typeof(T));
+
+            return (T)Convert.ChangeType(result, typeof(T));
+        }
+
+        public static object Eval(XmlElement expressionElement, DataRow drParams, Type type)
+        {
             object result = null;
 
             if (!MyUtils.IsEmpty(expressionElement))
@@ -337,11 +359,11 @@ namespace CodeClay
                         if (!MyUtils.IsEmpty(expression))
                         {
                             DataTable dt = GetBySQL(expression, drParams);
-                            if (typeof(T) == typeof(DataTable))
+                            if (type == typeof(DataTable))
                             {
                                 result = dt;
                             }
-                            else if (typeof(T) == typeof(DataRow))
+                            else if (type == typeof(DataRow))
                             {
                                 if (MyWebUtils.GetNumberOfRows(dt) > 0)
                                 {
@@ -367,13 +389,13 @@ namespace CodeClay
 
             if (result == null)
             {
-                if (typeof(T) == typeof(bool))
+                if (type == typeof(bool))
                 {
                     result = false;
                 }
             }
 
-            return (T)Convert.ChangeType(result, typeof(T));
+            return result;
         }
 
         public static string GetSQLFromXml(XmlElement expressionElement)
@@ -490,7 +512,6 @@ namespace CodeClay
             return "";
         }
     }
-
 
     public class DataSetSerializer : IDataSerializer
     {

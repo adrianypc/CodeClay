@@ -86,6 +86,19 @@
               @FieldID as FieldID,
               'Edit' as Command,
               'Ci' + coalesce(@Type, '') + 'FieldDetails.pux' as NavigateUrl
+      from    Singleton
+      where   @Type != 'Table'
+      union
+      select  @AppID as AppID,
+              NestedTableID as TableID,
+              null as FieldID,
+              'Edit' as Command,
+              'CiTableDetails.pux' as NavigateUrl
+      from    CiField
+      where   AppID = @AppID
+      and     TableID = @TableID
+      and     FieldID = @FieldID
+      and     @Type = 'Table'
     </ActionSQL>
     <NavigatePos>NewTab</NavigatePos>
   </CiMacro>

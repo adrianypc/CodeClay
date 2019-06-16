@@ -27,6 +27,7 @@
     <Caption>Date Of Stocktake</Caption>
     <ColumnFormat>dd/MM/yyyy</ColumnFormat>
     <Editable>false</Editable>
+    <Hidden>true</Hidden>
   </CiDateField>
   <CiNumericField>
 	<FieldName>QuantityOnHand</FieldName>
@@ -52,6 +53,11 @@
     <FieldName>Change</FieldName>
     <Caption>Change</Caption>
     <Editable>false</Editable>
+  </CiTextField>
+  <CiTextField>
+     <FieldName>ChangedBy</FieldName>
+     <Caption>Changed By</Caption>
+     <Editable>false</Editable>
   </CiTextField>
   <CiNumericField>
     <FieldName>OrderID</FieldName>

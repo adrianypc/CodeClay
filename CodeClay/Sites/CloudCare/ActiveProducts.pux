@@ -9,15 +9,17 @@
 		<FieldName>ProductID</FieldName>
 		<Caption>Product ID</Caption>
 		<Editable>false</Editable>
+        <width>8</width>
 	</CiTextField>
 	<CiTextField>
 		<FieldName>ProductName</FieldName>
 		<Caption>Product Name</Caption>
+        <width>20</width>
 	</CiTextField>
   <CiLinkField>
     <FieldName>HealthTreeURL</FieldName>
     <Caption>HealthTree URL</Caption>
-    <Width>50</Width>
+    <Width>40</Width>
   </CiLinkField>
 	<CiTextField>
 		<FieldName>UnitCostPrice</FieldName>
@@ -35,6 +37,12 @@
     <CiCheckField>
         <FieldName>IsActive</FieldName>
         <Caption>Enabled</Caption>
+        <width>6</width>
+    </CiCheckField>
+    <CiCheckField>
+        <FieldName>IsDropShipping</FieldName>
+        <Caption>DropShipping</Caption>
+        <width>15</width>
     </CiCheckField>
     <CiTable Src="Inventory.pux">
 	    <SelectMacro>
@@ -69,13 +77,13 @@
 	<InsertMacro>
 		<ActionSQL>
 			?exec spProduct_ins @ProductName, @ProductDescription, @SupplierID, @SupplierSKU,
-				@ReorderThreshold, @UnitCostPrice, @UnitSellingPrice,@HealthTreeURL,@IsActive
+				@ReorderThreshold, @UnitCostPrice, @UnitSellingPrice,@HealthTreeURL,@IsActive,@IsDropShipping
 		</ActionSQL>
 	</InsertMacro>
 	<UpdateMacro>
 		<ActionSQL>
 			exec spProduct_upd @ProductID, @ProductName, @ProductDescription, @SupplierID, @SupplierSKU,
-				@ReorderThreshold, @UnitCostPrice, @UnitSellingPrice,@HealthTreeURL,@IsActive
+				@ReorderThreshold, @UnitCostPrice, @UnitSellingPrice,@HealthTreeURL,@IsActive,@IsDropShipping
 		</ActionSQL>
 	</UpdateMacro>
 </CiTable>

@@ -32,12 +32,12 @@
     <FieldName>MacroName</FieldName>
     <Caption>Macro Name</Caption>
     <Width>20</Width>
-    <Editable lang="sql">select 1 from Singleton where @Type not in ('Select', 'Insert', 'Update', 'Delete') </Editable>
+    <Editable lang="sql">select 1 from Singleton where @Type not in ('Select', 'Insert', 'Update', 'Delete', 'Default') </Editable>
   </CiTextField>
   <CiTextField>
     <FieldName>Caption</FieldName>
     <Caption>Caption</Caption>
-    <Editable lang="sql">select 1 from Singleton where @Type not in ('Select', 'Insert', 'Update', 'Delete') </Editable>
+    <Editable lang="sql">select 1 from Singleton where @Type not in ('Select', 'Insert', 'Update', 'Delete', 'Default', 'Field Exit') </Editable>
   </CiTextField>
   <DefaultMacro>
     <ActionSQL>
@@ -78,9 +78,12 @@
     <ActionSQL>
       select  @AppID as AppID,
               @TableID as TableID,
-              @MacroID as MacroID
+              @MacroID as MacroID,
+              NavigateUrl =
+                case when @Type = 'Field Exit' then 'CiFieldExitMacroDetails.pux'
+                else 'CiMacroDetails.pux'
+                end
     </ActionSQL>
     <NavigatePos>NewTab</NavigatePos>
-    <NavigateUrl>CiMacroDetails.pux</NavigateUrl>
   </CiMacro>
 </CiTable>

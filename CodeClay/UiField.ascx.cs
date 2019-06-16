@@ -45,7 +45,7 @@ namespace CodeClay
         [XmlElement("Hidden")]
         public bool Hidden { get; set; } = false;
 
-        [XmlAnyElement("Editable")]
+        [XmlSqlElement("Editable", typeof(bool))]
         public XmlElement Editable { get; set; } = MyWebUtils.CreateXmlElement("Editable", true);
 
         [XmlElement("Mandatory")]
@@ -667,15 +667,27 @@ namespace CodeClay
         // Methods (Override)
         // --------------------------------------------------------------------------------------------------
 
+        protected override bool IsPluginTypeOk(Type pluginType)
+        {
+            return base.IsPluginTypeOk(pluginType) || (pluginType == typeof(CiTable));
+        }
+
         protected override string GetPluginTypeName(DataRow drPluginDefinition)
         {
             string pluginTypeName = "CiField";
 
             if (drPluginDefinition.Table.Columns.Contains("Type"))
             {
-                object objFieldType = MyUtils.Coalesce(drPluginDefinition["Type"], "");
+                string fieldType = MyUtils.Coalesce(drPluginDefinition["Type"], "").ToString();
 
-                pluginTypeName = "Ci" + objFieldType.ToString() + "Field";
+                if (fieldType == "Table")
+                {
+                    pluginTypeName = null;
+                }
+                else
+                {
+                    pluginTypeName = "Ci" + fieldType + "Field";
+                }
             }
 
             return pluginTypeName;
@@ -706,24 +718,44 @@ namespace CodeClay
             string insertColumnNames = "@AppID, @TableID, @FieldName, @Caption, @Type, @Width, @InRowKey";
             string insertSQL = string.Format("?exec spField_ins {0}", insertColumnNames);
 
-            object objFieldID = MyWebUtils.EvalSQL(insertSQL, drPluginDefinition, true);
-            if (!MyUtils.IsEmpty(objFieldID))
-            {
-                drPluginDefinition["FieldID"] = objFieldID;
+            drPluginDefinition["FieldID"] = MyWebUtils.EvalSQL(insertSQL, drPluginDefinition, true);
 
-                string updateColumnNames = "@AppID, @TableID, @FieldID, @FieldName, @Editable, @Mandatory" +
-                    ", @Hidden, @Searchable, @Summary, @ForeColor, @RowSpan, @ColSpan, @Width, @HorizontalAlign" +
-                    ", @VerticalAlign, @Value, @DropdownSQL, @InsertSQL, @Code, @Description, @TextFieldName" +
-                    ", @DropdownWidth, @Folder, @MinValue, @MaxValue, @Columns, @ColumnFormat";
-                string updateSQL = string.Format("exec spField_updLong {0}", updateColumnNames);
+            string updateColumnNames = "@AppID, @TableID, @FieldID, @FieldName, @Editable, @Mandatory" +
+                ", @Hidden, @Searchable, @Summary, @ForeColor, @RowSpan, @ColSpan, @Width, @HorizontalAlign" +
+                ", @VerticalAlign, @Value, @DropdownSQL, @InsertSQL, @Code, @Description, @TextFieldName" +
+                ", @DropdownWidth, @Folder, @MinValue, @MaxValue, @Columns, @ColumnFormat, @Mask";
+            string updateSQL = string.Format("exec spField_updLong {0}", updateColumnNames);
 
-                MyWebUtils.GetBySQL(updateSQL, drPluginDefinition, true);
-            }
+            MyWebUtils.GetBySQL(updateSQL, drPluginDefinition, true);
         }
 
         protected override void DownloadDerivedValues(DataRow drPluginDefinition, XElement xPluginDefinition)
         {
-            if (drPluginDefinition != null && xPluginDefinition != null && !IsRowKeyChecked)
+            if (drPluginDefinition != null && xPluginDefinition != null)
+            {
+                DownloadRowKey(drPluginDefinition, xPluginDefinition);
+                //DownloadCiTable(drPluginDefinition, xPluginDefinition);
+            }
+        }
+
+        protected override void UploadDerivedValues(DataRow drPluginDefinition, XElement xPluginDefinition)
+        {
+            DataColumnCollection dcPluginColumns = drPluginDefinition.Table.Columns;
+
+            if (drPluginDefinition != null && xPluginDefinition != null)
+            {
+                UploadType(drPluginDefinition, xPluginDefinition, dcPluginColumns);
+                UploadRowKey(drPluginDefinition, xPluginDefinition, dcPluginColumns);
+            }
+        }
+
+        // --------------------------------------------------------------------------------------------------
+        // Helpers
+        // --------------------------------------------------------------------------------------------------
+
+        private void DownloadRowKey(DataRow drPluginDefinition, XElement xPluginDefinition)
+        {
+            if (!IsRowKeyChecked)
             {
                 IsRowKeyChecked = true;
 
@@ -764,35 +796,42 @@ namespace CodeClay
             }
         }
 
-        protected override void UploadDerivedValues(DataRow drPluginDefinition, XElement xPluginDefinition)
+        private void DownloadCiTable(DataRow drPluginDefinition, XElement xPluginDefinition)
         {
-            DataColumnCollection dcPluginColumns = drPluginDefinition.Table.Columns;
-
-            if (drPluginDefinition != null && xPluginDefinition != null)
+            if (xPluginDefinition.Name == "CiTable")
             {
-                if (dcPluginColumns.Contains("Type"))
+                xPluginDefinition.SetElementValue("TableName", drPluginDefinition["FieldName"].ToString());
+                xPluginDefinition.SetElementValue("Caption", drPluginDefinition["Caption"].ToString());
+            }
+        }
+
+        private void UploadType(DataRow drPluginDefinition, XElement xPluginDefinition, DataColumnCollection dcPluginColumns)
+        {
+            if (dcPluginColumns.Contains("Type"))
+            {
+                string fieldType = xPluginDefinition.Name.ToString();
+                drPluginDefinition["Type"] = fieldType.Substring(2, fieldType.Length - 7);
+            }
+        }
+
+        private void UploadRowKey(DataRow drPluginDefinition, XElement xPluginDefinition, DataColumnCollection dcPluginColumns)
+        {
+            if (dcPluginColumns.Contains("InRowKey"))
+            {
+                XElement xFieldName = xPluginDefinition.Element("FieldName");
+
+                XElement xParentPluginDefinition = xPluginDefinition.Parent;
+
+                if (xParentPluginDefinition != null)
                 {
-                    string fieldType = xPluginDefinition.Name.ToString();
-                    drPluginDefinition["Type"] = fieldType.Substring(2, fieldType.Length - 7);
-                }
-
-                if (dcPluginColumns.Contains("InRowKey"))
-                {
-                    XElement xFieldName = xPluginDefinition.Element("FieldName");
-
-                    XElement xParentPluginDefinition = xPluginDefinition.Parent;
-
-                    if (xParentPluginDefinition != null)
+                    XElement xRowKey = xParentPluginDefinition.Element("RowKey");
+                    if (xRowKey != null)
                     {
-                        XElement xRowKey = xParentPluginDefinition.Element("RowKey");
-                        if (xRowKey != null)
-                        {
-                            string[] rowKeyNames = xRowKey.Value.Split(',');
+                        string[] rowKeyNames = xRowKey.Value.Split(',');
 
-                            drPluginDefinition["InRowKey"] = (xFieldName != null) &&
-                                (rowKeyNames != null) &&
-                                rowKeyNames.Contains(xFieldName.Value);
-                        }
+                        drPluginDefinition["InRowKey"] = (xFieldName != null) &&
+                            (rowKeyNames != null) &&
+                            rowKeyNames.Contains(xFieldName.Value);
                     }
                 }
             }

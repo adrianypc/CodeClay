@@ -442,6 +442,7 @@ namespace CodeClay
 
         private List<string> mActionSQL = new List<string>();
         private List<string> mVisibleSQL = new List<string>();
+        private List<string> mTriggerFieldNames = new List<string>();
 
         // --------------------------------------------------------------------------------------------------
         // Methods (Override)
@@ -517,6 +518,11 @@ namespace CodeClay
 
                 MyWebUtils.GetBySQL(updateSQL, drPluginDefinition, true);
 
+                if (drPluginDefinition["Type"].ToString() == "Field Exit")
+                {
+                    StoreTriggerFields(drPluginDefinition);
+                }
+
                 StoreSQL("ActionSQL", mActionSQL, drPluginDefinition);
                 StoreSQL("VisibleSQL", mVisibleSQL, drPluginDefinition);
             }
@@ -542,6 +548,22 @@ namespace CodeClay
                             xPluginDefinition.Element("MacroName").Remove();
                             xPluginDefinition.Element("Caption").Remove();
                         }
+                    }
+                    else if (macroType == "Field Exit")
+                    {
+                        xPluginDefinition.Name = "CiFieldExitMacro";
+                        xPluginDefinition.Element("Caption").Remove();
+                    }
+                }
+
+                DataTable dtTriggerField = MyWebUtils.GetBySQL("?exec spTriggerField_sel @AppID, @TableID, @MacroID", drPluginDefinition, true);
+                if (dtTriggerField != null)
+                {
+                    foreach (DataRow drTriggerField in dtTriggerField.Rows)
+                    {
+                        XElement xFieldName = new XElement("FieldName");
+                        xFieldName.Value = drTriggerField["DisplayFieldName"].ToString();
+                        xPluginDefinition.Add(xFieldName);
                     }
                 }
 
@@ -587,6 +609,11 @@ namespace CodeClay
                         drPluginDefinition["Type"] = macroName;
                         break;
 
+                    case "CiFieldExitMacro":
+                        drPluginDefinition["Caption"] = "-";
+                        drPluginDefinition["Type"] = "Field Exit";
+                        break;
+
                     case "CiMacro":
                         drPluginDefinition["MacroName"] = MyWebUtils.GetXmlChildValue(xPluginDefinition, "MacroName");
                         drPluginDefinition["Caption"] = MyWebUtils.GetXmlChildValue(xPluginDefinition, "Caption");
@@ -613,6 +640,15 @@ namespace CodeClay
                 {
                     mVisibleSQL.Add(xVisibleSQL.Value);
                 }
+
+                if (xPluginDefinition.Name == "CiFieldExitMacro")
+                {
+                    mTriggerFieldNames.Clear();
+                    foreach (XElement xTriggerField in xPluginDefinition.Elements("FieldName"))
+                    {
+                        mTriggerFieldNames.Add(xTriggerField.Value);
+                    }
+                }
             }
         }
 
@@ -620,33 +656,43 @@ namespace CodeClay
         // Helpers
         // --------------------------------------------------------------------------------------------------
 
-        private void StoreActionSQL(DataRow drActionSQL)
+        private void StoreTriggerFields(DataRow drPluginDefinition)
         {
-            if (drActionSQL != null)
+            if (drPluginDefinition != null)
             {
-                DataTable dt = drActionSQL.Table;
+                DataTable dt = drPluginDefinition.Table;
 
-                if (dt != null && !dt.Columns.Contains("SQL"))
+                if (dt != null && !dt.Columns.Contains("FieldID"))
                 {
-                    dt.Columns.Add("SQL");
+                    dt.Columns.Add("FieldID");
                 }
 
-                MyWebUtils.GetBySQL("exec spSQL_del 'CiMacro', 'ActionSQL', @AppID, @TableID, @MacroID", drActionSQL, true);
-
-                foreach (string actionSQL in mActionSQL)
+                if (dt != null && !dt.Columns.Contains("FieldName"))
                 {
-                    drActionSQL["SQL"] = actionSQL;
-                    MyWebUtils.GetBySQL("exec spSQL_ins 'CiMacro', 'ActionSQL', @AppID, @TableID, @MacroID, @SQL", drActionSQL, true);
+                    dt.Columns.Add("FieldName");
+                }
+
+                string deleteSQL = string.Format("exec spTriggerField_del @AppID, @TableID, @MacroID");
+                MyWebUtils.GetBySQL(deleteSQL, drPluginDefinition, true);
+
+                foreach (string fieldName in mTriggerFieldNames)
+                {
+                    drPluginDefinition["FieldName"] = fieldName;
+                    drPluginDefinition["FieldID"] = MyWebUtils.EvalSQL("select FieldID from CiField " +
+                        "where AppID = @AppID and TableID = @TableID and FieldName = @FieldName", drPluginDefinition);
+
+                    string insertSQL = string.Format("exec spTriggerField_ins @AppID, @TableID, @MacroID, @FieldID");
+                    MyWebUtils.GetBySQL(insertSQL, drPluginDefinition, true);
                 }
 
             }
         }
 
-        private void StoreSQL(string sqlType, List<string> sqlList, DataRow drSQL)
+        private void StoreSQL(string sqlType, List<string> sqlList, DataRow drPluginDefinition)
         {
-            if (drSQL != null)
+            if (drPluginDefinition != null)
             {
-                DataTable dt = drSQL.Table;
+                DataTable dt = drPluginDefinition.Table;
 
                 if (dt != null && !dt.Columns.Contains("SQL"))
                 {
@@ -654,16 +700,15 @@ namespace CodeClay
                 }
 
                 string deleteSQL = string.Format("exec spSQL_del 'CiMacro', '{0}', @AppID, @TableID, @MacroID", sqlType);
-                MyWebUtils.GetBySQL(deleteSQL, drSQL, true);
+                MyWebUtils.GetBySQL(deleteSQL, drPluginDefinition, true);
 
                 foreach (string sql in sqlList)
                 {
-                    drSQL["SQL"] = sql;
+                    drPluginDefinition["SQL"] = sql;
 
                     string insertSQL = string.Format("exec spSQL_ins 'CiMacro', '{0}', @AppID, @TableID, @MacroID, @SQL", sqlType);
-                    MyWebUtils.GetBySQL(insertSQL, drSQL, true);
+                    MyWebUtils.GetBySQL(insertSQL, drPluginDefinition, true);
                 }
-
             }
         }
     }

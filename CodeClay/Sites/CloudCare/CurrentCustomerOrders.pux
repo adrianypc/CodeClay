@@ -22,7 +22,7 @@
     <FieldName>Status</FieldName>
     <Caption>Status</Caption>
     <Editable>false</Editable>
-    <Width>8</Width>
+    <Width>5</Width>
   </CiTextField>
   <CiComboField>
     <FieldName>CustomerID</FieldName>
@@ -62,11 +62,18 @@
     <Editable>false</Editable>
     <Width>10</Width>
   </CiTextField>
-  <CiMemoField>
+  <CiTextField>
+    <FieldName>TotalAmount</FieldName>
+    <Caption>Order Total ($)</Caption>
+    <Editable>false</Editable>
+    <Mask>Currency</Mask>
+    <Width>8</Width>
+  </CiTextField>
+  <CiTextField>
     <FieldName>Comments</FieldName>
     <Caption>Comments</Caption>
     <Editable>false</Editable>
-  </CiMemoField>
+  </CiTextField>
 	<SelectMacro>
 		<ActionSQL>?exec spCustomerOrders_selbyStatus 'Active',0</ActionSQL>
 	</SelectMacro>

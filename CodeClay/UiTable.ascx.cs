@@ -45,10 +45,10 @@ namespace CodeClay
         // --------------------------------------------------------------------------------------------------
 
         [XmlElement("TableName")]
-        public string TableName { get; set; } = "myTable";
+        public string TableName { get; set; } = "";
 
-        [XmlAnyElement("TableCaption")]
-        public XmlElement TableCaption { get; set; } = MyWebUtils.CreateXmlElement("TableCaption", true);
+        [XmlSqlElement("TableCaption", typeof(string))]
+        public XmlElement TableCaption { get; set; } = MyWebUtils.CreateXmlElement("TableCaption", "");
 
         [XmlElement("QuickInsert")]
         public bool QuickInsert { get; set; } = false;
@@ -2010,6 +2010,16 @@ namespace CodeClay
                 true);
         }
 
+        protected override List<XElement> GetPluginDefinitions(List<XElement> xElements)
+        {
+            if (xElements != null)
+            {
+                return xElements.FindAll(el => el.Name == "CiTable");
+            }
+
+            return null;
+        }
+
         protected override void DeletePluginDefinitions(DataRow drPluginKey)
         {
             // Do nothing
@@ -2030,6 +2040,10 @@ namespace CodeClay
 
             switch (dPropertyName)
             {
+                case "Src":
+                    xPropertyName = "@Src";
+                    break;
+
                 case "Caption":
                     xPropertyName = "TableCaption";
                     break;
@@ -2063,7 +2077,63 @@ namespace CodeClay
 
         protected override List<XiPlugin> GetXiChildPlugins()
         {
-            return new List<XiPlugin>() { (new XiField()), new XiMacro() };
+            return new List<XiPlugin>() { new XiField(), new XiChildTable(), new XiMacro() };
+        }
+    }
+
+    public class XiChildTable: XiTable
+    {
+        // --------------------------------------------------------------------------------------------------
+        // Methods (Override)
+        // --------------------------------------------------------------------------------------------------
+
+        protected override DataTable GetPluginDefinitions(DataRow drPluginKey)
+        {
+            return MyWebUtils.GetBySQL("select * from CiTable where AppID = @AppID and TableID in " +
+                "(select NestedTableID from CiField where AppID = @AppID and TableID = @TableID)",
+                drPluginKey,
+                true);
+        }
+
+        protected override void WriteToDB(DataRow drPluginDefinition)
+        {
+            if (drPluginDefinition != null)
+            {
+                DataTable dt = drPluginDefinition.Table;
+                if (dt != null)
+                {
+                    DataColumnCollection dc = dt.Columns;
+                    dc.Add("FieldID");
+                    dc.Add("FieldName");
+                    dc.Add("Type");
+                    dc.Add("Width");
+                    dc.Add("InRowKey");
+
+                    drPluginDefinition["FieldName"] = drPluginDefinition["TableName"];
+                    drPluginDefinition["Type"] = "Table";
+
+                    string insertColumnNames = "@AppID, @TableID, @FieldName, @Caption, @Type, @Width, @InRowKey";
+                    string insertSQL = string.Format("?exec spField_ins {0}", insertColumnNames);
+
+                    drPluginDefinition["FieldID"] = MyWebUtils.EvalSQL(insertSQL, drPluginDefinition, true);
+
+                    DataTable dtField = MyWebUtils.GetBySQL("?exec spField_sel @AppID, @TableID, @FieldID", drPluginDefinition);
+                    if (MyWebUtils.GetNumberOfRows(dtField) > 0 && dtField.Columns.Contains("NestedTableID"))
+                    {
+                        drPluginDefinition["TableID"] = dtField.Rows[0]["NestedTableID"];
+                    }
+
+                    DataTable dtNestedTable = MyWebUtils.GetBySQL("select * from CiTable where AppID = @AppID and TableID = @TableID", drPluginDefinition);
+                    if (MyWebUtils.GetNumberOfRows(dtNestedTable) > 0 && dtNestedTable.Columns.Contains("Src"))
+                    {
+                        DataRow drNestedTable = dtNestedTable.Rows[0];
+                        drNestedTable["Src"] = drPluginDefinition["Src"];
+                        drNestedTable["Caption"] = "";
+                        drNestedTable["PageSize"] = 100;
+                        base.WriteToDB(drNestedTable);
+                    }
+                }
+            }
         }
     }
 }

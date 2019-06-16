@@ -68,6 +68,13 @@
       <Direction>Download</Direction>
     </CiSerializeMacro>
   </UpdateMacro>
+  <DeleteMacro>
+    <ActionSQL>exec spTable_del @AppID, @TableID</ActionSQL>
+    <ActionSQL>select @AppID as AppID, @TableID as TableID</ActionSQL>
+    <CiSerializeMacro>
+      <Direction>Download</Direction>
+    </CiSerializeMacro>
+  </DeleteMacro>
   <CiMacro>
     <MacroName>Details</MacroName>
     <Caption>Table Details</Caption>

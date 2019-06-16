@@ -17,7 +17,7 @@
   <CiComboField>
     <FieldName>Role</FieldName>
     <Caption>Role</Caption>
-    <DropdownSQL>select Code, Description from Dropdown where Category = 'Role' order by Description</DropdownSQL>
+    <DropdownSQL>select Code from Dropdown where Category = 'Role' order by Code</DropdownSQL>
   </CiComboField>
   <SelectMacro>
     <ActionSQL>?exec spApplicationUser_sel @AppID</ActionSQL>

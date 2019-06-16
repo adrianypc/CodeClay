@@ -1,2 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<CiTable Src="CiFieldDetails.pux" />
+<CiTable Src="CiFieldDetails.pux">
+  <CiComboField>
+    <FieldName>Mask</FieldName>
+    <Caption>Mask</Caption>
+    <DropdownSQL>select Code from Dropdown where Category = 'MaskType' order by SortOrder</DropdownSQL>
+  </CiComboField>
+</CiTable>

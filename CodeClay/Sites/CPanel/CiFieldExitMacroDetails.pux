@@ -1,0 +1,5 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<CiTable Src="CiMacroDetails.pux">
+  <TableCaption lang="sql">select 'Field Exit Macro Design: ' + MacroName from CiMacro where AppID = @AppID and TableID = @TableID and MacroID = @MacroID</TableCaption>
+  <CiTable Src="TriggerFieldList.pux" />
+</CiTable>
