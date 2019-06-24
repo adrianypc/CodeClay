@@ -180,9 +180,12 @@
     <ActionSQL>exec spSupplierOrders_Status_upd @SupplierOrderNo,'Received',@CI_UserEmail</ActionSQL>
     <ActionSQL>
       select Status,
-      DeliveryDate
-      from SupplierOrders where SupplierOrderNo = @SupplierOrderNo
+             DeliveryDate,
+             SupplierOrderNo
+      from SupplierOrders 
+      where SupplierOrderNo = @SupplierOrderNo
     </ActionSQL>
+    <NavigateUrl>SupplierOrderEmail.pux</NavigateUrl>
     <VisibleSQL>
         select 1 from SupplierOrders
         where SupplierOrderNo = case when isnumeric(@SupplierOrderNo) = 1 then @SupplierOrderNo else -1 end

@@ -661,7 +661,9 @@ namespace CodeClay
         // Properties
         // --------------------------------------------------------------------------------------------------
 
-        public bool IsRowKeyChecked { get; set; } = false;
+        private bool IsRowKeyChecked { get; set; } = false;
+
+        private Hashtable PropertySQL = new Hashtable();
 
         // --------------------------------------------------------------------------------------------------
         // Methods (Override)
@@ -711,6 +713,7 @@ namespace CodeClay
         protected override void DeletePluginDefinitions(DataRow drPluginKey)
         {
             MyWebUtils.GetBySQL("exec spField_del @AppID, @TableID", drPluginKey, true);
+            MyWebUtils.GetBySQL("exec spSQL_del 'CiField', null, @AppID, @TableID", drPluginKey, true);
         }
 
         protected override void WriteToDB(DataRow drPluginDefinition)
@@ -727,6 +730,22 @@ namespace CodeClay
             string updateSQL = string.Format("exec spField_updLong {0}", updateColumnNames);
 
             MyWebUtils.GetBySQL(updateSQL, drPluginDefinition, true);
+
+            DataRow drSQL = MyUtils.CloneDataRow(drPluginDefinition);
+            DataColumnCollection dcSQLColumns = drSQL.Table.Columns;
+            dcSQLColumns.Add("EntityType");
+            dcSQLColumns.Add("SQLType");
+            dcSQLColumns.Add("EntityID");
+            dcSQLColumns.Add("SQL");
+            drSQL["EntityType"] = "CiField";
+            drSQL["EntityID"] = drSQL["FieldID"];
+
+            foreach (string propertyName in PropertySQL.Keys)
+            {
+                drSQL["SQLType"] = propertyName + "SQL";
+                drSQL["SQL"] = PropertySQL[propertyName];
+                MyWebUtils.GetBySQL("exec spSQL_ins @EntityType, @SQLType, @AppID, @TableID, @EntityID, @SQL", drSQL);
+            }
         }
 
         protected override void DownloadDerivedValues(DataRow drPluginDefinition, XElement xPluginDefinition)
@@ -734,7 +753,23 @@ namespace CodeClay
             if (drPluginDefinition != null && xPluginDefinition != null)
             {
                 DownloadRowKey(drPluginDefinition, xPluginDefinition);
-                //DownloadCiTable(drPluginDefinition, xPluginDefinition);
+
+                DataTable dtFieldSQL = MyWebUtils.GetBySQL("?exec spSQL_sel 'CiField', null, @AppID, @TableID, @FieldID", drPluginDefinition, true);
+                if (dtFieldSQL != null)
+                {
+                    foreach (DataRow drFieldSQL in dtFieldSQL.Rows)
+                    {
+                        string sqlType = MyUtils.Coalesce(drFieldSQL["SQLType"], "").ToString();
+                        if (sqlType.EndsWith("SQL"))
+                        {
+                            XElement xFieldSQL = new XElement(sqlType.Substring(0, sqlType.Length - 3));
+                            xFieldSQL.Add(new XAttribute("lang", "sql"));
+                            xFieldSQL.Value = drFieldSQL["SQL"].ToString();
+                            xPluginDefinition.Add(xFieldSQL);
+                        }
+                    }
+                }
+
             }
         }
 
@@ -746,6 +781,15 @@ namespace CodeClay
             {
                 UploadType(drPluginDefinition, xPluginDefinition, dcPluginColumns);
                 UploadRowKey(drPluginDefinition, xPluginDefinition, dcPluginColumns);
+
+                PropertySQL.Clear();
+                foreach (XElement xProperty in xPluginDefinition.Elements())
+                {
+                    if (xProperty.Attributes("lang").Count() > 0)
+                    {
+                        PropertySQL[xProperty.Name.ToString()] = xProperty.Value;
+                    }
+                }
             }
         }
 
@@ -793,15 +837,6 @@ namespace CodeClay
                         }
                     }
                 }
-            }
-        }
-
-        private void DownloadCiTable(DataRow drPluginDefinition, XElement xPluginDefinition)
-        {
-            if (xPluginDefinition.Name == "CiTable")
-            {
-                xPluginDefinition.SetElementValue("TableName", drPluginDefinition["FieldName"].ToString());
-                xPluginDefinition.SetElementValue("Caption", drPluginDefinition["Caption"].ToString());
             }
         }
 

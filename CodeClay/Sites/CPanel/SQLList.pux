@@ -2,8 +2,8 @@
 <CiTable>
 	<TableName>SQLList</TableName>
 	<TableCaption lang="sql">select @SQLType</TableCaption>
-	<DefaultView>Grid</DefaultView>
-  <RowKey>AppID,TableID,MacroID,LineNum</RowKey>
+	<DefaultView>Card</DefaultView>
+  <RowKey>EntityType,SQLType,AppID,TableID,EntityID,LineNum</RowKey>
   <CiField>
     <FieldName>EntityType</FieldName>
     <Hidden>true</Hidden>
@@ -23,8 +23,8 @@
     <Hidden>true</Hidden>
   </CiField>
   <CiField>
-    <FieldName>MacroID</FieldName>
-    <Caption>Macro ID</Caption>
+    <FieldName>EntityID</FieldName>
+    <Caption>Entity ID</Caption>
     <Hidden>true</Hidden>
   </CiField>
   <CiField>
@@ -34,27 +34,27 @@
   </CiField>
   <CiMemoField>
     <FieldName>SQL</FieldName>
-    <Caption>SQL</Caption>
+    <Caption>Edit the SQL</Caption>
   </CiMemoField>
   <SelectMacro>
-    <ActionSQL>?exec spSQL_sel @EntityType, @SQLType, @AppID, @TableID, @MacroID</ActionSQL>
+    <ActionSQL>?exec spSQL_sel @EntityType, @SQLType, @AppID, @TableID, @EntityID</ActionSQL>
   </SelectMacro>
   <InsertMacro>
-    <ActionSQL>exec spSQL_ins @EntityType, @SQLType, @AppID, @TableID, @MacroID, @SQL</ActionSQL>
+    <ActionSQL>exec spSQL_ins @EntityType, @SQLType, @AppID, @TableID, @EntityID, @SQL</ActionSQL>
     <ActionSQL>select @AppID as AppID, @TableID as TableID</ActionSQL>
     <CiSerializeMacro>
       <Direction>Download</Direction>
     </CiSerializeMacro>
   </InsertMacro>
   <UpdateMacro>
-    <ActionSQL>exec spSQL_upd @EntityType, @SQLType, @AppID, @TableID, @MacroID, @LineNum, @SQL</ActionSQL>
+    <ActionSQL>exec spSQL_upd @EntityType, @SQLType, @AppID, @TableID, @EntityID, @LineNum, @SQL</ActionSQL>
     <ActionSQL>select @AppID as AppID, @TableID as TableID</ActionSQL>
     <CiSerializeMacro>
       <Direction>Download</Direction>
     </CiSerializeMacro>
   </UpdateMacro>
   <DeleteMacro>
-    <ActionSQL>exec spSQL_del @EntityType, @SQLType, @AppID, @TableID, @MacroID, @LineNum</ActionSQL>
+    <ActionSQL>exec spSQL_del @EntityType, @SQLType, @AppID, @TableID, @EntityID, @LineNum</ActionSQL>
     <ActionSQL>select @AppID as AppID, @TableID as TableID</ActionSQL>
     <CiSerializeMacro>
       <Direction>Download</Direction>

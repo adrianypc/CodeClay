@@ -1,32 +1,31 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <CiTable>
   <TableName>ActiveInventorySG</TableName>
   <TableCaption>Inventory SG (Active)</TableCaption>
-  <RowKey>InventoryItemNo,ProductID,BranchCode</RowKey>
-  <DefaultView>Grid</DefaultView>
   <DoubleClickMacroName>StocklevelUpdate</DoubleClickMacroName>
+  <RowKey>InventoryItemNo,ProductID,BranchCode</RowKey>
   <CiTextField>
     <FieldName>InventoryItemNo</FieldName>
     <Hidden>true</Hidden>
   </CiTextField>
   <CiComboField>
     <FieldName>ProductID</FieldName>
-    <TextFieldName>ProductName</TextFieldName>
     <Caption>Product</Caption>
+    <Editable>false</Editable>
+    <Searchable>true</Searchable>
+    <DropdownSQL>select ProductID,ProductName from Product order by ProductID</DropdownSQL>
     <Code>ProductID</Code>
     <Description>ProductName</Description>
-    <DropdownSQL>select ProductID,ProductName from Product order by ProductID</DropdownSQL>
-    <Editable>false</Editable>
-   <Searchable>true</Searchable>
+    <TextFieldName>ProductName</TextFieldName>
   </CiComboField>
   <CiComboField>
     <FieldName>BranchCode</FieldName>
-    <TextFieldName>BranchDescription</TextFieldName>
     <Caption>Branch</Caption>
-    <Code>Code</Code>
-    <Description>Description</Description>
     <Editable>false</Editable>
     <DropdownSQL>select Code,Description from Dropdown where Category = 'Branch'</DropdownSQL>
+    <Code>Code</Code>
+    <Description>Description</Description>
+    <TextFieldName>BranchDescription</TextFieldName>
   </CiComboField>
   <CiDateField>
     <FieldName>DateOfStocktake</FieldName>
@@ -34,13 +33,13 @@
     <ColumnFormat>dd/MM/yyyy</ColumnFormat>
   </CiDateField>
   <CiDateField>
-     <FieldName>ExpiryDate</FieldName>
-     <Caption>Expiry Date</Caption>
-     <ColumnFormat>dd/MM/yyyy</ColumnFormat>
+    <FieldName>ExpiryDate</FieldName>
+    <Caption>Expiry Date</Caption>
+    <ColumnFormat>dd/MM/yyyy</ColumnFormat>
   </CiDateField>
   <CiNumericField>
-		<FieldName>QuantityOnHand</FieldName>
-		<Caption>Quantity on Hand</Caption>
+    <FieldName>QuantityOnHand</FieldName>
+    <Caption>Quantity on Hand</Caption>
   </CiNumericField>
   <CiNumericField>
     <FieldName>QuantityOrdered</FieldName>
@@ -68,12 +67,13 @@
     <Editable>false</Editable>
   </CiNumericField>
   <CiTable Src="InactiveInventory.pux">
+    <RowKey></RowKey>
     <SelectMacro>
-       <ActionSQL>?exec spInventory_Inactive_sel @ProductID,@BranchCode</ActionSQL>
+      <ActionSQL>?exec spInventory_Inactive_sel @ProductID,@BranchCode</ActionSQL>
     </SelectMacro>
   </CiTable>
   <DefaultMacro>
-	<ActionSQL>
+    <ActionSQL>
       select 
         @ProductID as ProductID,
         getdate() as DateOfStocktake,
@@ -84,12 +84,12 @@
         0 as QtyUnderReceived,
         0 as QtyOverReceived
     </ActionSQL>
-	</DefaultMacro>
-	<SelectMacro>
-	  <ActionSQL>?exec spInventory_selbyStatusAndBranch 'HT-SG','Y',@ProductID</ActionSQL>
-	</SelectMacro>
- <InsertMacro>
-	<ActionSQL>
+  </DefaultMacro>
+  <SelectMacro>
+    <ActionSQL>?exec spInventory_selbyStatusAndBranch 'HT-SG','Y',@ProductID</ActionSQL>
+  </SelectMacro>
+  <InsertMacro>
+    <ActionSQL>
         ?exec spInventory_upd
         -1,
         @ProductID,
@@ -104,9 +104,9 @@
         @ExpiryDate,
         @CI_UserEmail
     </ActionSQL>
- </InsertMacro>
- <UpdateMacro>
-   <ActionSQL>
+  </InsertMacro>
+  <UpdateMacro>
+    <ActionSQL>
        ?exec spInventory_upd
        @InventoryItemNo,
        @ProductID,
@@ -133,11 +133,11 @@
     <MacroName>StocklevelUpdate</MacroName>
     <Caption>Stock level is correct TODAY</Caption>
     <ActionSQL>?exec spInventory_upd_datestocktake @InventoryItemNo,@CI_UserEmail</ActionSQL>
-   </CiMacro>
-   <CiFieldExitMacro>
+  </CiMacro>
+  <CiFieldExitMacro>
     <FieldName>QuantityOnHand</FieldName>
     <ActionSQL>
             select (coalesce(@QuantityOnHand,0) + coalesce(@QuantityOrdered,0)) - coalesce(@QuantityAllocated,0) as QuantityAvailable
     </ActionSQL>
-   </CiFieldExitMacro>
+  </CiFieldExitMacro>
 </CiTable>

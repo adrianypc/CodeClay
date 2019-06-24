@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<CiEmail>
+    <SelectSQL>
+        select  'http://localhost/TestCodeClay/Default?Application=CloudCare'+'&amp;PluginSrc=SupplierOrder.pux'+'&amp;SupplierOrderNo=' + cast(@SupplierOrderNo as nvarchar) as URL,
+        'info@healthtree.com.sg' as EmailAddress,
+        'Shiou and Khai Sing' as Person
+        from tblSingleton
+    </SelectSQL>
+    <From>hello@acrm.com.sg</From>
+    <To>@EmailAddress</To>
+    <UserName>hello@acrm.com.sg</UserName>
+    <Password>hell123!@#</Password>
+    <Host>smtp.office365.com</Host>
+    <Port>587</Port>
+    <Subject>SupplierOrder</Subject>
+    <Body>
+        Dear @Person,<br/>The following Supplier Order has been received.<br/> @URL
+    </Body>
+    <IsHtml>true</IsHtml>
+</CiEmail>

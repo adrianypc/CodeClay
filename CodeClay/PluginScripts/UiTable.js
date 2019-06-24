@@ -117,7 +117,9 @@ function dxCard_EndCallback(sender, event) {
     	case "Cancel":
     	case "Delete":
     		// For cosmetic purposes when clicking on Inspect button
-    		ClearState(tableName);
+            if (!dxCard.cpIsInvalid) {
+                ClearState(tableName);
+            }
     		break;
 
     	default:
@@ -223,7 +225,9 @@ function dxGrid_EndCallback(sender, event) {
 
         case "Cancel":
         case "Delete":
-            ClearState(tableName);
+            if (!dxGrid.cpIsInvalid) {
+                ClearState(tableName);
+            }
             break;
 
         default:

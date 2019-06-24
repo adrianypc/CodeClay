@@ -213,11 +213,20 @@ namespace CodeClay
             {
                 if (value != null)
                 {
-                    CiPlugin[] ciPlugins = (CiPlugin[])value;
-                    foreach (CiPlugin ciPlugin in ciPlugins)
+                    CiPlugin[] ciNewPlugins = (CiPlugin[])value;
+                    foreach (CiPlugin ciNewPlugin in ciNewPlugins)
                     {
-                        mCiPlugins.Add(ciPlugin);
-                        ciPlugin.CiParentPlugin = this;
+                        CiPlugin ciOldPlugin = GetById(ciNewPlugin.ID);
+
+                        if (ciOldPlugin != null)
+                        {
+                            ciOldPlugin.Inherits(ciNewPlugin);
+                        }
+                        else
+                        {
+                            mCiPlugins.Add(ciNewPlugin);
+                            ciNewPlugin.CiParentPlugin = this;
+                        }
                     }
                 }
             }
@@ -287,11 +296,11 @@ namespace CodeClay
             return (pluginType == type || pluginType.IsSubclassOf(type));
         }
 
-        public virtual void Inherits(CiPlugin ciPlugin)
+        public virtual void Inherits(CiPlugin ciSrcPlugin)
         {
-            if (ciPlugin != null)
+            if (ciSrcPlugin != null)
             {
-                foreach (PropertyInfo p in ciPlugin.GetType().GetProperties())
+                foreach (PropertyInfo p in ciSrcPlugin.GetType().GetProperties())
                 {
                     if (!("Src, CiPlugins".Contains(p.Name)))
                     {
@@ -301,13 +310,13 @@ namespace CodeClay
 
                         if (a != null)
                         {
-                            p.SetValue(this, p.GetValue(ciPlugin));
+                            p.SetValue(this, p.GetValue(ciSrcPlugin));
                         }
                     }
                 }
 
-                PuxFile = ciPlugin.PuxFile;
-                CiPlugins = ciPlugin.CiPlugins;
+                PuxFile = ciSrcPlugin.PuxFile;
+                CiPlugins = ciSrcPlugin.CiPlugins;
             }
         }
 
@@ -571,7 +580,7 @@ namespace CodeClay
             return null;
         }
 
-        public virtual object GetChildValue(string key)
+        public virtual object GetDefaultValue(string key)
         {
             CiPlugin ciChildPlugin = CiPlugin.GetById(key);
 
@@ -610,7 +619,7 @@ namespace CodeClay
                     GetServerValue(key, rowIndex),
                     GetQueryStringValue(key),
                     GetParentValue(key),
-                    GetChildValue(key));
+                    GetDefaultValue(key));
             }
 
             set
@@ -1116,8 +1125,12 @@ namespace CodeClay
                 PropertyInfo p = pluginType.GetProperty(xPropertyName);
                 string dPropertyName = GetDPropertyName(xPropertyName);
 
-                Attribute a = p.GetCustomAttribute(typeof(XmlAnyElementAttribute)) as Attribute;
                 object defaultPropertyValue = p.GetValue(ciPlugin);
+                XmlElement xDefaultPropertyValue = defaultPropertyValue as XmlElement;
+                if (xDefaultPropertyValue != null)
+                {
+                    defaultPropertyValue = xDefaultPropertyValue.InnerText;
+                }
 
                 string dPropertyValueString = MyUtils.Coalesce(dPropertyValue, "").ToString();
                 string defaultPropertyValueString = MyUtils.Coalesce(defaultPropertyValue, "").ToString();
@@ -1242,12 +1255,15 @@ namespace CodeClay
                 foreach (XElement xPluginProperty in xPluginDefinition.Elements())
                 {
                     string xPropertyName = xPluginProperty.Name.ToString();
-                    object xPropertyValue = xPluginProperty.Value;
-                    string dPropertyName = GetDPropertyName(xPropertyName);
-
-                    if (!MyUtils.IsEmpty(dPropertyName) && dtPluginDefinition.Columns.Contains(dPropertyName))
+                    if (xPluginProperty.Attribute("lang") == null)
                     {
-                        drPluginDefinition[dPropertyName] = MyUtils.Coalesce(xPropertyValue, Convert.DBNull);
+                        object xPropertyValue = xPluginProperty.Value;
+                        string dPropertyName = GetDPropertyName(xPropertyName);
+
+                        if (!MyUtils.IsEmpty(dPropertyName) && dtPluginDefinition.Columns.Contains(dPropertyName))
+                        {
+                            drPluginDefinition[dPropertyName] = MyUtils.Coalesce(xPropertyValue, Convert.DBNull);
+                        }
                     }
                 }
             }

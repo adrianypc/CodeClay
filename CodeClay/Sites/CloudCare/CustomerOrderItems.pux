@@ -108,9 +108,9 @@
       <FieldName>ProductID</FieldName>
       <ActionSQL>
           select
-              case when IsDropShipping = 'Y' then cast(1 as bit) else cast(0 as bit) end as DropShipping
-              @Quantity * coalesce(UnitSellingPrice,0) as Amount
-          from Product 
+          @Quantity * coalesce(UnitSellingPrice,0) as Amount,
+          case when IsDropShipping = 'Y' then CAST(1 AS bit) else CAST(0 as bit) end as DropShipping
+          from Product
           where	ProductID = @ProductID
       </ActionSQL>
 	</CiFieldExitMacro>

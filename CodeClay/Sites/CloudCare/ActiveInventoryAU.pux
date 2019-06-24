@@ -1,148 +1,34 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8" ?>
 <CiTable>
-  <TableName>ActiveInventoryAU</TableName>
-  <TableCaption>Inventory AU (Active)</TableCaption>
-  <DoubleClickMacroName>StocklevelUpdate</DoubleClickMacroName>
-  <RowKey>InventoryItemNo,ProductID,BranchCode</RowKey>
-  <CiTextField>
-    <FieldName>InventoryItemNo</FieldName>
-    <Hidden>true</Hidden>
-    <Editable>true</Editable>
-  </CiTextField>
-  <CiComboField>
-    <FieldName>ProductID</FieldName>
-    <Caption>Product</Caption>
-    <Editable>false</Editable>
-    <Searchable>true</Searchable>
-    <DropdownSQL>select ProductID,ProductName from Product order by ProductID</DropdownSQL>
-    <Code>ProductID</Code>
-    <Description>ProductName</Description>
-    <TextFieldName>ProductName</TextFieldName>
-  </CiComboField>
-  <CiComboField>
-    <FieldName>BranchCode</FieldName>
-    <Caption>Branch</Caption>
-    <Editable>false</Editable>
-    <DropdownSQL>select Code,Description from Dropdown where Category = 'Branch'</DropdownSQL>
-    <Code>Code</Code>
-    <Description>Description</Description>
-    <TextFieldName>BranchDescription</TextFieldName>
-  </CiComboField>
-  <CiDateField>
-    <FieldName>DateOfStocktake</FieldName>
-    <Caption>Date Of Stocktake</Caption>
-    <Editable>true</Editable>
-    <ColumnFormat>dd/MM/yyyy</ColumnFormat>
-  </CiDateField>
-  <CiDateField>
-    <FieldName>ExpiryDate</FieldName>
-    <Caption>Expiry Date</Caption>
-    <Editable>true</Editable>
-    <ColumnFormat>dd/MM/yyyy</ColumnFormat>
-  </CiDateField>
-  <CiNumericField>
-    <FieldName>QuantityOnHand</FieldName>
-    <Caption>Quantity on Hand</Caption>
-    <Editable>true</Editable>
-  </CiNumericField>
-  <CiNumericField>
-    <FieldName>QuantityOrdered</FieldName>
-    <Caption>Quantity Ordered</Caption>
-    <Editable>false</Editable>
-  </CiNumericField>
-  <CiNumericField>
-    <FieldName>QuantityAllocated</FieldName>
-    <Caption>Quantity Allocated</Caption>
-    <Editable>false</Editable>
-  </CiNumericField>
-  <CiNumericField>
-    <FieldName>QuantityAvailable</FieldName>
-    <Caption>Quantity Available</Caption>
-    <Editable>false</Editable>
-  </CiNumericField>
-  <CiNumericField>
-    <FieldName>QtyUnderReceived</FieldName>
-    <Caption>Qty Under Received</Caption>
-    <Editable>false</Editable>
-  </CiNumericField>
-  <CiNumericField>
-    <FieldName>QtyOverReceived</FieldName>
-    <Caption>Qty Over Received</Caption>
-    <Editable>false</Editable>
-  </CiNumericField>
-  <CiTable Src="InactiveInventory.pux">
-    <TableCaption></TableCaption>
-    <RowKey></RowKey>
-    <SelectMacro>
-      <ActionSQL>?exec spInventory_Inactive_sel @ProductID,@BranchCode</ActionSQL>
-    </SelectMacro>
-  </CiTable>
-  <DefaultMacro>
-    <ActionSQL>
-      select 
-        @ProductID as ProductID,
-        getdate() as DateOfStocktake,
-        0 as QuantityOnHand,
-        0 as QuantityOrdered,
-        0 as QuantityAllocated,
-        0 as QuantityAvailable,
-        0 as QtyUnderReceived,
-        0 as QtyOverReceived
-    </ActionSQL>
-  </DefaultMacro>
-  <SelectMacro>
-    <ActionSQL>?exec spInventory_selbyStatusAndBranch 'HT-AU','Y',@ProductID</ActionSQL>
-  </SelectMacro>
-  <InsertMacro>
-    <ActionSQL>
-        ?exec spInventory_upd
-        -1,
-        @ProductID,
-        @BranchCode,
-        @DateOfStocktake,
-        @QuantityOnHand,
-        @QuantityOrdered,
-        @QuantityAllocated,
-        @QuantityAvailable,
-        @QtyUnderReceived,
-        @QtyOverReceived,
-        @ExpiryDate,
-        @CI_UserEmail
-    </ActionSQL>
-  </InsertMacro>
-  <UpdateMacro>
-    <ActionSQL>
-    ?exec spInventory_upd
-        @InventoryItemNo,
-        @ProductID,
-        @BranchCode,
-        @DateOfStocktake,
-        @QuantityOnHand,
-        @QuantityOrdered,
-        @QuantityAllocated,
-        @QuantityAvailable,
-        @QtyUnderReceived,
-        @QtyOverReceived,
-        @ExpiryDate,
-        @CI_UserEmail
-    </ActionSQL>
-    <VisibleSQL>select 1 from Inventory where InventoryItemNo = @InventoryItemNo</VisibleSQL>
-  </UpdateMacro>
-  <DeleteMacro>
-    <ActionSQL>
-          DELETE FROM Inventory WHERE InventoryItemNo = @InventoryItemNo
-    </ActionSQL>
-    <VisibleSQL>select 1 from Inventory where InventoryItemNo = @InventoryItemNo</VisibleSQL>
-  </DeleteMacro>
-  <CiMacro>
-    <MacroName>StocklevelUpdate</MacroName>
-    <Caption>Stock level is correct TODAY</Caption>
-    <ActionSQL>?exec spInventory_upd_datestocktake @InventoryItemNo,@CI_UserEmail</ActionSQL>
-  </CiMacro>
-  <CiFieldExitMacro>
-    <FieldName>QuantityOnHand</FieldName>
-    <ActionSQL>
-        select (coalesce(@QuantityOnHand,0) + coalesce(@QuantityOrdered,0)) - coalesce(@QuantityAllocated,0) as QuantityAvailable
-    </ActionSQL>
-  </CiFieldExitMacro>
+	<TableName>Branches</TableName>
+	<TableCaption>Branches</TableCaption>
+	<RowKey>BranchCode</RowKey>
+	<DefaultView>Grid</DefaultView>
+	<CiField>
+		<FieldName>ExistingBranch</FieldName>
+		<Value>true</Value>
+		<Hidden>true</Hidden>
+	</CiField>
+	<CiTextField>
+		<FieldName>BranchCode</FieldName>
+		<Caption>Branch Code</Caption>
+		<Editable lang="sql">select 1 where @ExistingBranch is null</Editable>
+	</CiTextField>
+	<CiTextField>
+		<FieldName>BranchDescription</FieldName>
+		<Caption>Branch Description</Caption>
+	</CiTextField>
+	<SelectMacro>
+		<ActionSQL>?exec spBranch_sel @sBranchCode</ActionSQL>
+	</SelectMacro>
+	<InsertMacro>
+		<ActionSQL>
+			exec spBranch_ins @BranchCode, @BranchDescription
+		</ActionSQL>
+	</InsertMacro>
+	<UpdateMacro>
+		<ActionSQL>
+			exec spBranch_upd @BranchCode, @BranchDescription
+		</ActionSQL>
+	</UpdateMacro>
 </CiTable>

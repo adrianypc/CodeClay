@@ -98,7 +98,14 @@ namespace CodeClay
                         InputParams[columnName] = objColumnValue;
                     }
 
-                    strColumnValue = HttpUtility.JavaScriptStringEncode(strColumnValue);
+                    if (objColumnValue != null && objColumnValue.GetType() == typeof(bool))
+                    {
+                        strColumnValue = objColumnValue.ToString().ToLower();
+                    }
+                    else
+                    {
+                        strColumnValue = "'" + HttpUtility.JavaScriptStringEncode(strColumnValue) + "'";
+                    }
 
                     if (IsTest)
                     {
@@ -107,10 +114,10 @@ namespace CodeClay
                     else if (!FieldNames.Contains(columnName) && CiTable != null)
                     {
                         // Avoid recursive calls to change a field's value
-                        script += string.Format("SetEditorValue(\'{0}\', \'{1}\', \'{2}\'); ",
-                            CiTable.TableName,
-                            columnName,
-                            strColumnValue);
+                        script += string.Format("SetEditorValue(\'{0}\', \'{1}\', {2}); ",
+                          CiTable.TableName,
+                          columnName,
+                          strColumnValue);
                     }
                 }
             }

@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<CiTable Src="SQLList.pux">
+  <TableName>FieldSQLDetails</TableName>
+  <TableCaption lang="sql">select @SQLType</TableCaption>
+  <DefaultView>Card</DefaultView>
+  <CiField>
+    <FieldName>EntityType</FieldName>
+    <Hidden>true</Hidden>
+    <Value>CiField</Value>
+  </CiField>
+  <CiField>
+    <FieldName>LineNum</FieldName>
+    <Hidden>true</Hidden>
+    <Value>1</Value>
+  </CiField>
+  <CiField>
+    <FieldName>EntityID</FieldName>
+    <Hidden>true</Hidden>
+    <Value>1</Value>
+  </CiField>
+</CiTable>
