@@ -41,7 +41,12 @@ namespace CodeClay
                 }
                 else if (ciTable.SelectMacro != null)
                 {
-                    dt = RunMacro(ciTable.SelectMacro, drParams);
+                    CiMacro ciMacro = ciTable.SelectMacro;
+                    if (ciMacro != null)
+                    {
+                        ciMacro.Run(drParams);
+                        dt = ciMacro.ResultTable;
+                    }
                 }
                 else if (ciTable.DataSource != null)
                 {
@@ -64,53 +69,70 @@ namespace CodeClay
             return dt;
         }
 
-        public void UpdateTable(object table, object parameters, string rowKey)
+        public void UpdateTable(object table, object parameters, string rowKey, ref string script)
         {
             DataRow drParams = parameters as DataRow;
 
             CiTable ciTable = table as CiTable;
             if (ciTable != null && drParams != null)
             {
-                RunMacro(ciTable.UpdateMacro, drParams);
+                CiMacro ciMacro = ciTable.UpdateMacro;
+                if (ciMacro != null)
+                {
+                    ciMacro.Run(drParams);
+                    script = ciMacro.ResultScript;
+                }
             }
         }
 
-        public void InsertTable(object table, object parameters, ref string rowKey)
+        public void InsertTable(object table, object parameters, ref string rowKey, ref string script)
         {
             DataRow drParams = parameters as DataRow;
 
             CiTable ciTable = table as CiTable;
             if (ciTable != null)
             {
-                DataTable dt = RunMacro(ciTable.InsertMacro, drParams);
-                if (MyWebUtils.GetNumberOfRows(dt) > 0)
+                CiMacro ciMacro = ciTable.InsertMacro;
+                if (ciMacro != null)
                 {
-                    DataRow dr = dt.Rows[0];
-                    int i = 0;
-                    foreach (string key in ciTable.RowKeyNames)
-                    {
-                        if (i++ > 0)
-                        {
-                            rowKey += ",";
-                        }
+                    ciMacro.Run(drParams);
+                    script = ciMacro.ResultScript;
 
-                        if (dt.Columns.Contains(key))
+                    DataTable dt = ciMacro.ResultTable;
+                    if (MyWebUtils.GetNumberOfRows(dt) > 0)
+                    {
+                        DataRow dr = dt.Rows[0];
+                        int i = 0;
+                        foreach (string key in ciTable.RowKeyNames)
                         {
-                            rowKey += MyUtils.Coalesce(dr[key], "").ToString();
+                            if (i++ > 0)
+                            {
+                                rowKey += ",";
+                            }
+
+                            if (dt.Columns.Contains(key))
+                            {
+                                rowKey += MyUtils.Coalesce(dr[key], "").ToString();
+                            }
                         }
                     }
                 }
             }
         }
 
-        public void DeleteTable(object table, object parameters, string rowKey)
+        public void DeleteTable(object table, object parameters, string rowKey, ref string script)
         {
             DataRow drParams = parameters as DataRow;
 
             CiTable ciTable = table as CiTable;
             if (ciTable != null)
             {
-                RunMacro(ciTable.DeleteMacro, drParams);
+                CiMacro ciMacro = ciTable.DeleteMacro;
+                if (ciMacro != null)
+                {
+                    ciMacro.Run(drParams);
+                    script = ciMacro.ResultScript;
+                }
             }
         }
 
@@ -169,18 +191,6 @@ namespace CodeClay
                         return MyWebUtils.ToDataTable(ciRadioField.DataSource.OuterXml);
                     }
                 }
-            }
-
-            return null;
-        }
-
-        private DataTable RunMacro(CiMacro ciMacro, DataRow drParams)
-        {
-            if (ciMacro != null)
-            {
-                ciMacro.Run(drParams);
-
-                return ciMacro.ResultTable;
             }
 
             return null;

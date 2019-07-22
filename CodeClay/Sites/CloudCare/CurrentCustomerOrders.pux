@@ -1,15 +1,14 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <CiTable>
-	<TableName>CurrentCustomerOrders</TableName>
-	<TableCaption>Current Customer Orders</TableCaption>
-	<RowKey>CustomerOrderNo</RowKey>
-	<DefaultView>Grid</DefaultView>
+  <TableName>CurrentCustomerOrders</TableName>
+  <TableCaption>Current Customer Orders</TableCaption>
   <DoubleClickMacroName>CustomerOrderDetail</DoubleClickMacroName>
+  <RowKey>CustomerOrderNo</RowKey>
   <CiTextField>
     <FieldName>CustomerOrderNo</FieldName>
     <Caption>Customer Order #</Caption>
-    <Editable>false</Editable>
     <Hidden>true</Hidden>
+    <Editable>false</Editable>
     <Width>10</Width>
   </CiTextField>
   <CiTextField>
@@ -22,23 +21,23 @@
     <FieldName>Status</FieldName>
     <Caption>Status</Caption>
     <Editable>false</Editable>
-    <Width>5</Width>
+    <Width>8</Width>
   </CiTextField>
   <CiComboField>
     <FieldName>CustomerID</FieldName>
-    <TextFieldName>CustomerName</TextFieldName>
     <Caption>Customer</Caption>
     <Editable>false</Editable>
+    <DropdownSQL>select CustomerID,LastName+','+OtherNames as CustomerName from Customer</DropdownSQL>
     <Code>CustomerID</Code>
     <Description>CustomerName</Description>
-    <DropdownSQL>select CustomerID,LastName+','+OtherNames as CustomerName from Customer</DropdownSQL>
+    <TextFieldName>CustomerName</TextFieldName>
   </CiComboField>
   <CiDateField>
     <FieldName>OrderDate</FieldName>
     <Caption>Order Date</Caption>
     <Editable>false</Editable>
-    <ColumnFormat>dd/MM/yyyy</ColumnFormat>
     <Width>7</Width>
+    <ColumnFormat>dd/MM/yyyy</ColumnFormat>
   </CiDateField>
   <CiNumericField>
     <FieldName>OrderAge</FieldName>
@@ -62,34 +61,27 @@
     <Editable>false</Editable>
     <Width>10</Width>
   </CiTextField>
-  <CiTextField>
-    <FieldName>TotalAmount</FieldName>
-    <Caption>Order Total ($)</Caption>
-    <Editable>false</Editable>
-    <Mask>Currency</Mask>
-    <Width>8</Width>
-  </CiTextField>
-  <CiTextField>
+  <CiMemoField>
     <FieldName>Comments</FieldName>
     <Caption>Comments</Caption>
     <Editable>false</Editable>
-  </CiTextField>
-	<SelectMacro>
-		<ActionSQL>?exec spCustomerOrders_selbyStatus 'Active',0</ActionSQL>
-	</SelectMacro>
+  </CiMemoField>
+  <SelectMacro>
+    <ActionSQL>?exec spCustomerOrders_selbyStatus 'Active',0</ActionSQL>
+  </SelectMacro>
   <CiMacro>
     <MacroName>NewOrder</MacroName>
     <Caption>New</Caption>
-    <ActionSQL>select 'New' as Command</ActionSQL>
     <NavigateUrl>CustomerOrder.pux</NavigateUrl>
     <NavigatePos>Popup</NavigatePos>
     <Toolbar>true</Toolbar>
+    <ActionSQL>select 'New' as Command</ActionSQL>
   </CiMacro>
   <CiMacro>
     <MacroName>CustomerOrderDetail</MacroName>
     <Caption>Customer Order Detail</Caption>
-    <ActionSQL>select @CustomerOrderNo as CustomerOrderNo, @CustomerID as CustomerID, 'Current' as CalledFrom</ActionSQL>
     <NavigateUrl>CustomerOrder.pux</NavigateUrl>
     <NavigatePos>Popup</NavigatePos>
+    <ActionSQL>select @CustomerOrderNo as CustomerOrderNo, @CustomerID as CustomerID, 'Current' as CalledFrom</ActionSQL>
   </CiMacro>
 </CiTable>

@@ -1,36 +1,35 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <CiTable>
-	<TableName>Brands</TableName>
-	<TableCaption>Brands</TableCaption>
-	<RowKey>BrandName</RowKey>
-	<DefaultView>Grid</DefaultView>
-	<CiField>
-		<FieldName>ExistingBrand</FieldName>
-		<Value>true</Value>
-		<Hidden>true</Hidden>
-	</CiField>
-	<CiTextField>
-		<FieldName>BrandName</FieldName>
-		<Caption>Brand Name</Caption>
-		<Editable lang="sql">select 1 where @ExistingBrand is null</Editable>
-		<Width>20</Width>
-	</CiTextField>
-	<CiMemoField>
-		<FieldName>BrandInfo</FieldName>
-		<Caption>Brand Info</Caption>
-	</CiMemoField>
-	<SelectMacro>
-		<ActionSQL>select BrandName, BrandInfo from Brand</ActionSQL>
-	</SelectMacro>
-	<InsertMacro>
-		<ActionSQL>
+  <TableName>Brands</TableName>
+  <TableCaption>Brands</TableCaption>
+  <RowKey>BrandName</RowKey>
+  <CiField>
+    <FieldName>ExistingBrand</FieldName>
+    <Hidden>true</Hidden>
+    <Value>true</Value>
+  </CiField>
+  <CiTextField>
+    <FieldName>BrandName</FieldName>
+    <Caption>Brand Name</Caption>
+    <Width>20</Width>
+    <Editable lang="sql">select 1 where @ExistingBrand is null</Editable>
+  </CiTextField>
+  <CiMemoField>
+    <FieldName>BrandInfo</FieldName>
+    <Caption>Brand Info</Caption>
+  </CiMemoField>
+  <SelectMacro>
+    <ActionSQL>select BrandName, BrandInfo from Brand</ActionSQL>
+  </SelectMacro>
+  <InsertMacro>
+    <ActionSQL>
 			insert into Brand (Brandname, BrandInfo) values (@Brandname, @BrandInfo)
 		</ActionSQL>
-	</InsertMacro>
-	<UpdateMacro>
-		<ActionSQL>
+  </InsertMacro>
+  <UpdateMacro>
+    <ActionSQL>
 			update Brand set BrandInfo = @BrandInfo
 			where BrandName = @BrandName
 		</ActionSQL>
-	</UpdateMacro>
+  </UpdateMacro>
 </CiTable>

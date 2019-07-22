@@ -23,21 +23,9 @@
     <FieldName>TableName</FieldName>
     <Caption>Table Name</Caption>
   </CiTextField>
-  <CiTextField>
-    <FieldName>Caption</FieldName>
-    <Caption>Caption</Caption>
-  </CiTextField>
-  <CiButtonField>
+  <CiButtonField Src="SQLTableButton.pux?SQLType=CaptionSQL">
     <FieldName>CaptionSQL</FieldName>
-    <Caption>Caption SQL</Caption>
-    <CiMacro>
-      <ActionSQL>
-        select 'CaptionSQL' as SQLType, @AppID as AppID, @TableID as TableID,
-        Command = case when exists (select 1 from CiSQL where EntityType = 'CiTable' and SQLType = 'CaptionSQL'
-        and AppID = @AppID and TableID = @TableID and EntityID = 1 and LineNum = 1) then 'Edit' else 'New' end</ActionSQL>
-      <NavigateUrl>TableSQL.pux</NavigateUrl>
-      <NavigatePos>Popup|1000|400</NavigatePos>
-    </CiMacro>
+    <Caption>Caption</Caption>
   </CiButtonField>
   <CiComboField>
     <FieldName>Src</FieldName>

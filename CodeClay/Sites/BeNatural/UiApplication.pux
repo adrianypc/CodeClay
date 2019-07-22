@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<CiApplication>
+  <IsDesigner>true</IsDesigner>
+  <ProviderName>System.Data.SqlClient</ProviderName>
+  <ConnectionString>Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\adrianypc\Documents\Databases\BeNatural.mdf;Initial Catalog=BeNatural;Integrated Security=True;Connect Timeout=30</ConnectionString>
+  <HomePluginSrc>Customers.pux</HomePluginSrc>
+  <CiMenu>
+    <MenuName>Application</MenuName>
+    <CiMenu>
+	    <MenuName>Customers</MenuName>
+	    <PluginSrc>Customers.pux</PluginSrc>
+    </CiMenu>
+    <CiMenu>
+          <MenuName>Setup</MenuName>
+          <CiMenu>
+              <MenuName>Dropdowns</MenuName>
+              <PluginSrc>Dropdowns.pux</PluginSrc>
+          </CiMenu>
+          <CiMenu>
+              <MenuName>Branches</MenuName>
+              <PluginSrc>Branches.pux</PluginSrc>
+          </CiMenu>
+      </CiMenu>
+  </CiMenu>
+</CiApplication>

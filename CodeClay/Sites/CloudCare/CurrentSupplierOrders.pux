@@ -1,10 +1,9 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <CiTable>
-	<TableName>CurrentSupplierOrders</TableName>
-	<TableCaption>Current Supplier Orders</TableCaption>
-	<RowKey>SupplierOrderNo</RowKey>
-	<DefaultView>Grid</DefaultView>
+  <TableName>CurrentSupplierOrders</TableName>
+  <TableCaption>Current Supplier Orders</TableCaption>
   <DoubleClickMacroName>SupplierOrderDetail</DoubleClickMacroName>
+  <RowKey>SupplierOrderNo</RowKey>
   <CiTextField>
     <FieldName>SupplierOrderNo</FieldName>
     <Caption>Supplier Order #</Caption>
@@ -17,30 +16,28 @@
   </CiTextField>
   <CiComboField>
     <FieldName>SupplierID</FieldName>
-    <TextFieldName>SupplierName</TextFieldName>
     <Caption>Supplier</Caption>
-    <Editable>true</Editable>
+    <DropdownSQL>select SupplierID,SupplierName from Supplier</DropdownSQL>
     <Code>SupplierID</Code>
     <Description>SupplierName</Description>
-    <DropdownSQL>select SupplierID,SupplierName from Supplier</DropdownSQL>
-    <Editable>false</Editable>
+    <TextFieldName>SupplierName</TextFieldName>
   </CiComboField>
-	<SelectMacro>
-		<ActionSQL>?exec spSupplierOrders_selbyStatus 'Active',0</ActionSQL>
-	</SelectMacro>
+  <SelectMacro>
+    <ActionSQL>?exec spSupplierOrders_selbyStatus 'Active',0</ActionSQL>
+  </SelectMacro>
   <CiMacro>
     <MacroName>NewOrder</MacroName>
     <Caption>New</Caption>
-    <ActionSQL>select 'New' as Command</ActionSQL>
     <NavigateUrl>SupplierOrder.pux</NavigateUrl>
     <NavigatePos>Popup</NavigatePos>
     <Toolbar>true</Toolbar>
+    <ActionSQL>select 'New' as Command</ActionSQL>
   </CiMacro>
   <CiMacro>
     <MacroName>SupplierOrderDetail</MacroName>
     <Caption>Supplier Order Detail</Caption>
-    <ActionSQL>select @SupplierOrderNo as SupplierOrderNo, @SupplierID as SupplierID, 'Current' as CalledFrom</ActionSQL>
     <NavigateUrl>SupplierOrder.pux</NavigateUrl>
     <NavigatePos>Popup</NavigatePos>
+    <ActionSQL>select @SupplierOrderNo as SupplierOrderNo, @SupplierID as SupplierID, 'Current' as CalledFrom</ActionSQL>
   </CiMacro>
 </CiTable>

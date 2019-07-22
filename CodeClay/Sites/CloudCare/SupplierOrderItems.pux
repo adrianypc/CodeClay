@@ -1,10 +1,9 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <CiTable>
-	<TableName>SupplierOrderItems</TableName>
-	<TableCaption>Supplier Order Items</TableCaption>
-	<RowKey>SupplierOrderNo,ProductID</RowKey>
-	<DefaultView>Grid</DefaultView>
+  <TableName>SupplierOrderItems</TableName>
+  <TableCaption>Supplier Order Items</TableCaption>
   <BubbleUpdate>true</BubbleUpdate>
+  <RowKey>SupplierOrderNo,ProductID</RowKey>
   <CiField>
     <FieldName>SupplierOrderNo</FieldName>
     <Hidden>true</Hidden>
@@ -19,17 +18,16 @@
   </CiField>
   <CiComboField>
     <FieldName>ProductID</FieldName>
-    <TextFieldName>ProductName</TextFieldName>
     <Caption>Product</Caption>
-    <Editable>true</Editable>
+    <DropdownSQL>select ProductID,ProductName from Product</DropdownSQL>
     <Code>ProductID</Code>
     <Description>ProductName</Description>
-    <DropdownSQL>select ProductID,ProductName from Product</DropdownSQL>
+    <TextFieldName>ProductName</TextFieldName>
   </CiComboField>
   <CiNumericField>
-	<FieldName>Quantity</FieldName>
-	<Caption>Quantity Ordered</Caption>
-	<Width>20</Width>
+    <FieldName>Quantity</FieldName>
+    <Caption>Quantity Ordered</Caption>
+    <Width>20</Width>
     <Editable lang="sql">select 1 from SupplierOrders where SupplierOrderNo = @SupplierOrderNo and status = 'Open'</Editable>
   </CiNumericField>
   <CiNumericField>
@@ -41,15 +39,15 @@
   <CiTextField>
     <FieldName>Price</FieldName>
     <Caption>Price ($)</Caption>
+    <Editable>false</Editable>
     <Width>20</Width>
     <Mask>Currency</Mask>
-    <Editable>false</Editable>
   </CiTextField>
   <CiDateField>
     <FieldName>ExpiryDate</FieldName>
     <Caption>Expiry Date</Caption>
-    <Editable lang="sql">select 1 from SupplierOrders where SupplierOrderNo = @SupplierOrderNo and status = 'Active'</Editable>
     <ColumnFormat>dd/MM/yyyy</ColumnFormat>
+    <Editable lang="sql">select 1 from SupplierOrders where SupplierOrderNo = @SupplierOrderNo and status = 'Active'</Editable>
   </CiDateField>
   <DefaultMacro>
     <ActionSQL>
@@ -59,11 +57,11 @@
       where SupplierOrderNo = @SupplierOrderNo
     </ActionSQL>
   </DefaultMacro>
-	<SelectMacro>
-		<ActionSQL>?exec spSupplierOrderItems_selbySupplierOrderNo @SupplierOrderNo</ActionSQL>
-	</SelectMacro>
-	<InsertMacro>
-	<ActionSQL>
+  <SelectMacro>
+    <ActionSQL>?exec spSupplierOrderItems_selbySupplierOrderNo @SupplierOrderNo</ActionSQL>
+  </SelectMacro>
+  <InsertMacro>
+    <ActionSQL>
       select coalesce(1 + max(SupplierOrderItemNo), 1) as SupplierOrderItemNo
       from SupplierOrderItems
       where SupplierOrderNo = @SupplierOrderNo
@@ -80,8 +78,8 @@
       @ExpiryDate
     </ActionSQL>
     <VisibleSQL>select 1 from SupplierOrders where SupplierOrderNo = @SupplierOrderNo and Status not in ('Received','Cancelled','Active')</VisibleSQL>
-	</InsertMacro>
-	<UpdateMacro>
+  </InsertMacro>
+  <UpdateMacro>
     <ActionSQL>
       ?exec spSupplierOrderItems_upd
       @SupplierOrderItemNo,
@@ -114,8 +112,8 @@
     </VisibleSQL>
   </DeleteMacro>
   <CiFieldExitMacro>
-    <FieldName>Quantity</FieldName>
     <FieldName>ProductID</FieldName>
+    <FieldName>Quantity</FieldName>
     <ActionSQL>select	@Quantity * coalesce(UnitCostPrice,0) as Price from Product where	ProductID = @ProductID</ActionSQL>
   </CiFieldExitMacro>
 </CiTable>

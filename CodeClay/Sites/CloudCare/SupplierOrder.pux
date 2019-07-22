@@ -1,9 +1,9 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <CiTable>
-	<TableName>SupplierOrder</TableName>
-	<TableCaption>Supplier Order</TableCaption>
-	<RowKey>SupplierOrderNo</RowKey>
-	<DefaultView>Card</DefaultView>
+  <TableName>SupplierOrder</TableName>
+  <TableCaption>Supplier Order</TableCaption>
+  <DefaultView>Card</DefaultView>
+  <RowKey>SupplierOrderNo</RowKey>
   <CiTextField>
     <FieldName>SupplierOrderNo</FieldName>
     <Caption>Supplier Order #</Caption>
@@ -17,14 +17,12 @@
   <CiDateField>
     <FieldName>SupplierOrderDate</FieldName>
     <Caption>Order Date</Caption>
-    <Editable>true</Editable>
-    <ColumnFormat>dd/MM/yyyy</ColumnFormat>
     <Mandatory>true</Mandatory>
+    <ColumnFormat>dd/MM/yyyy</ColumnFormat>
   </CiDateField>
   <CiDateField>
     <FieldName>DeliveryDate</FieldName>
     <Caption>Delivery Date</Caption>
-    <Editable>true</Editable>
     <ColumnFormat>dd/MM/yyyy</ColumnFormat>
   </CiDateField>
   <CiCheckField>
@@ -34,20 +32,19 @@
   </CiCheckField>
   <CiComboField>
     <FieldName>SupplierID</FieldName>
-    <TextFieldName>SupplierName</TextFieldName>
     <Caption>Supplier</Caption>
-     <Code>SupplierID</Code>
-    <Description>SupplierName</Description>
-    <DropdownSQL>select SupplierID,SupplierName from Supplier</DropdownSQL>
     <Mandatory>true</Mandatory>
+    <DropdownSQL>select SupplierID,SupplierName from Supplier</DropdownSQL>
+    <Code>SupplierID</Code>
+    <Description>SupplierName</Description>
+    <TextFieldName>SupplierName</TextFieldName>
     <Editable lang="sql">select 1 from tblSingleton where cast(0 as bit) = @IsTransferred</Editable>
   </CiComboField>
   <CiLinkField>
     <FieldName>OrderFileURL</FieldName>
     <Caption>Order File</Caption>
-    <Folder lang="sql">select 'SavedFiles\SupplierOrders\' + @SupplierID + '\F' + ltrim(str(@SupplierOrderNo))</Folder>
     <Width>50</Width>
-    <VisibleSQL>select 1 from tblSingleton where @SupplierID = 37</VisibleSQL>
+    <Folder lang="sql">select 'SavedFiles\SupplierOrders\' + @SupplierID + '\F' + ltrim(str(@SupplierOrderNo))</Folder>
   </CiLinkField>
   <CiTextField>
     <FieldName>Shipping</FieldName>
@@ -57,40 +54,39 @@
   <CiTextField>
     <FieldName>TotalAmount</FieldName>
     <Caption>Total ($)</Caption>
-    <Mask>Currency</Mask>
     <Editable>false</Editable>
+    <Mask>Currency</Mask>
   </CiTextField>
   <CiComboField>
     <FieldName>CurrentCurrency</FieldName>
-    <TextFieldName>CurrencyName</TextFieldName>
     <Caption>Currency Code</Caption>
-    <Editable>true</Editable>
+    <Mandatory>true</Mandatory>
+    <DropdownSQL>select Description as CurrencyName,Code as CurrencyCode from Dropdown where Category='Currency'</DropdownSQL>
     <Code>CurrencyCode</Code>
     <Description>CurrencyName</Description>
-    <DropdownSQL>select Description as CurrencyName,Code as CurrencyCode from Dropdown where Category='Currency'</DropdownSQL>
-    <Mandatory>true</Mandatory>
- </CiComboField>
- <CiLinkField>
+    <TextFieldName>CurrencyName</TextFieldName>
+  </CiComboField>
+  <CiLinkField>
     <FieldName>ExchangeRateURL</FieldName>
     <Caption>Exchange Rate URL</Caption>
-     <Editable>false</Editable>
+    <Editable>false</Editable>
     <Width>50</Width>
- </CiLinkField>
- <CiTextField>
+  </CiLinkField>
+  <CiTextField>
     <FieldName>ConversionRate</FieldName>
     <Caption>Conversion Rate</Caption>
-    <Editable lang="sql">select 1 from tblSingleton where @CurrentCurrency != 'SGD'</Editable>
     <Mandatory>true</Mandatory>
- </CiTextField>
- <CiTextField>
+    <Editable lang="sql">select 1 from tblSingleton where @CurrentCurrency != 'SGD'</Editable>
+  </CiTextField>
+  <CiTextField>
     <FieldName>TotalAmountInSGD</FieldName>
-     <Caption>Total (S$)</Caption>
-    <Mask>Currency</Mask>
+    <Caption>Total (S$)</Caption>
     <Editable>false</Editable>
- </CiTextField>
+    <Mask>Currency</Mask>
+  </CiTextField>
   <CiTextField>
     <FieldName>CalledFrom</FieldName>
-     <Hidden>true</Hidden>
+    <Hidden>true</Hidden>
   </CiTextField>
   <CiTable Src="SupplierOrderItems.pux" />
   <DefaultMacro>
@@ -106,7 +102,7 @@
     </ActionSQL>
   </DefaultMacro>
   <SelectMacro>
-		<ActionSQL>?exec spSupplierOrders_sel @SupplierOrderNo, @SupplierID</ActionSQL>
+    <ActionSQL>?exec spSupplierOrders_sel @SupplierOrderNo, @SupplierID</ActionSQL>
   </SelectMacro>
   <InsertMacro>
     <ActionSQL>
@@ -130,7 +126,7 @@
         @ExchangeRateURL
     </ActionSQL>
     <VisibleSQL>select distinct 1 from SupplierOrders where @CalledFrom is null</VisibleSQL>
-    </InsertMacro>
+  </InsertMacro>
   <UpdateMacro>
     <ActionSQL>
         ?exec spSupplierOrders_upd
@@ -180,12 +176,9 @@
     <ActionSQL>exec spSupplierOrders_Status_upd @SupplierOrderNo,'Received',@CI_UserEmail</ActionSQL>
     <ActionSQL>
       select Status,
-             DeliveryDate,
-             SupplierOrderNo
-      from SupplierOrders 
-      where SupplierOrderNo = @SupplierOrderNo
+      DeliveryDate
+      from SupplierOrders where SupplierOrderNo = @SupplierOrderNo
     </ActionSQL>
-    <NavigateUrl>SupplierOrderEmail.pux</NavigateUrl>
     <VisibleSQL>
         select 1 from SupplierOrders
         where SupplierOrderNo = case when isnumeric(@SupplierOrderNo) = 1 then @SupplierOrderNo else -1 end
@@ -223,14 +216,14 @@
     </ActionSQL>
   </CiFieldExitMacro>
   <CiFieldExitMacro>
-     <FieldName>ConversionRate</FieldName>
-     <ActionSQL>
+    <FieldName>ConversionRate</FieldName>
+    <ActionSQL>
          select cast(@TotalAmount * @ConversionRate as decimal(10,2)) as TotalAmountInSGD
      </ActionSQL>
   </CiFieldExitMacro>
   <CiFieldExitMacro>
-     <FieldName>IsTransferred</FieldName>
-     <ActionSQL>
+    <FieldName>IsTransferred</FieldName>
+    <ActionSQL>
          select SupplierID,SupplierName from Supplier where SupplierName like '%HealthTree Australia%' and @IsTransferred = cast(1 as bit)
      </ActionSQL>
   </CiFieldExitMacro>

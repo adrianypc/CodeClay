@@ -76,17 +76,35 @@ function RegisterEditor(editor, getvalue_function, setvalue_function) {
 }
 
 function RegisterPanel(editorPanel) {
-    if (editorPanel) {
-        var formattedFieldName = editorPanel.cpTableName + "." + editorPanel.cpFieldName;
+    var formattedFieldName = GetFormattedFieldName(editorPanel);
 
-        if (editorPanel.cpItemIndex >= 0) {
-            formattedFieldName += "." + editorPanel.cpItemIndex;
+    if (editorPanels && formattedFieldName) {
+        editorPanels[formattedFieldName] = editorPanel;
+    }
+}
+
+function GetFormattedFieldName(widget) {
+    var formattedFieldName = "";
+
+    if (widget) {
+        var tableName = widget.cpTableName;
+        var fieldName = widget.cpFieldName
+        var itemIndex = widget.cpItemIndex;
+
+        if (tableName) {
+            formattedFieldName += tableName + "."
         }
 
-		if (editorPanels && formattedFieldName) {
-			editorPanels[formattedFieldName] = editorPanel;
+        if (fieldName) {
+            formattedFieldName += fieldName;
         }
-	}
+
+        if (itemIndex >= 0) {
+            formattedFieldName += "." + itemIndex;
+        }
+    }
+
+    return formattedFieldName;
 }
 
 function GetField(tableName, fieldName) {
@@ -105,10 +123,10 @@ function InitField(tableName, fieldName, fieldValue) {
 
 function SetField(tableName, fieldName, fieldValue) {
     if (tableName && fieldName) {
-        if (fieldValue == null || fieldValue.length == 0) {
-            // Set empty field to alarm character
-            fieldValue = String.fromCharCode(7);
-        }
+        //if (fieldValue == null || fieldValue.length == 0) {
+        //    // Set empty field to alarm character
+        //    fieldValue = String.fromCharCode(7);
+        //}
         dxClientState.Set(tableName + "." + fieldName, fieldValue);
     }
 }

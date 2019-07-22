@@ -1,11 +1,8 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <CiTable>
-  <TableName>UnpaidSupplierOrder</TableName>
-  <TableCaption lang="sql">
-      select coalesce((select invoicestatus from interbranchinvoices where Invoiceno = @InvoiceNo),'Unpaid') +' '+'Supplier Orders'
-  </TableCaption>
+  <TableName>UnpaidAUSupplierOrders</TableName>
+  <TableCaption>Elohai</TableCaption>
   <RowKey>InvoiceNo,SupplierOrderNo</RowKey>
-  <DefaultView>Grid</DefaultView>
   <CiTextField>
     <FieldName>InvoiceNo</FieldName>
     <Hidden>true</Hidden>
@@ -27,26 +24,25 @@
   <CiDateField>
     <FieldName>SupplierOrderDate</FieldName>
     <Caption>Order Date</Caption>
-    <Editable>true</Editable>
-    <ColumnFormat>dd/MM/yyyy</ColumnFormat>
     <Mandatory>true</Mandatory>
+    <ColumnFormat>dd/MM/yyyy</ColumnFormat>
   </CiDateField>
   <CiTextField>
     <FieldName>TotalItemPrice</FieldName>
     <Caption>Total Price ($)</Caption>
-    <Mask>Currency</Mask>
     <Editable>false</Editable>
+    <Mask>Currency</Mask>
   </CiTextField>
   <CiTextField>
     <FieldName>ShippingCost</FieldName>
     <Caption>Shipping ($)</Caption>
-    <Mask>Currency</Mask>
     <Editable>false</Editable>
+    <Mask>Currency</Mask>
   </CiTextField>
   <CiTextField>
     <FieldName>GrandTotal</FieldName>
     <Caption>Grand Total ($)</Caption>
-    <Mask>Currency</Mask>
     <Editable>false</Editable>
+    <Mask>Currency</Mask>
   </CiTextField>
 </CiTable>

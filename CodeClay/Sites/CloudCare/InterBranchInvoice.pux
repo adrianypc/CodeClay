@@ -1,15 +1,14 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <CiTable>
   <TableName>InterBranchInvoice</TableName>
   <TableCaption>Inter Branch Invoice</TableCaption>
-  <RowKey>InvoiceNo</RowKey>
   <DefaultView>Card</DefaultView>
+  <RowKey>InvoiceNo</RowKey>
   <CiDateField>
     <FieldName>InvoiceDate</FieldName>
     <Caption>Date</Caption>
-    <Editable>true</Editable>
-    <ColumnFormat>dd/MM/yyyy</ColumnFormat>
     <Mandatory>true</Mandatory>
+    <ColumnFormat>dd/MM/yyyy</ColumnFormat>
   </CiDateField>
   <CiTextField>
     <FieldName>InvoiceNo</FieldName>
@@ -19,28 +18,28 @@
   <CiLinkField>
     <FieldName>InvoiceFileURL</FieldName>
     <Caption>File</Caption>
-    <Folder lang="sql">select 'SavedFiles\InterBranchInvoices' +'\F' + ltrim(str(@InvoiceNo))</Folder>
+    <Hidden>true</Hidden>
     <Width>50</Width>
     <Editable lang="sql">select 1 from tblSingleton where isnumeric(@InvoiceNo) =  1</Editable>
-    <Hidden>true</Hidden>
+    <Folder lang="sql">select 'SavedFiles\InterBranchInvoices' +'\F' + ltrim(str(@InvoiceNo))</Folder>
   </CiLinkField>
   <CiTextField>
-     <FieldName>TotalItemAmount</FieldName>
-     <Caption>Total Item Amount ($)</Caption>
-     <Mask>Currency</Mask>
-     <Editable>false</Editable>
+    <FieldName>TotalItemAmount</FieldName>
+    <Caption>Total Item Amount ($)</Caption>
+    <Editable>false</Editable>
+    <Mask>Currency</Mask>
   </CiTextField>
   <CiTextField>
-     <FieldName>TotalShipping</FieldName>
-     <Caption>Total Shipping ($)</Caption>
-     <Mask>Currency</Mask>
-     <Editable>false</Editable>
+    <FieldName>TotalShipping</FieldName>
+    <Caption>Total Shipping ($)</Caption>
+    <Editable>false</Editable>
+    <Mask>Currency</Mask>
   </CiTextField>
   <CiTextField>
     <FieldName>GrandTotal</FieldName>
     <Caption>Grand Total ($)</Caption>
-    <Mask>Currency</Mask>
     <Editable>false</Editable>
+    <Mask>Currency</Mask>
   </CiTextField>
   <CiTextField>
     <FieldName>InvoiceStatus</FieldName>
@@ -51,9 +50,9 @@
     <Hidden>true</Hidden>
   </CiTextField>
   <CiTable Src="UnpaidAUSupplierOrders.pux">
-      <SelectMacro>
-          <ActionSQL>?exec spSupplierOrders_selbyIBInvoiceNo @InvoiceNo</ActionSQL>
-      </SelectMacro>
+    <SelectMacro>
+      <ActionSQL>?exec spSupplierOrders_selbyIBInvoiceNo @InvoiceNo</ActionSQL>
+    </SelectMacro>
   </CiTable>
   <DefaultMacro>
     <ActionSQL>
@@ -74,8 +73,7 @@
         and SO.IBInvoiceNo is null
         inner join SupplierOrderItems SOI
         on SO.SupplierOrderNo = SOI.SupplierOrderNo
-        where (SO.Reimbursed = 'N' or SO.Reimbursed is null)
-    </ActionSQL>
+        where (SO.Reimbursed = 'N' or SO.R</ActionSQL>
   </DefaultMacro>
   <SelectMacro>
     <ActionSQL>?exec spInterBranchInvoice_selbyStatus @InvoiceStatus,@InvoiceNo</ActionSQL>
@@ -93,15 +91,15 @@
   <CiMacro>
     <MacroName>GeneratePDF</MacroName>
     <Caption>PDF</Caption>
-    <ActionSQL>select @InvoiceNo as InvoiceNo</ActionSQL>
     <NavigateUrl>InterBranchInvoicePDF.pux</NavigateUrl>
     <NavigatePos>Popup</NavigatePos>
     <Toolbar>true</Toolbar>
+    <ActionSQL>select @InvoiceNo as InvoiceNo</ActionSQL>
   </CiMacro>
   <CiMacro>
-      <MacroName>Paid</MacroName>
-     <ActionSQL>?exec spInterBranchInvoice_Status_upd @InvoiceNo</ActionSQL>
-      <VisibleSQL>select 1 from tblSingleton where @InvoiceStatus = 'Unpaid'</VisibleSQL>
-     <Toolbar>true</Toolbar>
+    <MacroName>Paid</MacroName>
+    <Toolbar>true</Toolbar>
+    <ActionSQL>?exec spInterBranchInvoice_Status_upd @InvoiceNo</ActionSQL>
+    <VisibleSQL>select 1 from tblSingleton where @InvoiceStatus = 'Unpaid'</VisibleSQL>
   </CiMacro>
 </CiTable>

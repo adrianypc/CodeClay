@@ -712,4 +712,34 @@ namespace CodeClay
             }
         }
     }
+
+    public class XiButtonMacro: XiMacro
+    {
+        // --------------------------------------------------------------------------------------------------
+        // Properties
+        // --------------------------------------------------------------------------------------------------
+
+        public object NewMacroID { get; set; }  = null;
+
+        // --------------------------------------------------------------------------------------------------
+        // Methods (Override)
+        // --------------------------------------------------------------------------------------------------
+
+        protected override DataTable GetPluginDefinitions(DataRow drPluginKey)
+        {
+            return MyWebUtils.GetBySQL("?exec spButtonMacro_sel @AppID, @TableID, @FieldID", drPluginKey, true);
+        }
+
+        protected override void DeletePluginDefinitions(DataRow drPluginKey)
+        {
+            // Do nothing
+        }
+
+        protected override void WriteToDB(DataRow drPluginDefinition)
+        {
+            drPluginDefinition["Type"] = "Button";
+            base.WriteToDB(drPluginDefinition);
+            NewMacroID = drPluginDefinition["MacroID"];
+        }
+    }
 }

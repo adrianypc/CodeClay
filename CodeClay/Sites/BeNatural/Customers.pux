@@ -28,6 +28,11 @@
     <FieldName>DateOfBirth</FieldName>
     <Caption>Date of birth</Caption>
   </CiDateField>
+  <CiTextField>
+    <FieldName>Age</FieldName>
+    <Caption>Age</Caption>
+    <Editable>false</Editable>
+  </CiTextField>
   <CiMemoField>
     <FieldName>Address</FieldName>
     <Caption>Address</Caption>
@@ -56,20 +61,9 @@
     <Caption>Referrer</Caption>
     <DropdownSQL>select Code from Dropdown where Category = 'Referrer' order by Code</DropdownSQL>
   </CiComboField>
-  <CiTextField>
-    <FieldName>Points</FieldName>
-    <Caption>Points</Caption>
-    <Editable>false</Editable>
-    <Summary>Sum</Summary>
-    <Mask>Currency</Mask>
-  </CiTextField>
-  <CiTable Src="CustomerOrder.pux">
-    <SelectMacro>
-      <ActionSQL>?exec spCustomerOrders_selbyCustomerID @CustomerID</ActionSQL>
-    </SelectMacro>
-  </CiTable>
+  <CiTable Src="CustomerCaseNotes.pux" />
   <DefaultMacro>
-    <ActionSQL>select '-New-' as CustomerID, 0 as Points</ActionSQL>
+    <ActionSQL>select '-New-' as CustomerID</ActionSQL>
   </DefaultMacro>
   <SelectMacro>
     <ActionSQL>?exec spCustomer_selbyNames_Mobile @LastName,@OtherNames,@Mobile</ActionSQL>

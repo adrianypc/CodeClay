@@ -49,7 +49,7 @@ namespace CodeClay
             set
             {
                 mSrc = value;
-                Hashtable parameters = new Hashtable();
+                SrcParams = new Hashtable();
 
                 if (!MyUtils.IsEmpty(mSrc) && mSrc.Contains("?"))
                 {
@@ -63,7 +63,7 @@ namespace CodeClay
                             string[] nvpTokens = nameValuePair.Split('=');
                             if (nvpTokens.Length == 2)
                             {
-                                parameters.Add(nvpTokens[0], nvpTokens[1]);
+                                SrcParams.Add(nvpTokens[0], nvpTokens[1]);
                             }
                         }
                     }
@@ -72,12 +72,12 @@ namespace CodeClay
                 CiPlugin ciSrcPlugin = CiPlugin.CreateCiPlugin(mSrc);
                 this.Inherits(ciSrcPlugin);
 
-                foreach (string parameterName in parameters.Keys)
+                foreach (string parameterName in SrcParams.Keys)
                 {
                     CiPlugin ciChildPlugin = GetById(parameterName);
                     if (ciChildPlugin != null)
                     {
-                        object parameterValue = parameters[parameterName];
+                        object parameterValue = SrcParams[parameterName];
                         ciChildPlugin.Value = MyUtils.Coalesce(parameterValue, "").ToString();
                     }
                 }
@@ -216,7 +216,13 @@ namespace CodeClay
                     CiPlugin[] ciNewPlugins = (CiPlugin[])value;
                     foreach (CiPlugin ciNewPlugin in ciNewPlugins)
                     {
-                        CiPlugin ciOldPlugin = GetById(ciNewPlugin.ID);
+                        CiPlugin ciOldPlugin = null;
+
+                        string pluginID = ciNewPlugin.ID;
+                        if (!MyUtils.IsEmpty(pluginID))
+                        {
+                            ciOldPlugin = GetById(pluginID);
+                        }
 
                         if (ciOldPlugin != null)
                         {
@@ -238,6 +244,9 @@ namespace CodeClay
 
         [XmlIgnore]
         public virtual string ID { get; set; } = null;
+
+        [XmlIgnore]
+        public Hashtable SrcParams { get; set; } = new Hashtable();
 
         [XmlIgnore]
         public string PuxFile { get; set; } = "";
@@ -410,6 +419,15 @@ namespace CodeClay
 
         public virtual CiPlugin GetById(string id)
         {
+            if (CiPlugins != null)
+            {
+                CiPlugin[] PluginsFound = CiPlugins.Where(c => c.ID == id).ToArray();
+                if (PluginsFound.Length > 0)
+                {
+                    return PluginsFound[0];
+                }
+            }
+
             return null;
         }
 
@@ -531,6 +549,19 @@ namespace CodeClay
 
         public virtual object GetServerValue(string key, int rowIndex = -1)
         {
+            GridBaseTemplateContainer container = this.NamingContainer as GridBaseTemplateContainer;
+            if (container != null)
+            {
+                try
+                {
+                    return DataBinder.Eval(container.DataItem, key);
+                }
+                catch
+                {
+                    // Do nothing
+                }
+            }
+
             return null;
         }
 
@@ -592,7 +623,6 @@ namespace CodeClay
             return null;
         }
 
-
         public virtual object this[string key, int rowIndex = -1]
         {
             get
@@ -602,21 +632,33 @@ namespace CodeClay
                     rowIndex = GetFocusedIndex();
                 }
 
-                object clientValue = GetClientValue(key);
-
-                if (!MyUtils.IsEmpty(clientValue))
+                if (!IsPostBack)
                 {
-                    if (clientValue.ToString() == "\a")
-                    {
-                        // Alarm character is used to denote a field that has been cleared
-                        clientValue = "";
-                    }
+                    object serverValue = GetServerValue(key);
 
-                    return clientValue;
+                    if (!MyUtils.IsEmpty(serverValue))
+                    {
+                        return serverValue;
+                    }
+                }
+                else
+                {
+                    object clientValue = GetClientValue(key);
+
+                    if (!MyUtils.IsEmpty(clientValue))
+                    {
+                        //if (clientValue.ToString() == "\a")
+                        //{
+                        //    // Alarm character is used to denote a field that has been cleared
+                        //    clientValue = "";
+                        //}
+
+                        return clientValue;
+                    }
                 }
 
                 return MyUtils.Coalesce(
-                    GetServerValue(key, rowIndex),
+                    GetServerValue(key),
                     GetQueryStringValue(key),
                     GetParentValue(key),
                     GetDefaultValue(key));
@@ -649,6 +691,18 @@ namespace CodeClay
 
             if (CiPlugin != null)
             {
+                Hashtable srcParams = CiPlugin.SrcParams;
+                foreach (string fieldName in srcParams.Keys)
+                {
+                    object fieldValue = srcParams[fieldName];
+
+                    if (!dcColumns.Contains(fieldName))
+                    {
+                        dcColumns.Add(fieldName);
+                        dr[fieldName] = fieldValue;
+                    }
+                }
+
                 foreach (PropertyInfo p in CiPlugin.GetType().GetProperties())
                 {
                     if (!("Src, CiPlugins".Contains(p.Name)))
@@ -1092,19 +1146,6 @@ namespace CodeClay
         // --------------------------------------------------------------------------------------------------
         // Helpers
         // --------------------------------------------------------------------------------------------------
-
-        protected string GetSqlParameterList(DataRow dr)
-        {
-            string sqlParameterList = "";
-
-            foreach (DataColumn dcTableProperty in dr.Table.Columns)
-            {
-                sqlParameterList += ((MyUtils.IsEmpty(sqlParameterList))
-                    ? " @" : " ,@") + dcTableProperty.ColumnName;
-            }
-
-            return sqlParameterList;
-        }
 
         private bool IsConfigurableProperty(Type pluginType, string propertyName)
         {

@@ -511,6 +511,14 @@ namespace CodeClay
 
             return "";
         }
+
+        public static void AddColumnIfRequired(DataColumnCollection dc, string columnName)
+        {
+            if (dc != null && !dc.Contains(columnName))
+            {
+                dc.Add(columnName);
+            }
+        }
     }
 
     public class DataSetSerializer : IDataSerializer

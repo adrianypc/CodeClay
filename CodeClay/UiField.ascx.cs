@@ -17,7 +17,7 @@ using DevExpress.Web;
 
 namespace CodeClay
 {
-	[XmlType("CiField")]
+    [XmlType("CiField")]
     public class CiField : CiPlugin
     {
         // --------------------------------------------------------------------------------------------------
@@ -37,10 +37,10 @@ namespace CodeClay
         public string ColumnFormat { get; set; } = "";
 
         [XmlElement("Mask")]
-		public eTextMask Mask { get; set; } = eTextMask.None;
+        public eTextMask Mask { get; set; } = eTextMask.None;
 
         [XmlElement("ForeColor")]
-		public string ForeColor { get; set; } = "";
+        public string ForeColor { get; set; } = "";
 
         [XmlElement("Hidden")]
         public bool Hidden { get; set; } = false;
@@ -272,14 +272,14 @@ namespace CodeClay
         }
 
         public virtual void FormatCardColumn(CardViewColumn dxColumn)
-		{
-			if (dxColumn != null)
-			{
-				string fieldName = dxColumn.FieldName;
+        {
+            if (dxColumn != null)
+            {
+                string fieldName = dxColumn.FieldName;
 
-				dxColumn.Visible = IsVisible;
-				dxColumn.Caption = Caption;
-				dxColumn.Width = ColumnWidth;
+                dxColumn.Visible = IsVisible;
+                dxColumn.Caption = Caption;
+                dxColumn.Width = ColumnWidth;
 
                 CardViewFormLayoutProperties layoutProperties = dxColumn.CardView.CardLayoutProperties;
                 CardViewColumnLayoutItem dxLayoutItem = layoutProperties.FindColumnItem(fieldName) as CardViewColumnLayoutItem;
@@ -308,46 +308,46 @@ namespace CodeClay
                     : "";
 
                 DevExpress.Data.SummaryItemType summaryItemType = Summary;
-				if (summaryItemType != DevExpress.Data.SummaryItemType.None)
-				{
-					ASPxCardViewSummaryItem item = new ASPxCardViewSummaryItem(FieldName, summaryItemType);
+                if (summaryItemType != DevExpress.Data.SummaryItemType.None)
+                {
+                    ASPxCardViewSummaryItem item = new ASPxCardViewSummaryItem(FieldName, summaryItemType);
 
-					item.FieldName = FieldName;
-					dxColumn.CardView.TotalSummary.Add(item);
-				}
-			}
-		}
+                    item.FieldName = FieldName;
+                    dxColumn.CardView.TotalSummary.Add(item);
+                }
+            }
+        }
 
-		public virtual void FormatGridColumn(GridViewDataColumn dxColumn)
-		{
-			if (dxColumn != null)
-			{
-				HorizontalAlign left = System.Web.UI.WebControls.HorizontalAlign.Left;
-				VerticalAlign top = System.Web.UI.WebControls.VerticalAlign.Top;
+        public virtual void FormatGridColumn(GridViewDataColumn dxColumn)
+        {
+            if (dxColumn != null)
+            {
+                HorizontalAlign left = System.Web.UI.WebControls.HorizontalAlign.Left;
+                VerticalAlign top = System.Web.UI.WebControls.VerticalAlign.Top;
 
-				dxColumn.Visible = IsVisible;
-				dxColumn.Caption = Caption;
-				dxColumn.CellStyle.HorizontalAlign = left;
-				dxColumn.CellStyle.VerticalAlign = top;
-				dxColumn.EditCellStyle.VerticalAlign = top;
-				dxColumn.EditCellStyle.HorizontalAlign = left;
-				dxColumn.HeaderStyle.HorizontalAlign = left;
-				dxColumn.CellRowSpan = RowSpan;
-				dxColumn.Width = ColumnWidth;
+                dxColumn.Visible = IsVisible;
+                dxColumn.Caption = Caption;
+                dxColumn.CellStyle.HorizontalAlign = left;
+                dxColumn.CellStyle.VerticalAlign = top;
+                dxColumn.EditCellStyle.VerticalAlign = top;
+                dxColumn.EditCellStyle.HorizontalAlign = left;
+                dxColumn.HeaderStyle.HorizontalAlign = left;
+                dxColumn.CellRowSpan = RowSpan;
+                dxColumn.Width = ColumnWidth;
 
-				DevExpress.Data.SummaryItemType summaryItemType = Summary;
-				if (summaryItemType != DevExpress.Data.SummaryItemType.None)
-				{
-					ASPxSummaryItem item = new ASPxSummaryItem(FieldName, summaryItemType);
+                DevExpress.Data.SummaryItemType summaryItemType = Summary;
+                if (summaryItemType != DevExpress.Data.SummaryItemType.None)
+                {
+                    ASPxSummaryItem item = new ASPxSummaryItem(FieldName, summaryItemType);
 
-					item.ShowInColumn = FieldName;
-					dxColumn.Grid.TotalSummary.Add(item);
-				}
-			}
-		}
+                    item.ShowInColumn = FieldName;
+                    dxColumn.Grid.TotalSummary.Add(item);
+                }
+            }
+        }
 
-		public virtual bool HasBorder(UiTable uiTable)
-		{
+        public virtual bool HasBorder(UiTable uiTable)
+        {
             if (uiTable != null)
             {
                 CiTable ciTable = uiTable.CiTable;
@@ -392,26 +392,37 @@ namespace CodeClay
                 {
                     string fieldName = CiField.FieldName;
 
-                    GridBaseTemplateContainer container = this.NamingContainer as GridBaseTemplateContainer;
-                    if (container != null && !CiField.Computed)
+                    if (!IsPostBack)
                     {
-                        try
+                        GridBaseTemplateContainer container = this.NamingContainer as GridBaseTemplateContainer;
+                        if (container != null && !CiField.Computed)
                         {
-                            fieldValue = DataBinder.Eval(container.DataItem, fieldName);
+                            try
+                            {
+                                fieldValue = DataBinder.Eval(container.DataItem, fieldName);
+                            }
+                            catch
+                            {
+                                // Do nothing
+                            }
                         }
-                        catch
-                        {
-                            // Do nothing
-                        }
-                    }
 
-                    if (!CiField.Enabled && (CiField.GetType().Name.Substring(2)) != CiField.GetUiPluginName().Substring(2))
+                        if (!CiField.Enabled && (CiField.GetType().Name.Substring(2)) != CiField.GetUiPluginName().Substring(2))
+                        {
+                            // For disabled fields which have been cast to TextField
+                            fieldValue = CiField.ToString(fieldValue);
+                        }
+
+                        fieldValue = MyUtils.Coalesce(fieldValue, CiField.Value);
+                    }
+                    else if (UiTable != null)
                     {
-                        // For disabled fields which have been cast to TextField
-                        fieldValue = CiField.ToString(fieldValue);
+                        fieldValue = UiTable[fieldName];
                     }
-
-                    fieldValue = MyUtils.Coalesce(fieldValue, CiField.Value);
+                    else
+                    {
+                        fieldValue = this[fieldName];
+                    }
                 }
 
                 return fieldValue;
@@ -475,7 +486,7 @@ namespace CodeClay
         public UiTable UiTable
         {
             get { return UiParentPlugin as UiTable; }
-			set { UiParentPlugin = value; }
+            set { UiParentPlugin = value; }
         }
 
         // --------------------------------------------------------------------------------------------------
@@ -503,12 +514,15 @@ namespace CodeClay
 
         public override DataRow GetState(int rowIndex = -1)
         {
+            DataRow dr = base.GetState(rowIndex);
+
             if (UiTable != null)
             {
-                return UiTable.GetState(rowIndex);
+                dr = MyUtils.AppendColumns(dr, UiTable.GetState(rowIndex), true);
             }
 
-            return base.GetState(rowIndex);
+
+            return dr;
         }
 
         public override void ConfigureIn(Control container)
@@ -578,8 +592,8 @@ namespace CodeClay
                 string tableName = (ciTable != null) ? ciTable.TableName : "";
                 string fieldName = CiField.IsSearching ? CiField.SearchableFieldName : CiField.FieldName;
                 bool isEditable = CiField.IsEditable(drParams);
-                object fieldValue = MyUtils.Coalesce(mEditor.Value, FieldValue);
-				string foreColor = CiField.ForeColor;
+                object fieldValue = this[fieldName];
+                string foreColor = CiField.ForeColor;
 
                 mEditor.ID = fieldName;
                 mEditor.DataBind();
@@ -591,11 +605,11 @@ namespace CodeClay
                 mEditor.Value = fieldValue;
                 mEditor.Visible = CiField.IsVisible;
                 mEditor.BackColor = GetBackColor(isEditable);
-				
-				if (!MyUtils.IsEmpty(foreColor))
-				{
-					mEditor.ForeColor = Color.FromName(foreColor);
-				}
+
+                if (!MyUtils.IsEmpty(foreColor))
+                {
+                    mEditor.ForeColor = Color.FromName(foreColor);
+                }
 
                 mEditor.JSProperties["cpHasFieldExitMacro"] = (CiField.CiFieldExitMacros.Length > 0);
                 mEditor.JSProperties["cpTableName"] = tableName;
@@ -645,7 +659,7 @@ namespace CodeClay
             return backColor;
         }
     }
-    
+
     public class XiField : XiPlugin
     {
         // --------------------------------------------------------------------------------------------------
@@ -663,7 +677,7 @@ namespace CodeClay
 
         private bool IsRowKeyChecked { get; set; } = false;
 
-        private Hashtable PropertySQL = new Hashtable();
+        private Hashtable mPropertySQL = new Hashtable();
 
         // --------------------------------------------------------------------------------------------------
         // Methods (Override)
@@ -697,14 +711,14 @@ namespace CodeClay
 
         protected override DataTable GetPluginDefinitions(DataRow drPluginKey)
         {
-            return MyWebUtils.GetBySQL("?exec spField_sel @AppID, @TableID", drPluginKey, true);
+            return MyWebUtils.GetBySQL("?exec spField_sel @AppID, @TableID, null, '!Button'", drPluginKey, true);
         }
 
         protected override List<XElement> GetPluginDefinitions(List<XElement> xElements)
         {
             if (xElements != null)
             {
-                return xElements.FindAll(el => el.Name.ToString().EndsWith("Field"));
+                return xElements.FindAll(el => IsDataField(el.Name.ToString()));
             }
 
             return null;
@@ -726,24 +740,24 @@ namespace CodeClay
             string updateColumnNames = "@AppID, @TableID, @FieldID, @FieldName, @Editable, @Mandatory" +
                 ", @Hidden, @Searchable, @Summary, @ForeColor, @RowSpan, @ColSpan, @Width, @HorizontalAlign" +
                 ", @VerticalAlign, @Value, @DropdownSQL, @InsertSQL, @Code, @Description, @TextFieldName" +
-                ", @DropdownWidth, @Folder, @MinValue, @MaxValue, @Columns, @ColumnFormat, @Mask";
+                ", @DropdownWidth, @Folder, @MinValue, @MaxValue, @Columns, @ColumnFormat, @Mask, @NestedMacroID";
             string updateSQL = string.Format("exec spField_updLong {0}", updateColumnNames);
 
             MyWebUtils.GetBySQL(updateSQL, drPluginDefinition, true);
 
             DataRow drSQL = MyUtils.CloneDataRow(drPluginDefinition);
-            DataColumnCollection dcSQLColumns = drSQL.Table.Columns;
-            dcSQLColumns.Add("EntityType");
-            dcSQLColumns.Add("SQLType");
-            dcSQLColumns.Add("EntityID");
-            dcSQLColumns.Add("SQL");
+            DataColumnCollection dcSQL = drSQL.Table.Columns;
+            MyWebUtils.AddColumnIfRequired(dcSQL, "EntityType");
+            MyWebUtils.AddColumnIfRequired(dcSQL, "SQLType");
+            MyWebUtils.AddColumnIfRequired(dcSQL, "EntityID");
+            MyWebUtils.AddColumnIfRequired(dcSQL, "SQL");
             drSQL["EntityType"] = "CiField";
             drSQL["EntityID"] = drSQL["FieldID"];
 
-            foreach (string propertyName in PropertySQL.Keys)
+            foreach (string propertyName in mPropertySQL.Keys)
             {
                 drSQL["SQLType"] = propertyName + "SQL";
-                drSQL["SQL"] = PropertySQL[propertyName];
+                drSQL["SQL"] = mPropertySQL[propertyName];
                 MyWebUtils.GetBySQL("exec spSQL_ins @EntityType, @SQLType, @AppID, @TableID, @EntityID, @SQL", drSQL);
             }
         }
@@ -769,7 +783,6 @@ namespace CodeClay
                         }
                     }
                 }
-
             }
         }
 
@@ -782,12 +795,12 @@ namespace CodeClay
                 UploadType(drPluginDefinition, xPluginDefinition, dcPluginColumns);
                 UploadRowKey(drPluginDefinition, xPluginDefinition, dcPluginColumns);
 
-                PropertySQL.Clear();
+                mPropertySQL.Clear();
                 foreach (XElement xProperty in xPluginDefinition.Elements())
                 {
                     if (xProperty.Attributes("lang").Count() > 0)
                     {
-                        PropertySQL[xProperty.Name.ToString()] = xProperty.Value;
+                        mPropertySQL[xProperty.Name.ToString()] = xProperty.Value;
                     }
                 }
             }
@@ -796,6 +809,16 @@ namespace CodeClay
         // --------------------------------------------------------------------------------------------------
         // Helpers
         // --------------------------------------------------------------------------------------------------
+
+        private bool IsDataField(string fieldName)
+        {
+            if (!MyUtils.IsEmpty(fieldName) && fieldName.EndsWith("Field") && !fieldName.EndsWith("ButtonField"))
+            {
+                return true;
+            }
+
+            return false;
+        }
 
         private void DownloadRowKey(DataRow drPluginDefinition, XElement xPluginDefinition)
         {
@@ -831,9 +854,14 @@ namespace CodeClay
                                 }
 
                                 rowKey += drField["FieldName"];
-
-                                xRowKey.Value = rowKey;
                             }
+                        }
+
+                        xRowKey.Value = rowKey;
+
+                        if (MyUtils.IsEmpty(rowKey))
+                        {
+                            xRowKey.Remove();
                         }
                     }
                 }
@@ -870,6 +898,81 @@ namespace CodeClay
                     }
                 }
             }
+        }
+    }
+
+    public class XiButtonField : XiField
+    {
+        // --------------------------------------------------------------------------------------------------
+        // Properties
+        // --------------------------------------------------------------------------------------------------
+
+        private XElement mXButtonMacro = null;
+
+        // --------------------------------------------------------------------------------------------------
+        // Methods (Override)
+        // --------------------------------------------------------------------------------------------------
+
+        protected override void DeletePluginDefinitions(DataRow drPluginKey)
+        {
+            // Do nothing
+        }
+
+        protected override List<XElement> GetPluginDefinitions(List<XElement> xElements)
+        {
+            if (xElements != null)
+            {
+                return xElements.FindAll(el => IsButtonField(el.Name.ToString()));
+            }
+
+            return null;
+        }
+
+        protected override DataTable GetPluginDefinitions(DataRow drPluginKey)
+        {
+            return MyWebUtils.GetBySQL("?exec spField_sel @AppID, @TableID, null, 'Button'", drPluginKey, true);
+        }
+
+        protected override void WriteToDB(DataRow drPluginDefinition)
+        {
+            if (mXButtonMacro != null)
+            {
+                XiButtonMacro xiButtonMacro = new XiButtonMacro();
+                xiButtonMacro.UploadFromXml(drPluginDefinition, new List<XElement>() { mXButtonMacro });
+
+                drPluginDefinition["NestedMacroID"] = xiButtonMacro.NewMacroID;
+                base.WriteToDB(drPluginDefinition);
+            }
+        }
+
+        protected override void DownloadDerivedValues(DataRow drPluginDefinition, XElement xPluginDefinition)
+        {
+            if (drPluginDefinition != null && xPluginDefinition != null && xPluginDefinition.Name == "CiButtonField")
+            {
+                XiButtonMacro xiButtonMacro = new XiButtonMacro();
+                xiButtonMacro.DownloadToXml(drPluginDefinition, xPluginDefinition);
+            }
+        }
+
+        protected override void UploadDerivedValues(DataRow drPluginDefinition, XElement xPluginDefinition)
+        {
+            base.UploadDerivedValues(drPluginDefinition, xPluginDefinition);
+
+            mXButtonMacro = xPluginDefinition.Element("CiMacro");
+        }
+
+        // --------------------------------------------------------------------------------------------------
+        // Helpers
+        // --------------------------------------------------------------------------------------------------
+
+        private bool IsButtonField(string fieldName)
+        {
+            if (!MyUtils.IsEmpty(fieldName) && fieldName.EndsWith("ButtonField"))
+            {
+                return true;
+            }
+
+            return false;
         }
     }
 }

@@ -1,10 +1,9 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <CiTable>
-	<TableName>CustomerOrderItems</TableName>
-	<TableCaption>Customer Order Items</TableCaption>
-	<RowKey>CustomerOrderNo,ProductID</RowKey>
-	<DefaultView>Grid</DefaultView>
+  <TableName>CustomerOrderItems</TableName>
+  <TableCaption>Customer Order Items</TableCaption>
   <BubbleUpdate>true</BubbleUpdate>
+  <RowKey>CustomerOrderNo,ProductID</RowKey>
   <CiField>
     <FieldName>CustomerOrderNo</FieldName>
     <Hidden>true</Hidden>
@@ -19,32 +18,29 @@
   </CiField>
   <CiComboField>
     <FieldName>ProductID</FieldName>
-    <TextFieldName>ProductName</TextFieldName>
     <Caption>Product</Caption>
-    <Editable>true</Editable>
+    <DropdownSQL>select ProductID,ProductName from Product</DropdownSQL>
     <Code>ProductID</Code>
     <Description>ProductName</Description>
-    <DropdownSQL>select ProductID,ProductName from Product</DropdownSQL>
+    <TextFieldName>ProductName</TextFieldName>
   </CiComboField>
   <CiNumericField>
-		<FieldName>Quantity</FieldName>
-		<Caption>Quantity Ordered</Caption>
-		<Width>20</Width>
-	</CiNumericField>
+    <FieldName>Quantity</FieldName>
+    <Caption>Quantity Ordered</Caption>
+    <Width>20</Width>
+  </CiNumericField>
   <CiTextField>
     <FieldName>Amount</FieldName>
     <Caption>Price ($)</Caption>
     <Width>20</Width>
     <Mask>Currency</Mask>
-    <Editable>true</Editable>
-    <Mandatory>true</Mandatory>
   </CiTextField>
   <CiCheckField>
     <FieldName>DropShipping</FieldName>
     <Caption>Drop Shipping</Caption>
   </CiCheckField>
   <DefaultMacro>
-	<ActionSQL>
+    <ActionSQL>
       select coalesce(1 + max(CustomerOrderItemNo), 1) as CustomerOrderItemNo,
              @CustomerOrderNo as CustomerOrderNo
       from CustomerOrderItems
@@ -52,10 +48,27 @@
     </ActionSQL>
   </DefaultMacro>
   <SelectMacro>
-		<ActionSQL>?exec spCustomerOrderItems_selbyCustomerOrderNo @CustomerOrderNo</ActionSQL>
-   </SelectMacro>
-	<InsertMacro>
-		<ActionSQL>
+    <ActionSQL>?exec spCustomerOrderItems_selbyCustomerOrderNo @CustomerOrderNo</ActionSQL>
+  </SelectMacro>
+  <InsertMacro>
+    <ValidateSQL>
+      select 'Stocktake Date ('+cast(I.DateOfStocktake as nvarchar(12))+') of this item must be before the order date.'
+      from Inventory I
+      inner join (select
+      CO.CustomerID,
+      CO.OrderDate,
+      C.BranchCode,
+      CO.CustomerOrderNo
+      from Customer C
+      inner join CustomerOrders CO
+      on C.CustomerID = CO.CustomerID
+      where  CO.CustomerOrderNo = @CustomerOrderNo) CO
+      on I.BranchCode = CO.BranchCode
+      and I.ProductID = @ProductID
+      where I.Status = 'Active'
+      and convert(datetime,cast(I.DateOfStocktake as nvarchar(12)),103) >= CO.OrderDate
+    </ValidateSQL>
+    <ActionSQL>
         select coalesce(1 + max(CustomerOrderItemNo), 1) as CustomerOrderItemNo
         from CustomerOrderItems 
         where CustomerOrderNo = @CustomerOrderNo
@@ -71,8 +84,25 @@
           @DropShipping
     </ActionSQL>
     <VisibleSQL>select 1 from CustomerOrders where CustomerOrderNo = @CustomerOrderNo and Status not in ('Dispatched','Cancelled')</VisibleSQL>
-	</InsertMacro>
-	<UpdateMacro>
+  </InsertMacro>
+  <UpdateMacro>
+    <ValidateSQL>
+      select 'Stocktake Date ('+cast(I.DateOfStocktake as nvarchar(12))+') of this item must be before the order date.'
+      from Inventory I
+      inner join (select
+      CO.CustomerID,
+      CO.OrderDate,
+      C.BranchCode,
+      CO.CustomerOrderNo
+      from Customer C
+      inner join CustomerOrders CO
+      on C.CustomerID = CO.CustomerID
+      where  CO.CustomerOrderNo = @CustomerOrderNo) CO
+      on I.BranchCode = CO.BranchCode
+      and I.ProductID = @ProductID
+      where I.Status = 'Active'
+      and convert(datetime,cast(I.DateOfStocktake as nvarchar(12)),103) >= CO.OrderDate
+    </ValidateSQL>
     <ActionSQL>
         ?exec spCustomerOrderItems_upd
           @CustomerOrderItemNo,
@@ -93,6 +123,7 @@
     </VisibleSQL>
   </UpdateMacro>
   <DeleteMacro>
+    <ValidateSQL>select 'Cannot delete if Quantity = 1' from tblSingleton where @Quantity = 1</ValidateSQL>
     <ActionSQL>exec spCustomerOrderItems_del @CustomerOrderItemNo,@CustomerOrderNo</ActionSQL>
     <VisibleSQL>
         select 1 from CustomerOrderItems COI
@@ -104,14 +135,8 @@
     </VisibleSQL>
   </DeleteMacro>
   <CiFieldExitMacro>
-      <FieldName>Quantity</FieldName>
-      <FieldName>ProductID</FieldName>
-      <ActionSQL>
-          select
-          @Quantity * coalesce(UnitSellingPrice,0) as Amount,
-          case when IsDropShipping = 'Y' then CAST(1 AS bit) else CAST(0 as bit) end as DropShipping
-          from Product
-          where	ProductID = @ProductID
-      </ActionSQL>
-	</CiFieldExitMacro>
+    <FieldName>ProductID</FieldName>
+    <FieldName>Quantity</FieldName>
+    <ActionSQL>select	@Quantity * coalesce(UnitSellingPrice,0) as Amount from Product where	ProductID = @ProductID</ActionSQL>
+  </CiFieldExitMacro>
 </CiTable>

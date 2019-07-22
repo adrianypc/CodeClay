@@ -19,6 +19,13 @@
     <Caption>Macro ID</Caption>
     <Editable>false</Editable>
   </CiTextField>
+  <CiField>
+    <FieldName>EntityID</FieldName>
+    <Caption>Entity ID</Caption>
+    <Computed>true</Computed>
+    <Value>MacroID</Value>
+    <Hidden>true</Hidden>
+  </CiField>
   <CiTextField>
     <FieldName>TableName</FieldName>
     <Caption>Table Name</Caption>

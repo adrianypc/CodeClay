@@ -2,7 +2,7 @@
 <CiTable>
 	<TableName>SQLList</TableName>
 	<TableCaption lang="sql">select @SQLType</TableCaption>
-	<DefaultView>Card</DefaultView>
+	<DefaultView>Grid</DefaultView>
   <RowKey>EntityType,SQLType,AppID,TableID,EntityID,LineNum</RowKey>
   <CiField>
     <FieldName>EntityType</FieldName>

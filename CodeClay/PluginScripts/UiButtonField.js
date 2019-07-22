@@ -2,16 +2,23 @@
 	var dxButton = sender;
 
     if (dxButton) {
-        var tableName = dxButton.cpTableName;
-        var fieldName = dxButton.cpFieldName;
-        var itemIndex = dxButton.cpItemIndex;
-        var formattedFieldName = tableName + "." + fieldName + "." + itemIndex;
+        var formattedFieldName = GetFormattedFieldName(dxButton);
 
         if (editorPanels && formattedFieldName) {
             var dxButtonPanel = editorPanels[formattedFieldName];
 
             if (dxButtonPanel) {
-                dxButtonPanel.PerformCallback(fieldName + LIST_SEPARATOR + itemIndex);
+                var fieldName = dxButton.cpFieldName;
+                var itemIndex = dxButton.cpItemIndex;
+
+                if (fieldName) {
+                    if (itemIndex >= 0) {
+                        dxButtonPanel.PerformCallback(fieldName + LIST_SEPARATOR + itemIndex);
+                    }
+                    else {
+                        dxButtonPanel.PerformCallback(fieldName);
+                    }
+                }
             }
         }
 	}

@@ -71,8 +71,8 @@ namespace CodeClay
 
 			return dxColumn;
 		}
-		
-		public override void FormatGridColumn(GridViewDataColumn dxColumn)
+
+        public override void FormatGridColumn(GridViewDataColumn dxColumn)
 		{
 			if (dxColumn != null)
 			{
@@ -110,7 +110,23 @@ namespace CodeClay
         {
             if (CiButtonField != null)
             {
-                dxButton.Text = CiButtonField.Caption;
+                string buttonText = CiButtonField.Caption;
+
+                CiMacro ciMacro = CiButtonField.CiFirstMacro;
+                if (ciMacro != null)
+                {
+                    buttonText = ciMacro.Caption;
+                }
+
+                dxButton.Text = buttonText;
+
+                string fieldName = CiButtonField.FieldName;
+                dxButton.JSProperties["cpFieldName"] = fieldName;
+                ASPxCallbackPanel editorPanel = dxButton.NamingContainer as ASPxCallbackPanel;
+                if (editorPanel != null)
+                {
+                    editorPanel.JSProperties["cpFieldName"] = fieldName;
+                }
             }
         }
 

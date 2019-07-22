@@ -87,7 +87,7 @@
               'Edit' as Command,
               'Ci' + coalesce(@Type, '') + 'FieldDetails.pux' as NavigateUrl
       from    Singleton
-      where   @Type != 'Table'
+      where   @Type != 'Table' or @Type is null
       union
       select  @AppID as AppID,
               NestedTableID as TableID,

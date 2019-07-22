@@ -33,7 +33,7 @@
     <ClientSideEvents EndCallback="dxSearch_EndCallback" />
     <ClientSideEvents ToolbarItemClick="dxSearch_ToolbarItemClick" />
     <Settings ShowTitlePanel="true" />
-    <SettingsBehavior AllowFocusedCard="true" AllowSelectByCardClick="true" ConfirmDelete="true"  />
+    <SettingsBehavior AllowFocusedCard="true" AllowSelectByCardClick="false" ConfirmDelete="true"  />
     <SettingsEditing Mode="EditForm" />
     <SettingsLoadingPanel Mode="Disabled" />
     <SettingsPager Position="Top">
@@ -75,7 +75,7 @@
     <ClientSideEvents EndCallback="dxCard_EndCallback" />
     <ClientSideEvents ToolbarItemClick="dxCard_ToolbarItemClick" />
     <Settings ShowTitlePanel="true" ShowCardFooter="true" />
-    <SettingsBehavior AllowFocusedCard="true" AllowSelectByCardClick="true" ConfirmDelete="true"  />
+    <SettingsBehavior AllowFocusedCard="true" AllowSelectByCardClick="false" ConfirmDelete="true"  />
     <SettingsEditing Mode="EditForm" />
     <SettingsLoadingPanel Mode="ShowAsPopup" />
     <SettingsPager Position="Top">
@@ -187,7 +187,8 @@
 
 <asp:ObjectDataSource ID="MyTableData" runat="server" TypeName="CodeClay.CiDataSource"
     SelectMethod="SelectTable" UpdateMethod="UpdateTable" InsertMethod="InsertTable" DeleteMethod="DeleteTable"
-    OnSelecting="MyTableData_Selecting" OnUpdating="MyTableData_Updating" OnInserting="MyTableData_Inserting" OnDeleting="MyTableData_Deleting" OnInserted="MyTableData_Inserted">
+    OnSelecting="MyTableData_Selecting" OnUpdating="MyTableData_Updating" OnInserting="MyTableData_Inserting" OnDeleting="MyTableData_Deleting"
+    OnUpdated="MyTableData_Updated" OnInserted="MyTableData_Inserted" OnDeleted="MyTableData_Deleted">
     <SelectParameters>
         <asp:Parameter Name="Table" Type="Object" />
         <asp:Parameter Name="Parameters" Type="Object" />
@@ -196,16 +197,19 @@
         <asp:Parameter Name="Table" Type="Object"  />
         <asp:Parameter Name="Parameters" Type="Object" />
         <asp:Parameter Name="RowKey" Type="String" />
+        <asp:Parameter Name="Script" Type="String" Direction="Output" />
     </UpdateParameters>
     <InsertParameters>
         <asp:Parameter Name="Table" Type="Object"  />
         <asp:Parameter Name="Parameters" Type="Object" />
         <asp:Parameter Name="RowKey" Type="String" Direction="InputOutput" />
+        <asp:Parameter Name="Script" Type="String" Direction="Output" />
     </InsertParameters>
     <DeleteParameters>
         <asp:Parameter Name="Table" Type="Object"  />
         <asp:Parameter Name="Parameters" Type="Object" />
         <asp:Parameter Name="RowKey" Type="String" />
+        <asp:Parameter Name="Script" Type="String" Direction="Output" />
     </DeleteParameters>
 </asp:ObjectDataSource>
             

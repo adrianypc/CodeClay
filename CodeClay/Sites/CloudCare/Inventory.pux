@@ -1,41 +1,38 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <CiTable>
-	<TableName>Inventory</TableName>
-	<TableCaption>Inventory</TableCaption>
-	<RowKey>InventoryItemNo</RowKey>
-	<DefaultView>Grid</DefaultView>
+  <TableName>Inventory</TableName>
+  <TableCaption>Inventory</TableCaption>
+  <RowKey>InventoryItemNo</RowKey>
   <CiTextField>
     <FieldName>InventoryItemNo</FieldName>
     <Hidden>true</Hidden>
   </CiTextField>
   <CiComboField>
     <FieldName>ProductID</FieldName>
-    <TextFieldName>ProductName</TextFieldName>
     <Caption>Product</Caption>
+    <Searchable>true</Searchable>
+    <DropdownSQL>select ProductID,ProductName from Product order by ProductID</DropdownSQL>
     <Code>ProductID</Code>
     <Description>ProductName</Description>
-    <DropdownSQL>select ProductID,ProductName from Product order by ProductID</DropdownSQL>
-    <Editable>true</Editable>
-   <Searchable>true</Searchable>
+    <TextFieldName>ProductName</TextFieldName>
   </CiComboField>
   <CiComboField>
     <FieldName>BranchCode</FieldName>
-    <TextFieldName>BranchDescription</TextFieldName>
     <Caption>Branch</Caption>
+    <Searchable>true</Searchable>
+    <DropdownSQL>select Code,Description from Dropdown where Category = 'Branch'</DropdownSQL>
     <Code>Code</Code>
     <Description>Description</Description>
-    <Editable>true</Editable>
-    <DropdownSQL>select Code,Description from Dropdown where Category = 'Branch'</DropdownSQL>
-    <Searchable>true</Searchable>
+    <TextFieldName>BranchDescription</TextFieldName>
   </CiComboField>
   <CiDateField>
     <FieldName>DateOfStocktake</FieldName>
     <Caption>Date Of Stocktake</Caption>
     <ColumnFormat>dd/MM/yyyy</ColumnFormat>
   </CiDateField>
-	<CiNumericField>
-		<FieldName>QuantityOnHand</FieldName>
-		<Caption>Quantity on Hand</Caption>
+  <CiNumericField>
+    <FieldName>QuantityOnHand</FieldName>
+    <Caption>Quantity on Hand</Caption>
   </CiNumericField>
   <CiNumericField>
     <FieldName>QuantityOrdered</FieldName>
@@ -68,7 +65,7 @@
     <ColumnFormat>dd/MM/yyyy</ColumnFormat>
   </CiDateField>
   <DefaultMacro>
-	<ActionSQL>
+    <ActionSQL>
       select 
         @ProductID as ProductID,
         getdate() as DateOfStocktake,
@@ -79,12 +76,12 @@
         0 as QtyUnderReceived,
         0 as QtyOverReceived
     </ActionSQL>
-	</DefaultMacro>
-	<SelectMacro>
-	  <ActionSQL>?exec spInventory_sel @ProductID,@BranchCode</ActionSQL>
-	</SelectMacro>
- <InsertMacro>
-	<ActionSQL>
+  </DefaultMacro>
+  <SelectMacro>
+    <ActionSQL>?exec spInventory_sel @ProductID,@BranchCode</ActionSQL>
+  </SelectMacro>
+  <InsertMacro>
+    <ActionSQL>
       ?exec spInventory_upd
         -1,
         @ProductID,
@@ -98,9 +95,9 @@
         @QtyOverReceived,
         @ExpiryDate
     </ActionSQL>
- </InsertMacro>
- <UpdateMacro>
-   <ActionSQL>
+  </InsertMacro>
+  <UpdateMacro>
+    <ActionSQL>
     ?exec spInventory_upd
         @InventoryItemNo,
         @ProductID,

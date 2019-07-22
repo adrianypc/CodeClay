@@ -603,6 +603,35 @@ namespace CodeClay
 
         public string ErrorMessage { get; set; } = null;
 
+        public string ClientScript
+        {
+            get
+            {
+                if (IsCardView && dxCard.JSProperties.ContainsKey("cpScript"))
+                {
+                    return MyUtils.Coalesce(dxCard.JSProperties["cpScript"], "").ToString();
+                }
+                else if (IsGridView && dxGrid.JSProperties.ContainsKey("cpScript"))
+                {
+                    return MyUtils.Coalesce(dxGrid.JSProperties["cpScript"], "").ToString();
+                }
+
+                return "";
+            }
+
+            set
+            {
+                if (IsCardView)
+                {
+                    dxCard.JSProperties["cpScript"] = value;
+                }
+                else if (IsGridView)
+                {
+                    dxGrid.JSProperties["cpScript"] = value;
+                }
+            }
+        }
+
         // --------------------------------------------------------------------------------------------------
         // Event Handlers
         // --------------------------------------------------------------------------------------------------
@@ -788,11 +817,23 @@ namespace CodeClay
                     case "New":
                     case "Edit":
                         dxCard.SettingsPager.Visible = false;
+
+                        // Display hidden fields when developer clicks on Inspect button
+                        dxCard.JSProperties["cpScript"] = GetInitFieldScript();
                         break;
 
                     case "Delete":
+                        dxCard.SettingsPager.Visible = true;
+                        break;
+
                     case "Update":
                     case "Cancel":
+                        CiMacro ciMacro = IsInserting ? CiTable.InsertMacro : CiTable.UpdateMacro;
+                        string navigateUrl = ciMacro.NavigateUrl + "|" + ciMacro.NavigatePos;
+                        if (!MyUtils.IsEmpty(navigateUrl))
+                        {
+                            dxCard.JSProperties["cpScript"] = string.Format("GotoUrl(\'{0}\')", HttpUtility.JavaScriptStringEncode(navigateUrl));
+                        }
                         dxCard.SettingsPager.Visible = true;
                         break;
 
@@ -940,6 +981,10 @@ namespace CodeClay
                 {
                     case "New":
                     case "Edit":
+                        // Display hidden fields when developer clicks on Inspect button
+                        dxGrid.JSProperties["cpScript"] = GetInitFieldScript();
+                        break;
+
                     case "Delete":
                     case "Update":
                     case "Cancel":
@@ -1065,13 +1110,19 @@ namespace CodeClay
             }
         }
 
+        protected void MyTableData_Inserting(object sender, ObjectDataSourceMethodEventArgs e)
+        {
+            e.InputParameters["table"] = CiTable;
+            e.InputParameters["parameters"] = GetState();
+        }
+
         protected void MyTableData_Updating(object sender, ObjectDataSourceMethodEventArgs e)
         {
             e.InputParameters["table"] = CiTable;
             e.InputParameters["parameters"] = GetState();
         }
 
-        protected void MyTableData_Inserting(object sender, ObjectDataSourceMethodEventArgs e)
+        protected void MyTableData_Deleting(object sender, ObjectDataSourceMethodEventArgs e)
         {
             e.InputParameters["table"] = CiTable;
             e.InputParameters["parameters"] = GetState();
@@ -1082,12 +1133,12 @@ namespace CodeClay
             if (e.OutputParameters.Count > 0 && CiTable != null)
             {
                 object rowKey = MyUtils.Coalesce(e.OutputParameters["RowKey"], "");
+                string script = MyUtils.Coalesce(e.OutputParameters["Script"], "").ToString();
 
                 if (!MyUtils.IsEmpty(rowKey))
                 {
                     string[] keyNames = CiTable.RowKeyNames;
                     string[] keyValues = (rowKey as string).Trim().Split(',');
-                    string script = "";
 
                     for (int i = 0; i < keyNames.Length && i < keyValues.Length; i++)
                     {
@@ -1113,21 +1164,63 @@ namespace CodeClay
                     if (IsCardView)
                     {
                         dxCard.JSProperties["cpInsertedRowIndex"] = dxCard.FindVisibleIndexByKeyValue(rowKey);
-                        dxCard.JSProperties["cpScript"] = script;
                     }
                     else if (IsGridView)
                     {
                         dxGrid.JSProperties["cpInsertedRowIndex"] = dxGrid.FindVisibleIndexByKeyValue(rowKey);
+                    }
+                }
+
+                if (!MyUtils.IsEmpty(script))
+                {
+                    if (IsCardView)
+                    {
+                        dxCard.JSProperties["cpScript"] = script;
+                    }
+                    else if (IsGridView)
+                    {
                         dxGrid.JSProperties["cpScript"] = script;
                     }
                 }
             }
         }
 
-        protected void MyTableData_Deleting(object sender, ObjectDataSourceMethodEventArgs e)
+        protected void MyTableData_Updated(object sender, ObjectDataSourceStatusEventArgs e)
         {
-            e.InputParameters["table"] = CiTable;
-            e.InputParameters["parameters"] = GetState();
+            if (e.OutputParameters.Count > 0 && CiTable != null)
+            {
+                string script = MyUtils.Coalesce(e.OutputParameters["Script"], "").ToString();
+                if (!MyUtils.IsEmpty(script))
+                {
+                    if (IsCardView)
+                    {
+                        dxCard.JSProperties["cpScript"] = script;
+                    }
+                    else if (IsGridView)
+                    {
+                        dxGrid.JSProperties["cpScript"] = script;
+                    }
+                }
+            }
+        }
+
+        protected void MyTableData_Deleted(object sender, ObjectDataSourceStatusEventArgs e)
+        {
+            if (e.OutputParameters.Count > 0 && CiTable != null)
+            {
+                string script = MyUtils.Coalesce(e.OutputParameters["Script"], "").ToString();
+                if (!MyUtils.IsEmpty(script))
+                {
+                    if (IsCardView)
+                    {
+                        dxCard.JSProperties["cpScript"] = script;
+                    }
+                    else if (IsGridView)
+                    {
+                        dxGrid.JSProperties["cpScript"] = script;
+                    }
+                }
+            }
         }
 
         // --------------------------------------------------------------------------------------------------
@@ -1238,8 +1331,6 @@ namespace CodeClay
                 tabPage.Text = tableCaption;
                 tabPage.ToolTip = tableCaption;
                 tabPage.Controls.Add(this);
-
-                //ID += "_" + tabPage.Index.ToString();
             }
         }
 
@@ -1986,6 +2077,29 @@ namespace CodeClay
 
             return true;
         }
+
+        private string GetInitFieldScript()
+        {
+            string script = "";
+
+            if (CiTable != null)
+            {
+                string tableName = CiTable.TableName;
+                foreach (CiField ciField in CiTable.CiFields)
+                {
+                    if (!ciField.IsVisible)
+                    {
+                        string fieldName = ciField.FieldName;
+                        script += string.Format("InitField(\'{0}\', \'{1}\', \'{2}\'); ",
+                            tableName,
+                            fieldName,
+                            this[fieldName]);
+                    }
+                }
+            }
+
+            return script;
+        }
     }
 
     public class XiTable : XiPlugin
@@ -1998,6 +2112,12 @@ namespace CodeClay
         {
             PluginType = typeof(CiTable);
         }
+
+        // --------------------------------------------------------------------------------------------------
+        // Properties
+        // --------------------------------------------------------------------------------------------------
+
+        private Hashtable mPropertySQL = new Hashtable();
 
         // --------------------------------------------------------------------------------------------------
         // Methods (Override)
@@ -2022,7 +2142,7 @@ namespace CodeClay
 
         protected override void DeletePluginDefinitions(DataRow drPluginKey)
         {
-            // Do nothing
+            MyWebUtils.GetBySQL("exec spSQL_del 'CiTable', null, @AppID, @TableID", drPluginKey, true);
         }
 
         protected override void WriteToDB(DataRow drPluginDefinition)
@@ -2032,6 +2152,22 @@ namespace CodeClay
             MyWebUtils.GetBySQL("exec spTable_updLong " + sqlParameterList,
                 drPluginDefinition,
                 true);
+
+            DataRow drSQL = MyUtils.CloneDataRow(drPluginDefinition);
+            DataColumnCollection dcSQL = drSQL.Table.Columns;
+            MyWebUtils.AddColumnIfRequired(dcSQL, "EntityType");
+            MyWebUtils.AddColumnIfRequired(dcSQL, "SQLType");
+            MyWebUtils.AddColumnIfRequired(dcSQL, "EntityID");
+            MyWebUtils.AddColumnIfRequired(dcSQL, "SQL");
+            drSQL["EntityType"] = "CiTable";
+            drSQL["EntityID"] = drSQL["TableID"];
+
+            foreach (string propertyName in mPropertySQL.Keys)
+            {
+                drSQL["SQLType"] = propertyName + "SQL";
+                drSQL["SQL"] = mPropertySQL[propertyName];
+                MyWebUtils.GetBySQL("exec spSQL_ins @EntityType, @SQLType, @AppID, @TableID, @EntityID, @SQL", drSQL);
+            }
         }
 
         protected override string GetXPropertyName(string dPropertyName)
@@ -2072,12 +2208,68 @@ namespace CodeClay
 
         protected override void DownloadDerivedValues(DataRow drPluginDefinition, XElement xPluginDefinition)
         {
-            xPluginDefinition.Add(new XElement("RowKey", ""));
+            DataTable dtFields = MyWebUtils.GetBySQL("select 1 from CiField where AppID = @AppID and TableID = @TableID",
+                drPluginDefinition);
+
+            if (dtFields.Rows.Count > 0)
+            {
+                xPluginDefinition.Add(new XElement("RowKey", ""));
+            }
+
+            DataTable dtTableSQL = MyWebUtils.GetBySQL("?exec spSQL_sel 'CiTable', null, @AppID, @TableID, @TableID", drPluginDefinition, true);
+            if (dtTableSQL != null)
+            {
+                foreach (DataRow drFieldSQL in dtTableSQL.Rows)
+                {
+                    string sqlType = MyUtils.Coalesce(drFieldSQL["SQLType"], "").ToString();
+                    if (sqlType.EndsWith("SQL"))
+                    {
+                        XElement xTableSQL = new XElement(sqlType.Substring(0, sqlType.Length - 3));
+                        xTableSQL.Add(new XAttribute("lang", "sql"));
+                        xTableSQL.Value = drFieldSQL["SQL"].ToString();
+                        xPluginDefinition.Add(xTableSQL);
+                    }
+                }
+            }
+        }
+
+        protected override void UploadDerivedValues(DataRow drPluginDefinition, XElement xPluginDefinition)
+        {
+            DataColumnCollection dcPluginColumns = drPluginDefinition.Table.Columns;
+
+            if (drPluginDefinition != null && xPluginDefinition != null)
+            {
+                mPropertySQL.Clear();
+                foreach (XElement xProperty in xPluginDefinition.Elements())
+                {
+                    if (xProperty.Attributes("lang").Count() > 0)
+                    {
+                        mPropertySQL[xProperty.Name.ToString()] = xProperty.Value;
+                    }
+                }
+            }
         }
 
         protected override List<XiPlugin> GetXiChildPlugins()
         {
-            return new List<XiPlugin>() { new XiField(), new XiChildTable(), new XiMacro() };
+            return new List<XiPlugin>() { new XiField(), new XiChildTable(), new XiMacro(), new XiButtonField() };
+        }
+
+        // --------------------------------------------------------------------------------------------------
+        // Helpers
+        // --------------------------------------------------------------------------------------------------
+
+        private string GetSqlParameterList(DataRow dr)
+        {
+            string sqlParameterList = "";
+
+            foreach (DataColumn dcTableProperty in dr.Table.Columns)
+            {
+                sqlParameterList += ((MyUtils.IsEmpty(sqlParameterList))
+                  ? " @" : " ,@") + dcTableProperty.ColumnName;
+            }
+
+            return sqlParameterList;
         }
     }
 
@@ -2095,6 +2287,11 @@ namespace CodeClay
                 true);
         }
 
+        protected override void DeletePluginDefinitions(DataRow drPluginKey)
+        {
+            // Do nothing
+        }
+
         protected override void WriteToDB(DataRow drPluginDefinition)
         {
             if (drPluginDefinition != null)
@@ -2103,11 +2300,11 @@ namespace CodeClay
                 if (dt != null)
                 {
                     DataColumnCollection dc = dt.Columns;
-                    dc.Add("FieldID");
-                    dc.Add("FieldName");
-                    dc.Add("Type");
-                    dc.Add("Width");
-                    dc.Add("InRowKey");
+                    MyWebUtils.AddColumnIfRequired(dc, "FieldID");
+                    MyWebUtils.AddColumnIfRequired(dc, "FieldName");
+                    MyWebUtils.AddColumnIfRequired(dc, "Type");
+                    MyWebUtils.AddColumnIfRequired(dc, "Width");
+                    MyWebUtils.AddColumnIfRequired(dc, "InRowKey");
 
                     drPluginDefinition["FieldName"] = drPluginDefinition["TableName"];
                     drPluginDefinition["Type"] = "Table";

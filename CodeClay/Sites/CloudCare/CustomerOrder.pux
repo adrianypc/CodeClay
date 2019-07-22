@@ -1,9 +1,9 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <CiTable>
   <TableName>CustomerOrder</TableName>
   <TableCaption>Customer Order</TableCaption>
-  <RowKey>CustomerOrderNo</RowKey>
   <DefaultView>Card</DefaultView>
+  <RowKey>CustomerOrderNo</RowKey>
   <CiTextField>
     <FieldName>CustomerOrderNo</FieldName>
     <Caption>Customer Order #</Caption>
@@ -17,18 +17,16 @@
   <CiDateField>
     <FieldName>OrderDate</FieldName>
     <Caption>Order Date</Caption>
-    <Editable>true</Editable>
-    <ColumnFormat>dd/MM/yyyy</ColumnFormat>
     <Mandatory>true</Mandatory>
+    <ColumnFormat>dd/MM/yyyy</ColumnFormat>
   </CiDateField>
   <CiComboField>
     <FieldName>CustomerID</FieldName>
-    <TextFieldName>CustomerName</TextFieldName>
     <Caption>Customer</Caption>
-    <Editable>true</Editable>
+    <DropdownSQL>select CustomerID,LastName+','+OtherNames as CustomerName from Customer</DropdownSQL>
     <Code>CustomerID</Code>
     <Description>CustomerName</Description>
-    <DropdownSQL>select CustomerID,LastName+','+OtherNames as CustomerName from Customer</DropdownSQL>
+    <TextFieldName>CustomerName</TextFieldName>
   </CiComboField>
   <CiTextField>
     <FieldName>LastName</FieldName>
@@ -43,12 +41,12 @@
     <Editable lang="sql">select distinct 1 from Customer where @CustomerID is null</Editable>
   </CiTextField>
   <CiComboField>
-	<FieldName>BranchCode</FieldName>
-	<Caption>Branch</Caption>
-    <DropdownSQL>select Code from Dropdown where Category = 'Branch' order by Code</DropdownSQL>
+    <FieldName>BranchCode</FieldName>
+    <Caption>Branch</Caption>
     <Mandatory>true</Mandatory>
+    <DropdownSQL>select Code from Dropdown where Category = 'Branch' order by Code</DropdownSQL>
     <Editable lang="sql">select distinct 1 from Customer where @CustomerID is null</Editable>
-	</CiComboField>
+  </CiComboField>
   <CiMemoField>
     <FieldName>DeliveryAddress</FieldName>
     <Caption>Delivery Address</Caption>
@@ -56,12 +54,12 @@
   </CiMemoField>
   <CiComboField>
     <FieldName>DeliveryCountry</FieldName>
-    <TextFieldName>CountryName</TextFieldName>
     <Caption>Delivery Country</Caption>
+    <Mandatory>true</Mandatory>
+    <DropdownSQL>select  Description,Code from Dropdown where Category = 'Country' order by Code</DropdownSQL>
     <Code>Code</Code>
     <Description>Description</Description>
-    <DropdownSQL>select  Description,Code from Dropdown where Category = 'Country' order by Code</DropdownSQL>
-    <Mandatory>true</Mandatory>
+    <TextFieldName>CountryName</TextFieldName>
   </CiComboField>
   <CiTextField>
     <FieldName>DeliveryPostcode</FieldName>
@@ -90,8 +88,8 @@
   <CiTextField>
     <FieldName>TotalAmount</FieldName>
     <Caption>Total ($)</Caption>
-    <Mask>Currency</Mask>
     <Editable>false</Editable>
+    <Mask>Currency</Mask>
   </CiTextField>
   <CiMemoField>
     <FieldName>Comments</FieldName>
@@ -107,22 +105,22 @@
     <DropdownSQL>select Code as Courier from Dropdown where Category = 'Courier'</DropdownSQL>
   </CiComboField>
   <CiTextField>
-		<FieldName>CourierTrackingNo</FieldName>
-		<Caption>Courier Tracking #</Caption>
-	</CiTextField>
+    <FieldName>CourierTrackingNo</FieldName>
+    <Caption>Courier Tracking #</Caption>
+  </CiTextField>
   <CiTextField>
     <FieldName>DispatchedInfo</FieldName>
     <Caption>Dispatched</Caption>
     <Editable>false</Editable>
   </CiTextField>
   <CiTextField>
-     <FieldName>CalledFrom</FieldName>
-     <Hidden>true</Hidden>
+    <FieldName>CalledFrom</FieldName>
+    <Hidden>true</Hidden>
   </CiTextField>
   <CiTable Src="CustomerOrderItems.pux" />
   <CiTable Src="DropShipping.pux" />
   <DefaultMacro>
-	 <ActionSQL>
+    <ActionSQL>
          select t1.*,
          coalesce(LastName,'') as LastName,
          coalesce(OtherNames,'') as OtherNames,
@@ -140,12 +138,12 @@
          left outer join Customer C
          on t1.CustomerID = C.CustomerID
      </ActionSQL>
-	</DefaultMacro>
-	<SelectMacro>
-		<ActionSQL>?exec spCustomerOrders_sel @CustomerOrderNo,@CustomerID</ActionSQL>
-	</SelectMacro>
-	<InsertMacro>
-      <ActionSQL>
+  </DefaultMacro>
+  <SelectMacro>
+    <ActionSQL>?exec spCustomerOrders_sel @CustomerOrderNo,@CustomerID</ActionSQL>
+  </SelectMacro>
+  <InsertMacro>
+    <ActionSQL>
           ?exec spCustomerOrders_upd
           -1,
           @Status,
@@ -192,8 +190,7 @@
         @WordpressOrderNo,
         @Discount
     </ActionSQL>
-    <VisibleSQL>
-        select 1 from CustomerOrders
+    <VisibleSQL>        select 1 from CustomerOrders
         where CustomerOrderNo = case when isnumeric(@CustomerOrderNo) = 1 then @CustomerOrderNo else -1 end
         and Status = 'Active'
     </VisibleSQL>
@@ -232,9 +229,9 @@
     </VisibleSQL>
   </CiMacro>
   <CiFieldExitMacro>
-		<FieldName>Shipping</FieldName>
-        <FieldName>Discount</FieldName>
-		<ActionSQL>
+    <FieldName>Discount</FieldName>
+    <FieldName>Shipping</FieldName>
+    <ActionSQL>
         select (cast(@Shipping as decimal(10,2)) + coalesce(sum(Amount),0)) - cast(@Discount as decimal(10,2)) as TotalAmount 
         from CustomerOrderItems where CustomerOrderNo = @CustomerOrderNo
     </ActionSQL>

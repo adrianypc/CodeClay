@@ -1,64 +1,46 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <CiTable>
-  <TableName>CurrentInterBranchInvoices</TableName>
-  <TableCaption>Current Inter Branch Invoices</TableCaption>
-  <RowKey>InvoiceNo</RowKey>
-  <DefaultView>Grid</DefaultView>
-  <DoubleClickMacroName>InterBranchInvoice</DoubleClickMacroName>
-  <CiDateField>
-    <FieldName>InvoiceDate</FieldName>
-    <Caption>Date</Caption>
-    <Editable>false</Editable>
-    <ColumnFormat>dd/MM/yyyy</ColumnFormat>
-  </CiDateField>
+	<TableName>CurrentSupplierOrders</TableName>
+	<TableCaption>Current Supplier Orders</TableCaption>
+	<RowKey>SupplierOrderNo</RowKey>
+	<DefaultView>Grid</DefaultView>
+  <DoubleClickMacroName>SupplierOrderDetail</DoubleClickMacroName>
   <CiTextField>
-    <FieldName>InvoiceNo</FieldName>
-    <Caption>Invoice #</Caption>
+    <FieldName>SupplierOrderNo</FieldName>
+    <Caption>Supplier Order #</Caption>
     <Editable>false</Editable>
   </CiTextField>
-  <CiLinkField>
-    <FieldName>InvoiceFileURL</FieldName>
-    <Caption>File</Caption>
-    <Folder lang="sql">select 'SavedFiles\InterBranchInvoices' +'\F' + ltrim(str(@InvoiceNo))</Folder>
-    <Width>50</Width>
+  <CiTextField>
+    <FieldName>Status</FieldName>
+    <Caption>Status</Caption>
     <Editable>false</Editable>
-  </CiLinkField>
-  <CiButtonField>
-    <FieldName>GeneratePDF</FieldName>
-    <Caption>Generate PDF</Caption>
-    <CiMacro>
-       <MacroName>Prescription</MacroName>
-       <ActionSQL>select @InvoiceNo</ActionSQL>
-       <NavigateUrl>InterBranchInvoicePDF.pux</NavigateUrl>
-       <NavigatePos>Popup</NavigatePos>
-    </CiMacro>
-    <Width>10</Width>
-  </CiButtonField>
-  <CiButtonField>
-    <FieldName>Paid</FieldName>
-    <Caption>Paid</Caption>
-    <CiMacro>
-       <MacroName>Paid</MacroName>
-       <ActionSQL>?exec spInterBranchInvoice_Status_upd @InvoiceNo</ActionSQL>
-    </CiMacro>
-    <Width>10</Width>
-  </CiButtonField>
-  <SelectMacro>
-    <ActionSQL>?exec spInterBranchInvoice_selbyStatus 'Unpaid'</ActionSQL>
-  </SelectMacro>
+  </CiTextField>
+  <CiComboField>
+    <FieldName>SupplierID</FieldName>
+    <TextFieldName>SupplierName</TextFieldName>
+    <Caption>Supplier</Caption>
+    <Editable>true</Editable>
+    <Code>SupplierID</Code>
+    <Description>SupplierName</Description>
+    <DropdownSQL>select SupplierID,SupplierName from Supplier</DropdownSQL>
+    <Editable>false</Editable>
+  </CiComboField>
+	<SelectMacro>
+		<ActionSQL>?exec spSupplierOrders_selbyStatus 'Active',0</ActionSQL>
+	</SelectMacro>
   <CiMacro>
-    <MacroName>NewInvoice</MacroName>
+    <MacroName>NewOrder</MacroName>
     <Caption>New</Caption>
     <ActionSQL>select 'New' as Command</ActionSQL>
-    <NavigateUrl>InterBranchInvoice.pux</NavigateUrl>
+    <NavigateUrl>SupplierOrder.pux</NavigateUrl>
     <NavigatePos>Popup</NavigatePos>
     <Toolbar>true</Toolbar>
   </CiMacro>
   <CiMacro>
-     <MacroName>InterBranchInvoice</MacroName>
-     <Caption>Inter Branch Invoice</Caption>
-     <ActionSQL>select @InvoiceNo as InvoiceNo, 'Current' as CalledFrom</ActionSQL>
-     <NavigateUrl>InterBranchInvoice.pux</NavigateUrl>
-     <NavigatePos>Popup</NavigatePos>
+    <MacroName>SupplierOrderDetail</MacroName>
+    <Caption>Supplier Order Detail</Caption>
+    <ActionSQL>select @SupplierOrderNo as SupplierOrderNo, @SupplierID as SupplierID, 'Current' as CalledFrom</ActionSQL>
+    <NavigateUrl>SupplierOrder.pux</NavigateUrl>
+    <NavigatePos>Popup</NavigatePos>
   </CiMacro>
 </CiTable>
