@@ -84,11 +84,11 @@ namespace CodeClay
             base.Page_Load(sender, e);
 
             // Setup checkbox value
-            if (!MyUtils.IsEmpty(FieldValue))
+            if (CiField != null)
             {
                 try
                 {
-                    dxCheckBox.Checked = Convert.ToBoolean(FieldValue);
+                    dxCheckBox.Checked = Convert.ToBoolean(this[CiField.FieldName]);
                 }
                 catch
                 {

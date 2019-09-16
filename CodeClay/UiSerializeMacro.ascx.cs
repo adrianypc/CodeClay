@@ -45,20 +45,27 @@ namespace CodeClay
         {
             DataTable dt = base.RunActionSQL(drParams);
 
+            int? appID = MyWebUtils.GetField<int>(drParams, "AppID");
+            int? tableID = MyWebUtils.GetField<int>(drParams, "TableID");
+
+            XiPlugin xiPlugin = new XiApplication();
+            if (tableID != null)
+            {
+                xiPlugin = new XiTable();
+            }
+
+            string puxUrl = xiPlugin.GetPuxUrl(drParams);
+
             string message = "";
-
-            XiTable xiTable = new XiTable();
-            string puxUrl = xiTable.GetPuxUrl(drParams);
-
             switch (Direction)
             {
                 case DirectionTypes.Download:
-                    xiTable.DownloadFile(drParams, puxUrl);
+                    xiPlugin.DownloadFile(drParams, puxUrl);
                     message = "Download complete";
                     break;
 
                 case DirectionTypes.Upload:
-                    xiTable.UploadFile(drParams, puxUrl);
+                    xiPlugin.UploadFile(drParams, puxUrl);
                     message = "Upload complete";
                     break;
             }
@@ -93,8 +100,6 @@ namespace CodeClay
                 {
                     case DirectionTypes.Download:
                         dxImportPUX.Visible = false;
-
-                        XiTable xiTable = new XiTable();
 
                         if (CiSerializeMacro != null)
                         {

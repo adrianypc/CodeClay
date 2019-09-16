@@ -100,6 +100,66 @@ namespace CodeClay
         // Methods
         // --------------------------------------------------------------------------------------------------
 
+        public static T? GetField<T>(DataRow dr, string fieldName) where T : struct, IComparable
+        {
+            if (dr != null)
+            {
+                DataTable dt = dr.Table;
+                if (dt != null)
+                {
+                    DataColumnCollection dc = dt.Columns;
+                    if (dc != null && dc.Contains(fieldName))
+                    {
+                        object value = dr[fieldName];
+
+                        if (value != null)
+                        {
+                            try
+                            {
+                                return (T?)Convert.ChangeType(value, typeof(T));
+                            }
+                            finally
+                            {
+                                // Do nothing
+                            }
+                        }
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        public static string GetField(DataRow dr, string fieldName)
+        {
+            if (dr != null)
+            {
+                DataTable dt = dr.Table;
+                if (dt != null)
+                {
+                    DataColumnCollection dc = dt.Columns;
+                    if (dc != null && dc.Contains(fieldName))
+                    {
+                        object value = dr[fieldName];
+
+                        if (value != null)
+                        {
+                            try
+                            {
+                                return (string)Convert.ChangeType(value, typeof(string));
+                            }
+                            finally
+                            {
+                                // Do nothing
+                            }
+                        }
+                    }
+                }
+            }
+
+            return null;
+        }
+
         public static DataRow AppendColumns(DataRow dr, DataRow dr2, bool coalesce = true)
         {
             if (dr == null && dr2 == null)
@@ -261,19 +321,7 @@ namespace CodeClay
 
         public static DataTable GetBySQL(string SQL, DataRow drParams, bool isCPanel = false)
         {
-            if (isCPanel)
-            {
-                MyWebUtils.IsConnectedToCPanel = true;
-            }
-
-            DataTable dt = UiApplication.Me.GetBySQL(SQL, drParams);
-
-            if (isCPanel)
-            {
-                MyWebUtils.IsConnectedToCPanel = false;
-            }
-
-            return dt;
+            return UiApplication.Me.GetBySQL(SQL, drParams, isCPanel);
         }
 
         public static object EvalSQL(string SQL, DataRow drParams, bool isCPanel = false)
@@ -518,6 +566,15 @@ namespace CodeClay
             {
                 dc.Add(columnName);
             }
+        }
+
+        public static DataRow CreateDataRow()
+        {
+            DataTable dt = new DataTable();
+            DataRow dr = dt.NewRow();
+            dt.Rows.Add(dr);
+
+            return dr;
         }
     }
 

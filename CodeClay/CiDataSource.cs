@@ -27,7 +27,7 @@ namespace CodeClay
             return null;
         }
 
-        public DataTable SelectTable(object table, object parameters)
+        public DataTable SelectTable(object table, string view, object parameters, ref string script)
         {
             DataRow drParams = parameters as DataRow;
             DataTable dt = null;
@@ -41,11 +41,12 @@ namespace CodeClay
                 }
                 else if (ciTable.SelectMacro != null)
                 {
-                    CiMacro ciMacro = ciTable.SelectMacro;
+                    CiMacro ciMacro = (view == "Search") ? ciTable.SearchMacro : ciTable.SelectMacro;
                     if (ciMacro != null)
                     {
                         ciMacro.Run(drParams);
                         dt = ciMacro.ResultTable;
+                        script = ciMacro.ResultScript;
                     }
                 }
                 else if (ciTable.DataSource != null)
@@ -69,7 +70,7 @@ namespace CodeClay
             return dt;
         }
 
-        public void UpdateTable(object table, object parameters, string rowKey, ref string script)
+        public void UpdateTable(object table, string view, object parameters, string rowKey, ref string script)
         {
             DataRow drParams = parameters as DataRow;
 
@@ -85,7 +86,7 @@ namespace CodeClay
             }
         }
 
-        public void InsertTable(object table, object parameters, ref string rowKey, ref string script)
+        public void InsertTable(object table, string view, object parameters, ref string rowKey, ref string script)
         {
             DataRow drParams = parameters as DataRow;
 
@@ -120,7 +121,7 @@ namespace CodeClay
             }
         }
 
-        public void DeleteTable(object table, object parameters, string rowKey, ref string script)
+        public void DeleteTable(object table, string view, object parameters, string rowKey, ref string script)
         {
             DataRow drParams = parameters as DataRow;
 

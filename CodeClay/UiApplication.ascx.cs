@@ -1,11 +1,14 @@
 ﻿using Microsoft.AspNet.Identity;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
 using System.Data.Odbc;
 using System.Data.OleDb;
 using System.Data.SqlClient;
+using System.Xml;
+using System.Xml.Linq;
 using System.Xml.Serialization;
 using System.Threading;
 
@@ -49,8 +52,7 @@ namespace CodeClay
         // --------------------------------------------------------------------------------------------------
 
         private DbProviderFactory mDbProvider = null;
-        private DbConnection mDbConnection = null;
-        private Object mLock = new Object();
+        private readonly Object mDbLock = new Object();
 
         // --------------------------------------------------------------------------------------------------
         // Constructor
@@ -92,63 +94,17 @@ namespace CodeClay
             }
         }
 
-        public DbConnection DbConnection
+        public string[] ClientKeys
         {
             get
             {
-                if (mDbConnection == null)
+                ArrayList keys = new ArrayList();
+                foreach (var item in dxClientState)
                 {
-                    switch (ProviderName)
-                    {
-                        case "System.Data.SqlClient":
-                            mDbConnection = new SqlConnection();
-                            break;
-                        case "System.Data.OleDb":
-                            mDbConnection = new OleDbConnection();
-                            break;
-                        case "System.Data.Odbc":
-                            mDbConnection = new OdbcConnection();
-                            break;
-                        default:
-                            mDbConnection = DbProvider.CreateConnection();
-                            break;
-                    }
+                    keys.Add(item);
                 }
 
-                if (mDbConnection != null && mDbConnection.State != ConnectionState.Open)
-                {
-                    string connectionString = MyWebUtils.IsConnectedToCPanel
-                        ? Properties.Settings.Default.CPanelConnectionString
-                        : CiApplication.ConnectionString;
-
-                    mDbConnection.ConnectionString = connectionString;
-
-                    string databaseFolder = MyWebUtils.MapPath(MyWebUtils.ApplicationFolder);
-
-                    if (ProviderName == "System.Data.OleDb" &&
-                        !System.IO.Path.IsPathRooted(mDbConnection.DataSource) &&
-                        !MyUtils.IsEmpty(databaseFolder))
-                    {
-                        string newConnectionString = "";
-
-                        foreach (string connectionParameter in connectionString.Split(';'))
-                        {
-                            if (connectionParameter.StartsWith("Data Source="))
-                            {
-                                newConnectionString += "Data Source=" +
-                                    databaseFolder + @"\" + mDbConnection.DataSource + ";";
-                            }
-                            else
-                            {
-                                newConnectionString += connectionParameter + ";";
-                            }
-                        }
-
-                        mDbConnection.ConnectionString = newConnectionString;
-                    }
-                }
-
-                return mDbConnection;
+                return keys.ToArray(typeof(string)) as string[];
             }
         }
 
@@ -302,206 +258,188 @@ namespace CodeClay
             dxClientCommand[tableName] = command;
         }
 
-        public DataTable GetBySQL(string sql, DataRow drParams)
+        public DataTable GetBySQL(string sql, DataRow drParams, bool isCPanel = false)
         {
-            return GetBySQL(new string[] { sql }, drParams);
+            return GetBySQL(new string[] { sql }, drParams, isCPanel);
         }
 
-        public DataTable GetBySQL(string[] sqlList, DataRow drParams)
+        public DataTable GetBySQL(string[] sqlList, DataRow drParams, bool isCPanel = false)
         {
-            lock (mLock)
+            DataTable dt = (new DataSet()).Tables.Add();
+
+            int lastSelectSQLIndex = sqlList.Length;
+            while (--lastSelectSQLIndex > -1)
             {
-                DataTable dt = (new DataSet()).Tables.Add();
-
-                int lastSelectSQLIndex = sqlList.Length;
-                while (--lastSelectSQLIndex > -1)
+                string strActionSQL = sqlList[lastSelectSQLIndex].ToString().Trim();
+                if (strActionSQL.ToUpper().StartsWith("SELECT") ||
+                    strActionSQL.StartsWith("?") ||
+                    strActionSQL.StartsWith("$"))
                 {
-                    string strActionSQL = sqlList[lastSelectSQLIndex].ToString().Trim();
-                    if (strActionSQL.ToUpper().StartsWith("SELECT") ||
-                        strActionSQL.StartsWith("?") ||
-                        strActionSQL.StartsWith("$"))
-                    {
-                        break;
-                    }
+                    break;
+                }
+            }
+
+            ArrayList drInputList = new ArrayList();
+            DataRow drInitial;
+            if (drParams == null)
+            {
+                drInitial = (new DataTable()).NewRow();
+            }
+            else
+            {
+                drInitial = MyUtils.CloneDataRow(drParams);
+            }
+
+            drInputList.Add(drInitial);
+
+            for (int i = 0; i < sqlList.Length; i++)
+            {
+                string sql = sqlList[i].ToString().Trim();
+                bool isSelectSQL = sql.ToUpper().StartsWith("SELECT");
+                if (sql.StartsWith("?"))
+                {
+                    // Stored procedure which fetches data will begin with '?'
+                    isSelectSQL = true;
+                    sql = sql.Substring(1);
+                }
+                else if (sql.StartsWith("$"))
+                {
+                    // Shorthand for singleton select
+                    isSelectSQL = true;
+                    sql = string.Format("select {0} from tblSingleton", sql.Substring(1));
                 }
 
-                ArrayList drInputList = new ArrayList();
-                DataRow drInitial;
-                if (drParams == null)
+                // Stored procedure can be specified at runtime with '@'
+                // e.g. @CardSproc
+                string sprocVariableName = "";
+                if (sql.StartsWith("@"))
                 {
-                    drInitial = (new DataTable()).NewRow();
-                }
-                else
-                {
-                    drInitial = MyUtils.CloneDataRow(drParams);
+                    sprocVariableName = sql.Substring(1).Split(WHITESPACE)[0];
                 }
 
-                drInputList.Add(drInitial);
-
-                for (int i = 0; i < sqlList.Length; i++)
+                ArrayList actionColumns = new ArrayList();
+                if (MyUtils.IsEmpty(sprocVariableName))
                 {
-                    string sql = sqlList[i].ToString().Trim();
-                    bool isSelectSQL = sql.ToUpper().StartsWith("SELECT");
-                    if (sql.StartsWith("?"))
-                    {
-                        // Stored procedure which fetches data will begin with '?'
-                        isSelectSQL = true;
-                        sql = sql.Substring(1);
-                    }
-                    else if (sql.StartsWith("$"))
-                    {
-                        // Shorthand for singleton select
-                        isSelectSQL = true;
-                        sql = string.Format("select {0} from tblSingleton", sql.Substring(1));
-                    }
+                    actionColumns = MyUtils.GetParameters(sql);
+                }
 
-                    // Stored procedure can be specified at runtime with '@'
-                    // e.g. @CardSproc
-                    string sprocVariableName = "";
-                    if (sql.StartsWith("@"))
-                    {
-                        sprocVariableName = sql.Substring(1).Split(WHITESPACE)[0];
-                    }
+                ArrayList drResultList = new ArrayList();
+                int rowsFetched = 0;
+                int lastRowAdded = 0;
 
-                    ArrayList actionColumns = new ArrayList();
-                    if (MyUtils.IsEmpty(sprocVariableName))
+                foreach (DataRow drInput in drInputList.ToArray(typeof(DataRow)))
+                {
+                    // Replace stored procedure name if necessary
+                    if (!MyUtils.IsEmpty(sprocVariableName))
                     {
+                        sql = drInput[sprocVariableName] + sql.Substring(sprocVariableName.Length + 1);
                         actionColumns = MyUtils.GetParameters(sql);
                     }
 
-                    ArrayList drResultList = new ArrayList();
-                    int rowsFetched = 0;
-                    int lastRowAdded = 0;
-
-                    foreach (DataRow drInput in drInputList.ToArray(typeof(DataRow)))
+                    if (isSelectSQL)
                     {
-                        // Replace stored procedure name if necessary
-                        if (!MyUtils.IsEmpty(sprocVariableName))
+                        DataTable dtResultTable = null;
+
+                        if (i == lastSelectSQLIndex)
                         {
-                            sql = drInput[sprocVariableName] + sql.Substring(sprocVariableName.Length + 1);
-                            actionColumns = MyUtils.GetParameters(sql);
-                        }
-
-                        ArrayList args = MyUtils.Project(MyWebUtils.AppendColumns(drInput, GetSystemVariables()), actionColumns);
-                        ArrayList parameterNameList = MyUtils.GetParameters(sql);
-                        DbCommand dbCommand = GetCommand(sql, parameterNameList, args);
-
-                        if (isSelectSQL)
-                        {
-                            DataTable dtResultTable = null;
-
-                            if (i == lastSelectSQLIndex)
+                            if (dt != null)
                             {
-                                if (dt != null)
-                                {
-                                    lastRowAdded = rowsFetched;
-                                    dtResultTable = dt;
-                                }
-                                else
-                                {
-                                    lastRowAdded = 0;
-                                    dtResultTable = (new DataSet()).Tables.Add();
-                                }
-
-                                rowsFetched += Fill(dbCommand, dt);
+                                lastRowAdded = rowsFetched;
+                                dtResultTable = dt;
                             }
                             else
                             {
                                 lastRowAdded = 0;
                                 dtResultTable = (new DataSet()).Tables.Add();
-                                Fill(dbCommand, dtResultTable);
                             }
 
-                            if (i < sqlList.Length - 1)
-                            {
-                                for (int rowIndex = lastRowAdded; rowIndex < MyWebUtils.GetNumberOfRows(dtResultTable); rowIndex++)
-                                {
-                                    drResultList.Add(dtResultTable.Rows[rowIndex]);
-                                }
-                            }
+                            rowsFetched += Fill(sql, drInput, dt, isCPanel);
                         }
                         else
                         {
-                            dt = (new DataSet()).Tables.Add();
-                            Fill(dbCommand, null);
+                            lastRowAdded = 0;
+                            dtResultTable = (new DataSet()).Tables.Add();
+                            Fill(sql, drInput, dtResultTable, isCPanel);
+                        }
+
+                        if (i < sqlList.Length - 1)
+                        {
+                            for (int rowIndex = lastRowAdded; rowIndex < MyWebUtils.GetNumberOfRows(dtResultTable); rowIndex++)
+                            {
+                                drResultList.Add(dtResultTable.Rows[rowIndex]);
+                            }
                         }
                     }
-
-                    if (isSelectSQL && i < sqlList.Length - 1)
+                    else
                     {
-                        drInputList.Clear();
-                        foreach (DataRow drResult in drResultList.ToArray(typeof(DataRow)))
-                        {
-                            DataRow drInput = MyUtils.AppendColumns(drResult, drInitial);
-                            drInputList.Add(drInput);
-                        }
+                        dt = (new DataSet()).Tables.Add();
+                        Fill(sql, drInput, null, isCPanel);
                     }
                 }
 
-                return dt;
+                if (isSelectSQL && i < sqlList.Length - 1)
+                {
+                    drInputList.Clear();
+                    foreach (DataRow drResult in drResultList.ToArray(typeof(DataRow)))
+                    {
+                        DataRow drInput = MyUtils.AppendColumns(drResult, drInitial);
+                        drInputList.Add(drInput);
+                    }
+                }
             }
+
+            return dt;
         }
 
         // --------------------------------------------------------------------------------------------------
         // Helpers
         // --------------------------------------------------------------------------------------------------
 
-        private void OpenConnection()
+        private int Fill(string SQL, DataRow drParams, DataTable dt, bool isCPanel = false)
         {
-            if (DbConnection != null)
+            lock (mDbLock)
             {
-                // Try opening connection for up to 1 minute
-                for (int i = 0; i < 60; i++ )
-                {
-                    if (DbConnection.State == ConnectionState.Closed)
-                    {
-                        DbConnection.Open();
-                    }
+                int rowsAdded = 0;
+                DbCommand command = CreateCommand(SQL, drParams, isCPanel);
 
-                    if (DbConnection.State != ConnectionState.Open)
+                if (command != null)
+                {
+                    if (dt != null)
                     {
-                        Thread.Sleep(1000);
+                        if (DbProvider != null)
+                        {
+                            DbDataAdapter dbAdapter = DbProvider.CreateDataAdapter();
+
+                            if (dbAdapter != null)
+                            {
+                                dbAdapter.SelectCommand = command;
+
+                                OpenConnection(command);
+                                rowsAdded = dbAdapter.Fill(dt);
+                                CloseConnection(command);
+                            }
+                        }
                     }
                     else
                     {
-                        break;
+                        OpenConnection(command);
+                        command.ExecuteNonQuery();
+                        CloseConnection(command);
                     }
                 }
+
+                return rowsAdded;
             }
         }
 
-        private void CloseConnection()
-        {
-            if (DbConnection != null)
-            {
-                // Try closing connection for up to 1 minute
-                for (int i = 0; i < 60; i++)
-                {
-                    if (DbConnection.State == ConnectionState.Open)
-                    {
-                        DbConnection.Close();
-                    }
-
-                    if (DbConnection.State != ConnectionState.Closed)
-                    {
-                        Thread.Sleep(1000);
-                    }
-                    else
-                    {
-                        break;
-                    }
-                }
-            }
-        }
-
-        private DbCommand GetCommand(string SQL)
+        private DbCommand CreateCommand(string SQL, DataRow drParams, bool isCPanel = false)
         {
             if (DbProvider != null && !MyUtils.IsEmpty(SQL))
             {
                 DbCommand command = DbProvider.CreateCommand();
                 if (command != null)
                 {
-                    command.Connection = DbConnection;
+                    command.Connection = CreateConnection(isCPanel);
 
                     string[] SQLSplit = SQL.Trim().Split(new char[] { ' ', '\t', '\n', '\r' });
 
@@ -522,126 +460,244 @@ namespace CodeClay
                         command.CommandText = SQL;
                     }
 
-                    return command;
+                    AddParameterNames(command);
+                    AddParameterValues(command, drParams);
                 }
+
+                return command;
             }
 
             return null;
         }
 
-        private DbCommand GetCommand(string SQL, ArrayList parameterNameList, ArrayList parameterValueList)
+        private DbConnection CreateConnection(bool isCPanel = false)
         {
-            DbCommand command = GetCommand(SQL);
+            DbConnection connection = null;
+
+            switch (ProviderName)
+            {
+                case "System.Data.SqlClient":
+                    connection = new SqlConnection();
+                    break;
+                case "System.Data.OleDb":
+                    connection = new OleDbConnection();
+                    break;
+                case "System.Data.Odbc":
+                    connection = new OdbcConnection();
+                    break;
+                default:
+                    connection = DbProvider.CreateConnection();
+                    break;
+            }
+
+            if (connection != null)
+            {
+                string connectionString = isCPanel
+                    ? Properties.Settings.Default.CPanelConnectionString
+                    : CiApplication.ConnectionString;
+
+                connection.ConnectionString = connectionString;
+
+                string databaseFolder = MyWebUtils.MapPath(MyWebUtils.ApplicationFolder);
+
+                if (ProviderName == "System.Data.OleDb" &&
+                    !System.IO.Path.IsPathRooted(connection.DataSource) &&
+                    !MyUtils.IsEmpty(databaseFolder))
+                {
+                    string newConnectionString = "";
+
+                    foreach (string connectionParameter in connectionString.Split(';'))
+                    {
+                        if (connectionParameter.StartsWith("Data Source="))
+                        {
+                            newConnectionString += "Data Source=" +
+                                databaseFolder + @"\" + connection.DataSource + ";";
+                        }
+                        else
+                        {
+                            newConnectionString += connectionParameter + ";";
+                        }
+                    }
+
+                    connection.ConnectionString = newConnectionString;
+                }
+            }
+
+            return connection;
+        }
+
+        private void AddParameterNames(DbCommand command)
+        {
             if (command != null)
             {
                 if (command.GetType() == typeof(SqlCommand) && command.CommandType == CommandType.StoredProcedure)
                 {
-                    this.AddParameters((SqlCommand)command, parameterValueList);
+                    OpenConnection(command);
+                    SqlCommandBuilder.DeriveParameters((SqlCommand)command);
+                    CloseConnection(command);
                 }
                 else
                 {
-                    this.AddParameters(command, parameterNameList, parameterValueList);
-                }
-            }
-
-            return command;
-        }
-
-        private int Fill(DbCommand command, DataTable dt)
-        {
-            int rowsAdded = 0;
-
-            if (dt != null)
-            {
-                if (DbProvider != null)
-                {
-                    DbDataAdapter dbAdapter = DbProvider.CreateDataAdapter();
-
-                    if (dbAdapter != null)
+                    ArrayList argNames = MyUtils.GetParameters(command.CommandText);
+                    if (argNames != null)
                     {
-                        dbAdapter.SelectCommand = command;
+                        foreach (string argName in argNames)
+                        {
+                            string parameterName = "@" + argName;
+                            if (!command.Parameters.Contains(parameterName))
+                            {
+                                DbParameter parameter = command.CreateParameter();
+                                parameter.ParameterName = parameterName;
 
-                        OpenConnection();
-                        rowsAdded = dbAdapter.Fill(dt);
-                        CloseConnection();
+                                command.Parameters.Add(parameter);
+                            }
+                        }
                     }
                 }
             }
-            else if (command != null)
-            {
-                OpenConnection();
-                command.ExecuteNonQuery();
-                CloseConnection();
-            }
-
-            return rowsAdded;
         }
 
-        private void AddParameters(DbCommand command, ArrayList parameterNameList, ArrayList parameterValueList)
+        private void AddParameterValues(DbCommand command, DataRow drParams)
         {
-            if (command != null && parameterNameList != null && parameterValueList != null)
+            if (command != null && drParams != null)
             {
-                for (int i = 0; i < parameterNameList.Count; i++)
-                {
-                    if (!command.Parameters.Contains("@" + parameterNameList[i].ToString()))
-                    {
-                        DbParameter parameter = command.CreateParameter();
-                        parameter.ParameterName = "@" + parameterNameList[i].ToString();
+                drParams = MyWebUtils.AppendColumns(drParams, GetSystemVariables());
 
-                        if (MyUtils.IsEmpty(parameterValueList[i]))
+                DataTable dt = drParams.Table;
+                if (dt != null)
+                {
+                    DataColumnCollection dc = dt.Columns;
+                    foreach (DbParameter parameter in command.Parameters)
+                    {
+                        if (parameter.Direction == ParameterDirection.Input)
                         {
-                            parameter.Value = Convert.DBNull;
-                        }
-                        else
-                        {
-                            if (parameterValueList[i].GetType() == typeof(string) && string.IsNullOrEmpty((string)parameterValueList[i]))
+                            string argName = parameter.ParameterName.Substring(1); // ignore leading @
+                            object argValue = dc.Contains(argName)
+                                ? drParams[argName]
+                                : null;
+
+                            if (MyUtils.IsEmpty(argValue))
                             {
                                 parameter.Value = Convert.DBNull;
                             }
                             else
                             {
-                                parameter.Value = parameterValueList[i];
+                                parameter.Value = argValue;
                             }
                         }
-
-                        command.Parameters.Add(parameter);
                     }
                 }
             }
         }
 
-        private void AddParameters(SqlCommand command, ArrayList parameterValueList)
+        private void OpenConnection(DbCommand command)
         {
-            if (command != null && parameterValueList != null)
+            if (command != null)
             {
-                OpenConnection();
-                SqlCommandBuilder.DeriveParameters(command);
-                CloseConnection();
-
-                int index = 0; ;
-                foreach (SqlParameter parameter in command.Parameters)
+                DbConnection connection = command.Connection;
+                if (connection != null)
                 {
-                    if (parameter.Direction == ParameterDirection.Input)
+                    // Try opening connection for up to 1 minute
+                    for (int i = 0; i < 60; i++)
                     {
-                        object parameterValue = parameterValueList[index++];
-                        if (MyUtils.IsEmpty(parameterValue))
+                        if (connection.State == ConnectionState.Closed)
                         {
-                            parameter.Value = Convert.DBNull;
+                            connection.Open();
+                        }
+
+                        if (connection.State != ConnectionState.Open)
+                        {
+                            Thread.Sleep(1000);
                         }
                         else
                         {
-                            if (parameterValue.GetType() == typeof(string) && string.IsNullOrEmpty((string)parameterValue))
-                            {
-                                parameter.Value = Convert.DBNull;
-                            }
-                            else
-                            {
-                                parameter.Value = parameterValue;
-                            }
+                            break;
                         }
                     }
                 }
             }
+        }
+
+        private void CloseConnection(DbCommand command)
+        {
+            if (command != null)
+            {
+                DbConnection connection = command.Connection;
+                if (connection != null)
+                {
+                    // Try closing connection for up to 1 minute
+                    for (int i = 0; i < 60; i++)
+                    {
+                        if (connection.State == ConnectionState.Open)
+                        {
+                            connection.Close();
+                        }
+
+                        if (connection.State != ConnectionState.Closed)
+                        {
+                            Thread.Sleep(1000);
+                        }
+                        else
+                        {
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    public class XiApplication: XiPlugin
+    {
+        // --------------------------------------------------------------------------------------------------
+        // Constructor
+        // --------------------------------------------------------------------------------------------------
+
+        public XiApplication()
+        {
+            PluginType = typeof(CiApplication);
+        }
+
+        // --------------------------------------------------------------------------------------------------
+        // Properties
+        // --------------------------------------------------------------------------------------------------
+
+        private Hashtable mPropertySQL = new Hashtable();
+
+        // --------------------------------------------------------------------------------------------------
+        // Methods (Override)
+        // --------------------------------------------------------------------------------------------------
+
+        public override string GetPuxUrl(DataRow drPluginKey)
+        {
+            string appName = GetApplicationName(drPluginKey);
+
+            return MyWebUtils.MapPath(string.Format("Sites/{0}/UiApplication.pux", appName));
+        }
+
+        protected override DataTable GetPluginDefinitions(DataRow drPluginKey)
+        {
+            return MyWebUtils.GetBySQL("select * from Application where AppID = @AppID",
+                drPluginKey,
+                true);
+        }
+
+        protected override List<XElement> GetPluginDefinitions(List<XElement> xElements)
+        {
+            if (xElements != null)
+            {
+                return xElements.FindAll(el => el.Name == "CiApplication");
+            }
+
+            return null;
+        }
+
+        protected override void DownloadDerivedValues(DataRow drPluginDefinition, XElement xPluginDefinition)
+        {
+            string databaseName = MyWebUtils.GetField(drPluginDefinition, "SQLDatabaseName");
+            string connectionString = UiApplication.Me.CiApplication.ConnectionString;
+            connectionString = connectionString.Replace("CPanel", databaseName);
+            xPluginDefinition.Add(new XElement("ConnectionString", connectionString));
         }
     }
 }

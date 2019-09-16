@@ -1,0 +1,108 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<CiTable>
+	<TableName>ThirdPartyPlatform</TableName>
+	<TableCaption>3rd Party Platform</TableCaption>
+	<RowKey>ProductID,PlatformName</RowKey>
+    <InsertRowAtBottom>false</InsertRowAtBottom>
+	<DefaultView>Grid</DefaultView>
+	<CiTextField>
+		<FieldName>ProductID</FieldName>
+        <Hidden>true</Hidden>
+	</CiTextField>
+    <CiTextField>
+        <FieldName>ExistingPlatformName</FieldName>
+        <Hidden>true</Hidden>
+    </CiTextField>
+    <CiComboField>
+        <FieldName>PlatformName</FieldName>
+        <Caption>Platform</Caption>
+        <DropdownSQL>select Code from Dropdown where Category = 'Platform'</DropdownSQL>
+        <Mandatory>true</Mandatory>
+    </CiComboField>
+    <CiTextField>
+		<FieldName>AuthorName</FieldName>
+		<Caption>Author</Caption>
+        <width>20</width>
+	</CiTextField>
+    <CiNumericField>
+        <FieldName>QtyInStock</FieldName>
+        <Caption>Qty In Stock</Caption>
+        <Editable>false</Editable>
+        <width>6</width>
+    </CiNumericField>
+    <CiNumericField>
+        <FieldName>QtyAdvertised</FieldName>
+        <Caption>Qty Advertised</Caption>
+        <width>6</width>
+    </CiNumericField>
+    <CiLinkField>
+        <FieldName>PlatformURL</FieldName>
+        <Caption>3rd Party URL</Caption>
+        <Width>40</Width>
+    </CiLinkField>
+    <CiComboField>
+        <FieldName>PlatformPage</FieldName>
+        <Caption>3rd Party Page</Caption>
+        <DropdownSQL>select Code from Dropdown where Category = 'PPage'</DropdownSQL>
+        <width>6</width>
+    </CiComboField>
+    <DefaultMacro>
+		<ActionSQL>
+            select 
+                @ProductID as ProductID,
+                (select coalesce(OtherNames+' '+Surname,'') from ApplicationUser where Email = @CI_UserEmail) as AuthorName,
+                coalesce(I.QuantityOnHand,0) as QtyInStock,
+                cast(0 as int) as QtyAdvertised
+            from Product P
+            inner join Inventory I
+            on P.ProductID = I.ProductID
+            and I.Status = 'Active'
+            and I.BranchCode = 'HT-SG'
+            where P.ProductID = @ProductID
+        </ActionSQL>
+	</DefaultMacro>
+	<SelectMacro>
+  	    <ActionSQL>
+            select
+                T.ProductID as ProductID,
+                PlatformName,
+                PlatformName as ExistingPlatformName,
+                AuthorName,
+                coalesce(I.QuantityOnHand,0) as QtyInStock,
+                QtyAdvertised,
+                PlatformURL,
+                PlatformPage
+            from ThirdPartyPlatform T
+            inner join Inventory I
+            on T.ProductID = I.ProductID
+            and I.Status = 'Active'
+            and I.BranchCode = 'HT-SG'
+            where T.ProductID = @ProductID
+        </ActionSQL>
+	</SelectMacro>
+	<InsertMacro>
+		<ActionSQL>
+           Insert into ThirdPartyPlatform (ProductID,PlatformName,AuthorName,QtyAdvertised,PlatformURL,PlatformPage)
+           values (@ProductID,@PlatformName,@AuthorName,@QtyAdvertised,@PlatformURL,cast(@PlatformPage as int))
+        </ActionSQL>
+	</InsertMacro>
+	<UpdateMacro>
+		<ActionSQL>
+            update ThirdPartyPlatform set
+                PlatformName = @PlatformName,
+                AuthorName = @AuthorName,
+                QtyAdvertised = @QtyAdvertised,
+                PlatformURL = @PlatformURL,
+                PlatformPage = @PlatformPage
+            where ProductID = @ProductID
+            and PlatformName = @ExistingPlatformName
+        </ActionSQL>
+	</UpdateMacro>
+    <DeleteMacro>
+        <ActionSQL>
+            delete from ThirdPartyPlatform
+            where ProductID = @ProductID
+            and PlatformName = @PlatformName
+        </ActionSQL>
+    </DeleteMacro>
+</CiTable>

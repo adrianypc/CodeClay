@@ -1,0 +1,111 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<CiApplication>
+  <IsDesigner>true</IsDesigner>
+  <ProviderName>System.Data.SqlClient</ProviderName>
+  <ConnectionString>Server=tcp:uitf9udwm5.database.windows.net,1433;Initial Catalog=HealthTree;Persist Security Info=False;User ID=cus_sa;Password=Cms123!@#;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;</ConnectionString>
+  <HomePluginSrc>CurrentCustomerOrders.pux</HomePluginSrc>
+  <CiMenu>
+    <MenuName>Application</MenuName>
+    <CiMenu>
+      <MenuName>Customers</MenuName>
+      <PluginSrc>Customers.pux</PluginSrc>
+    </CiMenu>
+    <CiMenu>
+      <MenuName>Suppliers</MenuName>
+      <PluginSrc>Suppliers.pux</PluginSrc>
+    </CiMenu>
+    <CiMenu>
+      <MenuName>Products</MenuName>
+      <CiMenu>
+        <MenuName>Active</MenuName>
+        <PluginSrc>ActiveProducts.pux</PluginSrc>
+      </CiMenu>
+      <CiMenu>
+        <MenuName>Inactive</MenuName>
+        <PluginSrc>InactiveProducts.pux</PluginSrc>
+      </CiMenu>
+    </CiMenu>
+    <CiMenu>
+      <MenuName>Customer Orders</MenuName>
+      <CiMenu>
+        <MenuName>Current</MenuName>
+        <PluginSrc>CurrentCustomerOrders.pux</PluginSrc>
+      </CiMenu>
+      <CiMenu>
+        <MenuName>Historical</MenuName>
+        <PluginSrc>HistoricalCustomerOrders.pux</PluginSrc>
+      </CiMenu>
+    </CiMenu>
+    <CiMenu>
+      <MenuName>Supplier Orders</MenuName>
+      <CiMenu>
+        <MenuName>Current</MenuName>
+        <PluginSrc>CurrentSupplierOrders.pux</PluginSrc>
+      </CiMenu>
+      <CiMenu>
+        <MenuName>Historical</MenuName>
+        <PluginSrc>HistoricalSupplierOrders.pux</PluginSrc>
+      </CiMenu>
+    </CiMenu>
+    <CiMenu>
+      <MenuName>Inter-Branch Invoices</MenuName>
+      <CiMenu>
+        <MenuName>Current</MenuName>
+        <PluginSrc>InterBranchInvoice.pux</PluginSrc>
+      </CiMenu>
+      <CiMenu>
+        <MenuName>Historical</MenuName>
+        <PluginSrc>HistoricalInterBranchInvoices.pux</PluginSrc>
+      </CiMenu>
+    </CiMenu>
+    <CiMenu>
+      <MenuName>Inventory SG</MenuName>
+      <CiMenu>
+        <MenuName>Active</MenuName>
+        <PluginSrc>ActiveInventorySG.pux</PluginSrc>
+      </CiMenu>
+      <CiMenu>
+        <MenuName>Inactive</MenuName>
+        <PluginSrc>InactiveInventorySG.pux</PluginSrc>
+      </CiMenu>
+      <CiMenu>
+        <MenuName>6 month expiry report</MenuName>
+        <PluginSrc>ExpireInventorySG.pux</PluginSrc>
+      </CiMenu>
+    </CiMenu>
+    <CiMenu>
+      <MenuName>Inventory AU</MenuName>
+      <CiMenu>
+        <MenuName>Active</MenuName>
+        <PluginSrc>ActiveInventoryAU.pux</PluginSrc>
+      </CiMenu>
+      <CiMenu>
+        <MenuName>Inactive</MenuName>
+        <PluginSrc>InactiveInventoryAU.pux</PluginSrc>
+      </CiMenu>
+      <CiMenu>
+        <MenuName>6 month expiry report</MenuName>
+        <PluginSrc>ExpireInventoryAU.pux</PluginSrc>
+      </CiMenu>
+    </CiMenu>
+    <CiMenu>
+      <MenuName>Quarterly Customer Sale Report</MenuName>
+      <PluginSrc>CustomerSalesReport.pux</PluginSrc>
+    </CiMenu>
+    <CiMenu>
+      <MenuName>Setup</MenuName>
+      <CiMenu>
+        <MenuName>Dropdowns</MenuName>
+        <PluginSrc>Dropdowns.pux</PluginSrc>
+      </CiMenu>
+      <CiMenu>
+        <MenuName>Branches</MenuName>
+        <PluginSrc>Branches.pux</PluginSrc>
+      </CiMenu>
+      <CiMenu>
+        <MenuName>Brands</MenuName>
+        <PluginSrc>Brands.pux</PluginSrc>
+      </CiMenu>
+    </CiMenu>
+  </CiMenu>
+</CiApplication>

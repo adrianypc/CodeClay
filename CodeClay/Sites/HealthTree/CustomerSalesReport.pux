@@ -1,0 +1,83 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<CiTable>
+  <TableName>CustomerSalesReport</TableName>
+  <TableCaption>Quarterly Customer Sales Report</TableCaption>
+  <RowKey>RunMonth</RowKey>
+  <DefaultView>Grid</DefaultView>
+  <CiTextField>
+    <FieldName>RunMonth</FieldName>
+    <Caption>Month</Caption>
+    <Editable>false</Editable>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>TotalTrans</FieldName>
+    <Caption>Number of Transactions</Caption>
+    <Editable>true</Editable>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>TotalAmount</FieldName>
+    <Caption>Total ($)</Caption>
+    <Mask>Currency</Mask>
+    <Editable>true</Editable>
+  </CiTextField>
+  <CiTextField>
+     <FieldName>StartDate</FieldName>
+     <Caption>From Date</Caption>
+     <Editable>false</Editable>
+  </CiTextField>
+  <CiTextField>
+     <FieldName>EndDate</FieldName>
+     <Caption>To Date</Caption>
+     <Editable>false</Editable>
+  </CiTextField>
+  <DefaultMacro>
+	 <ActionSQL>
+         SELECT
+             CONVERT(VARCHAR(7), getdate(), 111) as RunMonth,
+             SUM(coalesce(tab.TotalTrans,0)) as TotalTrans,
+             SUM(coalesce(tab.TotalAmount,0)) as TotalAmount,
+             CAST(DATEADD(mm, DATEDIFF(mm, 0,GETDATE())-3, 0) as nvarchar(12)) as StartDate,
+             CAST(DATEADD(mm, DATEDIFF(mm, 0, GETDATE()), 0) as nvarchar(12)) as EndDate
+         FROM
+         (SELECT
+         CONVERT(VARCHAR(7), OrderDate, 111) AS OrderMonth,
+         count(*) as TotalTrans,
+         sum(coalesce(TotalAmount,0)) as TotalAmount
+         FROM CustomerOrders
+         WHERE OrderDate &gt;= DATEADD(mm, DATEDIFF(mm, 0,GETDATE())-3, 0)
+         and OrderDate &lt; DATEADD(mm, DATEDIFF(mm, 0, GETDATE()), 0)
+         and Status = 'Dispatched'
+         group by CONVERT(VARCHAR(7), OrderDate, 111))tab
+     </ActionSQL>
+	</DefaultMacro>
+	<SelectMacro>
+	 <ActionSQL>
+        select  RunMonth,TotalTrans,TotalAmount,
+                cast(StartDate as nvarchar(12)) as StartDate,
+                cast(EndDate as nvarchar(12)) as EndDate 
+        from QuarterlyCustomerSale order by RunMonth desc
+     </ActionSQL>
+	</SelectMacro>
+	<InsertMacro>
+      <ActionSQL>
+          insert into QuarterlyCustomerSale (RunMonth,TotalTrans,TotalAmount,StartDate,EndDate) values
+          (@RunMonth,@TotalTrans,@TotalAmount,
+           DATEADD(mm, DATEDIFF(mm, 0,GETDATE())-3, 0),
+           DATEADD(mm, DATEDIFF(mm, 0, GETDATE()), 0))
+      </ActionSQL>
+      <VisibleSQL>
+          select
+              case 
+                   when (select 1 from QuarterlyCustomerSale where RunMonth = CONVERT(VARCHAR(7), getdate(), 111)) = 1 then 0
+                   else 1
+              end
+          from tblSingleton
+      </VisibleSQL>
+  </InsertMacro>
+  <CiMacro>
+    <MacroName>Refresh</MacroName>
+    <ActionSQL>?exec spQuarterlyCustomerSales_Refresh @RunMonth</ActionSQL>
+    <VisibleSQL>select 1 from tblSingleton where @RunMonth is not null</VisibleSQL>
+    <Toolbar>true</Toolbar>
+  </CiMacro>
+</CiTable>

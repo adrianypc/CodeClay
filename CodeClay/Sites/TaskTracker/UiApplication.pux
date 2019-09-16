@@ -1,19 +1,5 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <CiApplication>
-  <AppName>TimeTracker</AppName>
-  <IsDesigner>true</IsDesigner>
-  <ProviderName>System.Data.SqlClient</ProviderName>
-  <ConnectionString>Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=TaskTracker;Integrated Security=True;Connect Timeout=30</ConnectionString>
-  <HomePluginSrc>TaskList.pux</HomePluginSrc>
-  <CiMenu>
-    <MenuName>Application</MenuName>
-    <CiMenu>
-      <MenuName>Task List</MenuName>
-      <PluginSrc>TaskList.pux</PluginSrc>
-    </CiMenu>
-    <CiMenu>
-      <MenuName>Dropdown</MenuName>
-      <PluginSrc>Dropdown.pux</PluginSrc>
-    </CiMenu>
-  </CiMenu>
+  <AppName>TaskTracker</AppName>
+  <ConnectionString>Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=U_TaskTracker;Integrated Security=True;Connect Timeout=30</ConnectionString>
 </CiApplication>

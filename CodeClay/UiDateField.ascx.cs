@@ -100,13 +100,10 @@ namespace CodeClay
             // Setup date value
             try
             {
-                if (MyUtils.IsEmpty(FieldValue))
+                dxDateBox.Value = null;
+                if (CiField != null)
                 {
-                    dxDateBox.Value = null;
-                }
-                else
-                {
-                    dxDateBox.Value = Convert.ToDateTime(FieldValue);
+                    dxDateBox.Value = Convert.ToDateTime(this[CiField.FieldName]);
                 }
             }
             catch

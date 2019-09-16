@@ -11,7 +11,14 @@ var loadingPanels = {};
 // --------------------------------------------------------------------------------------------------
 
 function dxSearch_Init(sender, event) {
-	CopyState(dxClientState, dxBackupClientState);
+    var dxSearch = sender;
+    var tableName = dxSearch.cpTableName;
+
+    if (tableName) {
+        SetField(tableName, "_View", "Search");
+    }
+
+    CopyState(dxClientState, dxBackupClientState);
 }
 
 function dxSearch_EndCallback(sender, event) {
@@ -42,6 +49,7 @@ function dxCard_Init(sender, event) {
     var tableName = dxCard.cpTableName;
 
     if (tableName) {
+        SetField(tableName, "_View", "Card");
         tables[tableName] = dxCard;
     }
 
@@ -61,11 +69,16 @@ function dxCard_FocusedCardChanged(sender, event) {
 
 function dxCard_BeginCallback(sender, event) {
 	var dxCard = sender;
-	var tableName = dxCard.cpTableName;
+    var tableName = dxCard.cpTableName;
+    var command = dxCard.Command;
 
-	SetCommand(tableName, dxCard.Command);
+    if (typeof command == 'undefined') {
+        command = event.command;
+    }
 
-    if (dxCard.Command == "Update" && dxCard.IsNewCardEditing()) {
+    SetCommand(tableName, command);
+
+    if (command == "Update" && dxCard.IsNewCardEditing()) {
         dxCard.Command = "UpdateNew";
     }
 }
@@ -83,8 +96,6 @@ function dxCard_EndCallback(sender, event) {
 
     switch (command) {
     	case "New":
-    		RefreshFollowers(dxCard.cpFollowerFields);
-
         case "Search":
     	case "Edit":
             // Do nothing
@@ -148,6 +159,7 @@ function dxGrid_Init(sender, event) {
     var tableName = dxGrid.cpTableName;
 
     if (tableName) {
+        SetField(tableName, "_View", "Grid");
     	tables[tableName] = dxGrid;
     }
 
@@ -179,6 +191,10 @@ function dxGrid_BeginCallback(sender, event) {
     var tableName = dxGrid.cpTableName;
     var command = dxGrid.Command;
 
+    if (typeof command == 'undefined') {
+        command = event.command;
+    }
+
 	SetCommand(tableName, command);
 
     if (command == "Update" && dxGrid.IsNewRowEditing()) {
@@ -200,7 +216,7 @@ function dxGrid_EndCallback(sender, event) {
 
     switch (command) {
         case "New":
-            RefreshFollowers(dxGrid.cpFollowerFields);
+            // Do nothing
             break;
 
         case "Edit":

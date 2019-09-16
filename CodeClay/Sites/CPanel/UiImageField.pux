@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<CiImageField>
+  <FieldName>ImageFile</FieldName>
+  <Caption>Image File</Caption>
+  <Value>SavedFiles\Images\Codistri.jpg</Value>
+  <Folder>SavedFiles\Images</Folder>
+</CiImageField>

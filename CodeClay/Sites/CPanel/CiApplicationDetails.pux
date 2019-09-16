@@ -14,6 +14,11 @@
     <Caption>Application Name</Caption>
     <Editable>false</Editable>
   </CiTextField>
+  <CiCheckField>
+    <FieldName>UserDefined</FieldName>
+    <Caption>User Defined?</Caption>
+    <Width>10</Width>
+  </CiCheckField>
   <CiLinkField>
     <FieldName>AppUrl</FieldName>
     <Caption>Url</Caption>

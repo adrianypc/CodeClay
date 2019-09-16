@@ -2,6 +2,7 @@
 using System.Data;
 using System.Net;
 using System.Net.Mail;
+using System.Web;
 using System.Xml;
 using System.Xml.Serialization;
 
@@ -142,7 +143,7 @@ namespace CodeClay
                         }
                         catch (Exception ex)
                         {
-                            dr["EmailStatus"] = ex.Message;
+                            dr["EmailStatus"] = HttpUtility.JavaScriptStringEncode(ex.Message);
                         }
                     }
                 }

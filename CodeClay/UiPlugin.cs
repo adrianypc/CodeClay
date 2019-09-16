@@ -84,6 +84,9 @@ namespace CodeClay
             }
         }
 
+        [XmlElement("Searchable")]
+        public bool Searchable { get; set; } = false;
+
         [XmlElement("Comment")]
         public string Comment { get; set; } = "";
 
@@ -191,6 +194,7 @@ namespace CodeClay
         [XmlElement("CiComboField", typeof(CiComboField))]
         [XmlElement("CiDateField", typeof(CiDateField))]
         [XmlElement("CiField", typeof(CiField))]
+        [XmlElement("CiImageField", typeof(CiImageField))]
         [XmlElement("CiLinkField", typeof(CiLinkField))]
         [XmlElement("CiFieldExitMacro", typeof(CiFieldExitMacro))]
         [XmlElement("CiMacro", typeof(CiMacro))]
@@ -244,6 +248,12 @@ namespace CodeClay
 
         [XmlIgnore]
         public virtual string ID { get; set; } = null;
+
+        [XmlIgnore]
+        public string SearchableID
+        {
+            get { return PARAMETER_PREFIX + ID; }
+        }
 
         [XmlIgnore]
         public Hashtable SrcParams { get; set; } = new Hashtable();
@@ -431,12 +441,27 @@ namespace CodeClay
             return null;
         }
 
+        public virtual CiPlugin GetContainerPlugin()
+        {
+            return null;
+        }
+
         public virtual void Add(CiPlugin ciPlugin)
         {
             if (mCiPlugins != null)
             {
                 mCiPlugins.Add(ciPlugin);
             }
+        }
+
+        public virtual Type GetNativeType(object pluginValue)
+        {
+            return (!MyUtils.IsEmpty(pluginValue)) ? pluginValue.GetType() : typeof(string);
+        }
+
+        public virtual object GetNativeValue(object pluginValue)
+        {
+            return !MyUtils.IsEmpty(pluginValue) ? pluginValue : Convert.DBNull;
         }
     }
 
@@ -537,17 +562,102 @@ namespace CodeClay
             return uiPlugin;
         }
 
-        public virtual object GetClientValue(string key)
+        public virtual object this[string key, int rowIndex = -1]
+        {
+            get
+            {
+                if (rowIndex < 0)
+                {
+                    rowIndex = GetFocusedIndex();
+                }
+
+                return MyUtils.Coalesce(
+                    GetEditorValue(key, rowIndex),
+                    GetServerValue(key, rowIndex),
+                    GetSrcParamsValue(key),
+                    GetQueryStringValue(key),
+                    GetParentValue(key),
+                    GetDefaultValue(key));
+            }
+
+            set
+            {
+                SetClientValue(key, value);
+            }
+        }
+
+        public virtual DataRow GetState(int rowIndex = -1)
+        {
+            DataRow dr = GetEditorState(rowIndex);
+            dr = MyUtils.AppendColumns(dr, GetSrcParamsState());
+            dr = MyUtils.AppendColumns(dr, GetQueryStringState());
+            dr = MyUtils.AppendColumns(dr, GetParentState());
+            dr = MyUtils.AppendColumns(dr, GetDefaultState());
+
+            return dr;
+        }
+
+        // --------------------------------------------------------------------------------------------------
+        // Methods (override)
+        // --------------------------------------------------------------------------------------------------
+
+        protected override void AddParsedSubObject(object content)
+        {
+            LiteralControl literal = content as LiteralControl;
+            if (literal != null)
+            {
+                string textContent = MyUtils.Coalesce(literal.Text, "").ToString().Trim();
+                if (textContent.StartsWith("<Ci"))
+                {
+                    CiPlugin = CiPlugin.CreateCiPlugin(textContent, false);
+                }
+            }
+
+            if (CiPlugin == null)
+            {
+                base.AddParsedSubObject(content);
+            }
+        }
+
+        // --------------------------------------------------------------------------------------------------
+        // Helpers
+        // --------------------------------------------------------------------------------------------------
+
+        protected virtual object GetEditorValue(string key, int rowIndex = -1)
+        {
+            if (!IsPostBack)
+            {
+                object serverValue = GetServerValue(key, rowIndex);
+
+                if (!MyUtils.IsEmpty(serverValue))
+                {
+                    return serverValue;
+                }
+            }
+            else
+            {
+                object clientValue = GetClientValue(key);
+
+                if (!MyUtils.IsEmpty(clientValue))
+                {
+                    return clientValue;
+                }
+            }
+
+            return null;
+        }
+
+        protected virtual object GetClientValue(string key)
         {
             return UiApplication.Me[GetFormattedKey(key)];
         }
 
-        public virtual void SetClientValue(string key, object value)
+        protected virtual void SetClientValue(string key, object value)
         {
             UiApplication.Me[GetFormattedKey(key)] = value;
         }
 
-        public virtual object GetServerValue(string key, int rowIndex = -1)
+        protected virtual object GetServerValue(string key, int rowIndex = -1)
         {
             GridBaseTemplateContainer container = this.NamingContainer as GridBaseTemplateContainer;
             if (container != null)
@@ -565,12 +675,34 @@ namespace CodeClay
             return null;
         }
 
-        public virtual void SetServerValue(string key, object value)
+        protected virtual object GetSrcParamsValue(string key)
         {
-            // Do nothing
+            if (CiPlugin != null)
+            {
+                Hashtable srcParams = CiPlugin.SrcParams;
+                if (srcParams != null && srcParams.ContainsKey(key))
+                {
+                    return srcParams[key];
+                }
+            }
+
+            return null;
         }
 
-        public virtual object GetParentValue(string key)
+        protected virtual object GetQueryStringValue(string key)
+        {
+            string prefix = ""; // CiPlugin.PARAMETER_PREFIX;
+            object queryStringValue = MyWebUtils.QueryString[key.StartsWith(prefix) ? key.Substring(prefix.Length) : key];
+
+            if (!MyUtils.IsEmpty(queryStringValue))
+            {
+                return queryStringValue;
+            }
+
+            return null;
+        }
+
+        protected virtual object GetParentValue(string key)
         {
             if (CiPlugin != null)
             {
@@ -598,22 +730,9 @@ namespace CodeClay
             return null;
         }
 
-        public virtual object GetQueryStringValue(string key)
-        {
-            string prefix = CiPlugin.PARAMETER_PREFIX;
-            object queryStringValue = MyWebUtils.QueryString[key.StartsWith(prefix) ? key.Substring(prefix.Length) : key];
-
-            if (!MyUtils.IsEmpty(queryStringValue))
-            {
-                return queryStringValue;
-            }
-
-            return null;
-        }
-
         public virtual object GetDefaultValue(string key)
         {
-            CiPlugin ciChildPlugin = CiPlugin.GetById(key);
+            CiPlugin ciChildPlugin = CiPlugin.GetContainerPlugin().GetById(key);
 
             if (ciChildPlugin != null)
             {
@@ -623,103 +742,40 @@ namespace CodeClay
             return null;
         }
 
-        public virtual object this[string key, int rowIndex = -1]
+        protected virtual DataRow GetEditorState(int rowIndex = -1)
         {
-            get
+            DataRow dr = MyWebUtils.CreateDataRow();
+
+            if (dr != null && CiPlugin != null)
             {
-                if (rowIndex < 0)
-                {
-                    rowIndex = GetFocusedIndex();
-                }
+                DataColumnCollection dc = dr.Table.Columns;
 
-                if (!IsPostBack)
+                CiPlugin ciContainerPlugin = CiPlugin.GetContainerPlugin();
+                if (ciContainerPlugin != null)
                 {
-                    object serverValue = GetServerValue(key);
-
-                    if (!MyUtils.IsEmpty(serverValue))
+                    foreach (CiPlugin ciChildPlugin in ciContainerPlugin.CiPlugins)
                     {
-                        return serverValue;
-                    }
-                }
-                else
-                {
-                    object clientValue = GetClientValue(key);
+                        string key = ciChildPlugin.ID;
 
-                    if (!MyUtils.IsEmpty(clientValue))
-                    {
-                        //if (clientValue.ToString() == "\a")
-                        //{
-                        //    // Alarm character is used to denote a field that has been cleared
-                        //    clientValue = "";
-                        //}
-
-                        return clientValue;
-                    }
-                }
-
-                return MyUtils.Coalesce(
-                    GetServerValue(key),
-                    GetQueryStringValue(key),
-                    GetParentValue(key),
-                    GetDefaultValue(key));
-            }
-
-            set
-            {
-                SetClientValue(key, value);
-                SetServerValue(key, value);
-            }
-        }
-
-        public virtual DataRow GetState(int rowIndex = -1)
-        {
-            DataTable dt = new DataTable();
-            DataColumnCollection dcColumns = dt.Columns;
-            DataRow dr = dt.NewRow();
-            dt.Rows.Add(dr);
-
-            foreach (string fieldName in MyWebUtils.QueryString.Keys)
-            {
-                object fieldValue = MyWebUtils.QueryString[fieldName];
-
-                if (!dcColumns.Contains(fieldName))
-                {
-                    dcColumns.Add(fieldName);
-                    dr[fieldName] = fieldValue;
-                }
-            }
-
-            if (CiPlugin != null)
-            {
-                Hashtable srcParams = CiPlugin.SrcParams;
-                foreach (string fieldName in srcParams.Keys)
-                {
-                    object fieldValue = srcParams[fieldName];
-
-                    if (!dcColumns.Contains(fieldName))
-                    {
-                        dcColumns.Add(fieldName);
-                        dr[fieldName] = fieldValue;
-                    }
-                }
-
-                foreach (PropertyInfo p in CiPlugin.GetType().GetProperties())
-                {
-                    if (!("Src, CiPlugins".Contains(p.Name)))
-                    {
-                        Attribute a = MyUtils.Coalesce(p.GetCustomAttribute(typeof(XmlElementAttribute)),
-                          p.GetCustomAttribute(typeof(XmlAttributeAttribute)),
-                          p.GetCustomAttribute(typeof(XmlAnyElementAttribute))) as Attribute;
-
-                        if (a != null)
+                        if (!MyUtils.IsEmpty(key))
                         {
-                            string fieldName = p.Name;
-                            object fieldValue = p.GetValue(CiPlugin);
+                            object value = ciChildPlugin.GetNativeValue(MyUtils.Coalesce(GetEditorValue(key, rowIndex),
+                                GetServerValue(key, rowIndex)));
 
-                            if (!dcColumns.Contains(fieldName))
+                            Type valueType = ciChildPlugin.GetNativeType(value);
+
+                            dc.Add(key, valueType);
+                            dr[key] = value;
+
+                            if (ciChildPlugin.Searchable)
                             {
-                                dcColumns.Add(fieldName);
-                                dr[fieldName] = fieldValue;
+                                string searchKey = ciChildPlugin.SearchableID;
+
+                                value = ciChildPlugin.GetNativeValue(MyUtils.Coalesce(GetEditorValue(searchKey, rowIndex),
+                                    GetServerValue(searchKey, rowIndex)));
+
+                                dc.Add(searchKey, valueType);
+                                dr[searchKey] = value;
                             }
                         }
                     }
@@ -729,26 +785,115 @@ namespace CodeClay
             return dr;
         }
 
-        // --------------------------------------------------------------------------------------------------
-        // Methods (override)
-        // --------------------------------------------------------------------------------------------------
-
-        protected override void AddParsedSubObject(object content)
+        protected virtual DataRow GetSrcParamsState()
         {
-            LiteralControl literal = content as LiteralControl;
-            if (literal != null)
+            DataRow dr = MyWebUtils.CreateDataRow();
+
+            if (dr != null && CiPlugin != null)
             {
-                string textContent = MyUtils.Coalesce(literal.Text, "").ToString().Trim();
-                if (textContent.StartsWith("<Ci"))
+                DataColumnCollection dc = dr.Table.Columns;
+
+                Hashtable srcParams = CiPlugin.SrcParams;
+                if (srcParams != null)
                 {
-                    CiPlugin = CiPlugin.CreateCiPlugin(textContent, false);
+                    foreach (var item in srcParams.Keys)
+                    {
+                        string key = item as string;
+                        if (!MyUtils.IsEmpty(key))
+                        {
+                            object value = srcParams[key];
+                            dc.Add(key);
+                            dr[key] = value;
+                        }
+                    }
                 }
             }
 
-            if (CiPlugin == null)
+            return dr;
+        }
+
+        protected virtual DataRow GetQueryStringState()
+        {
+            DataRow dr = MyWebUtils.CreateDataRow();
+
+            if (dr != null)
             {
-                base.AddParsedSubObject(content);
+                DataColumnCollection dc = dr.Table.Columns;
+                foreach (string key in MyWebUtils.QueryString.Keys)
+                {
+                    object value = MyWebUtils.QueryString[key];
+
+                    if (!MyUtils.IsEmpty(key))
+                    {
+                        dc.Add(key);
+                        dr[key] = value;
+                    }
+                }
             }
+
+            return dr;
+        }
+
+        protected virtual DataRow GetParentState()
+        {
+            DataRow dr = MyWebUtils.CreateDataRow();
+
+            if (dr != null && CiPlugin != null)
+            {
+                DataColumnCollection dc = dr.Table.Columns;
+                string[] rowKeyNames = CiPlugin.RowKeyNames;
+                CiPlugin ciParentPlugin = CiPlugin.CiParentPlugin;
+
+                if (rowKeyNames != null && ciParentPlugin != null)
+                {
+                    rowKeyNames = rowKeyNames.Union(ciParentPlugin.RowKeyNames).ToArray();
+
+                    foreach (string key in rowKeyNames)
+                    {
+                        object value = (UiParentPlugin != null)
+                        ? MyUtils.Coalesce(UiParentPlugin.GetClientValue(key), UiParentPlugin.GetServerValue(key))
+                        : null;
+
+                        if (!MyUtils.IsEmpty(key))
+                        {
+                            dc.Add(key);
+                            dr[key] = value;
+                        }
+                    }
+                }
+            }
+
+            return dr;
+        }
+
+        protected virtual DataRow GetDefaultState()
+        {
+            DataRow dr = MyWebUtils.CreateDataRow();
+
+            if (dr != null && CiPlugin != null)
+            {
+                DataColumnCollection dc = dr.Table.Columns;
+                CiPlugin ciContainerPlugin = CiPlugin.GetContainerPlugin();
+
+                if (ciContainerPlugin != null)
+                {
+                    foreach (CiPlugin ciChildPlugin in ciContainerPlugin.CiPlugins)
+                    {
+                        if (ciChildPlugin != null)
+                        {
+                            string key = ciChildPlugin.ID;
+                            object value = ciChildPlugin.Value;
+                            if (!MyUtils.IsEmpty(key))
+                            {
+                                dc.Add(key, ciChildPlugin.GetNativeType(value));
+                                dr[key] = ciChildPlugin.GetNativeValue(value);
+                            }
+                        }
+                    }
+                }
+            }
+
+            return dr;
         }
     }
 
@@ -912,6 +1057,12 @@ namespace CodeClay
 
             if (!MyUtils.IsEmpty(puxUrl))
             {
+                if (!File.Exists(puxUrl))
+                {
+                    FileInfo fi = new FileInfo(puxUrl);
+                    fi.Directory.Create();
+                }
+
                 xPlugin.Save(puxUrl);
             }
         }
@@ -923,36 +1074,6 @@ namespace CodeClay
                 XElement xPlugin = XElement.Load(puxUrl);
                 UploadFromXml(drKey, new List<XElement>() { xPlugin });
             }
-        }
-
-        public string GetPuxUrl(DataRow drPluginKey)
-        {
-            string appName = GetApplicationName(drPluginKey);
-
-            if (PluginType != null)
-            {
-                string keyName = PluginType.ToString().Substring("CodeClay.Ci".Length) + "Name";
-                string keyValue = "";
-
-                DataRow drPluginDefinition = GetPluginDefinition(drPluginKey);
-
-                if (drPluginDefinition != null && drPluginDefinition.Table.Columns.Contains(keyName))
-                {
-                    object objKeyValue = drPluginDefinition[keyName];
-
-                    if (objKeyValue != null)
-                    {
-                        keyValue = objKeyValue.ToString();
-                    }
-
-                    if (!MyUtils.IsEmpty(appName) && !MyUtils.IsEmpty(keyValue))
-                    {
-                        return MyWebUtils.MapPath(string.Format("Sites/{0}/{1}.pux", appName, keyValue));
-                    }
-                }
-            }
-
-            return null;
         }
 
         public void DownloadToXml(DataRow drKey, XElement xPluginDefinition)
@@ -1059,6 +1180,36 @@ namespace CodeClay
         // Methods (Virtual)
         // --------------------------------------------------------------------------------------------------
 
+        public virtual string GetPuxUrl(DataRow drPluginKey)
+        {
+            string appName = GetApplicationName(drPluginKey);
+
+            if (PluginType != null)
+            {
+                string keyName = PluginType.ToString().Substring("CodeClay.Ci".Length) + "Name";
+                string keyValue = "";
+
+                DataRow drPluginDefinition = GetPluginDefinition(drPluginKey);
+
+                if (drPluginDefinition != null && drPluginDefinition.Table.Columns.Contains(keyName))
+                {
+                    object objKeyValue = drPluginDefinition[keyName];
+
+                    if (objKeyValue != null)
+                    {
+                        keyValue = objKeyValue.ToString();
+                    }
+
+                    if (!MyUtils.IsEmpty(appName) && !MyUtils.IsEmpty(keyValue))
+                    {
+                        return MyWebUtils.MapPath(string.Format("Sites/{0}/{1}.pux", appName, keyValue));
+                    }
+                }
+            }
+
+            return null;
+        }
+
         protected virtual bool IsPluginTypeOk(Type pluginType)
         {
             return pluginType != null && PluginType != null &&
@@ -1147,6 +1298,23 @@ namespace CodeClay
         // Helpers
         // --------------------------------------------------------------------------------------------------
 
+        protected string GetApplicationName(DataRow drAppKey)
+        {
+            DataTable dt = MyWebUtils.GetBySQL("?exec spApplication_sel @AppID", drAppKey, true);
+
+            if (dt != null && dt.Columns.Contains("AppName") && MyWebUtils.GetNumberOfRows(dt) > 0)
+            {
+                object objAppName = dt.Rows[0]["AppName"];
+
+                if (objAppName != null)
+                {
+                    return objAppName.ToString();
+                }
+            }
+
+            return null;
+        }
+
         private bool IsConfigurableProperty(Type pluginType, string propertyName)
         {
             if (pluginType != null)
@@ -1183,23 +1351,6 @@ namespace CodeClay
             }
 
             return false;
-        }
-
-        private string GetApplicationName(DataRow drAppKey)
-        {
-            DataTable dt = MyWebUtils.GetBySQL("?exec spApplication_sel @AppID", drAppKey, true);
-
-            if (dt != null && dt.Columns.Contains("AppName") && MyWebUtils.GetNumberOfRows(dt) > 0)
-            {
-                object objAppName = dt.Rows[0]["AppName"];
-
-                if (objAppName != null)
-                {
-                    return objAppName.ToString();
-                }
-            }
-
-            return null;
         }
 
         private DataRow GetRowKeyValues(DataRow drPluginDefinition, XElement xPluginDefinition)

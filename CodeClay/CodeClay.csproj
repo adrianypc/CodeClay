@@ -232,6 +232,7 @@
     <Content Include="Account\TwoFactorAuthenticationSignIn.aspx" />
     <Content Include="Account\VerifyPhoneNumber.aspx" />
     <Content Include="CodeClay.css" />
+    <Content Include="PluginScripts\UiImageField.js" />
     <Content Include="PluginScripts\UiSerializeMacro.js" />
     <Content Include="PluginScripts\UiLinkField.js" />
     <Content Include="PluginScripts\UiButtonField.js" />
@@ -246,6 +247,7 @@
     <Content Include="PluginScripts\UiCheckField.js" />
     <Content Include="PluginScripts\UiComboField.js" />
     <Content Include="PluginScripts\UiField.js" />
+    <Content Include="UiImageField.ascx" />
     <Content Include="UiSerializeMacro.ascx" />
     <Content Include="UiLinkField.ascx" />
     <Content Include="UiFieldExitMacro.ascx" />
@@ -464,6 +466,12 @@
     </Compile>
     <Compile Include="Site.Popup.Master.designer.cs">
       <DependentUpon>Site.Popup.Master</DependentUpon>
+    </Compile>
+    <Compile Include="UiImageField.ascx.cs">
+      <DependentUpon>UiImageField.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UiImageField.ascx.designer.cs">
+      <DependentUpon>UiImageField.ascx</DependentUpon>
     </Compile>
     <Compile Include="UiSerializeMacro.ascx.cs">
       <DependentUpon>UiSerializeMacro.ascx</DependentUpon>

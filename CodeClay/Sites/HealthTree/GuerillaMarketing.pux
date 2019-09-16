@@ -1,0 +1,73 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<CiTable>
+	<TableName>GuerillaMarketing</TableName>
+	<TableCaption>Guerilla Marketing</TableCaption>
+	<RowKey>ProductID,GMarketingNo</RowKey>
+    <InsertRowAtBottom>false</InsertRowAtBottom>
+	<DefaultView>Grid</DefaultView>
+	<CiTextField>
+		<FieldName>ProductID</FieldName>
+        <Hidden>true</Hidden>
+	</CiTextField>
+    <CiTextField>
+        <FieldName>GMarketingNo</FieldName>
+        <Hidden>true</Hidden>
+    </CiTextField>
+    <CiDateField>
+        <FieldName>GMarketingDate</FieldName>
+        <Caption>Date</Caption>
+        <Editable>true</Editable>
+        <ColumnFormat>dd/MM/yyyy</ColumnFormat>
+        <Mandatory>true</Mandatory>
+    </CiDateField>
+    <CiTextField>
+		<FieldName>Author</FieldName>
+		<Caption>Author</Caption>
+        <width>20</width>
+	</CiTextField>
+    <CiImageField>
+        <FieldName>ImageFileURL</FieldName>
+        <Caption>Ad Image</Caption>
+        <Folder lang="sql">select 'SavedFiles\GMarketing\' + ltrim(str(@ProductID)) + '\F' + ltrim(str(@GMarketingNo))</Folder>
+        <Width>50</Width>
+    </CiImageField>
+    <DefaultMacro>
+		<ActionSQL>
+            select 
+                @ProductID as ProductID,
+                current_timestamp as GMarketingDate,
+                (select coalesce(OtherNames+' '+Surname,'') from ApplicationUser where Email = @CI_UserEmail) as Author,
+                isnull(1 + max(GMarketingNo), 1) as GMarketingNo
+            from GuerillaMarketing
+            where ProductID = @ProductID
+        </ActionSQL>
+	</DefaultMacro>
+	<SelectMacro>
+  	    <ActionSQL>
+            select
+                ProductID,
+                GMarketingNo,
+                GMarketingDate,
+                Author,
+                ImageFileURL
+            from GuerillaMarketing where ProductID = @ProductID
+        </ActionSQL>
+	</SelectMacro>
+	<InsertMacro>
+		<ActionSQL>
+            Insert into GuerillaMarketing (ProductID,GMarketingNo,GMarketingDate,Author,ImageFileURL) values 
+            (@ProductID,@GMarketingNo,@GMarketingDate,@Author,@ImageFileURL)
+        </ActionSQL>
+	</InsertMacro>
+	<UpdateMacro>
+		<ActionSQL>
+            update GuerillaMarketing set
+                ProductID = @ProductID,
+                GMarketingNo = @GMarketingNo,
+                GMarketingDate = @GMarketingDate,
+                Author = @Author,
+                ImageFileURL = @ImageFileURL
+            where ProductID = @ProductID
+        </ActionSQL>
+	</UpdateMacro>
+</CiTable>

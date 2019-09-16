@@ -72,9 +72,6 @@ namespace CodeClay
         [XmlElement("Summary")]
         public SummaryItemType Summary { get; set; } = SummaryItemType.None;
 
-        [XmlElement("Searchable")]
-        public bool Searchable { get; set; } = false;
-
         [XmlElement("Browsable")]
         public bool Browsable { get; set; } = true;
 
@@ -86,12 +83,6 @@ namespace CodeClay
         public override string ID
         {
             get { return FieldName; }
-        }
-
-        [XmlIgnore]
-        public string SearchableFieldName
-        {
-            get { return PARAMETER_PREFIX + FieldName; }
         }
 
         [XmlIgnore]
@@ -222,18 +213,17 @@ namespace CodeClay
         }
 
         // --------------------------------------------------------------------------------------------------
-        // Methods (Virtual)
+        // Methods (Override)
         // --------------------------------------------------------------------------------------------------
 
-        public virtual Type GetNativeType(object fieldValue)
+        public override CiPlugin GetContainerPlugin()
         {
-            return (!MyUtils.IsEmpty(fieldValue)) ? fieldValue.GetType() : typeof(string);
+            return CiTable;
         }
 
-        public virtual object GetNativeValue(object fieldValue)
-        {
-            return fieldValue;
-        }
+        // --------------------------------------------------------------------------------------------------
+        // Methods (Virtual)
+        // --------------------------------------------------------------------------------------------------
 
         public virtual bool IsEditable(DataRow drParams)
         {
@@ -382,53 +372,6 @@ namespace CodeClay
 
         public int ItemIndex { get; set; } = -1;
 
-        public object FieldValue
-        {
-            get
-            {
-                object fieldValue = null;
-
-                if (CiField != null)
-                {
-                    string fieldName = CiField.FieldName;
-
-                    if (!IsPostBack)
-                    {
-                        GridBaseTemplateContainer container = this.NamingContainer as GridBaseTemplateContainer;
-                        if (container != null && !CiField.Computed)
-                        {
-                            try
-                            {
-                                fieldValue = DataBinder.Eval(container.DataItem, fieldName);
-                            }
-                            catch
-                            {
-                                // Do nothing
-                            }
-                        }
-
-                        if (!CiField.Enabled && (CiField.GetType().Name.Substring(2)) != CiField.GetUiPluginName().Substring(2))
-                        {
-                            // For disabled fields which have been cast to TextField
-                            fieldValue = CiField.ToString(fieldValue);
-                        }
-
-                        fieldValue = MyUtils.Coalesce(fieldValue, CiField.Value);
-                    }
-                    else if (UiTable != null)
-                    {
-                        fieldValue = UiTable[fieldName];
-                    }
-                    else
-                    {
-                        fieldValue = this[fieldName];
-                    }
-                }
-
-                return fieldValue;
-            }
-        }
-
         public virtual bool IsUnbound
         {
             get { return UiTable == null && CiField != null; }
@@ -512,19 +455,6 @@ namespace CodeClay
         // Methods (Override)
         // --------------------------------------------------------------------------------------------------
 
-        public override DataRow GetState(int rowIndex = -1)
-        {
-            DataRow dr = base.GetState(rowIndex);
-
-            if (UiTable != null)
-            {
-                dr = MyUtils.AppendColumns(dr, UiTable.GetState(rowIndex), true);
-            }
-
-
-            return dr;
-        }
-
         public override void ConfigureIn(Control container)
         {
             IsItemEditing = (CiField != null && CiField.Enabled);
@@ -586,13 +516,13 @@ namespace CodeClay
         {
             if (mEditor != null && CiField != null)
             {
-                DataRow drParams = (UiTable != null) ? UiTable.GetState() : null;
+                DataRow drParams = GetState();
 
                 CiTable ciTable = CiField.CiTable;
                 string tableName = (ciTable != null) ? ciTable.TableName : "";
-                string fieldName = CiField.IsSearching ? CiField.SearchableFieldName : CiField.FieldName;
+                string fieldName = CiField.IsSearching ? CiField.SearchableID : CiField.FieldName;
                 bool isEditable = CiField.IsEditable(drParams);
-                object fieldValue = this[fieldName];
+                object fieldValue = drParams[fieldName];
                 string foreColor = CiField.ForeColor;
 
                 mEditor.ID = fieldName;
@@ -657,6 +587,39 @@ namespace CodeClay
             }
 
             return backColor;
+        }
+
+        // --------------------------------------------------------------------------------------------------
+        // Helpers
+        // --------------------------------------------------------------------------------------------------
+
+        protected override object GetEditorValue(string key, int rowIndex = -1)
+        {
+            object fieldValue = null;
+
+            if (CiField != null)
+            {
+                GridBaseTemplateContainer container = this.NamingContainer as GridBaseTemplateContainer;
+                if (container != null && !CiField.Computed)
+                {
+                    try
+                    {
+                        fieldValue = DataBinder.Eval(container.DataItem, key);
+                    }
+                    catch
+                    {
+                        // Do nothing
+                    }
+                }
+
+                if (!CiField.Enabled && (CiField.GetType().Name.Substring(2)) != CiField.GetUiPluginName().Substring(2))
+                {
+                    // For disabled fields which have been cast to TextField
+                    fieldValue = CiField.ToString(fieldValue);
+                }
+            }
+
+            return fieldValue;
         }
     }
 
@@ -758,7 +721,7 @@ namespace CodeClay
             {
                 drSQL["SQLType"] = propertyName + "SQL";
                 drSQL["SQL"] = mPropertySQL[propertyName];
-                MyWebUtils.GetBySQL("exec spSQL_ins @EntityType, @SQLType, @AppID, @TableID, @EntityID, @SQL", drSQL);
+                MyWebUtils.GetBySQL("exec spSQL_ins @EntityType, @DBChangeSQLType, @AppID, @TableID, @EntityID, @SQL", drSQL);
             }
         }
 

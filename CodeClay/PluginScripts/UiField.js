@@ -45,10 +45,6 @@ function dxFieldExitPanel_EndCallback(sender, event) {
             eval(script);
         }
     }
-
-    if (leader) {
-        RefreshFirstFollower(leader);
-    }
 }
 
 function RegisterEditor(editor, getvalue_function, setvalue_function) {
@@ -123,10 +119,6 @@ function InitField(tableName, fieldName, fieldValue) {
 
 function SetField(tableName, fieldName, fieldValue) {
     if (tableName && fieldName) {
-        //if (fieldValue == null || fieldValue.length == 0) {
-        //    // Set empty field to alarm character
-        //    fieldValue = String.fromCharCode(7);
-        //}
         dxClientState.Set(tableName + "." + fieldName, fieldValue);
     }
 }
@@ -155,6 +147,34 @@ function SetEditorFocus(tableName, fieldName) {
 
     if (editor) {
         editor.Focus();
+    }
+}
+
+function SetEditorEditable(tableName, fieldName, mandatory, editable) {
+    var editor = editors[tableName + "." + fieldName];
+
+    if (editor) {
+        var mainElement = editor.GetMainElement();
+        var inputElement = editor.GetInputElement();
+
+        if (mainElement && inputElement) {
+            if (editable) {
+                if (mandatory) {
+                    mainElement.style.backgroundColor = "LightPink";
+                    inputElement.style.backgroundColor = "LightPink";
+                }
+                else {
+                    mainElement.style.backgroundColor = "PaleGoldenrod";
+                    inputElement.style.backgroundColor = "PaleGoldenrod";
+                }
+                editor.SetReadOnly(false);
+            }
+            else {
+                mainElement.style.backgroundColor = "Transparent";
+                inputElement.style.backgroundColor = "Transparent";
+                editor.SetReadOnly(true);
+            }
+        }
     }
 }
 
@@ -223,20 +243,4 @@ function RefreshNextFollower() {
     else if (fieldLoadingPanel && fieldLoadingPanel.GetVisible()) {
         fieldLoadingPanel.Hide();
     }
-}
-
-function RefreshFollowers(followerFieldNames) {
-    return;
-
-	var followerFields = followerFieldNames.split(LIST_SEPARATOR);
-
-	for (var i = 0; i < followerFields.length; i++) {
-		var fieldName = followerFields[i];
-		if (fieldName && editorPanels) {
-			editorPanel = editorPanels[fieldName];
-			if (editorPanel) {
-				editorPanel.PerformCallback();
-			}
-		}
-	}
 }

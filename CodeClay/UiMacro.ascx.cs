@@ -156,13 +156,21 @@ namespace CodeClay
 
             if (MyUtils.IsEmpty(ErrorMessage))
             {
-                ResultTable = RunActionSQL(drParams);
+                try
+                {
+                    ResultTable = RunActionSQL(drParams);
 
-                ResultTable = RunChildMacros(ResultTable);
+                    ResultTable = RunChildMacros(ResultTable);
 
-                ResultScript = GetResultScript(ResultTable);
+                    ResultScript = GetResultScript(ResultTable);
+                }
+                catch (Exception ex)
+                {
+                    ErrorMessage = string.Format("{0} macro failed: {1}", MacroName, HttpUtility.JavaScriptStringEncode(ex.Message));
+                }
             }
-            else
+
+            if (!MyUtils.IsEmpty(ErrorMessage))
             {
                 ResultScript = string.Format("alert('{0}')", ErrorMessage);
             }
@@ -231,27 +239,6 @@ namespace CodeClay
             if (ActionSQL != null && ActionSQL.Length == 1 && ActionSQL[0] == "*")
             {
                 return drParams.Table;
-            }
-
-            ArrayList sqlList = new ArrayList();
-            if (CiTable != null && CiTable.CiParentTable == null && MacroName.ToUpper() == "SELECT")
-            {
-                foreach (string actionSQL in ActionSQL)
-                {
-                    string sql = actionSQL;
-                    foreach (CiField ciField in CiTable.CiSearchableFields)
-                    {
-                        string fieldName = ciField.FieldName;
-                        sql = sql.Replace("@" + fieldName, "@" + ciField.SearchableFieldName);
-                    }
-
-                    sqlList.Add(sql);
-                }
-            }
-
-            if (sqlList.Count > 0)
-            {
-                return UiApplication.Me.GetBySQL((string[])sqlList.ToArray(typeof(string)), drParams);
             }
 
             return UiApplication.Me.GetBySQL(ActionSQL, drParams);

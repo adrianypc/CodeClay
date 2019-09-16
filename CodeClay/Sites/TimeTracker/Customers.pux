@@ -1,0 +1,5 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CiTable>
+  <TableName>Customers</TableName>
+  <TableCaption>All my customers</TableCaption>
+</CiTable>

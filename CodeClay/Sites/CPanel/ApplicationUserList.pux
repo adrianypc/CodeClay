@@ -28,4 +28,7 @@
   <UpdateMacro>
     <ActionSQL>exec spApplicationUser_upd @AppID, @UserEmail, @Role</ActionSQL>
   </UpdateMacro>
+  <DeleteMacro>
+    <ActionSQL>exec spApplicationUser_del @AppID, @UserEmail</ActionSQL>
+  </DeleteMacro>
 </CiTable>

@@ -188,25 +188,30 @@
 <asp:ObjectDataSource ID="MyTableData" runat="server" TypeName="CodeClay.CiDataSource"
     SelectMethod="SelectTable" UpdateMethod="UpdateTable" InsertMethod="InsertTable" DeleteMethod="DeleteTable"
     OnSelecting="MyTableData_Selecting" OnUpdating="MyTableData_Updating" OnInserting="MyTableData_Inserting" OnDeleting="MyTableData_Deleting"
-    OnUpdated="MyTableData_Updated" OnInserted="MyTableData_Inserted" OnDeleted="MyTableData_Deleted">
+    OnSelected="MyTableData_Selected" OnUpdated="MyTableData_Updated" OnInserted="MyTableData_Inserted" OnDeleted="MyTableData_Deleted">
     <SelectParameters>
         <asp:Parameter Name="Table" Type="Object" />
+        <asp:Parameter Name="View" Type="String" />
         <asp:Parameter Name="Parameters" Type="Object" />
+        <asp:Parameter Name="Script" Type="String" Direction="Output" />
     </SelectParameters>
     <UpdateParameters>
         <asp:Parameter Name="Table" Type="Object"  />
+        <asp:Parameter Name="View" Type="String" />
         <asp:Parameter Name="Parameters" Type="Object" />
         <asp:Parameter Name="RowKey" Type="String" />
         <asp:Parameter Name="Script" Type="String" Direction="Output" />
     </UpdateParameters>
     <InsertParameters>
         <asp:Parameter Name="Table" Type="Object"  />
+        <asp:Parameter Name="View" Type="String" />
         <asp:Parameter Name="Parameters" Type="Object" />
         <asp:Parameter Name="RowKey" Type="String" Direction="InputOutput" />
         <asp:Parameter Name="Script" Type="String" Direction="Output" />
     </InsertParameters>
     <DeleteParameters>
         <asp:Parameter Name="Table" Type="Object"  />
+        <asp:Parameter Name="View" Type="String" />
         <asp:Parameter Name="Parameters" Type="Object" />
         <asp:Parameter Name="RowKey" Type="String" />
         <asp:Parameter Name="Script" Type="String" Direction="Output" />

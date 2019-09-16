@@ -16,11 +16,16 @@
     <Caption>Application Name</Caption>
     <Width>20</Width>
   </CiTextField>
+  <CiCheckField>
+    <FieldName>UserDefined</FieldName>
+    <Caption>User Defined?</Caption>
+    <Width>10</Width>
+  </CiCheckField>
   <CiTextField>
     <FieldName>Role</FieldName>
     <Caption>Role</Caption>
     <Editable>false</Editable>
-    <Width>20</Width>
+    <Width>10</Width>
   </CiTextField>
   <CiLinkField>
     <FieldName>AppUrl</FieldName>
@@ -41,11 +46,25 @@
     <ActionSQL>?exec spApplication_sel null, @CI_UserEmail</ActionSQL>
   </SelectMacro>
   <InsertMacro>
-    <ActionSQL>?exec spApplication_ins @AppName, @CI_UserEmail</ActionSQL>
+    <ActionSQL>?exec spApplication_ins @AppName, @CI_UserEmail, @UserDefined</ActionSQL>
+    <CiSerializeMacro>
+      <Direction>Download</Direction>
+    </CiSerializeMacro>
   </InsertMacro>
   <UpdateMacro>
-    <ActionSQL>exec spApplication_upd @AppID, @AppName</ActionSQL>
+    <ActionSQL>exec spApplication_upd @AppID, @AppName, @UserDefined</ActionSQL>
+    <ActionSQL>select @AppID as AppID</ActionSQL>
+    <CiSerializeMacro>
+      <Direction>Download</Direction>
+    </CiSerializeMacro>
   </UpdateMacro>
+  <DeleteMacro>
+    <ActionSQL>exec spApplication_del @AppID</ActionSQL>
+    <ActionSQL>select @AppID as AppID</ActionSQL>
+    <CiSerializeMacro>
+      <Direction>Download</Direction>
+    </CiSerializeMacro>
+  </DeleteMacro>
   <CiMacro>
     <MacroName>Details</MacroName>
     <Caption>Application Details</Caption>

@@ -222,13 +222,72 @@ namespace CodeClay
 				}
 			}
 
-			foreach (CiMacro ciMacro in ciMacros)
-			{
-                ciMacro.Run(drParams);
-                script += ciMacro.ResultScript;
-			}
+            if (UiTable != null)
+            {
+                foreach (CiMacro ciMacro in ciMacros)
+                {
+                    ciMacro.Run(drParams);
+                    script += ciMacro.ResultScript;
+
+                    DataTable dt = ciMacro.ResultTable;
+                    if (dt != null && MyWebUtils.GetNumberOfRows(dt) > 0)
+                    {
+                        DataRow dr = dt.Rows[0];
+                        foreach (DataColumn dc in dt.Columns)
+                        {
+                            string key = dc.ColumnName;
+                            UiTable[key] = dr[key];
+                        }
+                    }
+                }
+            }
+
+            script += GetFormatScript(fieldName);
 
 			return script;
 		}
+
+        private string GetFormatScript(string fieldName)
+        {
+            string script = "";
+
+            if (UiTable != null)
+            {
+                CiTable ciTable = UiTable.CiTable;
+                if (ciTable != null)
+                {
+                    CiField ciField = ciTable.GetField(fieldName);
+                    if (ciField != null)
+                    {
+                        foreach (CiField ciFollowerField in ciField.CiFollowerFields)
+                        {
+                            script += GetEditableScript(ciFollowerField);
+                        }
+                    }
+                }
+            }
+
+            return script;
+        }
+
+        private string GetEditableScript(CiField ciField)
+        {
+            string script = "";
+
+            if (ciField != null)
+            {
+                DataRow drParams = GetState();
+                CiTable ciTable = ciField.CiTable;
+
+                bool isEditable = MyWebUtils.Eval<bool>(ciField.Editable, drParams);
+                script += string.Format("SetEditorEditable('{0}', '{1}', {2}, {3});",
+                    ciTable.TableName,
+                    ciField.FieldName,
+                    ciField.Mandatory.ToString().ToLower(),
+                    isEditable.ToString().ToLower());
+            }
+
+            return script;
+        }
     }
 }

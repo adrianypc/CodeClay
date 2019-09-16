@@ -6,6 +6,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Web;
+using DevExpress.Web.Data;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Xml;
@@ -55,9 +56,6 @@ namespace CodeClay
 
         [XmlElement("InsertRowAtBottom")]
         public bool InsertRowAtBottom { get; set; } = true;
-
-        [XmlElement("PageSize")]
-        public int PageSize { get; set; } = 100;
 
         [XmlElement("DefaultView")]
         public string DefaultView { get; set; } = "Grid";
@@ -235,6 +233,38 @@ namespace CodeClay
         }
 
         [XmlIgnore]
+        public CiMacro SearchMacro
+        {
+            get
+            {
+                if (mSelectMacro != null)
+                {
+                    ArrayList sqlList = new ArrayList();
+                    foreach (string actionSQL in mSelectMacro.ActionSQL)
+                    {
+                        string sql = actionSQL;
+                        foreach (CiField ciField in CiSearchableFields)
+                        {
+                            string fieldName = ciField.FieldName;
+                            sql = sql.Replace("@" + fieldName, "@" + ciField.SearchableID);
+                        }
+
+                        sqlList.Add(sql);
+                    }
+
+                    CiMacro searchMacro = new CiMacro();
+                    searchMacro.Caption = "Search";
+                    searchMacro.ActionSQL = sqlList.ToArray(typeof(string)) as string[];
+
+                    return searchMacro;
+                }
+
+
+                return null;
+            }
+        }
+
+        [XmlIgnore]
         public DataTable DataTable
         {
             get
@@ -371,6 +401,11 @@ namespace CodeClay
         // Methods (Override)
         // --------------------------------------------------------------------------------------------------
 
+        public override CiPlugin GetContainerPlugin()
+        {
+            return this;
+        }
+
         public override CiPlugin GetById(string id)
         {
             return MyUtils.Coalesce(GetField(id), GetTable(id)) as CiPlugin;
@@ -502,6 +537,17 @@ namespace CodeClay
                 bool isFinishEditing = (command == "Update") || (command == "Cancel");
 
                 return isStartEditing && !isFinishEditing;
+            }
+        }
+
+        public bool IsNavigating
+        {
+            get
+            {
+                string command = MyUtils.Coalesce(MyWebUtils.QueryStringCommand,
+                    UiApplication.Me.GetCommandFired(CiTable.TableName));
+
+                return (MyUtils.IsEmpty(command) || !IsEditing);
             }
         }
 
@@ -695,7 +741,7 @@ namespace CodeClay
                     CiField ciField = CiTable.GetField(columnName);
                     if (ciField != null && ciField.Searchable)
                     {
-                        searchableColumnName = ciField.SearchableFieldName;
+                        searchableColumnName = ciField.SearchableID;
                     }
                 }
 
@@ -771,9 +817,8 @@ namespace CodeClay
 
         protected void dxCard_InitNewCard(object sender, DevExpress.Web.Data.ASPxDataInitNewRowEventArgs e)
         {
+            RunDefaultMacro(dxCard, e);
             dxCard.SettingsPager.SettingsTableLayout.RowsPerPage = 0;
-
-            dxCard.JSProperties["cpFollowerFields"] = RunDefaultMacro(e);
         }
 
         protected void dxCard_CardValidating(object sender, ASPxCardViewDataValidationEventArgs e)
@@ -801,7 +846,8 @@ namespace CodeClay
             {
                 foreach (string key in CiTable.RowKeyNames)
                 {
-                    SetClientValue(key, GetServerValue(key));
+                    //SetClientValue(key, GetServerValue(key));
+                    SetClientValue(key, this[key]);
                 }
             }
         }
@@ -815,11 +861,12 @@ namespace CodeClay
                 switch (macroName)
                 {
                     case "New":
+                        dxCard.SettingsPager.Visible = false;
+                        break;
+
                     case "Edit":
                         dxCard.SettingsPager.Visible = false;
-
-                        // Display hidden fields when developer clicks on Inspect button
-                        dxCard.JSProperties["cpScript"] = GetInitFieldScript();
+                        dxCard.JSProperties["cpScript"] = GetInvisibleFieldScript();
                         break;
 
                     case "Delete":
@@ -860,7 +907,7 @@ namespace CodeClay
 
 		protected void dxCard_CustomColumnDisplayText(object sender, ASPxCardViewColumnDisplayTextEventArgs e)
 		{
-			SetupFieldDisplay(dxCard, e.Column.FieldName, e);
+			SetupFieldDisplay(e.Column.FieldName, e);
 		}
 
         protected void pgCardTabs_Init(object sender, EventArgs e)
@@ -964,9 +1011,9 @@ namespace CodeClay
             }
         }
 
-        protected void dxGrid_InitNewRow(object sender, DevExpress.Web.Data.ASPxDataInitNewRowEventArgs e)
+        protected void dxGrid_InitNewRow(object sender, ASPxDataInitNewRowEventArgs e)
         {
-			dxGrid.JSProperties["cpFollowerFields"] = RunDefaultMacro(e);
+            RunDefaultMacro(dxGrid, e);
         }
 
         protected void dxGrid_ToolbarItemClick(object source, DevExpress.Web.Data.ASPxGridViewToolbarItemClickEventArgs e)
@@ -980,9 +1027,10 @@ namespace CodeClay
                 switch (macroName)
                 {
                     case "New":
+                        break;
+
                     case "Edit":
-                        // Display hidden fields when developer clicks on Inspect button
-                        dxGrid.JSProperties["cpScript"] = GetInitFieldScript();
+                        dxGrid.JSProperties["cpScript"] = GetInvisibleFieldScript();
                         break;
 
                     case "Delete":
@@ -1037,7 +1085,7 @@ namespace CodeClay
 
 		protected void dxGrid_CustomColumnDisplayText(object sender, ASPxGridViewColumnDisplayTextEventArgs e)
 		{
-			SetupFieldDisplay(dxGrid, e.Column.FieldName, e);
+			SetupFieldDisplay(e.Column.FieldName, e);
 		}
 
         protected void pgGridTabs_Init(object sender, EventArgs e)
@@ -1106,26 +1154,49 @@ namespace CodeClay
             if (!CiTable.IsSearching)
             {
                 e.InputParameters["table"] = CiTable;
-                e.InputParameters["parameters"] = GetState();
+                e.InputParameters["view"] = this["_View"];
+                e.InputParameters["parameters"] = GetState(IsNavigating ? -2 : -1);
             }
         }
 
         protected void MyTableData_Inserting(object sender, ObjectDataSourceMethodEventArgs e)
         {
             e.InputParameters["table"] = CiTable;
-            e.InputParameters["parameters"] = GetState();
+            e.InputParameters["view"] = this["_View"];
+            e.InputParameters["parameters"] = GetState(-2);
         }
 
         protected void MyTableData_Updating(object sender, ObjectDataSourceMethodEventArgs e)
         {
             e.InputParameters["table"] = CiTable;
+            e.InputParameters["view"] = this["_View"];
             e.InputParameters["parameters"] = GetState();
         }
 
         protected void MyTableData_Deleting(object sender, ObjectDataSourceMethodEventArgs e)
         {
             e.InputParameters["table"] = CiTable;
+            e.InputParameters["view"] = this["_View"];
             e.InputParameters["parameters"] = GetState();
+        }
+
+        protected void MyTableData_Selected(object sender, ObjectDataSourceStatusEventArgs e)
+        {
+            if (e.OutputParameters.Count > 0 && CiTable != null)
+            {
+                string script = MyUtils.Coalesce(e.OutputParameters["Script"], "").ToString();
+                if (!MyUtils.IsEmpty(script))
+                {
+                    if (IsCardView)
+                    {
+                        dxCard.JSProperties["cpScript"] = script;
+                    }
+                    else if (IsGridView)
+                    {
+                        dxGrid.JSProperties["cpScript"] = script;
+                    }
+                }
+            }
         }
 
         protected void MyTableData_Inserted(object sender, ObjectDataSourceStatusEventArgs e)
@@ -1254,55 +1325,9 @@ namespace CodeClay
             return null;
         }
 
-        public override object GetServerValue(string key, int rowIndex = -1)
+        protected override object GetServerValue(string key, int rowIndex = -1)
         {
-            string defaultView = (CiTable != null) ? CiTable.DefaultView : null;
-
             return IsCardView ? GetCardValue(key, rowIndex) : GetGridValue(key, rowIndex);
-        }
-
-        public override DataRow GetState(int rowIndex = -1)
-        {
-            if (rowIndex < 0)
-            {
-                rowIndex = GetFocusedIndex();
-            }
-
-            if (CiTable != null)
-            {
-                DataTable dt = new DataTable();
-                DataColumnCollection dcColumns = dt.Columns;
-                DataRow dr = dt.NewRow();
-                dt.Rows.Add(dr);
-
-                foreach (CiField ciField in CiTable.CiFields)
-                {
-                    for (int i = 0; i < (ciField.Searchable ? 2 : 1); i++)
-                    {
-                        string fieldName = (i == 1)
-                            ? ciField.SearchableFieldName
-                            : ciField.FieldName;
-
-                        object fieldValue = this[fieldName, rowIndex];
-
-                        if (!dcColumns.Contains(fieldName))
-                        {
-                            dcColumns.Add(fieldName, ciField.GetNativeType(fieldValue));
-                        }
-
-                        dr[fieldName] = ciField.GetNativeValue(fieldValue);
-                    }
-                }
-
-                if (UiParentTable != null)
-                {
-                    dr = MyWebUtils.AppendColumns(dr, UiParentTable.GetState(), false);
-                }
-
-                return dr;
-            }
-
-            return null;
         }
 
         // --------------------------------------------------------------------------------------------------
@@ -1406,12 +1431,6 @@ namespace CodeClay
                     ? GridViewNewItemRowPosition.Bottom
                     : GridViewNewItemRowPosition.Top;
 
-                if (CiTable.PageSize > 0)
-                {
-                    dxTable.SettingsPager.Mode = GridViewPagerMode.ShowPager;
-                    dxTable.SettingsPager.PageSize = CiTable.PageSize;
-                }
-
                 // Set JSProperties
                 dxTable.JSProperties["cpTableName"] = CiTable.TableName;
                 dxTable.JSProperties["cpQuickInsert"] = CiTable.QuickInsert;
@@ -1434,7 +1453,7 @@ namespace CodeClay
 
                 if (isSearchMode)
                 {
-                    fieldName = ciField.SearchableFieldName;
+                    fieldName = ciField.SearchableID;
                 }
                 else if (!MyUtils.IsEmpty(textFieldName))
                 {
@@ -1569,7 +1588,7 @@ namespace CodeClay
             }
         }
 
-        private string RunDefaultMacro(DevExpress.Web.Data.ASPxDataInitNewRowEventArgs e)
+        private void RunDefaultMacro(ASPxGridBase dxTable, ASPxDataInitNewRowEventArgs e)
         {
 			ArrayList changedColumnNames = new ArrayList();
 			Hashtable followerFields = new Hashtable();
@@ -1638,14 +1657,14 @@ namespace CodeClay
 				}
 			}
 
-			return followerFieldNames;
+            dxTable.JSProperties["cpScript"] = GetInvisibleFieldScript();
         }
 
         private object GetCardValue(string key, int rowIndex = -1)
         {
             if (CiTable != null)
             {
-                if (rowIndex < 0)
+                if (rowIndex == -1)
                 {
                     rowIndex = IsInserting ? -1 :
                         (CiTable.IsSearching ? 0 : dxCard.FocusedCardIndex);
@@ -1669,7 +1688,7 @@ namespace CodeClay
 
         private object GetGridValue(string key, int rowIndex = -1)
         {
-			if (rowIndex < 0)
+			if (rowIndex == -1)
 			{
 				rowIndex = IsInserting ? -1 :
 				   (CiTable.IsSearching ? 0 : dxGrid.FocusedRowIndex);
@@ -1782,19 +1801,19 @@ namespace CodeClay
                 bool isParentOrChildEditing = IsParentEditing || IsChildEditing;
 
                 CiMacro insertMacro = CiTable.InsertMacro;
-                if (insertMacro == null || !insertMacro.IsVisible(drParams) || isParentOrChildEditing)
+                if (insertMacro == null  || isParentOrChildEditing || !insertMacro.IsVisible(drParams))
                 {
                     disabledMacros += LIST_SEPARATOR + "New";
                 }
 
                 CiMacro updateMacro = CiTable.UpdateMacro;
-                if (updateMacro == null || !updateMacro.IsVisible(drParams) || isParentOrChildEditing || !RecordsExist)
+                if (updateMacro == null || isParentOrChildEditing || !RecordsExist || !updateMacro.IsVisible(drParams))
                 {
                     disabledMacros += LIST_SEPARATOR + "Edit";
                 }
 
                 CiMacro deleteMacro = CiTable.DeleteMacro;
-                if (deleteMacro == null || !deleteMacro.IsVisible(drParams) || isParentOrChildEditing || !RecordsExist)
+                if (deleteMacro == null || isParentOrChildEditing || !RecordsExist || !deleteMacro.IsVisible(drParams))
                 {
                     disabledMacros += LIST_SEPARATOR + "Delete";
                 }
@@ -1807,7 +1826,7 @@ namespace CodeClay
                         {
                             string macroName = ciMacro.MacroName;
 
-                            if (!ciMacro.IsVisible(drParams)|| isParentOrChildEditing || (IsCardView && !RecordsExist))
+                            if (isParentOrChildEditing || (IsCardView && !RecordsExist) || !ciMacro.IsVisible(drParams))
                             {
                                 disabledMacros += LIST_SEPARATOR + macroName;
                             }
@@ -1861,7 +1880,7 @@ namespace CodeClay
             return script;
         }
 
-		private void SetupFieldDisplay(ASPxGridBase dxTable, string fieldName, ASPxGridColumnDisplayTextEventArgs e)
+		private void SetupFieldDisplay(string fieldName, ASPxGridColumnDisplayTextEventArgs e)
 		{
 			if (CiTable != null)
 			{
@@ -1875,25 +1894,6 @@ namespace CodeClay
 						e.DisplayText = string.Format("<span style=\"color:{0}\">{1}</span>", foreColor, e.Value);
 					}
 				}
-
-                //if (dxTable != null && e.VisibleIndex == GetFocusedIndex())
-                //{
-                //    string script = "";
-
-                //    if (dxTable.JSProperties.ContainsKey("cpScript"))
-                //    {
-                //        script = MyUtils.Coalesce(dxTable.JSProperties["cpScript"], "").ToString();
-                //    }
-
-                //    string fieldValue = HttpUtility.JavaScriptStringEncode(MyUtils.Coalesce(e.Value, "").ToString());
-
-                //    script += string.Format("InitField(\'{0}\', \'{1}\', \'{2}\'); ",
-                //      CiTable.TableName,
-                //      fieldName,
-                //      fieldValue);
-
-                //    dxTable.JSProperties["cpScript"] = script;
-                //}
             }
         }
 
@@ -2078,7 +2078,7 @@ namespace CodeClay
             return true;
         }
 
-        private string GetInitFieldScript()
+        private string GetInvisibleFieldScript()
         {
             string script = "";
 
@@ -2166,7 +2166,7 @@ namespace CodeClay
             {
                 drSQL["SQLType"] = propertyName + "SQL";
                 drSQL["SQL"] = mPropertySQL[propertyName];
-                MyWebUtils.GetBySQL("exec spSQL_ins @EntityType, @SQLType, @AppID, @TableID, @EntityID, @SQL", drSQL);
+                MyWebUtils.GetBySQL("exec spSQL_ins @EntityType, @DBChangeSQLType, @AppID, @TableID, @EntityID, @SQL", drSQL);
             }
         }
 

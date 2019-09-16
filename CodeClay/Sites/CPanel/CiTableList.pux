@@ -36,6 +36,11 @@
     <DropdownSQL>select Code from Dropdown where Category = 'View'</DropdownSQL>
     <Width>10</Width>
   </CiComboField>
+  <CiCheckField>
+    <FieldName>Bound</FieldName>
+    <Caption>Bound?</Caption>
+    <Width>10</Width>
+  </CiCheckField>
   <CiLinkField>
     <FieldName>TableUrl</FieldName>
     <Caption>Table Url</Caption>
@@ -55,14 +60,13 @@
     <ActionSQL>?exec spTable_sel @AppID, null</ActionSQL>
   </SelectMacro>
   <InsertMacro>
-    <ActionSQL>?exec spTable_ins @AppID, @TableName, @Caption, @DefaultView</ActionSQL>
-    <ActionSQL>select @AppID as AppID, @TableID as TableID</ActionSQL>
+    <ActionSQL>?exec spTable_ins @AppID, @TableName, @Caption, @DefaultView, @Bound</ActionSQL>
     <CiSerializeMacro>
       <Direction>Download</Direction>
     </CiSerializeMacro>
   </InsertMacro>
   <UpdateMacro>
-    <ActionSQL>exec spTable_updShort @AppID, @TableID, @TableName, @Caption, @DefaultView</ActionSQL>
+    <ActionSQL>exec spTable_updShort @AppID, @TableID, @TableName, @Caption, @DefaultView, @Bound</ActionSQL>
     <ActionSQL>select @AppID as AppID, @TableID as TableID</ActionSQL>
     <CiSerializeMacro>
       <Direction>Download</Direction>
