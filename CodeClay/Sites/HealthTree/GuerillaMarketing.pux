@@ -30,6 +30,8 @@
         <Caption>Ad Image</Caption>
         <Folder lang="sql">select 'SavedFiles\GMarketing\' + ltrim(str(@ProductID)) + '\F' + ltrim(str(@GMarketingNo))</Folder>
         <Width>50</Width>
+      <ImageHeight>200</ImageHeight>
+      <ImageWidth>500</ImageWidth>
     </CiImageField>
     <DefaultMacro>
 		<ActionSQL>

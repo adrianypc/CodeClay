@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CiTable>
+  <TableName>Jobs</TableName>
+  <TableCaption>All jobs</TableCaption>
+  <RowKey>JobID</RowKey>
+  <CiNumericField>
+    <FieldName>JobID</FieldName>
+    <Caption>Job identifier</Caption>
+    <Width>10</Width>
+    <Value>1</Value>
+    <MaxValue>3000</MaxValue>
+  </CiNumericField>
+  <CiTextField>
+    <FieldName>JobDescription</FieldName>
+    <Caption>Job description</Caption>
+    <Width>90</Width>
+  </CiTextField>
+  <SelectMacro>
+    <ActionSQL>select JobID, JobDescription from Jobs order by  JobID</ActionSQL>
+  </SelectMacro>
+  <InsertMacro>
+    <ActionSQL>insert into Jobs (JobID, JobDescription) values (@JobID, @JobDescription)</ActionSQL>
+  </InsertMacro>
+  <UpdateMacro>
+    <ActionSQL>update Jobs set JobDescription = @JobDescription where  JobID = @JobID</ActionSQL>
+  </UpdateMacro>
+  <DeleteMacro>
+    <ActionSQL>delete from Jobs where JobID = @JobID</ActionSQL>
+  </DeleteMacro>
+</CiTable>

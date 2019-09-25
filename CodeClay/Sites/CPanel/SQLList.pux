@@ -42,6 +42,7 @@
   <InsertMacro>
     <ActionSQL>exec spSQL_ins @EntityType, @SQLType, @AppID, @TableID, @EntityID, @SQL</ActionSQL>
     <ActionSQL>select @AppID as AppID, @TableID as TableID</ActionSQL>
+    <VisibleSQL>select 1 from CiTable where AppID = @AppID and TableID = @TableID and Bound = 0 or Bound is null</VisibleSQL>
     <CiSerializeMacro>
       <Direction>Download</Direction>
     </CiSerializeMacro>
@@ -49,6 +50,7 @@
   <UpdateMacro>
     <ActionSQL>exec spSQL_upd @EntityType, @SQLType, @AppID, @TableID, @EntityID, @LineNum, @SQL</ActionSQL>
     <ActionSQL>select @AppID as AppID, @TableID as TableID</ActionSQL>
+    <VisibleSQL>select 1 from CiTable where AppID = @AppID and TableID = @TableID and Bound = 0 or Bound is null</VisibleSQL>
     <CiSerializeMacro>
       <Direction>Download</Direction>
     </CiSerializeMacro>
@@ -56,6 +58,7 @@
   <DeleteMacro>
     <ActionSQL>exec spSQL_del @EntityType, @SQLType, @AppID, @TableID, @EntityID, @LineNum</ActionSQL>
     <ActionSQL>select @AppID as AppID, @TableID as TableID</ActionSQL>
+    <VisibleSQL>select 1 from CiTable where AppID = @AppID and TableID = @TableID and Bound = 0 or Bound is null</VisibleSQL>
     <CiSerializeMacro>
       <Direction>Download</Direction>
     </CiSerializeMacro>

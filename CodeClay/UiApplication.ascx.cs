@@ -85,7 +85,7 @@ namespace CodeClay
         {
             get
             {
-                if (mDbProvider == null)
+                if (mDbProvider == null && !MyUtils.IsEmpty(ProviderName))
                 {
                     mDbProvider = DbProviderFactories.GetFactory(ProviderName);
                 }
@@ -694,10 +694,14 @@ namespace CodeClay
 
         protected override void DownloadDerivedValues(DataRow drPluginDefinition, XElement xPluginDefinition)
         {
+            xPluginDefinition.Add(new XElement("IsDesigner", true));
+            xPluginDefinition.Add(new XElement("ProviderName", "System.Data.SqlClient"));
+
             string databaseName = MyWebUtils.GetField(drPluginDefinition, "SQLDatabaseName");
             string connectionString = UiApplication.Me.CiApplication.ConnectionString;
             connectionString = connectionString.Replace("CPanel", databaseName);
             xPluginDefinition.Add(new XElement("ConnectionString", connectionString));
+
         }
     }
 }

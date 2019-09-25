@@ -1,6 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<CiTable>
-  <TableName>AllTaskList</TableName>
-  <TableCaption>All Company Tasks!!!</TableCaption>
-  <DefaultView>Card</DefaultView>
-</CiTable>

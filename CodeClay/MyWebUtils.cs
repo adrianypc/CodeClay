@@ -534,7 +534,9 @@ namespace CodeClay
             DataRow dr = dt.NewRow();
             dt.Rows.Add(dr);
 
-            return MyWebUtils.EvalSQL("select dbo.fnGetAuthorisedApp(@CI_UserEmail, @Application)", dr, true).ToString();
+            object sqlResult = MyWebUtils.EvalSQL("select dbo.fnGetAuthorisedApp(@CI_UserEmail, @Application)", dr, true);
+
+            return MyUtils.Coalesce(sqlResult, "").ToString();
         }
 
         public static XmlElement CreateXmlElement(string name, object value)

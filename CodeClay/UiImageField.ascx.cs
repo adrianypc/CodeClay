@@ -22,6 +22,12 @@ namespace CodeClay
         [XmlSqlElement("Folder", typeof(string))]
         public XmlElement Folder { get; set; } = null;
 
+        [XmlElement("ImageWidth")]
+        public int ImageWidth { get; set; } = 0;
+
+        [XmlElement("ImageHeight")]
+        public int ImageHeight { get; set; } = 0;
+
         // --------------------------------------------------------------------------------------------------
         // Methods (Override)
         // --------------------------------------------------------------------------------------------------
@@ -87,40 +93,53 @@ namespace CodeClay
         {
             mEditor = dxImage;
             base.Page_Load(sender, e);
-            
-            string defaultImageUrl = (CiImageField != null) ? CiImageField.Value : "";
-            bool folderExists = (CiImageField != null) && (CiImageField.Folder != null);
-            string tableName = (CiTable != null) ? CiTable.TableName : "";
-            string fieldName = (CiImageField != null) ? CiImageField.FieldName : "";
-            string imageUrl = MyUtils.Coalesce(ImageUrl, defaultImageUrl);
-            bool emptyUrl = MyUtils.IsEmpty(imageUrl);
 
-            int widthPixels = (CiImageField != null) ? CiImageField.Width : 0;
-            widthPixels = widthPixels > 0 ? widthPixels : 100;
+            if (CiImageField != null)
+            {
+                string defaultImageUrl = CiImageField.Value;
+                bool folderExists = (CiImageField.Folder != null);
+                string tableName = CiTable.TableName;
+                string fieldName = CiImageField.FieldName;
+                string imageUrl = MyUtils.Coalesce(ImageUrl, defaultImageUrl);
+                bool emptyUrl = MyUtils.IsEmpty(imageUrl);
+                bool fileExists = !emptyUrl && File.Exists(Server.MapPath(imageUrl));
+                int imageWidth = fileExists ? CiImageField.ImageWidth : 1;
+                int imageHeight = fileExists ? CiImageField.ImageHeight : 1;
 
-            dxImage.Caption = null;
-            dxImage.BackColor = Color.Transparent;
-            dxImage.Visible = !IsEditing;
-            dxImage.Width = Unit.Pixel(widthPixels);
-            dxImage.ClientVisible = !emptyUrl;
-            dxImage.ImageUrl = imageUrl;
-            dxImage.JSProperties["cpTableName"] = tableName;
-            dxImage.JSProperties["cpFieldName"] = fieldName;
-            dxImage.JSProperties["cpShortImageUrl"] = imageUrl;
+                dxImage.Caption = null;
+                dxImage.BackColor = Color.Transparent;
+                dxImage.Visible = !IsEditing;
+                dxImage.ClientVisible = !emptyUrl;
+                dxImage.ImageUrl = imageUrl;
+                dxImage.JSProperties["cpTableName"] = tableName;
+                dxImage.JSProperties["cpFieldName"] = fieldName;
+                dxImage.JSProperties["cpShortImageUrl"] = imageUrl;
 
-            dxEditImage.Visible = folderExists && IsEditing;
-            dxEditImage.Width = Unit.Pixel(widthPixels);
-            dxEditImage.ClientVisible = !emptyUrl;
-            dxEditImage.ImageUrl = imageUrl;
-            dxEditImage.JSProperties["cpTableName"] = tableName;
-            dxEditImage.JSProperties["cpFieldName"] = fieldName;
-            dxEditImage.JSProperties["cpShortImageUrl"] = imageUrl;
+                dxEditImage.Visible = folderExists && IsEditing;
+                dxEditImage.ClientVisible = !emptyUrl;
+                dxEditImage.ImageUrl = imageUrl;
+                dxEditImage.JSProperties["cpTableName"] = tableName;
+                dxEditImage.JSProperties["cpFieldName"] = fieldName;
+                dxEditImage.JSProperties["cpShortImageUrl"] = imageUrl;
 
-            deleteButtonPanel.Visible = folderExists && IsEditing;
-            dxDeleteImage.ClientVisible = !emptyUrl;
+                if (imageWidth > 0)
+                {
+                    dxImage.Width = Unit.Pixel(imageWidth);
+                    dxEditImage.Width = Unit.Pixel(imageWidth);
+                }
 
-            dxUploadImage.Visible = folderExists && IsEditing;
-            dxUploadImage.ClientVisible = emptyUrl;
+                if (imageHeight > 0)
+                {
+                    dxImage.Height = Unit.Pixel(imageHeight);
+                    dxEditImage.Height = Unit.Pixel(imageHeight);
+                }
+
+                deleteButtonPanel.Visible = folderExists && IsEditing;
+                dxDeleteImage.ClientVisible = !emptyUrl;
+
+                dxUploadImage.Visible = folderExists && IsEditing;
+                dxUploadImage.ClientVisible = emptyUrl;
+            }
         }
 
         protected void dxImagePanel_Callback(object sender, CallbackEventArgsBase e)

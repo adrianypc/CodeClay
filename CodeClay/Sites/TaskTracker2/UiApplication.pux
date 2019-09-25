@@ -1,5 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<CiApplication>
-  <AppName>TaskTracker2</AppName>
-  <ConnectionString>Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=U_TaskTracker2;Integrated Security=True;Connect Timeout=30</ConnectionString>
-</CiApplication>

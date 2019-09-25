@@ -48,10 +48,14 @@ namespace CodeClay
             int? appID = MyWebUtils.GetField<int>(drParams, "AppID");
             int? tableID = MyWebUtils.GetField<int>(drParams, "TableID");
 
-            XiPlugin xiPlugin = new XiApplication();
+            XiPlugin xiPlugin = null;
             if (tableID != null)
             {
                 xiPlugin = new XiTable();
+            }
+            else
+            {
+                xiPlugin = new XiApplication();
             }
 
             string puxUrl = xiPlugin.GetPuxUrl(drParams);

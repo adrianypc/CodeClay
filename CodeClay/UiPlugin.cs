@@ -230,7 +230,8 @@ namespace CodeClay
 
                         if (ciOldPlugin != null)
                         {
-                            ciOldPlugin.Inherits(ciNewPlugin);
+                            //ciOldPlugin.Inherits(ciNewPlugin);
+                            ciNewPlugin.Inherits(ciOldPlugin);
                         }
                         else
                         {

@@ -1,5 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <CiApplication>
-  <AppName>TaskTracker</AppName>
+  <IsDesigner>true</IsDesigner>
+  <ProviderName>System.Data.SqlClient</ProviderName>
   <ConnectionString>Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=U_TaskTracker;Integrated Security=True;Connect Timeout=30</ConnectionString>
+  <CiMenu>
+    <MenuName>Application</MenuName>
+  </CiMenu>
 </CiApplication>

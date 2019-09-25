@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<CiApplication>
+  <AppName>CPanel</AppName>
+  <IsDesigner>true</IsDesigner>
+  <ProviderName>System.Data.SqlClient</ProviderName>
+  <ConnectionString>Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=CPanel;Integrated Security=True;Connect Timeout=30</ConnectionString>
+  <HomePluginSrc>CiApplicationList.pux</HomePluginSrc>
+  <CiMenu>
+    <MenuName>Application</MenuName>
+    <CiMenu>
+      <MenuName>Application List</MenuName>
+      <PluginSrc>CiApplicationList.pux</PluginSrc>
+    </CiMenu>
+  </CiMenu>
+</CiApplication>
