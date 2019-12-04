@@ -14,6 +14,22 @@
 	);
 }
 
+function dxHtmlMemo_Init(sender, event) {
+    var dxHtmlMemo = sender;
+    var tableName = dxHtmlMemo.cpTableName;
+    var fieldName = dxHtmlMemo.name;
+    var fieldValue = dxHtmlMemo.GetHtml();
+
+    dxHtmlMemo.SetHeight(dxHtmlMemo.GetMainElement().scrollHeight + 5);
+
+    InitField(tableName, fieldName, fieldValue);
+
+    RegisterEditor(dxHtmlMemo,
+        function () { return this.GetHtml(); },
+        function (value) { this.SetHtml(value); }
+    );
+}
+
 function dxMemo_KeyPress(sender, event) {
     var dxMemo = sender;
 
@@ -35,6 +51,17 @@ function dxMemo_ValueChanged(sender, event) {
     SetField(tableName, fieldName, fieldValue);
 
     RunExitMacro(dxMemo);
+}
+
+function dxHtmlMemo_HtmlChanged(sender, event) {
+    var dxHtmlMemo = sender;
+    var tableName = dxHtmlMemo.cpTableName;
+    var fieldName = dxHtmlMemo.name;
+    var fieldValue = dxHtmlMemo.GetHtml();
+
+    SetField(tableName, fieldName, fieldValue);
+
+    RunExitMacro(dxHtmlMemo);
 }
 
 function dxMemoPanel_Init(sender, event) {

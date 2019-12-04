@@ -100,6 +100,11 @@ function dxUpload_FileUploadComplete(sender, event) {
 
 function dxUpdateText_Init(sender, event) {
     dxUploadText = sender;
+    var tableName = dxUploadText.cpTableName;
+    var fieldName = dxUploadText.cpFieldName;
+    var fieldValue = dxUploadText.GetText();
+
+    InitField(tableName, fieldName, fieldValue);
 
     RegisterEditor(dxUploadText,
         function () { return this.GetText(); },
@@ -115,4 +120,6 @@ function dxUpdateText_ValueChanged(sender, event) {
     var fieldValue = dxUploadText.GetText();
 
     SetField(tableName, fieldName, fieldValue);
+
+    RunExitMacro(dxUploadText);
 }

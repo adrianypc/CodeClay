@@ -69,6 +69,9 @@
   <CiTable Src="SQLList.pux?EntityType=CiMacro&amp;SQLType=VisibleSQL">
     <TableName>VisibleSQLList</TableName>
   </CiTable>
+  <CiTable Src="SQLList.pux?EntityType=CiMacro&amp;SQLType=ValidateSQL">
+    <TableName>ValidateSQLList</TableName>
+  </CiTable>
   <SelectMacro>
     <ActionSQL>?exec spMacro_sel @AppID, @TableID, @MacroID</ActionSQL>
   </SelectMacro>

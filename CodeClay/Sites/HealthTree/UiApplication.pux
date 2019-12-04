@@ -7,105 +7,117 @@
   <CiMenu>
     <MenuName>Application</MenuName>
     <CiMenu>
-      <MenuName>Customers</MenuName>
-      <PluginSrc>Customers.pux</PluginSrc>
+          <MenuName>Tasks</MenuName>
+          <PluginSrc>TaskProjects.pux</PluginSrc>
     </CiMenu>
     <CiMenu>
-      <MenuName>Suppliers</MenuName>
-      <PluginSrc>Suppliers.pux</PluginSrc>
+	    <MenuName>Customers</MenuName>
+	    <PluginSrc>Customers.pux</PluginSrc>
     </CiMenu>
     <CiMenu>
-      <MenuName>Products</MenuName>
-      <CiMenu>
-        <MenuName>Active</MenuName>
-        <PluginSrc>ActiveProducts.pux</PluginSrc>
-      </CiMenu>
-      <CiMenu>
-        <MenuName>Inactive</MenuName>
-        <PluginSrc>InactiveProducts.pux</PluginSrc>
-      </CiMenu>
+	    <MenuName>Suppliers</MenuName>
+	    <PluginSrc>Suppliers.pux</PluginSrc>
     </CiMenu>
-    <CiMenu>
-      <MenuName>Customer Orders</MenuName>
       <CiMenu>
-        <MenuName>Current</MenuName>
-        <PluginSrc>CurrentCustomerOrders.pux</PluginSrc>
+          <MenuName>Products</MenuName>
+          <CiMenu>
+              <MenuName>Active</MenuName>
+              <PluginSrc>ActiveProducts.pux</PluginSrc>
+          </CiMenu>
+          <CiMenu>
+              <MenuName>Inactive</MenuName>
+              <PluginSrc>InactiveProducts.pux</PluginSrc>
+          </CiMenu>
+          <CiMenu>
+              <MenuName>Guerilla Weekly Posts</MenuName>
+              <PluginSrc>GuerillaWeeklyPosts.pux</PluginSrc>
+          </CiMenu>
+          <CiMenu>
+              <MenuName>Third Party Platform Weekly Posts</MenuName>
+              <PluginSrc>ThirdPartyPlatformWeeklyPosts.pux</PluginSrc>
+          </CiMenu>
       </CiMenu>
       <CiMenu>
-        <MenuName>Historical</MenuName>
-        <PluginSrc>HistoricalCustomerOrders.pux</PluginSrc>
-      </CiMenu>
-    </CiMenu>
-    <CiMenu>
-      <MenuName>Supplier Orders</MenuName>
-      <CiMenu>
-        <MenuName>Current</MenuName>
-        <PluginSrc>CurrentSupplierOrders.pux</PluginSrc>
-      </CiMenu>
-      <CiMenu>
-        <MenuName>Historical</MenuName>
-        <PluginSrc>HistoricalSupplierOrders.pux</PluginSrc>
-      </CiMenu>
-    </CiMenu>
-    <CiMenu>
-      <MenuName>Inter-Branch Invoices</MenuName>
-      <CiMenu>
-        <MenuName>Current</MenuName>
-        <PluginSrc>InterBranchInvoice.pux</PluginSrc>
+          <MenuName>Customer Orders</MenuName>
+          <CiMenu>
+              <MenuName>Current</MenuName>
+              <PluginSrc>CurrentCustomerOrders.pux</PluginSrc>
+          </CiMenu>
+          <CiMenu>
+              <MenuName>Historical</MenuName>
+              <PluginSrc>HistoricalCustomerOrders.pux</PluginSrc>
+          </CiMenu>
       </CiMenu>
       <CiMenu>
-        <MenuName>Historical</MenuName>
-        <PluginSrc>HistoricalInterBranchInvoices.pux</PluginSrc>
-      </CiMenu>
-    </CiMenu>
-    <CiMenu>
-      <MenuName>Inventory SG</MenuName>
-      <CiMenu>
-        <MenuName>Active</MenuName>
-        <PluginSrc>ActiveInventorySG.pux</PluginSrc>
-      </CiMenu>
-      <CiMenu>
-        <MenuName>Inactive</MenuName>
-        <PluginSrc>InactiveInventorySG.pux</PluginSrc>
+          <MenuName>Supplier Orders</MenuName>
+          <CiMenu>
+              <MenuName>Current</MenuName>
+              <PluginSrc>CurrentSupplierOrders.pux</PluginSrc>
+          </CiMenu>
+          <CiMenu>
+              <MenuName>Historical</MenuName>
+              <PluginSrc>HistoricalSupplierOrders.pux</PluginSrc>
+          </CiMenu>
       </CiMenu>
       <CiMenu>
-        <MenuName>6 month expiry report</MenuName>
-        <PluginSrc>ExpireInventorySG.pux</PluginSrc>
-      </CiMenu>
-    </CiMenu>
-    <CiMenu>
-      <MenuName>Inventory AU</MenuName>
-      <CiMenu>
-        <MenuName>Active</MenuName>
-        <PluginSrc>ActiveInventoryAU.pux</PluginSrc>
-      </CiMenu>
-      <CiMenu>
-        <MenuName>Inactive</MenuName>
-        <PluginSrc>InactiveInventoryAU.pux</PluginSrc>
+          <MenuName>Inter-Branch Invoices</MenuName>
+          <CiMenu>
+              <MenuName>Current</MenuName>
+              <PluginSrc>InterBranchInvoice.pux</PluginSrc>
+          </CiMenu>
+          <CiMenu>
+              <MenuName>Historical</MenuName>
+              <PluginSrc>HistoricalInterBranchInvoices.pux</PluginSrc>
+          </CiMenu>
       </CiMenu>
       <CiMenu>
-        <MenuName>6 month expiry report</MenuName>
-        <PluginSrc>ExpireInventoryAU.pux</PluginSrc>
-      </CiMenu>
-    </CiMenu>
-    <CiMenu>
-      <MenuName>Quarterly Customer Sale Report</MenuName>
-      <PluginSrc>CustomerSalesReport.pux</PluginSrc>
-    </CiMenu>
-    <CiMenu>
-      <MenuName>Setup</MenuName>
-      <CiMenu>
-        <MenuName>Dropdowns</MenuName>
-        <PluginSrc>Dropdowns.pux</PluginSrc>
-      </CiMenu>
-      <CiMenu>
-        <MenuName>Branches</MenuName>
-        <PluginSrc>Branches.pux</PluginSrc>
+          <MenuName>Inventory SG</MenuName>
+          <CiMenu>
+              <MenuName>Active</MenuName>
+              <PluginSrc>ActiveInventorySG.pux</PluginSrc>
+          </CiMenu>
+          <CiMenu>
+              <MenuName>Inactive</MenuName>
+              <PluginSrc>InactiveInventorySG.pux</PluginSrc>
+          </CiMenu>
+          <CiMenu>
+              <MenuName>6 month expiry report</MenuName>
+              <PluginSrc>ExpireInventorySG.pux</PluginSrc>
+          </CiMenu>
       </CiMenu>
       <CiMenu>
-        <MenuName>Brands</MenuName>
-        <PluginSrc>Brands.pux</PluginSrc>
+          <MenuName>Inventory AU</MenuName>
+          <CiMenu>
+              <MenuName>Active</MenuName>
+              <PluginSrc>ActiveInventoryAU.pux</PluginSrc>
+          </CiMenu>
+          <CiMenu>
+              <MenuName>Inactive</MenuName>
+              <PluginSrc>InactiveInventoryAU.pux</PluginSrc>
+          </CiMenu>
+          <CiMenu>
+              <MenuName>6 month expiry report</MenuName>
+              <PluginSrc>ExpireInventoryAU.pux</PluginSrc>
+          </CiMenu>
       </CiMenu>
-    </CiMenu>
+      <CiMenu>
+          <MenuName>Quarterly Customer Sale Report</MenuName>
+          <PluginSrc>CustomerSalesReport.pux</PluginSrc>
+      </CiMenu>
+      <CiMenu>
+          <MenuName>Setup</MenuName>
+          <CiMenu>
+              <MenuName>Dropdowns</MenuName>
+              <PluginSrc>Dropdowns.pux</PluginSrc>
+          </CiMenu>
+          <CiMenu>
+              <MenuName>Branches</MenuName>
+              <PluginSrc>Branches.pux</PluginSrc>
+          </CiMenu>
+          <CiMenu>
+              <MenuName>Brands</MenuName>
+              <PluginSrc>Brands.pux</PluginSrc>
+          </CiMenu>
+      </CiMenu>
   </CiMenu>
 </CiApplication>

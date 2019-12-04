@@ -15,11 +15,18 @@
     <Caption>Table ID</Caption>
     <Hidden>true</Hidden>
   </CiField>
-  <CiTextField>
+  <CiNumericField>
     <FieldName>FieldID</FieldName>
     <Caption>Field ID</Caption>
-    <Editable>false</Editable>
     <Width>5</Width>
+  </CiNumericField>
+  <CiTextField>
+    <FieldName>OldFieldID</FieldName>
+    <Caption>Field ID</Caption>
+    <Hidden>true</Hidden>
+    <Width>5</Width>
+    <Computed>true</Computed>
+    <Value>FieldID</Value>
   </CiTextField>
   <CiTextField>
     <FieldName>FieldName</FieldName>
@@ -39,7 +46,7 @@
   </CiComboField>
   <CiNumericField>
     <FieldName>Width</FieldName>
-    <Caption>Width</Caption>
+    <Caption lang="sql">select 'Width ' + case when DefaultView = 'Card' then 'px' else '%' end from CiTable where AppID = @AppID and TableID = @TableID</Caption>
     <Value>10</Value>
     <Width>10</Width>
   </CiNumericField>
@@ -64,8 +71,9 @@
     </CiSerializeMacro>
   </InsertMacro>
   <UpdateMacro>
-    <ActionSQL>exec spField_updShort @AppID, @TableID, @FieldID, @FieldName, @Caption, @Type, @Width, @InRowKey</ActionSQL>
+    <ActionSQL>exec spField_updShort @AppID, @TableID, @FieldID, @OldFieldID, @FieldName, @Caption, @Type, @Width, @InRowKey</ActionSQL>
     <ActionSQL>select @AppID as AppID, @TableID as TableID</ActionSQL>
+    <VisibleSQL>select 1 from Singleton where isnumeric(@FieldID) = 1 and @FieldID &gt; 1</VisibleSQL>
     <CiSerializeMacro>
       <Direction>Download</Direction>
     </CiSerializeMacro>
@@ -73,6 +81,7 @@
   <DeleteMacro>
     <ActionSQL>exec spField_del  @AppID, @TableID, @FieldID</ActionSQL>
     <ActionSQL>select @AppID as AppID, @TableID as TableID</ActionSQL>
+    <VisibleSQL>select 1 from Singleton where isnumeric(@FieldID) = 1 and @FieldID &gt; 1</VisibleSQL>
     <CiSerializeMacro>
       <Direction>Download</Direction>
     </CiSerializeMacro>
@@ -86,7 +95,7 @@
               @FieldID as FieldID,
               'Ci' + coalesce(@Type, '') + 'FieldDetails.pux' as NavigateUrl
       from    Singleton
-      where   @Type != 'Table' or @Type is null
+      where   @Type not in ('Table', 'Memo') or @Type is null
       union
       select  @AppID as AppID,
               NestedTableID as TableID,
@@ -97,7 +106,15 @@
       and     TableID = @TableID
       and     FieldID = @FieldID
       and     @Type = 'Table'
+      union
+      select  @AppID as AppID,
+              @TableID as TableID,
+              @FieldID as FieldID,
+              'CiTextFieldDetails.pux' as NavigateUrl
+      from    Singleton
+      where   @Type = 'Memo'
     </ActionSQL>
     <NavigatePos>NewTab</NavigatePos>
+    <VisibleSQL>select 1 from Singleton where @Type != 'AutoIncrement' or @Type is null</VisibleSQL>
   </CiMacro>
 </CiTable>

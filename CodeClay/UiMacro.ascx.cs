@@ -33,7 +33,7 @@ namespace CodeClay
         public string MacroName { get; set; } = "";
 
         [XmlElement("IconID")]
-        public string IconID { get; set; } = "actions_task_16x16devav";
+        public string IconID { get; set; } = "functionlibrary_datetime_16x16";
 
         [XmlElement("Confirm")]
         public bool Confirm { get; set; } = false;
@@ -152,27 +152,34 @@ namespace CodeClay
 
         public virtual void Run(DataRow drParams)
         {
-            ErrorMessage = RunValidateSQL(drParams);
-
-            if (MyUtils.IsEmpty(ErrorMessage))
+            if (IsVisible(drParams))
             {
-                try
-                {
-                    ResultTable = RunActionSQL(drParams);
+                ErrorMessage = RunValidateSQL(drParams);
 
-                    ResultTable = RunChildMacros(ResultTable);
-
-                    ResultScript = GetResultScript(ResultTable);
-                }
-                catch (Exception ex)
+                if (MyUtils.IsEmpty(ErrorMessage))
                 {
-                    ErrorMessage = string.Format("{0} macro failed: {1}", MacroName, HttpUtility.JavaScriptStringEncode(ex.Message));
+                    try
+                    {
+                        ResultTable = RunActionSQL(drParams);
+
+                        ResultTable = RunChildMacros(ResultTable);
+
+                        ResultScript = GetResultScript(ResultTable);
+                    }
+                    catch (Exception ex)
+                    {
+                        ErrorMessage = string.Format("{0} macro failed: {1}", MacroName, HttpUtility.JavaScriptStringEncode(ex.Message));
+                    }
                 }
+            }
+            else
+            {
+                ErrorMessage = "Cannot run this macro on this record";
             }
 
             if (!MyUtils.IsEmpty(ErrorMessage))
             {
-                ResultScript = string.Format("alert('{0}')", ErrorMessage);
+                ResultScript = string.Format("alert('{0}');", ErrorMessage);
             }
         }
 
@@ -573,6 +580,17 @@ namespace CodeClay
                         XElement xVisibleSQL = new XElement("VisibleSQL");
                         xVisibleSQL.Value = drVisibleSQL["SQL"].ToString();
                         xPluginDefinition.Add(xVisibleSQL);
+                    }
+                }
+
+                DataTable dtValidateSQL = MyWebUtils.GetBySQL("?exec spSQL_sel 'CiMacro', 'ValidateSQL', @AppID, @TableID, @MacroID", drPluginDefinition, true);
+                if (dtValidateSQL != null)
+                {
+                    foreach (DataRow drValidateSQL in dtValidateSQL.Rows)
+                    {
+                        XElement xValidateSQL = new XElement("ValidateSQL");
+                        xValidateSQL.Value = drValidateSQL["SQL"].ToString();
+                        xPluginDefinition.Add(xValidateSQL);
                     }
                 }
             }

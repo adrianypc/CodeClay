@@ -188,22 +188,36 @@ namespace CodeClay
 
         protected void dxFieldExitPanel_Callback(object sender, CallbackEventArgsBase e)
 		{
-			dxFieldExitPanel.JSProperties["cpScript"] = RunFieldExitMacros(e.Parameter);
-		}
+            if (UiTable != null)
+            {
+                UiTable.IsFieldExiting = true;
+            }
 
-		// --------------------------------------------------------------------------------------------------
-		// Helpers
-		// --------------------------------------------------------------------------------------------------
+            string[] parameters = e.Parameter.Split(LIST_SEPARATOR[0]);
+            string fieldName = parameters[0];
+            string fieldValue = parameters[1];
+            SetClientValue(fieldName, fieldValue);
+			dxFieldExitPanel.JSProperties["cpScript"] = RunFieldExitMacros(fieldName);
 
-		private string RunFieldExitMacros(string fieldName)
+            if (UiTable != null)
+            {
+                UiTable.IsFieldExiting = false;
+            }
+        }
+
+        // --------------------------------------------------------------------------------------------------
+        // Helpers
+        // --------------------------------------------------------------------------------------------------
+
+        private string RunFieldExitMacros(string fieldName)
 		{
 			string script = null;
-			DataRow drParams = null;
+            DataTable dt = new DataTable();
+            DataRow drParams = null;
 			ArrayList ciMacros = new ArrayList();
 
 			if (IsUnbound)
 			{
-				DataTable dt = new DataTable();
 				drParams = dt.NewRow();
 				dt.Rows.Add(drParams);
 
@@ -229,7 +243,7 @@ namespace CodeClay
                     ciMacro.Run(drParams);
                     script += ciMacro.ResultScript;
 
-                    DataTable dt = ciMacro.ResultTable;
+                    dt = ciMacro.ResultTable;
                     if (dt != null && MyWebUtils.GetNumberOfRows(dt) > 0)
                     {
                         DataRow dr = dt.Rows[0];
@@ -280,11 +294,13 @@ namespace CodeClay
                 CiTable ciTable = ciField.CiTable;
 
                 bool isEditable = MyWebUtils.Eval<bool>(ciField.Editable, drParams);
-                script += string.Format("SetEditorEditable('{0}', '{1}', {2}, {3});",
+
+                script += string.Format("FormatField('{0}', '{1}', {2}, {3}, {4});",
                     ciTable.TableName,
                     ciField.FieldName,
                     ciField.Mandatory.ToString().ToLower(),
-                    isEditable.ToString().ToLower());
+                    isEditable.ToString().ToLower(),
+                    ciField.Transparent.ToString().ToLower());
             }
 
             return script;

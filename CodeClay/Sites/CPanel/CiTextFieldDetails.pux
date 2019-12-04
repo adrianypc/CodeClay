@@ -5,4 +5,8 @@
     <Caption>Mask</Caption>
     <DropdownSQL>select Code from Dropdown where Category = 'MaskType' order by SortOrder</DropdownSQL>
   </CiComboField>
+  <CiTextField>
+    <FieldName>Value</FieldName>
+    <Caption>Default Value</Caption>
+  </CiTextField>
 </CiTable>

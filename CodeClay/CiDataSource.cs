@@ -37,11 +37,12 @@ namespace CodeClay
             {
                 if (parameters != null && parameters.GetType() == typeof(bool))
                 {
-                    // Do nothing
+                    // Do nothing - but can't remember what this is for???
+                    throw new System.Exception("Aha!");
                 }
                 else if (ciTable.SelectMacro != null)
                 {
-                    CiMacro ciMacro = (view == "Search") ? ciTable.SearchMacro : ciTable.SelectMacro;
+                    CiMacro ciMacro = ciTable.SearchMacro;
                     if (ciMacro != null)
                     {
                         ciMacro.Run(drParams);
@@ -227,9 +228,10 @@ namespace CodeClay
                 foreach (CiField ciField in ciTable.CiFields)
                 {
                     string fieldName = ciField.FieldName;
+                    string defaultValue = ciField.Value;
+
                     if (!dt.Columns.Contains(fieldName))
                     {
-                        string defaultValue = ciField.Value;
                         string expression = "";
 
                         if (ciField.Computed)
@@ -248,6 +250,10 @@ namespace CodeClay
 
                         DataColumn dc = dt.Columns.Add(fieldName);
                         dc.Expression = expression;
+                    }
+                    else if (ciField.GetType() == typeof(CiField) && !MyUtils.IsEmpty(defaultValue))
+                    {
+                        dt.Columns[fieldName].Expression = string.Format("'{0}'", defaultValue);
                     }
                 }
             }

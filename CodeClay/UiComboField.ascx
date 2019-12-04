@@ -8,7 +8,7 @@
     <PanelCollection>
         <dx:PanelContent>
             <dx:ASPxComboBox ID="dxComboBox" ClientInstanceName="dxComboBox" runat="server" Theme="Aqua" DropDownStyle="DropDownList" DataSourceID="MyComboData"
-                TextFormatString="{0}" OnTextChanged="dxComboBox_TextChanged">
+                TextFormatString="{0}">
             </dx:ASPxComboBox>
         </dx:PanelContent>
     </PanelCollection>

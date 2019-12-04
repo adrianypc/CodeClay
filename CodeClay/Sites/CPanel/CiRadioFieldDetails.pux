@@ -17,6 +17,9 @@
   <CiNumericField>
     <FieldName>Columns</FieldName>
     <Caption>Columns</Caption>
+    <MinValue>1</MinValue>
+    <MaxValue>10</MaxValue>
+    <Value>1</Value>
   </CiNumericField>
   <CiTextField>
     <FieldName>Value</FieldName>

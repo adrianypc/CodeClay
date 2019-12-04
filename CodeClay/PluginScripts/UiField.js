@@ -48,7 +48,9 @@ function dxFieldExitPanel_EndCallback(sender, event) {
 }
 
 function RegisterEditor(editor, getvalue_function, setvalue_function) {
-	if (editor) {
+    if (editor) {
+        InitEditor(editor);
+
 		var tableName = editor.cpTableName;
         var fieldName = editor.name;
         var alternateFieldName = editor.cpAlternateName;
@@ -150,16 +152,28 @@ function SetEditorFocus(tableName, fieldName) {
     }
 }
 
-function SetEditorEditable(tableName, fieldName, mandatory, editable) {
-    var editor = editors[tableName + "." + fieldName];
+function InitEditor(editor) {
+    if (editor) {
+        var mandatory = editor.cpMandatory;
+        var editable = editor.cpEditable;
+        var transparent = editor.cpTransparent;
 
+        FormatEditor(editor, mandatory, editable, transparent);
+    }
+}
+
+function FormatEditor(editor, mandatory, editable, transparent) {
     if (editor) {
         var mainElement = editor.GetMainElement();
         var inputElement = editor.GetInputElement();
 
         if (mainElement && inputElement) {
             if (editable) {
-                if (mandatory) {
+                if (transparent) {
+                    mainElement.style.backgroundColor = "Transparent";
+                    inputElement.style.backgroundColor = "Transparent";
+                }
+                else if (mandatory) {
                     mainElement.style.backgroundColor = "LightPink";
                     inputElement.style.backgroundColor = "LightPink";
                 }
@@ -168,14 +182,26 @@ function SetEditorEditable(tableName, fieldName, mandatory, editable) {
                     inputElement.style.backgroundColor = "PaleGoldenrod";
                 }
                 editor.SetReadOnly(false);
+
+                //mainElement.readOnly = false;
+                //inputElement.readOnly = false;
             }
             else {
                 mainElement.style.backgroundColor = "Transparent";
                 inputElement.style.backgroundColor = "Transparent";
                 editor.SetReadOnly(true);
+
+                //mainElement.readOnly = true;
+                //inputElement.readOnly = true;
             }
         }
     }
+}
+
+function FormatField(tableName, fieldName, mandatory, editable, transparent) {
+    var editor = editors[tableName + "." + fieldName];
+
+    FormatEditor(editor, mandatory, editable, transparent);
 }
 
 function RunExitMacro(editor) {
@@ -193,7 +219,8 @@ function RunExitMacro(editor) {
         }
 
         if (dxFieldExitPanel) {
-            dxFieldExitPanel.PerformCallback(editor.name);
+            var fieldName = editor.name;
+            dxFieldExitPanel.PerformCallback(fieldName + LIST_SEPARATOR + GetField(tableName, fieldName));
         }
     }
     else if (leader) {
@@ -236,7 +263,8 @@ function RefreshNextFollower() {
             }
 
             if (editorPanel) {
-                editorPanel.PerformCallback();
+                var fieldName = editorPanel.cpFieldName;
+                editorPanel.PerformCallback(GetField(tableName, fieldName));
             }
         }
     }

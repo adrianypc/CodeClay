@@ -4,7 +4,8 @@
 	<TableCaption>Dropdowns</TableCaption>
 	<RowKey>Category,Code</RowKey>
 	<DefaultView>Grid</DefaultView>
-	<CiField>
+    <InsertRowAtBottom>false</InsertRowAtBottom>
+    <CiField>
 		<FieldName>ExistingDropdown</FieldName>
 		<Value>true</Value>
 		<Hidden>true</Hidden>

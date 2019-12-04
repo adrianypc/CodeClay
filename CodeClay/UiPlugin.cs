@@ -230,14 +230,16 @@ namespace CodeClay
 
                         if (ciOldPlugin != null)
                         {
-                            //ciOldPlugin.Inherits(ciNewPlugin);
-                            ciNewPlugin.Inherits(ciOldPlugin);
+                            int oldIndex = mCiPlugins.IndexOf(ciOldPlugin);
+                            mCiPlugins.Remove(ciOldPlugin);
+                            mCiPlugins.Insert(oldIndex, ciNewPlugin);
                         }
                         else
                         {
                             mCiPlugins.Add(ciNewPlugin);
-                            ciNewPlugin.CiParentPlugin = this;
                         }
+
+                        ciNewPlugin.CiParentPlugin = this;
                     }
                 }
             }
@@ -254,6 +256,16 @@ namespace CodeClay
         public string SearchableID
         {
             get { return PARAMETER_PREFIX + ID; }
+        }
+
+        [XmlIgnore]
+        public virtual bool IsSearching
+        {
+            get
+            {
+                return MyUtils.Coalesce(MyWebUtils.QueryStringCommand,
+                    UiApplication.Me.GetCommandFired(ID)) == "Search";
+            }
         }
 
         [XmlIgnore]
@@ -484,6 +496,18 @@ namespace CodeClay
 
         public UiPlugin UiParentPlugin { get; set; } = null;
 
+        public virtual bool IsInserting { get; set; } = false;
+
+        public virtual bool IsInsertSaving { get; set; } = false;
+
+        public virtual bool IsEditing { get; set; } = false;
+
+        public virtual bool IsEditSaving { get; set; } = false;
+
+        public virtual bool IsFieldExiting { get; set; } = false;
+
+        public virtual bool IsSearchSaving { get; set; } = false;
+
         // --------------------------------------------------------------------------------------------------
         // Event Handlers
         // --------------------------------------------------------------------------------------------------
@@ -574,7 +598,6 @@ namespace CodeClay
 
                 return MyUtils.Coalesce(
                     GetEditorValue(key, rowIndex),
-                    GetServerValue(key, rowIndex),
                     GetSrcParamsValue(key),
                     GetQueryStringValue(key),
                     GetParentValue(key),
@@ -626,26 +649,21 @@ namespace CodeClay
 
         protected virtual object GetEditorValue(string key, int rowIndex = -1)
         {
-            if (!IsPostBack)
-            {
-                object serverValue = GetServerValue(key, rowIndex);
+            bool isSearching = !MyUtils.IsEmpty(key) && key.StartsWith(CiPlugin.PARAMETER_PREFIX);
 
-                if (!MyUtils.IsEmpty(serverValue))
-                {
-                    return serverValue;
-                }
-            }
-            else
-            {
-                object clientValue = GetClientValue(key);
+            object editorValue = GetServerValue(key, rowIndex);
 
-                if (!MyUtils.IsEmpty(clientValue))
-                {
-                    return clientValue;
-                }
+            if (IsInserting || IsInsertSaving || IsEditSaving || IsFieldExiting || isSearching)
+            {
+                editorValue = GetClientValue(key);
             }
 
-            return null;
+            if (CiPlugin != null)
+            {
+                editorValue = CiPlugin.GetNativeValue(editorValue);
+            }
+
+            return editorValue;
         }
 
         protected virtual object GetClientValue(string key)
@@ -760,23 +778,21 @@ namespace CodeClay
 
                         if (!MyUtils.IsEmpty(key))
                         {
-                            object value = ciChildPlugin.GetNativeValue(MyUtils.Coalesce(GetEditorValue(key, rowIndex),
-                                GetServerValue(key, rowIndex)));
-
+                            object value = GetEditorValue(key, rowIndex);
                             Type valueType = ciChildPlugin.GetNativeType(value);
 
                             dc.Add(key, valueType);
-                            dr[key] = value;
+                            dr[key] = ciChildPlugin.GetNativeValue(value);
 
                             if (ciChildPlugin.Searchable)
                             {
                                 string searchKey = ciChildPlugin.SearchableID;
 
-                                value = ciChildPlugin.GetNativeValue(MyUtils.Coalesce(GetEditorValue(searchKey, rowIndex),
-                                    GetServerValue(searchKey, rowIndex)));
+                                value = GetEditorValue(searchKey, rowIndex);
+                                valueType = ciChildPlugin.GetNativeType(value);
 
                                 dc.Add(searchKey, valueType);
-                                dr[searchKey] = value;
+                                dr[searchKey] = ciChildPlugin.GetNativeValue(value);
                             }
                         }
                     }
@@ -1047,10 +1063,10 @@ namespace CodeClay
         protected Type PluginType { get; set; } = null;
 
         // --------------------------------------------------------------------------------------------------
-        // Methods
+        // Methods (Virtual)
         // --------------------------------------------------------------------------------------------------
 
-        public void DownloadFile(DataRow drKey, string puxUrl)
+        public virtual void DownloadFile(DataRow drKey, string puxUrl)
         {
             XElement xPlugin = new XElement("Root");
 
@@ -1068,7 +1084,7 @@ namespace CodeClay
             }
         }
 
-        public void UploadFile(DataRow drKey, string puxUrl)
+        public virtual void UploadFile(DataRow drKey, string puxUrl)
         {
             if (!MyUtils.IsEmpty(puxUrl) && File.Exists(puxUrl))
             {
@@ -1077,7 +1093,28 @@ namespace CodeClay
             }
         }
 
-        public void DownloadToXml(DataRow drKey, XElement xPluginDefinition)
+        public virtual void DeleteFile(DataRow drKey)
+        {
+            DataTable dtPluginDefinitions = GetPluginDefinitions(drKey);
+            if (dtPluginDefinitions != null)
+            {
+                if (dtPluginDefinitions.Rows.Count > 0)
+                {
+                    DataRow drPluginDefinition = dtPluginDefinitions.Rows[0];
+                }
+            }
+
+            string puxUrl = "";
+            if (!MyUtils.IsEmpty(puxUrl))
+            {
+                if (File.Exists(puxUrl))
+                {
+                    File.Delete(puxUrl);
+                }
+            }
+        }
+
+        public virtual void DownloadToXml(DataRow drKey, XElement xPluginDefinition)
         {
             XElement xSavedPluginDefinition = xPluginDefinition;
 
@@ -1126,7 +1163,7 @@ namespace CodeClay
                                         }
                                         else
                                         {
-                                            xPluginDefinition.Add(new XElement(xPropertyName, dPropertyValue));
+                                            xPluginDefinition.Add(CreateXElement(xPropertyName, dPropertyValue));
                                         }
                                     }
                                 }
@@ -1144,7 +1181,7 @@ namespace CodeClay
             }
         }
 
-        public void UploadFromXml(DataRow drKey, List<XElement> xElements)
+        public virtual void UploadFromXml(DataRow drKey, List<XElement> xElements)
         {
             DeletePluginDefinitions(drKey);
 
@@ -1176,10 +1213,6 @@ namespace CodeClay
                 }
             }
         }
-
-        // --------------------------------------------------------------------------------------------------
-        // Methods (Virtual)
-        // --------------------------------------------------------------------------------------------------
 
         public virtual string GetPuxUrl(DataRow drPluginKey)
         {
@@ -1450,7 +1483,7 @@ namespace CodeClay
                     string xPropertyName = xPluginProperty.Name.ToString();
                     if (xPluginProperty.Attribute("lang") == null)
                     {
-                        object xPropertyValue = xPluginProperty.Value;
+                        object xPropertyValue = GetXPropertyValue(xPluginProperty);
                         string dPropertyName = GetDPropertyName(xPropertyName);
 
                         if (!MyUtils.IsEmpty(dPropertyName) && dtPluginDefinition.Columns.Contains(dPropertyName))
@@ -1460,6 +1493,47 @@ namespace CodeClay
                     }
                 }
             }
+        }
+
+        private object GetXPropertyValue(XElement xElement)
+        {
+            if (xElement != null)
+            {
+                if (xElement.HasElements)
+                {
+                    var reader = xElement.CreateReader();
+                    reader.MoveToContent();
+
+                    return reader.ReadInnerXml();
+                }
+                else
+                {
+                    return xElement.Value;
+                }
+            }
+
+            return null;
+        }
+
+        private XElement CreateXElement(string propertyName, object propertyValue)
+        {
+            string openingTag = string.Format("<{0}>", propertyName);
+            string closingTag = string.Format("</{0}>", propertyName);
+            string contents = "";
+
+            if (propertyValue != null)
+            {
+                if (propertyValue.GetType() == typeof(string))
+                {
+                    contents = propertyValue.ToString();
+                }
+                else
+                {
+                    return new XElement(propertyName, propertyValue);
+                }
+            }
+
+            return XElement.Parse(openingTag + contents + closingTag);
         }
     }
 }

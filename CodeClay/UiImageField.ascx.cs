@@ -77,7 +77,7 @@ namespace CodeClay
             get { return CiField as CiImageField; }
         }
 
-        private bool IsEditing
+        public override bool IsEditing
         {
             get
             {
@@ -102,10 +102,11 @@ namespace CodeClay
                 string fieldName = CiImageField.FieldName;
                 string imageUrl = MyUtils.Coalesce(ImageUrl, defaultImageUrl);
                 bool emptyUrl = MyUtils.IsEmpty(imageUrl);
-                bool fileExists = !emptyUrl && File.Exists(Server.MapPath(imageUrl));
+                bool isInserting = (UiParentPlugin != null && UiParentPlugin.IsInserting);
+                bool fileExists = IsEditing || !emptyUrl && File.Exists(Server.MapPath(imageUrl));
                 int imageWidth = fileExists ? CiImageField.ImageWidth : 1;
                 int imageHeight = fileExists ? CiImageField.ImageHeight : 1;
-
+                
                 dxImage.Caption = null;
                 dxImage.BackColor = Color.Transparent;
                 dxImage.Visible = !IsEditing;
@@ -161,6 +162,15 @@ namespace CodeClay
                     if (!Directory.Exists(currentFolderPath))
                     {
                         Directory.CreateDirectory(currentFolderPath);
+                    }
+                    else
+                    {
+                        DirectoryInfo di = new DirectoryInfo(currentFolderPath);
+
+                        foreach (FileInfo fi in di.EnumerateFiles())
+                        {
+                            fi.Delete();
+                        }
                     }
 
                     string fileName = CleanFileName(uploadedFile.FileName);

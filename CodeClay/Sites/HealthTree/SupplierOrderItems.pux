@@ -43,7 +43,7 @@
     <Caption>Price ($)</Caption>
     <Width>20</Width>
     <Mask>Currency</Mask>
-    <Editable>false</Editable>
+    <Editable>true</Editable>
   </CiTextField>
   <CiDateField>
     <FieldName>ExpiryDate</FieldName>
@@ -116,6 +116,6 @@
   <CiFieldExitMacro>
     <FieldName>Quantity</FieldName>
     <FieldName>ProductID</FieldName>
-    <ActionSQL>select	@Quantity * coalesce(UnitCostPrice,0) as Price from Product where	ProductID = @ProductID</ActionSQL>
+    <ActionSQL>select	@Quantity * case when @Price > 0 then coalesce(@Price,0) else coalesce(UnitCostPrice,0) end as Price from Product where	ProductID = @ProductID</ActionSQL>
   </CiFieldExitMacro>
 </CiTable>

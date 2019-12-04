@@ -130,7 +130,7 @@ namespace CodeClay
             return null;
         }
 
-        public static string GetField(DataRow dr, string fieldName)
+        public static object GetField(DataRow dr, string fieldName)
         {
             if (dr != null)
             {
@@ -140,19 +140,7 @@ namespace CodeClay
                     DataColumnCollection dc = dt.Columns;
                     if (dc != null && dc.Contains(fieldName))
                     {
-                        object value = dr[fieldName];
-
-                        if (value != null)
-                        {
-                            try
-                            {
-                                return (string)Convert.ChangeType(value, typeof(string));
-                            }
-                            finally
-                            {
-                                // Do nothing
-                            }
-                        }
+                        return dr[fieldName];
                     }
                 }
             }

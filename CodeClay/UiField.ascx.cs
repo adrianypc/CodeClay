@@ -30,11 +30,8 @@ namespace CodeClay
         [XmlElement("TextFieldName")]
         public string TextFieldName { get; set; } = "";
 
-        [XmlElement("Caption")]
-        public string Caption { get; set; } = "";
-
-        [XmlElement("ColumnFormat")]
-        public string ColumnFormat { get; set; } = "";
+        [XmlSqlElement("Caption", typeof(string))]
+        public XmlElement Caption { get; set; } = MyWebUtils.CreateXmlElement("Caption", "");
 
         [XmlElement("Mask")]
         public eTextMask Mask { get; set; } = eTextMask.None;
@@ -92,11 +89,11 @@ namespace CodeClay
         }
 
         [XmlIgnore]
-        public bool IsSearching
+        public override bool IsSearching
         {
             get
             {
-                return (CiTable != null) ? (CiTable.IsSearching) && Searchable : false;
+                return (CiTable != null && CiTable.IsSearching && Searchable);
             }
         }
 
@@ -149,11 +146,10 @@ namespace CodeClay
             get
             {
                 Unit editorWidth = Unit.Percentage(100);
-                bool isSearching = (CiTable != null && CiTable.IsSearching);
                 bool hasLayout = (CiTable != null && CiTable.LayoutXml != null);
                 bool isCardView = (CiTable != null && CiTable.DefaultView == "Card");
 
-                if (isSearching)
+                if (IsSearching)
                 {
                     editorWidth = Unit.Percentage(50);
                 }
@@ -212,6 +208,15 @@ namespace CodeClay
             }
         }
 
+        [XmlIgnore]
+        public bool Transparent
+        {
+            get
+            {
+                return GetType() == typeof(CiField) || GetType() == typeof(CiCheckField);
+            }
+        }
+
         // --------------------------------------------------------------------------------------------------
         // Methods (Override)
         // --------------------------------------------------------------------------------------------------
@@ -261,14 +266,15 @@ namespace CodeClay
             return dxColumn;
         }
 
-        public virtual void FormatCardColumn(CardViewColumn dxColumn)
+        public virtual void FormatCardColumn(CardViewColumn dxColumn, DataRow dr)
         {
             if (dxColumn != null)
             {
                 string fieldName = dxColumn.FieldName;
+                string caption = EvalCaptionSQL(dr);
 
                 dxColumn.Visible = IsVisible;
-                dxColumn.Caption = Caption;
+                dxColumn.Caption = caption;
                 dxColumn.Width = ColumnWidth;
 
                 CardViewFormLayoutProperties layoutProperties = dxColumn.CardView.CardLayoutProperties;
@@ -283,13 +289,13 @@ namespace CodeClay
                 }
 
                 dxLayoutItem.Visible = IsVisible;
-                dxLayoutItem.Caption = (Caption == "*") ? "" : Caption;
+                dxLayoutItem.Caption = caption;
                 dxLayoutItem.RowSpan = RowSpan;
                 dxLayoutItem.ColSpan = ColSpan;
                 dxLayoutItem.Width = ColumnWidth;
                 dxLayoutItem.HorizontalAlign = HorizontalAlign;
                 dxLayoutItem.VerticalAlign = VerticalAlign;
-                dxLayoutItem.ShowCaption = !MyUtils.IsEmpty(Caption)
+                dxLayoutItem.ShowCaption = !MyUtils.IsEmpty(caption)
                     ? DevExpress.Utils.DefaultBoolean.True
                     : DevExpress.Utils.DefaultBoolean.False;
                 dxLayoutItem.NestedControlCellStyle.CssClass =
@@ -308,7 +314,7 @@ namespace CodeClay
             }
         }
 
-        public virtual void FormatGridColumn(GridViewDataColumn dxColumn)
+        public virtual void FormatGridColumn(GridViewDataColumn dxColumn, DataRow dr)
         {
             if (dxColumn != null)
             {
@@ -316,7 +322,7 @@ namespace CodeClay
                 VerticalAlign top = System.Web.UI.WebControls.VerticalAlign.Top;
 
                 dxColumn.Visible = IsVisible;
-                dxColumn.Caption = Caption;
+                dxColumn.Caption = EvalCaptionSQL(dr);
                 dxColumn.CellStyle.HorizontalAlign = left;
                 dxColumn.CellStyle.VerticalAlign = top;
                 dxColumn.EditCellStyle.VerticalAlign = top;
@@ -340,11 +346,7 @@ namespace CodeClay
         {
             if (uiTable != null)
             {
-                CiTable ciTable = uiTable.CiTable;
-                if (ciTable != null)
-                {
-                    return (GetType() != typeof(CiField)) && !uiTable.IsEditing && !ciTable.IsSearching;
-                }
+                return (GetType() != typeof(CiField)) && !uiTable.IsEditing && !IsSearching;
             }
 
             return false;
@@ -353,6 +355,14 @@ namespace CodeClay
         public virtual string ToString(object value)
         {
             return MyUtils.Coalesce(value, "").ToString();
+        }
+
+
+        public virtual string EvalCaptionSQL(DataRow dr)
+        {
+            string caption = MyWebUtils.Eval<string>(Caption, dr);
+
+            return (caption == "*") ? "" : caption;
         }
     }
 
@@ -441,6 +451,17 @@ namespace CodeClay
             if (mEditor == null)
             {
                 mEditor = dxLabel;
+                dxLabel.Style.Add(HtmlTextWriterStyle.Display, "block");
+
+                if (UiTable != null && UiTable.IsGridView)
+                {
+                    dxLabel.Style.Add(HtmlTextWriterStyle.PaddingLeft, "4px");
+                    dxLabel.Style.Add(HtmlTextWriterStyle.PaddingTop, "3px");
+                }
+                else
+                {
+                    dxLabel.Style.Add(HtmlTextWriterStyle.PaddingTop, "4px");
+                }
             }
 
             Refresh();
@@ -521,20 +542,17 @@ namespace CodeClay
                 CiTable ciTable = CiField.CiTable;
                 string tableName = (ciTable != null) ? ciTable.TableName : "";
                 string fieldName = CiField.IsSearching ? CiField.SearchableID : CiField.FieldName;
-                bool isEditable = CiField.IsEditable(drParams);
-                object fieldValue = drParams[fieldName];
+                object fieldValue = MyUtils.Coalesce(MyWebUtils.GetField(drParams, fieldName), CiField.Value);
                 string foreColor = CiField.ForeColor;
 
                 mEditor.ID = fieldName;
                 mEditor.DataBind();
-                mEditor.ReadOnly = !isEditable;
-                mEditor.Caption = InContainer() ? "" : CiField.Caption;
+                mEditor.Caption = InContainer() ? "" : CiField.EvalCaptionSQL(drParams);
                 mEditor.ClientIDMode = ClientIDMode.Static;
                 mEditor.CssClass = "css" + fieldName;
                 mEditor.Width = CiField.EditorWidth;
                 mEditor.Value = fieldValue;
                 mEditor.Visible = CiField.IsVisible;
-                mEditor.BackColor = GetBackColor(isEditable);
 
                 if (!MyUtils.IsEmpty(foreColor))
                 {
@@ -544,6 +562,9 @@ namespace CodeClay
                 mEditor.JSProperties["cpHasFieldExitMacro"] = (CiField.CiFieldExitMacros.Length > 0);
                 mEditor.JSProperties["cpTableName"] = tableName;
                 mEditor.JSProperties["cpFollowerFields"] = FollowerFieldNames;
+                mEditor.JSProperties["cpMandatory"] = CiField.Mandatory;
+                mEditor.JSProperties["cpEditable"] = CiField.IsEditable(drParams);
+                mEditor.JSProperties["cpTransparent"] = CiField.Transparent;
 
                 ASPxCallbackPanel editorPanel = mEditor.NamingContainer as ASPxCallbackPanel;
                 if (editorPanel != null)
@@ -595,31 +616,49 @@ namespace CodeClay
 
         protected override object GetEditorValue(string key, int rowIndex = -1)
         {
-            object fieldValue = null;
+            object editorValue = null;
 
             if (CiField != null)
             {
-                GridBaseTemplateContainer container = this.NamingContainer as GridBaseTemplateContainer;
-                if (container != null && !CiField.Computed)
+                UiTable uiParentTable = UiParentPlugin as UiTable;
+                if (uiParentTable != null)
                 {
-                    try
+                    editorValue = uiParentTable[key, rowIndex];
+                }
+                else
+                {
+                    GridBaseTemplateContainer container = this.NamingContainer as GridBaseTemplateContainer;
+                    if (container != null && !CiField.Computed)
                     {
-                        fieldValue = DataBinder.Eval(container.DataItem, key);
-                    }
-                    catch
-                    {
-                        // Do nothing
+                        try
+                        {
+                            editorValue = DataBinder.Eval(container.DataItem, key);
+                        }
+                        catch
+                        {
+                            // Do nothing
+                        }
                     }
                 }
 
                 if (!CiField.Enabled && (CiField.GetType().Name.Substring(2)) != CiField.GetUiPluginName().Substring(2))
                 {
                     // For disabled fields which have been cast to TextField
-                    fieldValue = CiField.ToString(fieldValue);
+                    editorValue = CiField.ToString(editorValue);
+                }
+
+                CiPlugin ciContainerPlugin = CiField.GetContainerPlugin();
+                if (ciContainerPlugin != null)
+                {
+                    CiPlugin ciEditorField = ciContainerPlugin.GetById(key);
+                    if (ciEditorField != null)
+                    {
+                        editorValue = ciEditorField.GetNativeValue(editorValue);
+                    }
                 }
             }
 
-            return fieldValue;
+            return editorValue;
         }
     }
 
@@ -659,13 +698,20 @@ namespace CodeClay
             {
                 string fieldType = MyUtils.Coalesce(drPluginDefinition["Type"], "").ToString();
 
-                if (fieldType == "Table")
+                switch (fieldType)
                 {
-                    pluginTypeName = null;
-                }
-                else
-                {
-                    pluginTypeName = "Ci" + fieldType + "Field";
+                    case "Table":
+                        pluginTypeName = null;
+                        break;
+
+                    case "AutoIncrement":
+                        pluginTypeName = "CiTextField";
+                        break;
+
+                    default:
+                        pluginTypeName = "Ci" + fieldType + "Field";
+                        break;
+
                 }
             }
 
@@ -703,7 +749,7 @@ namespace CodeClay
             string updateColumnNames = "@AppID, @TableID, @FieldID, @FieldName, @Editable, @Mandatory" +
                 ", @Hidden, @Searchable, @Summary, @ForeColor, @RowSpan, @ColSpan, @Width, @HorizontalAlign" +
                 ", @VerticalAlign, @Value, @DropdownSQL, @InsertSQL, @Code, @Description, @TextFieldName" +
-                ", @DropdownWidth, @Folder, @MinValue, @MaxValue, @Columns, @ColumnFormat, @Mask, @NestedMacroID";
+                ", @DropdownWidth, @Folder, @MinValue, @MaxValue, @Columns, @Mask, @NestedMacroID";
             string updateSQL = string.Format("exec spField_updLong {0}", updateColumnNames);
 
             MyWebUtils.GetBySQL(updateSQL, drPluginDefinition, true);

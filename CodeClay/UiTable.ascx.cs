@@ -83,7 +83,7 @@ namespace CodeClay
                     if (MyUtils.IsEmpty(mSelectMacro.MacroName))
                     {
                         mSelectMacro.MacroName = "Select";
-						mSelectMacro.Caption = value.Caption;
+						mSelectMacro.Caption = "Browse";
                     }
                 }
             }
@@ -102,9 +102,10 @@ namespace CodeClay
                     mUpdateMacro.CiTable = this;
                     if (MyUtils.IsEmpty(mUpdateMacro.MacroName))
                     {
-                        mUpdateMacro.MacroName = "Update";
-						mUpdateMacro.Caption = value.Caption;
-					}
+                        mUpdateMacro.MacroName = "Edit";
+						mUpdateMacro.Caption = "Edit";
+                        mUpdateMacro.IconID = "edit_edit_16x16office2013";
+                    }
                 }
             }
         }
@@ -122,9 +123,10 @@ namespace CodeClay
                     mInsertMacro.CiTable = this;
                     if (MyUtils.IsEmpty(mInsertMacro.MacroName))
                     {
-                        mInsertMacro.MacroName = "Insert";
-						mInsertMacro.Caption = value.Caption;
-					}
+                        mInsertMacro.MacroName = "New";
+						mInsertMacro.Caption = "New";
+                        mInsertMacro.IconID = "actions_additem_16x16office2013";
+                    }
                 }
             }
         }
@@ -143,8 +145,9 @@ namespace CodeClay
                     if (MyUtils.IsEmpty(mDeleteMacro.MacroName))
                     {
                         mDeleteMacro.MacroName = "Delete";
-						mDeleteMacro.Caption = value.Caption;
-					}
+						mDeleteMacro.Caption = "Delete";
+                        mDeleteMacro.IconID = "edit_delete_16x16office2013";
+                    }
                 }
             }
         }
@@ -220,16 +223,6 @@ namespace CodeClay
         public override string ID
         {
             get { return TableName; }
-        }
-
-        [XmlIgnore]
-        public bool IsSearching
-        {
-            get
-            {
-                return MyUtils.Coalesce(MyWebUtils.QueryStringCommand,
-                    UiApplication.Me.GetCommandFired(TableName)) == "Search";
-            }
         }
 
         [XmlIgnore]
@@ -457,7 +450,17 @@ namespace CodeClay
             return null;
         }
 
-		public virtual CiFieldExitMacro[] GetFieldExitMacros(string fieldName)
+        public virtual CiMacro[] GetMenuMacros()
+        {
+            if (CiMacros != null)
+            {
+                return CiMacros.Where(c => !c.Toolbar).ToArray();
+            }
+
+            return new CiMacro[] { };
+        }
+
+        public virtual CiFieldExitMacro[] GetFieldExitMacros(string fieldName)
 		{
 			if (CiFieldExitMacros != null)
 			{
@@ -481,15 +484,100 @@ namespace CodeClay
 
             return null;
         }
+
+        public virtual string EvalTableCaptionSQL(DataRow dr)
+        {
+            return MyWebUtils.Eval<string>(TableCaption, dr);
+        }
     }
 
     public partial class UiTable : UiPlugin, IUiColumn
     {
         // --------------------------------------------------------------------------------------------------
-        // Properties
+        // Properties (Override)
         // --------------------------------------------------------------------------------------------------
 
-        public bool RecordsExist
+        public override bool IsInserting
+        {
+            get
+            {
+                string command = UiApplication.Me.GetCommandFired(CiTable.TableName);
+
+                bool isStartEditing = (command == "New") ||
+                    dxCard.IsNewCardEditing ||
+                    dxGrid.IsNewRowEditing;
+
+                bool isFinishEditing = (command == "Update") || (command == "Cancel");
+
+                return isStartEditing && !isFinishEditing;
+            }
+        }
+
+        public override bool IsInsertSaving
+        {
+            get
+            {
+                string command = UiApplication.Me.GetCommandFired(CiTable.TableName);
+
+                bool isStartEditing = (command == "New") ||
+                    dxCard.IsNewCardEditing ||
+                    dxGrid.IsNewRowEditing;
+
+                bool isFinishEditing = (command == "Update");
+
+                return isStartEditing && isFinishEditing;
+            }
+        }
+
+        public override bool IsEditing
+        {
+            get
+            {
+                string command = UiApplication.Me.GetCommandFired(CiTable.TableName);
+
+                bool isStartEditing = (command == "Edit") || (command == "New") ||
+                    dxCard.IsEditing || dxCard.IsNewCardEditing ||
+                    dxGrid.IsEditing || dxGrid.IsNewRowEditing;
+
+                bool isFinishEditing = (command == "Update") || (command == "Cancel");
+
+                return isStartEditing && !isFinishEditing;
+            }
+        }
+
+        public override bool IsEditSaving
+        {
+            get
+            {
+                string command = UiApplication.Me.GetCommandFired(CiTable.TableName);
+
+                bool isStartEditing = (command == "Edit") || (command == "New") ||
+                    dxCard.IsEditing || dxCard.IsNewCardEditing ||
+                    dxGrid.IsEditing || dxGrid.IsNewRowEditing;
+
+                bool isFinishEditing = (command == "Update");
+
+                return isStartEditing && isFinishEditing;
+            }
+        }
+
+        public override bool IsSearchSaving
+        {
+            get
+            {
+                string command = UiApplication.Me.GetCommandFired(CiTable.TableName);
+                string view = MyUtils.Coalesce(GetClientValue("_View"), "").ToString();
+
+                return (view == "Search") && command == "Update";
+            }
+
+        }
+
+        // --------------------------------------------------------------------------------------------------
+        // Properties (Virtual)
+        // --------------------------------------------------------------------------------------------------
+
+        public virtual bool RecordsExist
         {
             get
             {
@@ -508,39 +596,7 @@ namespace CodeClay
             }
         }
 
-        public bool IsInserting
-        {
-            get
-            {
-                string command = UiApplication.Me.GetCommandFired(CiTable.TableName);
-
-                bool isStartEditing = (command == "New") ||
-                    dxCard.IsNewCardEditing ||
-                    dxGrid.IsNewRowEditing;
-
-                bool isFinishEditing = (command == "Update") || (command == "Cancel");
-
-                return isStartEditing && !isFinishEditing;
-            }
-        }
-
-        public bool IsEditing
-        {
-            get
-            {
-                string command = UiApplication.Me.GetCommandFired(CiTable.TableName);
-
-                bool isStartEditing = (command == "Edit") || (command == "New") ||
-                    dxCard.IsEditing || dxCard.IsNewCardEditing ||
-                    dxGrid.IsEditing || dxGrid.IsNewRowEditing;
-
-                bool isFinishEditing = (command == "Update") || (command == "Cancel");
-
-                return isStartEditing && !isFinishEditing;
-            }
-        }
-
-        public bool IsNavigating
+        public virtual bool IsNavigating
         {
             get
             {
@@ -551,7 +607,7 @@ namespace CodeClay
             }
         }
 
-        public bool IsParentEditing
+        public virtual bool IsParentEditing
         {
             get
             {
@@ -559,7 +615,7 @@ namespace CodeClay
             }
         }
 
-        public bool IsChildEditing
+        public virtual bool IsChildEditing
         {
             get
             {
@@ -585,7 +641,7 @@ namespace CodeClay
         }
 
 
-        public bool IsBrowsing
+        public virtual bool IsBrowsing
         {
             get
             {
@@ -595,7 +651,7 @@ namespace CodeClay
             }
         }
 
-        public bool IsNonEditable
+        public virtual bool IsNonEditable
         {
             get
             {
@@ -608,7 +664,7 @@ namespace CodeClay
             }
         }
 
-        public bool IsCardView
+        public virtual bool IsCardView
         {
             get
             {
@@ -621,7 +677,7 @@ namespace CodeClay
             }
         }
 
-        public bool IsGridView
+        public virtual bool IsGridView
         {
             get
             {
@@ -634,22 +690,22 @@ namespace CodeClay
             }
         }
 
-        public CiTable CiTable
+        public virtual CiTable CiTable
         {
             get { return CiPlugin as CiTable; }
             set { CiPlugin = value; }
         }
 
-        public UiTable UiParentTable
+        public virtual UiTable UiParentTable
         {
             get { return UiParentPlugin as UiTable; }
         }
 
-        public string ErrorFieldName { get; set; } = null;
+        public virtual string ErrorFieldName { get; set; } = null;
 
-        public string ErrorMessage { get; set; } = null;
+        public virtual string ErrorMessage { get; set; } = null;
 
-        public string ClientScript
+        public virtual string ClientScript
         {
             get
             {
@@ -686,7 +742,7 @@ namespace CodeClay
         {
             if (!IsPostBack && CiTable != null && UiParentTable == null)
             {
-                Page.Title = MyWebUtils.Eval<string>(CiTable.TableCaption, GetState());
+                Page.Title = CiTable.EvalTableCaptionSQL(GetState());
             }
         }
 
@@ -875,11 +931,16 @@ namespace CodeClay
 
                     case "Update":
                     case "Cancel":
-                        CiMacro ciMacro = IsInserting ? CiTable.InsertMacro : CiTable.UpdateMacro;
-                        string navigateUrl = ciMacro.NavigateUrl + "|" + ciMacro.NavigatePos;
+                        CiMacro ciMacro = IsInsertSaving ? CiTable.InsertMacro : CiTable.UpdateMacro;
+                        string navigateUrl = (ciMacro != null) ? ciMacro.NavigateUrl + "|" + ciMacro.NavigatePos : "";
+
                         if (!MyUtils.IsEmpty(navigateUrl))
                         {
                             dxCard.JSProperties["cpScript"] = string.Format("GotoUrl(\'{0}\')", HttpUtility.JavaScriptStringEncode(navigateUrl));
+                        }
+                        else
+                        {
+                            dxCard.JSProperties["cpScript"] = GetSearchFieldScript();
                         }
                         dxCard.SettingsPager.Visible = true;
                         break;
@@ -1014,36 +1075,17 @@ namespace CodeClay
         protected void dxGrid_InitNewRow(object sender, ASPxDataInitNewRowEventArgs e)
         {
             RunDefaultMacro(dxGrid, e);
+            ProcessGridCommand();
+        }
+
+        protected void dxGrid_StartRowEditing(object sender, ASPxStartRowEditingEventArgs e)
+        {
+            ProcessGridCommand();
         }
 
         protected void dxGrid_ToolbarItemClick(object source, DevExpress.Web.Data.ASPxGridViewToolbarItemClickEventArgs e)
         {
-            if (!MyWebUtils.IsTimeOutReached(Page))
-            {
-                BuildGridToolbar();
-
-                string macroName = UiApplication.Me.GetCommandFired(CiTable.TableName);
-
-                switch (macroName)
-                {
-                    case "New":
-                        break;
-
-                    case "Edit":
-                        dxGrid.JSProperties["cpScript"] = GetInvisibleFieldScript();
-                        break;
-
-                    case "Delete":
-                    case "Update":
-                    case "Cancel":
-                        // Do nothing
-                        break;
-
-                    default:
-                        dxGrid.JSProperties["cpScript"] = RunMacro(macroName);
-                        break;
-                }
-            }
+            ProcessGridCommand();
         }
 
 		protected void dxGrid_CustomCallback(object sender, ASPxGridViewCustomCallbackEventArgs e)
@@ -1154,29 +1196,29 @@ namespace CodeClay
             if (!CiTable.IsSearching)
             {
                 e.InputParameters["table"] = CiTable;
-                e.InputParameters["view"] = this["_View"];
-                e.InputParameters["parameters"] = GetState(IsNavigating ? -2 : -1);
+                e.InputParameters["view"] = GetClientValue("_View");
+                e.InputParameters["parameters"] = GetState(IsNavigating || IsEditing ? -2 : -1);
             }
         }
 
         protected void MyTableData_Inserting(object sender, ObjectDataSourceMethodEventArgs e)
         {
             e.InputParameters["table"] = CiTable;
-            e.InputParameters["view"] = this["_View"];
+            e.InputParameters["view"] = GetClientValue("_View");
             e.InputParameters["parameters"] = GetState(-2);
         }
 
         protected void MyTableData_Updating(object sender, ObjectDataSourceMethodEventArgs e)
         {
             e.InputParameters["table"] = CiTable;
-            e.InputParameters["view"] = this["_View"];
+            e.InputParameters["view"] = GetClientValue("_View");
             e.InputParameters["parameters"] = GetState();
         }
 
         protected void MyTableData_Deleting(object sender, ObjectDataSourceMethodEventArgs e)
         {
             e.InputParameters["table"] = CiTable;
-            e.InputParameters["view"] = this["_View"];
+            e.InputParameters["view"] = GetClientValue("_View");
             e.InputParameters["parameters"] = GetState();
         }
 
@@ -1349,7 +1391,7 @@ namespace CodeClay
             if (pgCardTabs != null && CiTable != null)
             {
                 string tableName = CiTable.TableName;
-                string tableCaption = MyWebUtils.Eval<string>(CiTable.TableCaption, GetState());
+                string tableCaption = CiTable.EvalTableCaptionSQL(GetState());
 
                 TabPage tabPage = pgCardTabs.TabPages.Add(tableName);
                 tabPage.Name = string.Format("pgCardTab_{0}", tableName);
@@ -1364,7 +1406,7 @@ namespace CodeClay
             ASPxPageControl pgGridTabs = container as ASPxPageControl;
             if (pgGridTabs != null && CiTable != null)
             {
-                string tableCaption = MyWebUtils.Eval<string>(CiTable.TableCaption, GetState());
+                string tableCaption = CiTable.EvalTableCaptionSQL(GetState());
                 TabPage tabPage = pgGridTabs.TabPages.Add(CiTable.TableName);
 
                 tabPage.Text = tableCaption;
@@ -1388,7 +1430,7 @@ namespace CodeClay
                     : (MyWebUtils.Application == "CPanel")
                     ? Color.DeepSkyBlue
                     : Color.Transparent;
-                dxTable.SettingsText.Title = titlePrefix + MyWebUtils.Eval<string>(CiTable.TableCaption, GetState());
+                dxTable.SettingsText.Title = titlePrefix + CiTable.EvalTableCaptionSQL(GetState());
 
                 dxTable.CardLayoutProperties.ColCount = totalColumns;
 
@@ -1424,7 +1466,7 @@ namespace CodeClay
                     ? Color.DeepSkyBlue
                     : Color.Transparent;
 
-                dxTable.SettingsText.Title = MyWebUtils.Eval<string>(CiTable.TableCaption, GetState());
+                dxTable.SettingsText.Title = CiTable.EvalTableCaptionSQL(GetState());
                 dxTable.SettingsDetail.ShowDetailRow = (CiTable.Get<CiTable>().Length > 0);
                 dxTable.SettingsEditing.Mode = GridViewEditingMode.Inline;
                 dxTable.SettingsEditing.NewItemRowPosition = CiTable.InsertRowAtBottom
@@ -1470,7 +1512,7 @@ namespace CodeClay
 					dxTable.Columns.Add(dxColumn);
                 }
 
-				ciField.FormatCardColumn(dxColumn);
+				ciField.FormatCardColumn(dxColumn, GetState());
             }
         }
 
@@ -1491,7 +1533,7 @@ namespace CodeClay
 					dxTable.Columns.Add(dxColumn);
                 }
 
-				ciField.FormatGridColumn(dxColumn);
+				ciField.FormatGridColumn(dxColumn, GetState());
             }
         }
 
@@ -1770,29 +1812,9 @@ namespace CodeClay
             return macros;
         }
 
-        private ArrayList GetMenuMacros()
+        private ArrayList GetDisabledMacroList()
         {
-            ArrayList macros = new ArrayList();
-
-            if (CiTable != null)
-            {
-                DataRow drParams = GetState();
-
-                foreach (CiMacro ciMacro in CiTable.CiMacros)
-                {
-                    if (IsGridView && ciMacro != null && !ciMacro.Toolbar && ciMacro.IsVisible(drParams))
-                    {
-                        macros.Add(ciMacro.MacroName);
-                    }
-                }
-            }
-
-            return macros;
-        }
-
-        private string GetDisabledMacros()
-        {
-            string disabledMacros = "";
+            ArrayList ciDisabledMacros = new ArrayList();
 
             if (CiTable != null)
             {
@@ -1801,21 +1823,21 @@ namespace CodeClay
                 bool isParentOrChildEditing = IsParentEditing || IsChildEditing;
 
                 CiMacro insertMacro = CiTable.InsertMacro;
-                if (insertMacro == null  || isParentOrChildEditing || !insertMacro.IsVisible(drParams))
+                if (insertMacro == null || isParentOrChildEditing || !insertMacro.IsVisible(drParams))
                 {
-                    disabledMacros += LIST_SEPARATOR + "New";
+                    ciDisabledMacros.Add(insertMacro);
                 }
 
                 CiMacro updateMacro = CiTable.UpdateMacro;
                 if (updateMacro == null || isParentOrChildEditing || !RecordsExist || !updateMacro.IsVisible(drParams))
                 {
-                    disabledMacros += LIST_SEPARATOR + "Edit";
+                    ciDisabledMacros.Add(updateMacro);
                 }
 
                 CiMacro deleteMacro = CiTable.DeleteMacro;
                 if (deleteMacro == null || isParentOrChildEditing || !RecordsExist || !deleteMacro.IsVisible(drParams))
                 {
-                    disabledMacros += LIST_SEPARATOR + "Delete";
+                    ciDisabledMacros.Add(deleteMacro);
                 }
 
                 if (IsBrowsing)
@@ -1828,10 +1850,26 @@ namespace CodeClay
 
                             if (isParentOrChildEditing || (IsCardView && !RecordsExist) || !ciMacro.IsVisible(drParams))
                             {
-                                disabledMacros += LIST_SEPARATOR + macroName;
+                                ciDisabledMacros.Add(ciMacro);
                             }
                         }
                     }
+                }
+            }
+
+            return ciDisabledMacros;
+        }
+
+        private string GetDisabledMacros()
+        {
+            string disabledMacros = "";
+
+            ArrayList ciDisabledMacros = GetDisabledMacroList();
+            foreach (CiMacro ciMacro in ciDisabledMacros)
+            {
+                if (ciMacro != null)
+                {
+                    disabledMacros += LIST_SEPARATOR + ciMacro.MacroName;
                 }
             }
 
@@ -1843,19 +1881,31 @@ namespace CodeClay
             string mouseCoordinates = xPos + LIST_SEPARATOR + yPos;
             dxPopupMenu.Items.Clear();
 
-            if (IsBrowsing && CiTable != null)
+            if (IsBrowsing && CiTable != null && IsGridView)
             {
                 string doubleClickMacroName = CiTable.DoubleClickMacroName;
 
-                foreach (string macroName in GetMenuMacros())
+                DataRow drParams = GetState();
+
+                CiMacro[] ciMacros = { CiTable.UpdateMacro, CiTable.DeleteMacro };
+                ciMacros = ciMacros.Concat(CiTable.GetMenuMacros()).ToArray();
+                ArrayList ciDisabledMacros = GetDisabledMacroList();
+
+                foreach (CiMacro ciMacro in ciMacros)
                 {
-                    CiMacro ciMacro = CiTable.GetMacro(macroName);
-
-                    DevExpress.Web.MenuItem menuItem = dxPopupMenu.Items.Add(ciMacro.Caption, macroName);
-
-                    if (doubleClickMacroName == macroName)
+                    if (ciMacro != null && !ciDisabledMacros.Contains(ciMacro))
                     {
-                        menuItem.Checked = true;
+                        string macroName = ciMacro.MacroName;
+                        string macroCaption = ciMacro.Caption;
+
+                        DevExpress.Web.MenuItem menuItem = dxPopupMenu.Items.Add(macroCaption, macroName);
+
+                        menuItem.Image.IconID = ciMacro.IconID;
+
+                        if (doubleClickMacroName == macroName)
+                        {
+                            menuItem.ItemStyle.ForeColor = Color.Red;
+                        }
                     }
                 }
             }
@@ -2100,6 +2150,59 @@ namespace CodeClay
 
             return script;
         }
+
+        private string GetSearchFieldScript()
+        {
+            string script = "";
+
+            if (CiTable != null)
+            {
+                string tableName = CiTable.TableName;
+                foreach (CiField ciField in CiTable.CiSearchableFields)
+                {
+                    string searchKey = ciField.SearchableID;
+                    script += string.Format("InitField(\'{0}\', \'{1}\', \'{2}\'); ",
+                        tableName,
+                        searchKey,
+                        this[searchKey]);
+                }
+            }
+
+            return script;
+        }
+
+        private void ProcessGridCommand()
+        {
+            if (!MyWebUtils.IsTimeOutReached(Page) && CiTable != null)
+            {
+                BuildGridToolbar();
+
+                string macroName = UiApplication.Me.GetCommandFired(CiTable.TableName);
+
+                switch (macroName)
+                {
+                    case "New":
+                        break;
+
+                    case "Edit":
+                        dxGrid.JSProperties["cpScript"] = GetInvisibleFieldScript();
+                        break;
+
+                    case "Delete":
+                        // Do nothing
+                        break;
+
+                    case "Update":
+                    case "Cancel":
+                        dxGrid.JSProperties["cpScript"] = GetSearchFieldScript();
+                        break;
+
+                    default:
+                        dxGrid.JSProperties["cpScript"] = RunMacro(macroName);
+                        break;
+                }
+            }
+        }
     }
 
     public class XiTable : XiPlugin
@@ -2114,20 +2217,29 @@ namespace CodeClay
         }
 
         // --------------------------------------------------------------------------------------------------
-        // Properties
-        // --------------------------------------------------------------------------------------------------
-
-        private Hashtable mPropertySQL = new Hashtable();
-
-        // --------------------------------------------------------------------------------------------------
         // Methods (Override)
         // --------------------------------------------------------------------------------------------------
 
+        public override void DownloadFile(DataRow drKey, string puxUrl)
+        {
+            base.DownloadFile(drKey, puxUrl);
+
+            object oldTableName = MyWebUtils.GetField(drKey, "OldTableName");
+            if (!MyUtils.IsEmpty(oldTableName))
+            {
+                string appName = GetApplicationName(drKey);
+                string oldPuxUrl = MyWebUtils.MapPath(string.Format("Sites/{0}/{1}.pux", appName, oldTableName));
+
+                if (File.Exists(oldPuxUrl))
+                {
+                    File.Delete(oldPuxUrl);
+                }
+            }
+        }
+
         protected override DataTable GetPluginDefinitions(DataRow drPluginKey)
         {
-            return MyWebUtils.GetBySQL("select * from CiTable where AppID = @AppID and TableID = @TableID",
-                drPluginKey,
-                true);
+            return MyWebUtils.GetBySQL("?exec spTable_sel @AppID, @TableID", drPluginKey, true);
         }
 
         protected override List<XElement> GetPluginDefinitions(List<XElement> xElements)
@@ -2147,27 +2259,12 @@ namespace CodeClay
 
         protected override void WriteToDB(DataRow drPluginDefinition)
         {
-            string sqlParameterList = GetSqlParameterList(drPluginDefinition);
-
-            MyWebUtils.GetBySQL("exec spTable_updLong " + sqlParameterList,
+            MyWebUtils.GetBySQL("exec spTable_updLong " +
+                "@AppID, @TableID, @TableName, @Src, @CaptionOrSQL, @IsCaptionSQL, @DefaultView, " +
+                "@LayoutUrl, @ColCount, @BubbleUpdate, @QuickInsert, @InsertRowAtBottom, " +
+                "@DoubleClickMacroName,	null",
                 drPluginDefinition,
                 true);
-
-            DataRow drSQL = MyUtils.CloneDataRow(drPluginDefinition);
-            DataColumnCollection dcSQL = drSQL.Table.Columns;
-            MyWebUtils.AddColumnIfRequired(dcSQL, "EntityType");
-            MyWebUtils.AddColumnIfRequired(dcSQL, "SQLType");
-            MyWebUtils.AddColumnIfRequired(dcSQL, "EntityID");
-            MyWebUtils.AddColumnIfRequired(dcSQL, "SQL");
-            drSQL["EntityType"] = "CiTable";
-            drSQL["EntityID"] = drSQL["TableID"];
-
-            foreach (string propertyName in mPropertySQL.Keys)
-            {
-                drSQL["SQLType"] = propertyName + "SQL";
-                drSQL["SQL"] = mPropertySQL[propertyName];
-                MyWebUtils.GetBySQL("exec spSQL_ins @EntityType, @DBChangeSQLType, @AppID, @TableID, @EntityID, @SQL", drSQL);
-            }
         }
 
         protected override string GetXPropertyName(string dPropertyName)
@@ -2224,7 +2321,8 @@ namespace CodeClay
                     string sqlType = MyUtils.Coalesce(drFieldSQL["SQLType"], "").ToString();
                     if (sqlType.EndsWith("SQL"))
                     {
-                        XElement xTableSQL = new XElement(sqlType.Substring(0, sqlType.Length - 3));
+                        string dPropertyName = sqlType.Substring(0, sqlType.Length - 3);
+                        XElement xTableSQL = new XElement(GetXPropertyName(dPropertyName));
                         xTableSQL.Add(new XAttribute("lang", "sql"));
                         xTableSQL.Value = drFieldSQL["SQL"].ToString();
                         xPluginDefinition.Add(xTableSQL);
@@ -2239,12 +2337,13 @@ namespace CodeClay
 
             if (drPluginDefinition != null && xPluginDefinition != null)
             {
-                mPropertySQL.Clear();
                 foreach (XElement xProperty in xPluginDefinition.Elements())
                 {
-                    if (xProperty.Attributes("lang").Count() > 0)
+                    string xPropertyName = xProperty.Name.ToString();
+                    if (xPropertyName == "TableCaption")
                     {
-                        mPropertySQL[xProperty.Name.ToString()] = xProperty.Value;
+                        drPluginDefinition["CaptionOrSQL"] = xProperty.Value;
+                        drPluginDefinition["IsCaptionSQL"] = xProperty.Attributes("lang").Count() > 0;
                     }
                 }
             }
@@ -2253,23 +2352,6 @@ namespace CodeClay
         protected override List<XiPlugin> GetXiChildPlugins()
         {
             return new List<XiPlugin>() { new XiField(), new XiChildTable(), new XiMacro(), new XiButtonField() };
-        }
-
-        // --------------------------------------------------------------------------------------------------
-        // Helpers
-        // --------------------------------------------------------------------------------------------------
-
-        private string GetSqlParameterList(DataRow dr)
-        {
-            string sqlParameterList = "";
-
-            foreach (DataColumn dcTableProperty in dr.Table.Columns)
-            {
-                sqlParameterList += ((MyUtils.IsEmpty(sqlParameterList))
-                  ? " @" : " ,@") + dcTableProperty.ColumnName;
-            }
-
-            return sqlParameterList;
         }
     }
 

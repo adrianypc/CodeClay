@@ -1,0 +1,144 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<CiTable>
+	<TableName>ProductDetail</TableName>
+	<TableCaption>Product Detail</TableCaption>
+	<RowKey>ProductID</RowKey>
+    <ColCount>2</ColCount>
+    <DefaultView>Card</DefaultView>
+	<CiTextField>
+		<FieldName>ProductID</FieldName>
+		<Caption>Product ID</Caption>
+		<Editable>false</Editable>
+        <width>8</width>
+	</CiTextField>
+	<CiTextField>
+		<FieldName>ProductName</FieldName>
+		<Caption>Product Name</Caption>
+        <width>30</width>
+        <Editable lang="sql">select distinct 1 from tblSingleton where @CalledFrom is null</Editable>
+	</CiTextField>
+    <CiLinkField>
+        <FieldName>HealthTreeURL</FieldName>
+        <Caption>HealthTree URL</Caption>
+        <Editable lang="sql">select distinct 1 from tblSingleton where @CalledFrom is null</Editable>
+    </CiLinkField>
+	<CiTextField>
+		<FieldName>UnitCostPrice</FieldName>
+		<Caption>Unit Cost Price ($)</Caption>
+        <Editable lang="sql">select distinct 1 from tblSingleton where @CalledFrom is null</Editable>
+    </CiTextField>
+	<CiTextField>
+		<FieldName>UnitSellingPrice</FieldName>
+		<Caption>Unit Selling Price ($)</Caption>
+        <Editable lang="sql">select distinct 1 from tblSingleton where @CalledFrom is null</Editable>
+    </CiTextField>
+    <CiTextField>
+        <FieldName>SupplierSKU</FieldName>
+        <Caption>Supplier SKU</Caption>
+        <Editable lang="sql">select distinct 1 from tblSingleton where @CalledFrom is null</Editable>
+    </CiTextField>
+    <CiCheckField>
+        <FieldName>IsActive</FieldName>
+        <Caption>Enabled</Caption>
+        <width>4</width>
+    </CiCheckField>
+    <CiCheckField>
+        <FieldName>IsDropShipping</FieldName>
+        <Caption>DropShipping</Caption>
+        <width>4</width>
+        <Editable lang="sql">select distinct 1 from tblSingleton where @CalledFrom is null</Editable>
+    </CiCheckField>
+    <CiComboField>
+        <FieldName>ProductCategory</FieldName>
+        <Caption>Category</Caption>
+        <DropdownSQL>select Code from Dropdown where Category = 'PCategory'</DropdownSQL>
+        <Editable lang="sql">select distinct 1 from tblSingleton where @CalledFrom is null</Editable>
+    </CiComboField>
+    <CiDateField>
+        <FieldName>FirstSoldDate</FieldName>
+        <Caption>First Sold Date</Caption>
+        <Editable>false</Editable>
+        <ColumnFormat>dd/MM/yyyy</ColumnFormat>
+    </CiDateField>
+    <CiNumericField>
+        <FieldName>FirstTotalDays</FieldName>
+        <Caption>Total Days Since First Sold</Caption>
+        <Editable>false</Editable>
+        <Width>20</Width>
+    </CiNumericField>
+    <CiDateField>
+        <FieldName>LastSoldDate</FieldName>
+        <Caption>Last Sold Date</Caption>
+        <Editable>false</Editable>
+        <ColumnFormat>dd/MM/yyyy</ColumnFormat>
+    </CiDateField>
+    <CiNumericField>
+        <FieldName>LastTotalDays</FieldName>
+        <Caption>Total Days Since Last Sold</Caption>
+        <Editable>false</Editable>
+        <Width>20</Width>
+    </CiNumericField>
+    <CiNumericField>
+        <FieldName>TotalQuantityInLast3Months</FieldName>
+        <Caption>Quantity Sold in Last 3 Months</Caption>
+        <Editable>false</Editable>
+        <Width>20</Width>
+    </CiNumericField>
+    <CiNumericField>
+        <FieldName>TotalQuantityInLast12Months</FieldName>
+        <Caption>Quantity Sold in Last 12 Months</Caption>
+        <Editable>false</Editable>
+        <Width>20</Width>
+    </CiNumericField>
+    <CiNumericField>
+        <FieldName>TotalQuantity</FieldName>
+        <Caption>Quantity Sold in Total</Caption>
+        <Editable>false</Editable>
+        <Width>20</Width>
+    </CiNumericField>
+    <CiTable Src="Inventory.pux" />
+    <CiTable Src="GuerillaMarketing.pux" />
+    <CiTable Src="ThirdPartyPlatform.pux" />
+    <CiMemoField>
+		<FieldName>ProductDescription</FieldName>
+		<Caption>Product Description</Caption>
+        <Hidden>true</Hidden>
+	</CiMemoField>
+	<CiComboField>
+		<FieldName>SupplierID</FieldName>
+        <Code>SupplierID</Code>
+        <Description>SupplierName</Description>
+        <TextFieldName>SupplierName</TextFieldName>
+		<Caption>Supplier</Caption>
+		<DropdownSQL>select SupplierID, SupplierName from Supplier order by SupplierID</DropdownSQL>
+        <Hidden>true</Hidden>
+	</CiComboField>
+	<CiNumericField>
+		<FieldName>ReorderThreshold</FieldName>
+		<Caption>Reorder Threshold</Caption>
+        <Hidden>true</Hidden>
+	</CiNumericField>
+    <CiTextField>
+        <FieldName>CalledFrom</FieldName>
+        <Hidden>true</Hidden>
+    </CiTextField>
+    <DefaultMacro>
+		<ActionSQL>select '-New-' as ProductID,1 as IsActive</ActionSQL>
+	</DefaultMacro>
+	<SelectMacro>
+  	<ActionSQL>?exec spProduct_sel @ProductID</ActionSQL>
+	</SelectMacro>
+	<InsertMacro>
+		<ActionSQL>
+			?exec spProduct_ins @ProductName, @ProductDescription, @SupplierID, @SupplierSKU,
+				@ReorderThreshold, @UnitCostPrice, @UnitSellingPrice,@HealthTreeURL,@IsActive,@IsDropShipping,@ProductCategory
+		</ActionSQL>
+        <VisibleSQL>select distinct 1 from Product where @CalledFrom is null and IsNumeric(@ProductID) = 0</VisibleSQL>
+    </InsertMacro>
+	<UpdateMacro>
+		<ActionSQL>
+			exec spProduct_upd @ProductID, @ProductName, @ProductDescription, @SupplierID, @SupplierSKU,
+				@ReorderThreshold, @UnitCostPrice, @UnitSellingPrice,@HealthTreeURL,@IsActive,@IsDropShipping,@ProductCategory
+		</ActionSQL>
+	</UpdateMacro>
+</CiTable>

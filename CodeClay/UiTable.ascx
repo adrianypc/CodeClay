@@ -131,7 +131,7 @@
 <dx:ASPxGridView ID="dxGrid" ClientInstanceName="dxGrid" runat="server" Theme="Aqua" DataSourceID="MyTableData" AutoGenerateColumns="false" Width="100%" KeyFieldName="RowKey" CssClass="cssSmallFont"
     OnInit="dxGrid_Init" OnLoad="dxGrid_Load" OnCustomJSProperties="dxGrid_CustomJSProperties" OnCustomCallback="dxGrid_CustomCallback" OnSummaryDisplayText="dxGrid_SummaryDisplayText" OnCustomColumnDisplayText="dxGrid_CustomColumnDisplayText"
     OnBeforeColumnSortingGrouping="dxGrid_BeforeColumnSortingGrouping" OnInitNewRow="dxGrid_InitNewRow" OnToolbarItemClick="dxGrid_ToolbarItemClick"
-    OnRowValidating="dxGrid_RowValidating" OnRowUpdating="dxGrid_RowUpdating" OnRowInserting="dxGrid_RowInserting">
+    OnRowValidating="dxGrid_RowValidating" OnRowUpdating="dxGrid_RowUpdating" OnRowInserting="dxGrid_RowInserting" OnStartRowEditing="dxGrid_StartRowEditing">
     <ClientSideEvents Init="dxGrid_Init" />
     <ClientSideEvents BeginCallback="dxGrid_BeginCallback" />
     <ClientSideEvents EndCallback="dxGrid_EndCallback" />
@@ -140,7 +140,7 @@
     <ClientSideEvents FocusedRowChanged="dxGrid_FocusedRowChanged" />
     <ClientSideEvents ToolbarItemClick="dxGrid_ToolbarItemClick" />
     <ClientSideEvents RowDblClick="dxGrid_RowDblClick" />
-	<ClientSideEvents ContextMenu="dxGrid_Contextmenu" />
+    <ClientSideEvents ContextMenu="dxGrid_ContextMenu" />
     <Settings ShowGroupPanel="true" ShowGroupedColumns="true" ShowTitlePanel="true" ShowFooter="true" />
     <SettingsBehavior ColumnResizeMode="Control" AllowSelectSingleRowOnly="true" AllowFocusedRow="true" AllowSelectByRowClick="true" ConfirmDelete="true" />
     <SettingsDetail AllowOnlyOneMasterRowExpanded="true" />
@@ -169,8 +169,6 @@
                 </dx:GridViewToolbarItem>
                 <dx:GridViewToolbarItem Name="Search" Text="Search" Image-IconID="actions_search_16x16devav"  />
                 <dx:GridViewToolbarItem Name="New" Command="New" />
-                <dx:GridViewToolbarItem Name="Edit" Command="Edit" />
-                <dx:GridViewToolbarItem Name="Delete" Command="Delete" />
                 <dx:GridViewToolbarItem Name="Divider" Text="" Enabled="false"  ItemStyle-Width="100%" />
                 <dx:GridViewToolbarItem Name="Update" Command="Update" Text="Accept" Image-IconID="actions_apply_16x16" />
                 <dx:GridViewToolbarItem Name="Cancel" Command="Cancel" Image-IconID="actions_cancel_16x16" />

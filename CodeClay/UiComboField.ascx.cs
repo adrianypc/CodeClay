@@ -61,6 +61,7 @@ namespace CodeClay
             ArrayList sqlParameters = base.GetLeaderFieldNames();
 
             sqlParameters.AddRange(MyUtils.GetParameters(DropdownSQL));
+            sqlParameters.AddRange(MyUtils.GetParameters(InsertSQL));
 
             return sqlParameters; ;
         }
@@ -151,31 +152,32 @@ namespace CodeClay
             dxComboBox.Value = selectedValue.ToString();
         }
 
-        protected void dxComboBox_TextChanged(object sender, EventArgs e)
-		{
-			if (CiComboField != null)
-			{
-				ASPxComboBox dxComboBox = sender as ASPxComboBox;
-				if (dxComboBox != null)
-				{
-					string value = dxComboBox.Text;
-					if (dxComboBox.Items.FindByTextWithTrim(value) == null)
-					{
-						string insertSQL = CiComboField.InsertSQL;
-
-						if (!MyUtils.IsEmpty(insertSQL))
-						{
-							DataRow drParams = GetState();
-							MyWebUtils.EvalSQL(insertSQL, drParams);
-						}
-					}
-				}
-			}
-		}
-
         protected void dxComboPanel_Callback(object sender, CallbackEventArgsBase e)
         {
             Refresh();
+            
+            ASPxCallbackPanel dxComboPanel = sender as ASPxCallbackPanel;
+            if (dxComboPanel != null)
+            {
+                string fieldName = CiField.FieldName;
+                ASPxComboBox dxComboBox = dxComboPanel.FindControl(fieldName) as ASPxComboBox;
+                if (dxComboBox != null)
+                {
+                    string fieldValue = e.Parameter;
+                    dxComboBox.Text = fieldValue;
+                    if (dxComboBox.Items.FindByTextWithTrim(fieldValue) == null)
+                    {
+                        string insertSQL = CiComboField.InsertSQL;
+
+                        if (!MyUtils.IsEmpty(insertSQL))
+                        {
+                            DataRow drParams = GetState();
+                            drParams[fieldName] = fieldValue;
+                            MyWebUtils.EvalSQL(insertSQL, drParams);
+                        }
+                    }
+                }
+            }
         }
 
         protected void MyComboData_Selecting(object sender, ObjectDataSourceSelectingEventArgs e)

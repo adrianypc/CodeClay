@@ -12,8 +12,8 @@
     <Hidden>true</Hidden>
   </CiTextField>
   <CiTextField>
-    <FieldName>WordpressOrderNo</FieldName>
-    <Caption>Wordpress Order#</Caption>
+    <FieldName>PlatformOrderNo</FieldName>
+    <Caption>Platform Order#</Caption>
     <Editable>false</Editable>
     <Width>10</Width>
   </CiTextField>

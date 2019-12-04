@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Data;
 using System.Web.UI.WebControls;
+using System.Xml;
+using System.Xml.Serialization;
 
 // Extra references
 using DevExpress.Web;
-using System.Xml;
-using System.Xml.Serialization;
 
 namespace CodeClay
 {
@@ -25,9 +26,9 @@ namespace CodeClay
 		// Methods (Override)
 		// --------------------------------------------------------------------------------------------------
 
-		public override void FormatGridColumn(GridViewDataColumn dxColumn)
+		public override void FormatGridColumn(GridViewDataColumn dxColumn, DataRow dr)
 		{
-			base.FormatGridColumn(dxColumn);
+			base.FormatGridColumn(dxColumn, dr);
 
 			if (dxColumn != null)
 			{

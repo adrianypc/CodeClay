@@ -20,19 +20,25 @@
         <ColumnFormat>dd/MM/yyyy</ColumnFormat>
         <Mandatory>true</Mandatory>
     </CiDateField>
-    <CiTextField>
-		<FieldName>Author</FieldName>
-		<Caption>Author</Caption>
-        <width>20</width>
-	</CiTextField>
+    <CiComboField>
+        <FieldName>Author</FieldName>
+        <Caption>Author</Caption>
+        <Editable>true</Editable>
+        <RowSpan>2</RowSpan>
+        <Width>10</Width>
+        <DropdownSQL>select coalesce(OtherNames+' '+Surname,'') as Author from ApplicationUser where Enabled = 1 order by Author</DropdownSQL>
+    </CiComboField>
     <CiImageField>
         <FieldName>ImageFileURL</FieldName>
         <Caption>Ad Image</Caption>
         <Folder lang="sql">select 'SavedFiles\GMarketing\' + ltrim(str(@ProductID)) + '\F' + ltrim(str(@GMarketingNo))</Folder>
-        <Width>50</Width>
-      <ImageHeight>200</ImageHeight>
-      <ImageWidth>500</ImageWidth>
+        <Width>70</Width>
+        <ImageWidth>264</ImageWidth>
     </CiImageField>
+    <CiTextField>
+        <FieldName>CalledFrom</FieldName>
+        <Hidden>true</Hidden>
+    </CiTextField>
     <DefaultMacro>
 		<ActionSQL>
             select 
@@ -53,6 +59,7 @@
                 Author,
                 ImageFileURL
             from GuerillaMarketing where ProductID = @ProductID
+            order by GMarketingDate desc
         </ActionSQL>
 	</SelectMacro>
 	<InsertMacro>
@@ -60,6 +67,7 @@
             Insert into GuerillaMarketing (ProductID,GMarketingNo,GMarketingDate,Author,ImageFileURL) values 
             (@ProductID,@GMarketingNo,@GMarketingDate,@Author,@ImageFileURL)
         </ActionSQL>
+        <VisibleSQL>select 1 from tblSingleton where @CalledFrom is null</VisibleSQL>
 	</InsertMacro>
 	<UpdateMacro>
 		<ActionSQL>
@@ -70,6 +78,8 @@
                 Author = @Author,
                 ImageFileURL = @ImageFileURL
             where ProductID = @ProductID
+            and GMarketingNo = @GMarketingNo
         </ActionSQL>
-	</UpdateMacro>
+        <VisibleSQL>select 1 from tblSingleton where @CalledFrom is null</VisibleSQL>
+    </UpdateMacro>
 </CiTable>

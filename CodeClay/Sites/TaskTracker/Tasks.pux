@@ -1,0 +1,64 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CiTable>
+  <TableName>Tasks</TableName>
+  <TableCaption>Company tasks</TableCaption>
+  <InsertRowAtBottom>false</InsertRowAtBottom>
+  <RowKey>TaskID</RowKey>
+  <CiTextField>
+    <FieldName>TaskID</FieldName>
+    <Caption>Task ID</Caption>
+    <Editable>false</Editable>
+    <Width>5</Width>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>TaskDescription</FieldName>
+    <Caption>Task Description</Caption>
+    <Mandatory>true</Mandatory>
+    <Width>35</Width>
+  </CiTextField>
+  <CiComboField>
+    <FieldName>TaskType</FieldName>
+    <Caption>Task Type</Caption>
+    <Width>10</Width>
+  </CiComboField>
+  <CiField>
+    <FieldName>HelpText</FieldName>
+    <Caption>Help Text</Caption>
+    <Width>10</Width>
+    <Value>Just try something</Value>
+  </CiField>
+  <CiDateField>
+    <FieldName>DeliveryDate</FieldName>
+    <Caption>Delivery Date</Caption>
+    <Width>10</Width>
+  </CiDateField>
+  <CiCheckField>
+    <FieldName>Billable</FieldName>
+    <Caption>Bill to client?</Caption>
+    <Width>10</Width>
+  </CiCheckField>
+  <CiRadioField>
+    <FieldName>Status</FieldName>
+    <Caption>Status</Caption>
+    <Width>10</Width>
+  </CiRadioField>
+  <CiMemoField>
+    <FieldName>Comments</FieldName>
+    <Caption>Comments</Caption>
+    <Width>10</Width>
+  </CiMemoField>
+  <SelectMacro>
+    <ActionSQL>select TaskID, TaskDescription, TaskType, HelpText, DeliveryDate, Billable, Status, Comments from Tasks order by  TaskID</ActionSQL>
+  </SelectMacro>
+  <InsertMacro>
+    <ActionSQL>insert into Tasks (TaskDescription, TaskType, DeliveryDate, Billable, Status, Comments) values (@TaskDescription, @TaskType, @DeliveryDate, @Billable, @Status, @Comments)</ActionSQL>
+    <ValidateSQL>select 'Cannot create duplicate record' from Tasks where  TaskID = @TaskID</ValidateSQL>
+  </InsertMacro>
+  <UpdateMacro>
+    <ActionSQL>update Tasks set TaskDescription = @TaskDescription, TaskType = @TaskType, DeliveryDate = @DeliveryDate, Billable = @Billable, Status = @Status, Comments = @Comments where ID = @ID</ActionSQL>
+    <ValidateSQL>select 'Cannot create duplicate record' from Tasks where  TaskID = @TaskID and ID != @ID</ValidateSQL>
+  </UpdateMacro>
+  <DeleteMacro>
+    <ActionSQL>delete from Tasks where ID = @ID</ActionSQL>
+  </DeleteMacro>
+</CiTable>

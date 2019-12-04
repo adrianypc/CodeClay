@@ -27,9 +27,21 @@
     <Width>10</Width>
   </CiTextField>
   <CiTextField>
-    <FieldName>Caption</FieldName>
-    <Caption>Caption</Caption>
+    <FieldName>OldTableName</FieldName>
+    <Caption>Table Name</Caption>
+    <Computed>true</Computed>
+    <Value>TableName</Value>
+    <Hidden>true</Hidden>
   </CiTextField>
+  <CiMemoField>
+    <FieldName>CaptionOrSQL</FieldName>
+    <Caption>Caption</Caption>
+  </CiMemoField>
+  <CiCheckField>
+    <FieldName>IsCaptionSQL</FieldName>
+    <Caption>SQL?</Caption>
+    <Width>5</Width>
+  </CiCheckField>
   <CiComboField>
     <FieldName>DefaultView</FieldName>
     <Caption>Default View</Caption>
@@ -60,21 +72,22 @@
     <ActionSQL>?exec spTable_sel @AppID, null</ActionSQL>
   </SelectMacro>
   <InsertMacro>
-    <ActionSQL>?exec spTable_ins @AppID, @TableName, @Caption, @DefaultView, @Bound</ActionSQL>
+    <ActionSQL>?exec spTable_ins @AppID, @TableName, @CaptionOrSQL, @IsCaptionSQL, @DefaultView, @Bound</ActionSQL>
+    <ActionSQL>select @AppID as AppID, @TableID as TableID</ActionSQL>
     <CiSerializeMacro>
       <Direction>Download</Direction>
     </CiSerializeMacro>
   </InsertMacro>
   <UpdateMacro>
-    <ActionSQL>exec spTable_updShort @AppID, @TableID, @TableName, @Caption, @DefaultView, @Bound</ActionSQL>
-    <ActionSQL>select @AppID as AppID, @TableID as TableID</ActionSQL>
+    <ActionSQL>exec spTable_updShort @AppID, @TableID, @TableName, @CaptionOrSQL, @IsCaptionSQL, @DefaultView, @Bound</ActionSQL>
+    <ActionSQL>select @AppID as AppID, @TableID as TableID, @OldTableName as OldTableName</ActionSQL>
     <CiSerializeMacro>
       <Direction>Download</Direction>
     </CiSerializeMacro>
   </UpdateMacro>
   <DeleteMacro>
     <ActionSQL>exec spTable_del @AppID, @TableID</ActionSQL>
-    <ActionSQL>select @AppID as AppID, @TableID as TableID</ActionSQL>
+    <ActionSQL>select @AppID as AppID, @TableID as TableID, @OldTableName as OldTableName</ActionSQL>
     <CiSerializeMacro>
       <Direction>Download</Direction>
     </CiSerializeMacro>
@@ -82,10 +95,7 @@
   <CiMacro>
     <MacroName>Details</MacroName>
     <Caption>Table Details</Caption>
-    <ActionSQL>
-      select  @AppID as AppID,
-              @TableID as TableID
-    </ActionSQL>
+    <ActionSQL>select @AppID as AppID, @TableID as TableID</ActionSQL>
     <NavigateUrl>CiTableDetails.pux</NavigateUrl>
     <NavigatePos>NewTab</NavigatePos>
   </CiMacro>

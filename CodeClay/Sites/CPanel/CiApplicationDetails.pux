@@ -19,6 +19,11 @@
     <Caption>User Defined?</Caption>
     <Width>10</Width>
   </CiCheckField>
+  <CiComboField>
+    <FieldName>HomePluginSrc</FieldName>
+    <Caption>Home Table</Caption>
+    <DropdownSQL>select TableName + '.pux' as PuxFile from CiTable where AppID = @AppID order by TableName</DropdownSQL>
+  </CiComboField>
   <CiLinkField>
     <FieldName>AppUrl</FieldName>
     <Caption>Url</Caption>
@@ -29,4 +34,11 @@
   <SelectMacro>
     <ActionSQL>?exec spApplication_sel @AppID, @CI_UserEmail</ActionSQL>
   </SelectMacro>
+  <UpdateMacro>
+    <ActionSQL>exec spApplication_upd @AppID, @AppName, @UserDefined, @HomePluginSrc</ActionSQL>
+    <ActionSQL>select @AppID as AppID, @OldAppName as OldAppName</ActionSQL>
+    <CiSerializeMacro>
+      <Direction>Download</Direction>
+    </CiSerializeMacro>
+  </UpdateMacro>
 </CiTable>

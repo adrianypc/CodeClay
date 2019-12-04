@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <CiApplication>
   <IsDesigner>true</IsDesigner>
-  <ProviderName>System.Data.OleDb</ProviderName>
-  <ConnectionString>Provider=Microsoft.Jet.OLEDB.4.0;Data Source=CoRE.mdb</ConnectionString>
+  <ProviderName>System.Data.SqlClient</ProviderName>
+  <ConnectionString>Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=CPanel;Integrated Security=True;Connect Timeout=30</ConnectionString>
   <CiMenu>
     <MenuName>Application</MenuName>
     <CiMenu>

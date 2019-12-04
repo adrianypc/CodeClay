@@ -1,11 +1,12 @@
 ﻿using System;
+using System.Data;
+using System.Drawing;
 using System.Web.UI.WebControls;
+using System.Xml.Serialization;
 
 // Extra references
 using CodistriCore;
 using DevExpress.Web;
-using System.Drawing;
-using System.Xml.Serialization;
 
 namespace CodeClay
 {
@@ -47,9 +48,9 @@ namespace CodeClay
             return dxColumn;
         }
 
-		public override void FormatCardColumn(CardViewColumn dxColumn)
+		public override void FormatCardColumn(CardViewColumn dxColumn, DataRow dr)
 		{
-			base.FormatCardColumn(dxColumn);
+			base.FormatCardColumn(dxColumn, dr);
 
 			if (dxColumn != null)
 			{
@@ -62,9 +63,9 @@ namespace CodeClay
 			}
 		}
 
-		public override void FormatGridColumn(GridViewDataColumn dxColumn)
+		public override void FormatGridColumn(GridViewDataColumn dxColumn, DataRow dr)
 		{
-			base.FormatGridColumn(dxColumn);
+			base.FormatGridColumn(dxColumn, dr);
 
 			if (dxColumn != null)
 			{

@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <CiTable>
 	<TableName>FieldDetails</TableName>
-  <TableCaption lang="sql">select Type + ' Field Design: ' + FieldName from CiField where AppID = @AppID and TableID = @TableID and FieldID = @FieldID</TableCaption>
+  <TableCaption lang="sql">select coalesce(Type, 'Label') + ' Field Design: ' + FieldName from CiField where AppID = @AppID and TableID = @TableID and FieldID = @FieldID</TableCaption>
   <DefaultView>Card</DefaultView>
   <RowKey>AppID,TableID,FieldID</RowKey>
   <CiField>
@@ -52,14 +52,11 @@
     <FieldName>Searchable</FieldName>
     <Caption>Can search on this field?</Caption>
   </CiCheckField>
-  <CiTextField>
+  <CiMemoField>
     <FieldName>Value</FieldName>
     <Caption>Default Value</Caption>
-  </CiTextField>
-  <CiTextField>
-    <FieldName>ColumnFormat</FieldName>
-    <Caption>Colum Format Expression</Caption>
-  </CiTextField>
+    <AllowHtml>true</AllowHtml>
+  </CiMemoField>
   <CiComboField>
     <FieldName>ForeColor</FieldName>
     <Caption>Fore Color</Caption>
@@ -116,7 +113,7 @@
       exec spField_updLong @AppID, @TableID, @FieldID, @FieldName, @Editable, @Mandatory, @Hidden, @Searchable, @Summary, @ForeColor,
         @RowSpan, @ColSpan, @Width, @HorizontalAlign, @VerticalAlign, @Value,
         @DropdownSQL, @InsertSQL, @Code, @Description, @TextFieldName, @DropdownWidth,
-        @Folder, @MinValue, @MaxValue, @Columns, @ColumnFormat, @Mask
+        @Folder, @MinValue, @MaxValue, @Columns, @Mask
     </ActionSQL>
     <ActionSQL>select @AppID as AppID, @TableID as TableID</ActionSQL>
     <CiSerializeMacro>

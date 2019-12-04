@@ -23,10 +23,22 @@
     <FieldName>TableName</FieldName>
     <Caption>Table Name</Caption>
   </CiTextField>
-  <CiButtonField Src="SQLTableButton.pux?SQLType=CaptionSQL">
-    <FieldName>CaptionSQL</FieldName>
+  <CiTextField>
+    <FieldName>OldTableName</FieldName>
+    <Caption>Table Name</Caption>
+    <Computed>true</Computed>
+    <Value>TableName</Value>
+    <Hidden>true</Hidden>
+  </CiTextField>
+  <CiMemoField>
+    <FieldName>CaptionOrSQL</FieldName>
     <Caption>Caption</Caption>
-  </CiButtonField>
+  </CiMemoField>
+  <CiCheckField>
+    <FieldName>IsCaptionSQL</FieldName>
+    <Caption>SQL?</Caption>
+    <Width>5</Width>
+  </CiCheckField>
   <CiComboField>
     <FieldName>Src</FieldName>
     <Caption>Source</Caption>
@@ -47,12 +59,6 @@
     <Caption>#columns per Card</Caption>
     <Value>1</Value>
     <Editable lang="sql">select 1 from Singleton where @DefaultView = 'Card'</Editable>
-  </CiNumericField>
-  <CiNumericField>
-    <FieldName>PageSize</FieldName>
-    <Caption>Page size for Grid</Caption>
-    <Value>0</Value>
-    <Editable lang="sql">select 1 from Singleton where @DefaultView = 'Grid'</Editable>
   </CiNumericField>
   <CiCheckField>
     <FieldName>InsertRowAtBottom</FieldName>
@@ -85,11 +91,11 @@
   </SelectMacro>
   <UpdateMacro>
     <ActionSQL>
-      exec spTable_updLong @AppID, @TableID, @TableName, @Src, @Caption, @DefaultView,
-      @LayoutUrl, @PageSize, @ColCount, @BubbleUpdate, @QuickInsert, @InsertRowAtBottom,
+      exec spTable_updLong @AppID, @TableID, @TableName, @Src, @CaptionOrSQL, @IsCaptionSQL, @DefaultView,
+      @LayoutUrl, @ColCount, @BubbleUpdate, @QuickInsert, @InsertRowAtBottom,
       @DoubleClickMacroName
     </ActionSQL>
-    <ActionSQL>select @AppID as AppID, @TableID as TableID</ActionSQL>
+    <ActionSQL>select @AppID as AppID, @TableID as TableID, @OldTableName as OldTableName</ActionSQL>
     <CiSerializeMacro>
       <Direction>Download</Direction>
     </CiSerializeMacro>

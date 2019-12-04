@@ -1,0 +1,53 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CiTable>
+  <TableName>Customers</TableName>
+  <RowKey>FirstName,LastName</RowKey>
+  <TableCaption lang="sql">select str(count(*)) + ' Lucrative customers' from Customers</TableCaption>
+  <CiTextField>
+    <FieldName>ID</FieldName>
+    <Caption>ID</Caption>
+    <Hidden>true</Hidden>
+    <Editable>false</Editable>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>FirstName</FieldName>
+    <Caption>First Name</Caption>
+    <Width>40</Width>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>LastName</FieldName>
+    <Caption>Last Name</Caption>
+    <Width>40</Width>
+    <Value>Smith</Value>
+  </CiTextField>
+  <CiDateField>
+    <FieldName>DateOfBirth</FieldName>
+    <Caption>Date of Birth</Caption>
+    <Width>10</Width>
+    <Value>Oct 23 2019 12:00AM</Value>
+  </CiDateField>
+  <CiField>
+    <FieldName>Comments</FieldName>
+    <Caption>Comments</Caption>
+    <Width>10</Width>
+    <Value>
+      <p>
+        <span style="font-size: 12pt;">The <span style="color: rgb(255, 0, 0);">rain</span> in Italy</span>
+      </p>
+    </Value>
+  </CiField>
+  <SelectMacro>
+    <ActionSQL>select ID, FirstName, LastName, DateOfBirth, Comments from Customers order by  FirstName, LastName</ActionSQL>
+  </SelectMacro>
+  <InsertMacro>
+    <ActionSQL>insert into Customers (FirstName, LastName, DateOfBirth) values (@FirstName, @LastName, @DateOfBirth)</ActionSQL>
+    <ValidateSQL>select 'Cannot create duplicate record' from Customers where  FirstName = @FirstName and LastName = @LastName</ValidateSQL>
+  </InsertMacro>
+  <UpdateMacro>
+    <ActionSQL>update Customers set FirstName = @FirstName, LastName = @LastName, DateOfBirth = @DateOfBirth where ID = @ID</ActionSQL>
+    <ValidateSQL>select 'Cannot create duplicate record' from Customers where  FirstName = @FirstName and LastName = @LastName and ID != @ID</ValidateSQL>
+  </UpdateMacro>
+  <DeleteMacro>
+    <ActionSQL>delete from Customers where ID = @ID</ActionSQL>
+  </DeleteMacro>
+</CiTable>

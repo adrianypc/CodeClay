@@ -27,7 +27,6 @@ function dxSearch_EndCallback(sender, event) {
     var tableName = dxSearch.cpTableName;
 
     switch (command) {
-        case "Update":
         case "Cancel":
             // For cosmetic purposes when clicking on Inspect button
             ClearState(tableName);
@@ -89,11 +88,6 @@ function dxCard_EndCallback(sender, event) {
     var command = dxCard.Command;
     var script = dxCard.cpScript;
 
-    if (script) {
-        dxCard.cpScript = null;
-        eval(script);
-    }
-
     switch (command) {
     	case "New":
         case "Search":
@@ -142,6 +136,11 @@ function dxCard_EndCallback(sender, event) {
     }
 
     InitAllToolbars(dxCard);
+
+    if (script) {
+        dxCard.cpScript = null;
+        eval(script);
+    }
 }
 
 function dxCard_ToolbarItemClick(sender, event) {
@@ -208,19 +207,18 @@ function dxGrid_EndCallback(sender, event) {
     var quickInsert = dxGrid.cpQuickInsert;
     var command = dxGrid.Command;
     var script = dxGrid.cpScript;
-    dxGrid.cpScript = null;
-
-    if (script) {
-        eval(script);
-    }
+    var expandedRowIndex = dxGrid.ExpandedRowIndex;
 
     switch (command) {
         case "New":
             // Do nothing
+            if (expandedRowIndex >= 0) {
+                dxGrid.CollapseDetailRow(expandedRowIndex);
+            }
             break;
 
         case "Edit":
-            if (dxGrid.ExpandedRowIndex >= 0 && dxGrid.ExpandedRowIndex != dxGrid.GetFocusedRowIndex()) {
+            if (expandedRowIndex >= 0 && expandedRowIndex != dxGrid.GetFocusedRowIndex()) {
                 dxGrid.CollapseAllDetailRows();
             }
             break;
@@ -255,6 +253,11 @@ function dxGrid_EndCallback(sender, event) {
     }
 
     InitAllToolbars(dxGrid);
+
+    if (script) {
+        dxGrid.cpScript = null;
+        eval(script);
+    }
 }
 
 function dxGrid_FocusedRowChanged(sender, event) {
@@ -281,7 +284,7 @@ function dxGrid_ToolbarItemClick(sender, event) {
     ClickToolbar(sender, event, false);
 }
 
-function dxGrid_Contextmenu(sender, event) {
+function dxGrid_ContextMenu(sender, event) {
 	var dxGrid = sender;
 	var xPos = ASPxClientUtils.GetEventX(event.htmlEvent);
 	var yPos = ASPxClientUtils.GetEventY(event.htmlEvent);
@@ -503,19 +506,42 @@ function dxPopupMenu_ItemClick(sender, event) {
 		var dxClickMenuPanel = clickMenuPanels[tableName];
         var dxLoadingPanel = loadingPanels[tableName];
         var dxTable = tables[tableName];
+        var isCrudMacro = true;
 
         if (dxTable) {
             dxTable.Command = command;
+            var rowIndex = dxTable.GetFocusedRowIndex();
+
+            switch (command) {
+                case "New":
+                    dxTable.AddNewRow();
+                    break;
+
+                case "Edit":
+                    dxTable.StartEditRow(rowIndex);
+                    break;
+
+                case "Delete":
+                    dxTable.DeleteRow(rowIndex);
+                    break;
+
+                default:
+                    isCrudMacro = false;
+                    if (dxClickMenuPanel) {
+                        dxClickMenuPanel.Grid = dxPopupMenu.Grid;
+                        dxClickMenuPanel.PerformCallback(command);
+                    }
+
+                    if (dxLoadingPanel) {
+                        dxLoadingPanel.Show();
+                    }
+                    break;
+            }
+
+            if (isCrudMacro) {
+                ClickToolbar(dxTable, event, false);
+            }
         }
-
-		if (dxClickMenuPanel) {
-			dxClickMenuPanel.Grid = dxPopupMenu.Grid;
-			dxClickMenuPanel.PerformCallback(command);
-		}
-
-		if (dxLoadingPanel) {
-			dxLoadingPanel.Show();
-		}
 	}
 }
 

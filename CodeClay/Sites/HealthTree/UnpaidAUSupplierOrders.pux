@@ -2,7 +2,7 @@
 <CiTable>
   <TableName>UnpaidSupplierOrder</TableName>
   <TableCaption lang="sql">
-      select coalesce((select invoicestatus from interbranchinvoices where Invoiceno = @InvoiceNo),'Unpaid') +' '+'Supplier Orders'
+      select coalesce((select invoicestatus from interbranchinvoices where IsNumeric(@InvoiceNo) = 1 and Invoiceno = @InvoiceNo),'Unpaid') +' '+'Supplier Orders'
   </TableCaption>
   <RowKey>InvoiceNo,SupplierOrderNo</RowKey>
   <DefaultView>Grid</DefaultView>
@@ -33,19 +33,19 @@
   </CiDateField>
   <CiTextField>
     <FieldName>TotalItemPrice</FieldName>
-    <Caption>Total Price ($)</Caption>
+    <Caption>Total Price (SG$)</Caption>
     <Mask>Currency</Mask>
     <Editable>false</Editable>
   </CiTextField>
   <CiTextField>
     <FieldName>ShippingCost</FieldName>
-    <Caption>Shipping ($)</Caption>
+    <Caption>Shipping (SG$)</Caption>
     <Mask>Currency</Mask>
     <Editable>false</Editable>
   </CiTextField>
   <CiTextField>
     <FieldName>GrandTotal</FieldName>
-    <Caption>Grand Total ($)</Caption>
+    <Caption>Grand Total (SG$)</Caption>
     <Mask>Currency</Mask>
     <Editable>false</Editable>
   </CiTextField>

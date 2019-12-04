@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CiApplication>
+  <AppName>SoNatural</AppName>
+  <HomePluginSrc>Customers.pux</HomePluginSrc>
+  <IsDesigner>true</IsDesigner>
+  <ProviderName>System.Data.SqlClient</ProviderName>
+  <ConnectionString>Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=SoNatural;Integrated Security=True;Connect Timeout=30</ConnectionString>
+  <CiMenu>
+    <MenuName>Application</MenuName>
+    <CiMenu>
+      <MenuName>Setup</MenuName>
+      <CiMenu>
+        <MenuName>Dropdowns</MenuName>
+        <PluginSrc>Dropdowns.pux</PluginSrc>
+      </CiMenu>
+    </CiMenu>
+  </CiMenu>
+</CiApplication>

@@ -72,7 +72,7 @@ namespace CodeClay
 			return dxColumn;
 		}
 
-        public override void FormatGridColumn(GridViewDataColumn dxColumn)
+        public override void FormatGridColumn(GridViewDataColumn dxColumn, DataRow dr)
 		{
 			if (dxColumn != null)
 			{
@@ -110,7 +110,7 @@ namespace CodeClay
         {
             if (CiButtonField != null)
             {
-                string buttonText = CiButtonField.Caption;
+                string buttonText = CiButtonField.EvalCaptionSQL(GetState());
 
                 CiMacro ciMacro = CiButtonField.CiFirstMacro;
                 if (ciMacro != null)

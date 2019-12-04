@@ -16,9 +16,16 @@
     <CiComboField>
         <FieldName>PlatformName</FieldName>
         <Caption>Platform</Caption>
-        <DropdownSQL>select Code from Dropdown where Category = 'Platform'</DropdownSQL>
+        <DropdownSQL>select Description from Dropdown where Category = 'Platform'</DropdownSQL>
         <Mandatory>true</Mandatory>
     </CiComboField>
+    <CiDateField>
+        <FieldName>DateCreated</FieldName>
+        <Caption>Date</Caption>
+        <Editable>true</Editable>
+        <ColumnFormat>dd/MM/yyyy</ColumnFormat>
+        <Mandatory>true</Mandatory>
+    </CiDateField>
     <CiTextField>
 		<FieldName>AuthorName</FieldName>
 		<Caption>Author</Caption>
@@ -46,13 +53,18 @@
         <DropdownSQL>select Code from Dropdown where Category = 'PPage'</DropdownSQL>
         <width>6</width>
     </CiComboField>
+    <CiTextField>
+        <FieldName>CalledFrom</FieldName>
+        <Hidden>true</Hidden>
+    </CiTextField>
     <DefaultMacro>
 		<ActionSQL>
             select 
                 @ProductID as ProductID,
                 (select coalesce(OtherNames+' '+Surname,'') from ApplicationUser where Email = @CI_UserEmail) as AuthorName,
                 coalesce(I.QuantityOnHand,0) as QtyInStock,
-                cast(0 as int) as QtyAdvertised
+                cast(0 as int) as QtyAdvertised,
+                current_timestamp as DateCreated
             from Product P
             inner join Inventory I
             on P.ProductID = I.ProductID
@@ -71,21 +83,24 @@
                 coalesce(I.QuantityOnHand,0) as QtyInStock,
                 QtyAdvertised,
                 PlatformURL,
-                PlatformPage
+                PlatformPage,
+                DateCreated
             from ThirdPartyPlatform T
             inner join Inventory I
             on T.ProductID = I.ProductID
             and I.Status = 'Active'
             and I.BranchCode = 'HT-SG'
             where T.ProductID = @ProductID
+            order by DateCreated desc
         </ActionSQL>
 	</SelectMacro>
 	<InsertMacro>
 		<ActionSQL>
-           Insert into ThirdPartyPlatform (ProductID,PlatformName,AuthorName,QtyAdvertised,PlatformURL,PlatformPage)
-           values (@ProductID,@PlatformName,@AuthorName,@QtyAdvertised,@PlatformURL,cast(@PlatformPage as int))
+           Insert into ThirdPartyPlatform (ProductID,PlatformName,AuthorName,QtyAdvertised,PlatformURL,PlatformPage,DateCreated)
+           values (@ProductID,@PlatformName,@AuthorName,@QtyAdvertised,@PlatformURL,cast(@PlatformPage as int),@DateCreated)
         </ActionSQL>
-	</InsertMacro>
+        <VisibleSQL>select 1 from tblSingleton where @CalledFrom is null</VisibleSQL>
+    </InsertMacro>
 	<UpdateMacro>
 		<ActionSQL>
             update ThirdPartyPlatform set
@@ -93,16 +108,19 @@
                 AuthorName = @AuthorName,
                 QtyAdvertised = @QtyAdvertised,
                 PlatformURL = @PlatformURL,
-                PlatformPage = @PlatformPage
+                PlatformPage = @PlatformPage,
+                DateCreated = @DateCreated
             where ProductID = @ProductID
             and PlatformName = @ExistingPlatformName
         </ActionSQL>
-	</UpdateMacro>
+        <VisibleSQL>select 1 from tblSingleton where @CalledFrom is null</VisibleSQL>
+    </UpdateMacro>
     <DeleteMacro>
         <ActionSQL>
             delete from ThirdPartyPlatform
             where ProductID = @ProductID
             and PlatformName = @PlatformName
         </ActionSQL>
+        <VisibleSQL>select 1 from tblSingleton where @CalledFrom is null</VisibleSQL>
     </DeleteMacro>
 </CiTable>

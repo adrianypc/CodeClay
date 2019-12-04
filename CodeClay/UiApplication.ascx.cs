@@ -7,6 +7,7 @@ using System.Data.Common;
 using System.Data.Odbc;
 using System.Data.OleDb;
 using System.Data.SqlClient;
+using System.IO;
 using System.Xml;
 using System.Xml.Linq;
 using System.Xml.Serialization;
@@ -668,6 +669,46 @@ namespace CodeClay
         // Methods (Override)
         // --------------------------------------------------------------------------------------------------
 
+        public override void DownloadFile(DataRow drKey, string puxUrl)
+        {
+            object oldAppName = MyWebUtils.GetField(drKey, "OldAppName");
+            if (!MyUtils.IsEmpty(oldAppName))
+            {
+                string newAppName = GetApplicationName(drKey);
+
+                if (newAppName != oldAppName.ToString())
+                {
+                    string oldAppDir = MyWebUtils.MapPath(string.Format("Sites/{0}", oldAppName));
+                    string newAppDir = MyWebUtils.MapPath(string.Format("Sites/{0}", newAppName));
+                    if (Directory.Exists(oldAppDir))
+                    {
+                        Directory.Move(oldAppDir, newAppDir);
+                    }
+                }
+            }
+            else
+            {
+                FileInfo fi = new FileInfo(puxUrl);
+                string destinationFolder = MyWebUtils.MapPath(string.Format("Sites/{0}", fi.Directory.Name));
+                string sourceDropdownPUX = MyWebUtils.MapPath(string.Format("Sites/{0}/Dropdowns.pux", "Template"));
+                string destinationDropdownPUX = string.Format("{0}/Dropdowns.pux", destinationFolder);
+
+                if (!File.Exists(destinationDropdownPUX))
+                {
+                    if (!Directory.Exists(destinationFolder))
+                    {
+                        Directory.CreateDirectory(destinationFolder);
+                    }
+
+                    File.Copy(sourceDropdownPUX, destinationDropdownPUX);
+                }
+
+                MyWebUtils.EvalSQL("exec spDropdown_build @AppID", drKey, true);
+            }
+
+            base.DownloadFile(drKey, puxUrl);
+        }
+
         public override string GetPuxUrl(DataRow drPluginKey)
         {
             string appName = GetApplicationName(drPluginKey);
@@ -697,11 +738,18 @@ namespace CodeClay
             xPluginDefinition.Add(new XElement("IsDesigner", true));
             xPluginDefinition.Add(new XElement("ProviderName", "System.Data.SqlClient"));
 
-            string databaseName = MyWebUtils.GetField(drPluginDefinition, "SQLDatabaseName");
+            string databaseName = MyWebUtils.GetField(drPluginDefinition, "SQLDatabaseName") as string;
             string connectionString = UiApplication.Me.CiApplication.ConnectionString;
             connectionString = connectionString.Replace("CPanel", databaseName);
             xPluginDefinition.Add(new XElement("ConnectionString", connectionString));
 
+            xPluginDefinition.Add(new XElement("CiMenu",
+                new XElement("MenuName", "Application"),
+                new XElement("CiMenu",
+                    new XElement("MenuName", "Setup"),
+                    new XElement("CiMenu",
+                        new XElement("MenuName", "Dropdowns"),
+                        new XElement("PluginSrc", "Dropdowns.pux")))));
         }
     }
 }

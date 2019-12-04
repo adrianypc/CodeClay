@@ -107,9 +107,15 @@
       <FieldName>Quantity</FieldName>
       <FieldName>ProductID</FieldName>
       <ActionSQL>
+          select Platform from CustomerOrders where CustomerOrderNo = @CustomerOrderNo
+      </ActionSQL>
+      <ActionSQL>
           select
-          @Quantity * coalesce(UnitSellingPrice,0) as Amount,
-          case when IsDropShipping = 'Y' then CAST(1 AS bit) else CAST(0 as bit) end as DropShipping
+              case
+                  when @Platform = 'BB' then @Quantity * (coalesce(UnitSellingPrice,0.0) - (coalesce(UnitSellingPrice,0.0) * 0.3))
+                  else @Quantity * coalesce(UnitSellingPrice,0) 
+              end as Amount,
+              case when IsDropShipping = 'Y' then CAST(1 AS bit) else CAST(0 as bit) end as DropShipping
           from Product
           where	ProductID = @ProductID
       </ActionSQL>

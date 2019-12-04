@@ -16,6 +16,13 @@
     <Caption>Application Name</Caption>
     <Width>20</Width>
   </CiTextField>
+  <CiTextField>
+    <FieldName>OldAppName</FieldName>
+    <Caption>App Name</Caption>
+    <Computed>true</Computed>
+    <Value>AppName</Value>
+    <Hidden>true</Hidden>
+  </CiTextField>
   <CiCheckField>
     <FieldName>UserDefined</FieldName>
     <Caption>User Defined?</Caption>
@@ -27,6 +34,11 @@
     <Editable>false</Editable>
     <Width>10</Width>
   </CiTextField>
+  <CiField>
+    <FieldName>HomePluginSrc</FieldName>
+    <Caption>Home Table</Caption>
+    <Hidden>true</Hidden>
+  </CiField>
   <CiLinkField>
     <FieldName>AppUrl</FieldName>
     <Caption>Url</Caption>
@@ -52,8 +64,8 @@
     </CiSerializeMacro>
   </InsertMacro>
   <UpdateMacro>
-    <ActionSQL>exec spApplication_upd @AppID, @AppName, @UserDefined</ActionSQL>
-    <ActionSQL>select @AppID as AppID</ActionSQL>
+    <ActionSQL>exec spApplication_upd @AppID, @AppName, @UserDefined, @HomePluginSrc</ActionSQL>
+    <ActionSQL>select @AppID as AppID, @OldAppName as OldAppName</ActionSQL>
     <CiSerializeMacro>
       <Direction>Download</Direction>
     </CiSerializeMacro>
