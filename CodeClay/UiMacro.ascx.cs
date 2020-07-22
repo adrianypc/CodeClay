@@ -41,8 +41,8 @@ namespace CodeClay
         [XmlElement("VisibleSQL")]
         public string VisibleSQL { get; set; } = "";
 
-        [XmlElement("NavigateUrl")]
-        public string NavigateUrl { get; set; } = "";
+        [XmlSqlElement("NavigateUrl", typeof(string))]
+        public XmlElement NavigateUrl { get; set; } = MyWebUtils.CreateXmlElement("NavigateUrl", "");
 
         [XmlElement("NavigatePos")]
         public string NavigatePos { get; set; } = "";
@@ -150,7 +150,7 @@ namespace CodeClay
         // Methods (Virtual)
         // --------------------------------------------------------------------------------------------------
 
-        public virtual void Run(DataRow drParams)
+        public virtual void Run(DataRow drParams, bool ignoreErrorMessage = false)
         {
             if (IsVisible(drParams))
             {
@@ -174,7 +174,12 @@ namespace CodeClay
             }
             else
             {
-                ErrorMessage = "Cannot run this macro on this record";
+                ErrorMessage = string.Format("Cannot run {0} macro on this record", MacroName);
+            }
+
+            if (ignoreErrorMessage)
+            {
+                ErrorMessage = "";
             }
 
             if (!MyUtils.IsEmpty(ErrorMessage))
@@ -253,7 +258,7 @@ namespace CodeClay
 
         protected virtual DataTable RunChildMacros(DataTable dtInput)
         {
-            DataTable dtOutput = dtInput;
+            DataTable dtOutput = dtInput.Copy();
 
             foreach (CiMacro ciMacro in CiMacros)
             {
@@ -268,13 +273,20 @@ namespace CodeClay
 
                         if (dtOutput == null)
                         {
-                            dtOutput = dtResult;
+                            dtOutput = dtResult.Copy();
                         }
                         else if (dtOutput != null && dtResult != null)
                         {
                             foreach (DataRow drResult in dtResult.Rows)
                             {
-                                dtOutput.Rows.Add(drResult);
+                                try
+                                {
+                                    dtOutput.Rows.Add(drResult);
+                                }
+                                catch
+                                {
+                                    // Do nothing as row may already exist
+                                }
                             }
                         }
                     }
@@ -294,17 +306,12 @@ namespace CodeClay
 
         protected virtual string GetResultScript(DataTable dt)
         {
-            string navigateUrl = NavigateUrl;
-            bool isPuxUrl = false;
-
             DataRow drParams = (MyWebUtils.GetNumberOfRows(dt) > 0)
                 ? dt.Rows[0]
                 : null;
 
-            if (MyUtils.IsEmpty(navigateUrl) && dt != null && dt.Columns.Contains("NavigateUrl") && drParams != null)
-            {
-                navigateUrl = MyUtils.Coalesce(drParams["NavigateUrl"], "").ToString();
-            }
+            string navigateUrl = MyWebUtils.Eval<string>(NavigateUrl, drParams);
+            bool isPuxUrl = false;
 
             // Reformat URL if navigateUrl refers to a PUX file
             if (!MyUtils.IsEmpty(navigateUrl) && !navigateUrl.Contains(@"\") && navigateUrl.EndsWith(".pux"))
@@ -561,7 +568,7 @@ namespace CodeClay
                     }
                 }
 
-                DataTable dtActionSQL = MyWebUtils.GetBySQL("?exec spSQL_sel 'CiMacro', 'ActionSQL', @AppID, @TableID, @MacroID", drPluginDefinition, true);
+                DataTable dtActionSQL = MyWebUtils.GetBySQL("?exec spSQL_sel @AppID, @TableID, @MacroID, 'ActionSQL'", drPluginDefinition, true);
                 if (dtActionSQL != null)
                 {
                     foreach (DataRow drActionSQL in dtActionSQL.Rows)
@@ -572,7 +579,7 @@ namespace CodeClay
                     }
                 }
 
-                DataTable dtVisibleSQL = MyWebUtils.GetBySQL("?exec spSQL_sel 'CiMacro', 'VisibleSQL', @AppID, @TableID, @MacroID", drPluginDefinition, true);
+                DataTable dtVisibleSQL = MyWebUtils.GetBySQL("?exec spSQL_sel @AppID, @TableID, @MacroID, 'VisibleSQL'", drPluginDefinition, true);
                 if (dtVisibleSQL != null)
                 {
                     foreach (DataRow drVisibleSQL in dtVisibleSQL.Rows)
@@ -583,7 +590,7 @@ namespace CodeClay
                     }
                 }
 
-                DataTable dtValidateSQL = MyWebUtils.GetBySQL("?exec spSQL_sel 'CiMacro', 'ValidateSQL', @AppID, @TableID, @MacroID", drPluginDefinition, true);
+                DataTable dtValidateSQL = MyWebUtils.GetBySQL("?exec spSQL_sel @AppID, @TableID, @MacroID, 'ValidateSQL'", drPluginDefinition, true);
                 if (dtValidateSQL != null)
                 {
                     foreach (DataRow drValidateSQL in dtValidateSQL.Rows)
@@ -704,14 +711,14 @@ namespace CodeClay
                     dt.Columns.Add("SQL");
                 }
 
-                string deleteSQL = string.Format("exec spSQL_del 'CiMacro', '{0}', @AppID, @TableID, @MacroID", sqlType);
+                string deleteSQL = string.Format("exec spSQL_del @AppID, @TableID, @MacroID, '{0}'", sqlType);
                 MyWebUtils.GetBySQL(deleteSQL, drPluginDefinition, true);
 
                 foreach (string sql in sqlList)
                 {
                     drPluginDefinition["SQL"] = sql;
 
-                    string insertSQL = string.Format("exec spSQL_ins 'CiMacro', '{0}', @AppID, @TableID, @MacroID, @SQL", sqlType);
+                    string insertSQL = string.Format("exec spSQL_ins @AppID, @TableID, @MacroID, '{0}', @SQL", sqlType);
                     MyWebUtils.GetBySQL(insertSQL, drPluginDefinition, true);
                 }
             }

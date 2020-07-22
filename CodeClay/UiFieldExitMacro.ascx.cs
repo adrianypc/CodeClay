@@ -63,10 +63,10 @@ namespace CodeClay
         // Methods (Override)
         // --------------------------------------------------------------------------------------------------
 
-        public override void Run(DataRow drParams)
+        public override void Run(DataRow drParams, bool ignoreErrorMessage = false)
         {
             InputParams = drParams;
-            base.Run(drParams);
+            base.Run(drParams, ignoreErrorMessage);
         }
 
         protected override string GetResultScript(DataTable dt)

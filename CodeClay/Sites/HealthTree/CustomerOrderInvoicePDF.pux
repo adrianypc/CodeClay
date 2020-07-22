@@ -2,5 +2,5 @@
 <CiReport>
   <Url>CustomerOrderInvoicePDF.xml</Url>
   <Designer>false</Designer>
-  <ReportSQL>?exec spCustomerOrders_Invoice_sel @CustomerOrderNo</ReportSQL>
+  <ReportSQL>?exec spCustomerOrders_Invoice_sel @CustomerOrderNo,@Currency,@DiscountType</ReportSQL>
 </CiReport>

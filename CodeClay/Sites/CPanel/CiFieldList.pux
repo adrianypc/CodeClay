@@ -18,7 +18,8 @@
   <CiNumericField>
     <FieldName>FieldID</FieldName>
     <Caption>Field ID</Caption>
-    <Width>5</Width>
+    <Width>7</Width>
+    <Editable lang="sql">select 1 from Singleton where @FieldName not in ('ParentID', 'ID')</Editable>
   </CiNumericField>
   <CiTextField>
     <FieldName>OldFieldID</FieldName>
@@ -31,7 +32,8 @@
   <CiTextField>
     <FieldName>FieldName</FieldName>
     <Caption>Field Name</Caption>
-    <Width>20</Width>
+    <Width>10</Width>
+    <Editable lang="sql">select 1 from Singleton where @FieldName is null or @FieldName not in ('ParentID', 'ID')</Editable>
   </CiTextField>
   <CiTextField>
     <FieldName>Caption</FieldName>
@@ -40,66 +42,79 @@
   <CiComboField>
     <FieldName>Type</FieldName>
     <Caption>Type</Caption>
-    <DropdownSQL>select Code from Dropdown where Category = 'FieldType'</DropdownSQL>
-    <Width>10</Width>
+    <DropdownSQL>
+      select Code from Dropdown where Category = coalesce(
+      ( select  'DBFieldType'
+        from    CiTable
+        where   AppID = @AppID
+        and     TableID = @TableID
+        and     Bound = 1), 'FieldType')
+    </DropdownSQL>
+    <Width>9</Width>
     <DropdownWidth>100</DropdownWidth>
+    <Editable lang="sql">select 1 from Singleton where @FieldName is null or @FieldName not in ('ParentID', 'ID')</Editable>
   </CiComboField>
   <CiNumericField>
     <FieldName>Width</FieldName>
     <Caption lang="sql">select 'Width ' + case when DefaultView = 'Card' then 'px' else '%' end from CiTable where AppID = @AppID and TableID = @TableID</Caption>
     <Value>10</Value>
-    <Width>10</Width>
+    <Width>7</Width>
   </CiNumericField>
   <CiCheckField>
     <FieldName>InRowKey</FieldName>
     <Caption>Primary Key</Caption>
     <Width>10</Width>
   </CiCheckField>
+  <CiCheckField>
+    <FieldName>Editable</FieldName>
+    <Caption>Editable</Caption>
+    <Hidden>true</Hidden>
+  </CiCheckField>
   <DefaultMacro>
     <ActionSQL>
-      select  '- New -' as FieldID
+      select  '- New -' as FieldID, 'Text' as Type
     </ActionSQL>
   </DefaultMacro>
   <SelectMacro>
-    <ActionSQL>?exec spField_sel @AppID, @TableID, null</ActionSQL>
+    <ActionSQL>?exec spField_sel @AppID, @TableID, null, null</ActionSQL>
   </SelectMacro>
   <InsertMacro>
-    <ActionSQL>?exec spField_ins @AppID, @TableID, @FieldName, @Caption, @Type, @Width, @InRowKey</ActionSQL>
-    <ActionSQL>select @AppID as AppID, @TableID as TableID</ActionSQL>
+    <ActionSQL>exec spField_ins @AppID, @TableID, @FieldName, @Caption, @Type, @Width, @InRowKey, false</ActionSQL>
+    <ActionSQL>select AppID, TableID from fnGetInheritedTables(@AppID, @TableID)</ActionSQL>
     <CiSerializeMacro>
       <Direction>Download</Direction>
     </CiSerializeMacro>
   </InsertMacro>
   <UpdateMacro>
-    <ActionSQL>exec spField_updShort @AppID, @TableID, @FieldID, @OldFieldID, @FieldName, @Caption, @Type, @Width, @InRowKey</ActionSQL>
-    <ActionSQL>select @AppID as AppID, @TableID as TableID</ActionSQL>
-    <VisibleSQL>select 1 from Singleton where isnumeric(@FieldID) = 1 and @FieldID &gt; 1</VisibleSQL>
+    <ActionSQL>exec spField_updShort @AppID, @TableID, @FieldID, @OldFieldID, @FieldName, @Caption, @Type, @Width, @InRowKey, @Editable, false, false, false</ActionSQL>
+    <ActionSQL>select AppID, TableID from fnGetInheritedTables(@AppID, @TableID)</ActionSQL>
     <CiSerializeMacro>
       <Direction>Download</Direction>
     </CiSerializeMacro>
+    <VisibleSQL>select 1 from Singleton where @FieldName != 'ParentID'</VisibleSQL>
   </UpdateMacro>
   <DeleteMacro>
     <ActionSQL>exec spField_del  @AppID, @TableID, @FieldID</ActionSQL>
-    <ActionSQL>select @AppID as AppID, @TableID as TableID</ActionSQL>
-    <VisibleSQL>select 1 from Singleton where isnumeric(@FieldID) = 1 and @FieldID &gt; 1</VisibleSQL>
+    <ActionSQL>select AppID, TableID from fnGetInheritedTables(@AppID, @TableID)</ActionSQL>
     <CiSerializeMacro>
       <Direction>Download</Direction>
     </CiSerializeMacro>
+    <VisibleSQL>select 1 from CiTable where AppID = @AppID and TableID = @TableID and Src is null and @FieldName not in ('ParentID', 'ID')</VisibleSQL>
   </DeleteMacro>
   <CiMacro>
     <MacroName>Details</MacroName>
-    <Caption>Details</Caption>
+    <Caption>Field Design</Caption>
     <ActionSQL>
       select  @AppID as AppID,
               @TableID as TableID,
               @FieldID as FieldID,
               'Ci' + coalesce(@Type, '') + 'FieldDetails.pux' as NavigateUrl
       from    Singleton
-      where   @Type not in ('Table', 'Memo') or @Type is null
+      where   @Type not in ('Table', 'Form', 'Memo') or @Type is null
       union
       select  @AppID as AppID,
               NestedTableID as TableID,
-              null as FieldID,
+              @FieldID as FieldID,
               'CiTableDetails.pux' as NavigateUrl
       from    CiField
       where   AppID = @AppID
@@ -108,13 +123,34 @@
       and     @Type = 'Table'
       union
       select  @AppID as AppID,
+              NestedTableID as TableID,
+              @FieldID as FieldID,
+              'CiFormDetails.pux' as NavigateUrl
+      from    CiField
+      where   AppID = @AppID
+      and     TableID = @TableID
+      and     FieldID = @FieldID
+      and     @Type = 'Form'
+      union
+      select  @AppID as AppID,
               @TableID as TableID,
               @FieldID as FieldID,
               'CiTextFieldDetails.pux' as NavigateUrl
       from    Singleton
       where   @Type = 'Memo'
     </ActionSQL>
-    <NavigatePos>NewTab</NavigatePos>
-    <VisibleSQL>select 1 from Singleton where @Type != 'AutoIncrement' or @Type is null</VisibleSQL>
+    <NavigatePos>Popup</NavigatePos>
+    <NavigateUrl lang="sql">select @NavigateUrl as NavigateUrl</NavigateUrl>
+    <VisibleSQL>
+      select 1 from Singleton where (@Type != 'AutoIncrement' or @Type is null)
+      and (not exists
+      ( select  1
+        from    CiTable
+        where   AppID = @AppID
+        and     TableID = @TableID
+        and     Bound = 1
+      )
+      or @Type = 'Table')
+    </VisibleSQL>
   </CiMacro>
 </CiTable>

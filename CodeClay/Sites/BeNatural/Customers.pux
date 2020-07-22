@@ -1,9 +1,10 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8" ?>
 <CiTable>
   <TableName>Customers</TableName>
   <TableCaption>Customers</TableCaption>
-  <InsertRowAtBottom>false</InsertRowAtBottom>
   <RowKey>CustomerID</RowKey>
+  <DefaultView>Grid</DefaultView>
+  <InsertRowAtBottom>false</InsertRowAtBottom>
   <CiTextField>
     <FieldName>CustomerID</FieldName>
     <Caption>Customer ID</Caption>
@@ -31,7 +32,9 @@
   <CiTextField>
     <FieldName>Age</FieldName>
     <Caption>Age</Caption>
+    <Computed>true</Computed>
     <Editable>false</Editable>
+    <ValueSQL>select datediff(year, @DateOfBirth, getdate()) - 1</ValueSQL>
   </CiTextField>
   <CiMemoField>
     <FieldName>Address</FieldName>
@@ -39,9 +42,9 @@
   </CiMemoField>
   <CiComboField>
     <FieldName>CountryCode</FieldName>
+    <TextFieldName>CountryName</TextFieldName>
     <Caption>Country</Caption>
     <DropdownSQL>select Code, Description from Dropdown where Category = 'Country' order by Code</DropdownSQL>
-    <TextFieldName>CountryName</TextFieldName>
   </CiComboField>
   <CiTextField>
     <FieldName>Postcode</FieldName>
@@ -61,7 +64,11 @@
     <Caption>Referrer</Caption>
     <DropdownSQL>select Code from Dropdown where Category = 'Referrer' order by Code</DropdownSQL>
   </CiComboField>
-  <CiTable Src="CustomerCaseNotes.pux" />
+  <CiField>
+    <FieldName>Points</FieldName>
+    <Hidden>false</Hidden>
+  </CiField>
+  <CiTable Src="CustomerCaseNotes.pux"/>
   <DefaultMacro>
     <ActionSQL>select '-New-' as CustomerID</ActionSQL>
   </DefaultMacro>
@@ -70,14 +77,14 @@
   </SelectMacro>
   <InsertMacro>
     <ActionSQL>
-		  ?exec spCustomer_ins @BranchCode, @LastName, @OtherNames, @DateOfBirth, @Address, @CountryCode,
-			@Postcode, @Email, @Mobile, @Referrer
-		</ActionSQL>
+      ?exec spCustomer_ins @BranchCode, @LastName, @OtherNames, @DateOfBirth, @Address, @CountryCode,
+      @Postcode, @Email, @Mobile, @Referrer
+    </ActionSQL>
   </InsertMacro>
   <UpdateMacro>
     <ActionSQL>
-			?exec spCustomer_upd @CustomerID, @BranchCode, @LastName, @OtherNames, @DateOfBirth, @Address, @CountryCode,
-			@Postcode, @Email, @Mobile, @Referrer
-		</ActionSQL>
+      ?exec spCustomer_upd @CustomerID, @BranchCode, @LastName, @OtherNames, @DateOfBirth, @Address, @CountryCode,
+      @Postcode, @Email, @Mobile, @Referrer
+    </ActionSQL>
   </UpdateMacro>
 </CiTable>

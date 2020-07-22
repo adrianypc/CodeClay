@@ -39,7 +39,6 @@ namespace CodeClay.Account
                 {
                     case SignInStatus.Success:
                         Session["JustLoggedIn"] = true;
-                        //IdentityHelper.RedirectToReturnUrl(Request.QueryString["ReturnUrl"], Response);
                         if (MyWebUtils.QueryString != null)
                         {
                             string queryString = MyWebUtils.QueryString.ToString();

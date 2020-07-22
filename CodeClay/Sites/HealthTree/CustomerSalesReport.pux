@@ -4,6 +4,10 @@
   <TableCaption>Quarterly Customer Sales Report</TableCaption>
   <RowKey>RunMonth</RowKey>
   <DefaultView>Grid</DefaultView>
+  <CiField>
+    <FieldName>ID</FieldName>
+    <Hidden>true</Hidden>
+  </CiField>
   <CiTextField>
     <FieldName>RunMonth</FieldName>
     <Caption>Month</Caption>

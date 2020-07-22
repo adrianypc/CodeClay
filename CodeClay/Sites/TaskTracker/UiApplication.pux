@@ -1,17 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <CiApplication>
   <AppName>TaskTracker</AppName>
-  <HomePluginSrc>Customers.pux</HomePluginSrc>
   <IsDesigner>true</IsDesigner>
   <ProviderName>System.Data.SqlClient</ProviderName>
+  <HomePluginSrc>Dropdown.pux</HomePluginSrc>
   <ConnectionString>Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=U_TaskTracker;Integrated Security=True;Connect Timeout=30</ConnectionString>
   <CiMenu>
     <MenuName>Application</MenuName>
     <CiMenu>
       <MenuName>Setup</MenuName>
       <CiMenu>
-        <MenuName>Dropdowns</MenuName>
-        <PluginSrc>Dropdowns.pux</PluginSrc>
+        <MenuName>Dropdown</MenuName>
+        <PluginSrc>Dropdown.pux</PluginSrc>
       </CiMenu>
     </CiMenu>
   </CiMenu>

@@ -1,5 +1,5 @@
 ﻿var rootTable = null;
-var childTable = null;
+var subTable = null;
 var tables = {};
 var popupMenus = {};
 var openMenuPanels = {};
@@ -85,8 +85,10 @@ function dxCard_BeginCallback(sender, event) {
 function dxCard_EndCallback(sender, event) {
     var dxCard = sender;
     var tableName = dxCard.cpTableName;
+    var quickInsert = dxCard.cpQuickInsert;
     var command = dxCard.Command;
     var script = dxCard.cpScript;
+    var isInvalid = dxCard.cpIsInvalid;
 
     switch (command) {
     	case "New":
@@ -96,33 +98,25 @@ function dxCard_EndCallback(sender, event) {
     		break;
 
         case "UpdateNew":
-            var insertedRowIndex = dxCard.cpInsertedRowIndex;
-
-            if (insertedRowIndex && insertedRowIndex >= 0) {
-                dxCard.GotoPage(insertedRowIndex);
+            if (quickInsert && !isInvalid) {
+                if (confirm("Do you wish to add another record?")) {
+                    dxCard.Command = "New";
+                    dxCard.AddNewCard();
+                }
             }
-            else {
-                insertedRowIndex = 0;
-            }
-
-            dxCard.SetFocusedCardIndex(insertedRowIndex);
-            dxCard.Command = null;
-            childTable = null;
-            break;
-
         case "Update":
-            if (rootTable && rootTable.name != dxCard.name && dxCard.cpBubbleUpdate && !dxCard.cpIsInvalid) {
+            if (rootTable && rootTable.name != dxCard.name && dxCard.cpBubbleUpdate && !isInvalid) {
                 rootTable.PerformCallback(tableName);
-                childTable = dxCard;
+                subTable = dxCard;
             }
             else {
-                childTable = null;
+                subTable = null;
             }
 
     	case "Cancel":
     	case "Delete":
     		// For cosmetic purposes when clicking on Inspect button
-            if (!dxCard.cpIsInvalid) {
+            if (!isInvalid) {
                 ClearState(tableName);
             }
     		break;
@@ -208,6 +202,9 @@ function dxGrid_EndCallback(sender, event) {
     var command = dxGrid.Command;
     var script = dxGrid.cpScript;
     var expandedRowIndex = dxGrid.ExpandedRowIndex;
+    var isInvalid = dxGrid.cpIsInvalid;
+
+    dxGrid.Command = null;
 
     switch (command) {
         case "New":
@@ -224,35 +221,38 @@ function dxGrid_EndCallback(sender, event) {
             break;
 
         case "UpdateNew":
-            if (quickInsert && !dxGrid.cpIsInvalid && confirm("Do you wish to add a blank row?")) {
-                dxGrid.Command = "New";
-                dxGrid.AddNewRow();
+            if (quickInsert && !isInvalid) {
+                if (confirm("Do you wish to add another record?")) {
+                    dxGrid.Command = "New";
+                    dxGrid.AddNewRow();
+                }
             }
         case "Update":
-            if (rootTable && rootTable.name != dxGrid.name && dxGrid.cpBubbleUpdate && !dxGrid.cpIsInvalid) {
+            if (rootTable && rootTable.name != dxGrid.name && dxGrid.cpBubbleUpdate && !isInvalid) {
                 rootTable.PerformCallback(tableName);
-                childTable = dxGrid;
+                subTable = dxGrid;
             }
             else {
-                childTable = null;
+                subTable = null;
             }
 
         case "Cancel":
         case "Delete":
-            if (!dxGrid.cpIsInvalid) {
+            if (!isInvalid) {
                 ClearState(tableName);
             }
             break;
 
         default:
             if (command) {
-                dxGrid.Command = null;
                 dxGrid.Refresh();
             }
             break;
     }
 
     InitAllToolbars(dxGrid);
+
+    SetCommand(tableName, dxGrid.Command);
 
     if (script) {
         dxGrid.cpScript = null;
@@ -347,8 +347,8 @@ function InitAllToolbars(table) {
 
     InitToolbar(table, table.cpDisabledMacros);
 
-    if (childTable) {
-        InitToolbar(childTable, childTable.cpDisabledMacros);
+    if (subTable) {
+        InitToolbar(subTable, subTable.cpDisabledMacros);
     }
 }
 
@@ -360,11 +360,15 @@ function InitToolbar(table, disabledButtonList) {
         disabledButtons = disabledButtonList.split(LIST_SEPARATOR);
     }
 
-    if (toolbar && disabledButtons) {
+    if (toolbar) {
         for (var i = 0; i < toolbar.GetItemCount() ; i++) {
             var button = toolbar.GetItem(i);
             var buttonName = button.name;
-            var isDisabled = disabledButtons.indexOf(buttonName) > -1;
+            var isDisabled = false;
+
+            if (disabledButtons) {
+                isDisabled = disabledButtons.indexOf(buttonName) > -1;
+            }
 
             button.SetEnabled(!isDisabled);
         }

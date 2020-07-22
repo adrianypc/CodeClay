@@ -1,7 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
-<CiMemoField>
-  <FieldName>Name</FieldName>
-  <Value>Adrian <u>Yan Ping</u> Chen</Value>
-  <AllowHtml>true</AllowHtml>
-  <Editable>false</Editable>
-</CiMemoField>

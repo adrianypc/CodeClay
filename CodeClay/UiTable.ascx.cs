@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Data;
 using System.Drawing;
 using System.IO;
@@ -247,6 +248,8 @@ namespace CodeClay
 
                     CiMacro searchMacro = new CiMacro();
                     searchMacro.Caption = "Search";
+                    searchMacro.VisibleSQL = mSelectMacro.VisibleSQL;
+                    searchMacro.ValidateSQL = mSelectMacro.ValidateSQL;
                     searchMacro.ActionSQL = sqlList.ToArray(typeof(string)) as string[];
 
                     return searchMacro;
@@ -294,57 +297,6 @@ namespace CodeClay
             get
             {
                 return CiPlugins.Where(c => (c as CiField) != null).Select(c => c as CiField).ToArray();
-            }
-        }
-
-        [XmlIgnore]
-        public CiField[] CiBrowsableFields
-        {
-            get
-            {
-                CiField[] ciFields = CiFields;
-                CiField[] sortedFields = new CiField[ciFields.Length];
-
-                if (DefaultView == "Card")
-                {
-                    // Invisible fields go at the end of the list
-                    int totalVisibleFields = ciFields.Length;
-                    foreach (CiField ciField in ciFields)
-                    {
-                        if (!ciField.IsVisible)
-                        {
-                            sortedFields[--totalVisibleFields] = ciField;
-                        }
-                    }
-
-                    int totalColumns = ColCount;
-                    int rowNumber = 0;
-                    int columnNumber = 0;
-
-                    foreach (CiField ciField in ciFields)
-                    {
-                        if (ciField.IsVisible)
-                        {
-                            int fieldIndex = rowNumber * totalColumns + columnNumber;
-
-                            if (fieldIndex >= totalVisibleFields)
-                            {
-                                rowNumber = 0;
-                                columnNumber++;
-                                fieldIndex = rowNumber * totalColumns + columnNumber;
-                            }
-
-                            sortedFields[fieldIndex] = ciField;
-                            rowNumber++;
-                        }
-                    }
-                }
-                else
-                {
-                    sortedFields = ciFields.Where(c => c.Browsable).ToArray();
-                }
-
-                return sortedFields;
             }
         }
 
@@ -436,6 +388,53 @@ namespace CodeClay
             return null;
         }
 
+        public virtual CiField[] GetBrowsableFields(DataRow dr)
+        {
+            CiField[] ciFields = CiFields;
+            CiField[] sortedFields = new CiField[ciFields.Length];
+
+            if (DefaultView == "Card")
+            {
+                // Invisible fields go at the end of the list
+                int totalVisibleFields = ciFields.Length;
+                foreach (CiField ciField in ciFields)
+                {
+                    if (!ciField.IsVisible(dr))
+                    {
+                        sortedFields[--totalVisibleFields] = ciField;
+                    }
+                }
+
+                int totalColumns = ColCount;
+                int rowNumber = 0;
+                int columnNumber = 0;
+
+                foreach (CiField ciField in ciFields)
+                {
+                    if (ciField.IsVisible(dr))
+                    {
+                        int fieldIndex = rowNumber * totalColumns + columnNumber;
+
+                        if (fieldIndex >= totalVisibleFields)
+                        {
+                            rowNumber = 0;
+                            columnNumber++;
+                            fieldIndex = rowNumber * totalColumns + columnNumber;
+                        }
+
+                        sortedFields[fieldIndex] = ciField;
+                        rowNumber++;
+                    }
+                }
+            }
+            else
+            {
+                sortedFields = ciFields.Where(c => c.Browsable).ToArray();
+            }
+
+            return sortedFields;
+        }
+
         public virtual CiMacro GetMacro(string macroName)
         {
             if (CiMacros != null)
@@ -485,7 +484,7 @@ namespace CodeClay
             return null;
         }
 
-        public virtual string EvalTableCaptionSQL(DataRow dr)
+        public virtual string GetTableCaption(DataRow dr)
         {
             return MyWebUtils.Eval<string>(TableCaption, dr);
         }
@@ -519,9 +518,7 @@ namespace CodeClay
             {
                 string command = UiApplication.Me.GetCommandFired(CiTable.TableName);
 
-                bool isStartEditing = (command == "New") ||
-                    dxCard.IsNewCardEditing ||
-                    dxGrid.IsNewRowEditing;
+                bool isStartEditing = true;
 
                 bool isFinishEditing = (command == "Update");
 
@@ -621,9 +618,9 @@ namespace CodeClay
             {
                 if (CiTable != null)
                 {
-                    foreach (CiTable ciChildTable in CiTable.CiTables)
+                    foreach (CiTable ciSubTable in CiTable.CiTables)
                     {
-                        string command = UiApplication.Me.GetCommandFired(ciChildTable.TableName);
+                        string command = UiApplication.Me.GetCommandFired(ciSubTable.TableName);
 
                         bool isStartEditing = (command == "Edit") || (command == "New");
 
@@ -742,7 +739,7 @@ namespace CodeClay
         {
             if (!IsPostBack && CiTable != null && UiParentTable == null)
             {
-                Page.Title = CiTable.EvalTableCaptionSQL(GetState());
+                Page.Title = CiTable.GetTableCaption(GetState());
             }
         }
 
@@ -752,7 +749,8 @@ namespace CodeClay
 
         protected void dxSearch_Init(object sender, EventArgs e)
         {
-            bool isVisible = CiTable != null && CiTable.IsSearching;
+            DataRow drParams = GetState();
+            bool isVisible = CiTable != null && CiTable.IsSearching && !CiTable.IsHidden(drParams);
 
             dxSearch.Visible = isVisible;
 
@@ -826,7 +824,8 @@ namespace CodeClay
 
         protected void dxCard_Init(object sender, EventArgs e)
         {
-            bool isVisible = IsCardView && (CiTable != null) && !CiTable.IsSearching;
+            DataRow drParams = GetState();
+            bool isVisible = IsCardView && (CiTable != null) && !CiTable.IsSearching && !CiTable.IsHidden(drParams);
 
             dxCard.Visible = isVisible;
 
@@ -902,7 +901,6 @@ namespace CodeClay
             {
                 foreach (string key in CiTable.RowKeyNames)
                 {
-                    //SetClientValue(key, GetServerValue(key));
                     SetClientValue(key, this[key]);
                 }
             }
@@ -932,7 +930,7 @@ namespace CodeClay
                     case "Update":
                     case "Cancel":
                         CiMacro ciMacro = IsInsertSaving ? CiTable.InsertMacro : CiTable.UpdateMacro;
-                        string navigateUrl = (ciMacro != null) ? ciMacro.NavigateUrl + "|" + ciMacro.NavigatePos : "";
+                        string navigateUrl = (ciMacro != null) ? MyWebUtils.Eval<string>(ciMacro.NavigateUrl, GetState()) + "|" + ciMacro.NavigatePos : "";
 
                         if (!MyUtils.IsEmpty(navigateUrl))
                         {
@@ -980,10 +978,11 @@ namespace CodeClay
                 if (pgCardTabs != null && pgCardTabs.TabPages.Count == 0 && CiTable != null)
                 {
                     pgCardTabs.ID = string.Format("pgCardTabs_{0}", CiTable.TableName);
-                    foreach (CiTable ciChildTable in CiTable.Get<CiTable>())
+                    DataRow drParams = GetState();
+                    foreach (CiTable ciSubTable in CiTable.Get<CiTable>())
                     {
-                        IUiColumn uiColumn = this.CreateUiPlugin(ciChildTable) as IUiColumn;
-                        if (uiColumn != null)
+                        IUiColumn uiColumn = this.CreateUiPlugin(ciSubTable) as IUiColumn;
+                        if (uiColumn != null && !ciSubTable.IsHidden(drParams))
                         {
                             uiColumn.BuildCardColumn(pgCardTabs);
                         }
@@ -998,7 +997,8 @@ namespace CodeClay
 
         protected void dxGrid_Init(object sender, EventArgs e)
         {
-            bool isVisible = IsGridView && CiTable != null && !CiTable.IsSearching;
+            DataRow drParams = GetState();
+            bool isVisible = IsGridView && CiTable != null && !CiTable.IsSearching && !CiTable.IsHidden(drParams);
 
             dxGrid.Visible = isVisible;
 
@@ -1114,7 +1114,7 @@ namespace CodeClay
 					if (CiTable != null)
 					{
 						CiField ciField = CiTable.GetField(e.Item.ShowInColumn);
-						if (ciField != null && ciField.Mask == eTextMask.Currency)
+						if (ciField != null && ciField.GetType() == typeof(CiCurrencyField))
 						{
 							value = string.Format("{0:f2}", value);
 						}
@@ -1136,10 +1136,12 @@ namespace CodeClay
 
             if (pgGridTabs != null && pgGridTabs.TabPages.Count == 0 && CiTable != null)
             {
-				foreach (CiTable ciChildTable in CiTable.Get<CiTable>())
+                DataRow drParams = GetState();
+
+                foreach (CiTable ciSubTable in CiTable.Get<CiTable>())
                 {
-                    IUiColumn uiColumn = this.CreateUiPlugin(ciChildTable) as IUiColumn;
-                    if (uiColumn != null)
+                    IUiColumn uiColumn = this.CreateUiPlugin(ciSubTable) as IUiColumn;
+                    if (uiColumn != null && !ciSubTable.IsHidden(drParams))
                     {
                         uiColumn.BuildGridColumn(pgGridTabs);
                     }
@@ -1247,11 +1249,32 @@ namespace CodeClay
             {
                 object rowKey = MyUtils.Coalesce(e.OutputParameters["RowKey"], "");
                 string script = MyUtils.Coalesce(e.OutputParameters["Script"], "").ToString();
+                bool isInvalid = Convert.ToBoolean(MyUtils.Coalesce(e.OutputParameters["IsInvalid"], false));
 
                 if (!MyUtils.IsEmpty(rowKey))
                 {
                     string[] keyNames = CiTable.RowKeyNames;
                     string[] keyValues = (rowKey as string).Trim().Split(',');
+                    NameValueCollection queryString = new NameValueCollection(MyWebUtils.QueryString);
+                    queryString.Remove("Command");
+                    string url = "Default.aspx";
+
+                    for (int i = 0; i < queryString.AllKeys.Length; i++)
+                    {
+                        string qsKey = queryString.Keys[i];
+                        string qsValue = queryString[qsKey];
+
+                        if (i == 0)
+                        {
+                            url += "?";
+                        }
+                        else
+                        {
+                            url += "&";
+                        }
+
+                        url += string.Format("{0}={1}", qsKey, qsValue);
+                    }
 
                     for (int i = 0; i < keyNames.Length && i < keyValues.Length; i++)
                     {
@@ -1272,15 +1295,13 @@ namespace CodeClay
                               keyName,
                               keyValue);
                         }
+
+                        url += string.Format("&{0}={1}", keyName, keyValue);
                     }
 
                     if (IsCardView)
                     {
-                        dxCard.JSProperties["cpInsertedRowIndex"] = dxCard.FindVisibleIndexByKeyValue(rowKey);
-                    }
-                    else if (IsGridView)
-                    {
-                        dxGrid.JSProperties["cpInsertedRowIndex"] = dxGrid.FindVisibleIndexByKeyValue(rowKey);
+                        script += string.Format("window.open('{0}', '_self');", url);
                     }
                 }
 
@@ -1289,10 +1310,12 @@ namespace CodeClay
                     if (IsCardView)
                     {
                         dxCard.JSProperties["cpScript"] = script;
+                        dxCard.JSProperties["cpIsInvalid"] = isInvalid;
                     }
                     else if (IsGridView)
                     {
                         dxGrid.JSProperties["cpScript"] = script;
+                        dxGrid.JSProperties["cpIsInvalid"] = isInvalid;
                     }
                 }
             }
@@ -1303,15 +1326,19 @@ namespace CodeClay
             if (e.OutputParameters.Count > 0 && CiTable != null)
             {
                 string script = MyUtils.Coalesce(e.OutputParameters["Script"], "").ToString();
+                bool isInvalid = Convert.ToBoolean(MyUtils.Coalesce(e.OutputParameters["IsInvalid"], false));
+
                 if (!MyUtils.IsEmpty(script))
                 {
                     if (IsCardView)
                     {
                         dxCard.JSProperties["cpScript"] = script;
+                        dxCard.JSProperties["cpIsInvalid"] = isInvalid;
                     }
                     else if (IsGridView)
                     {
                         dxGrid.JSProperties["cpScript"] = script;
+                        dxGrid.JSProperties["cpIsInvalid"] = isInvalid;
                     }
                 }
             }
@@ -1322,15 +1349,19 @@ namespace CodeClay
             if (e.OutputParameters.Count > 0 && CiTable != null)
             {
                 string script = MyUtils.Coalesce(e.OutputParameters["Script"], "").ToString();
+                bool isInvalid = Convert.ToBoolean(MyUtils.Coalesce(e.OutputParameters["IsInvalid"], false));
+
                 if (!MyUtils.IsEmpty(script))
                 {
                     if (IsCardView)
                     {
                         dxCard.JSProperties["cpScript"] = script;
+                        dxCard.JSProperties["cpIsInvalid"] = isInvalid;
                     }
                     else if (IsGridView)
                     {
                         dxGrid.JSProperties["cpScript"] = script;
+                        dxGrid.JSProperties["cpIsInvalid"] = isInvalid;
                     }
                 }
             }
@@ -1388,10 +1419,10 @@ namespace CodeClay
         public virtual void BuildCardColumn(Control container)
         {
             ASPxPageControl pgCardTabs = container as ASPxPageControl;
-            if (pgCardTabs != null && CiTable != null)
+            if (pgCardTabs != null && CiTable != null && !CiTable.IsHidden(GetState()))
             {
                 string tableName = CiTable.TableName;
-                string tableCaption = CiTable.EvalTableCaptionSQL(GetState());
+                string tableCaption = CiTable.GetTableCaption(GetState());
 
                 TabPage tabPage = pgCardTabs.TabPages.Add(tableName);
                 tabPage.Name = string.Format("pgCardTab_{0}", tableName);
@@ -1404,9 +1435,10 @@ namespace CodeClay
         public virtual void BuildGridColumn(Control container)
         {
             ASPxPageControl pgGridTabs = container as ASPxPageControl;
-            if (pgGridTabs != null && CiTable != null)
+            DataRow drParams = GetState();
+            if (pgGridTabs != null && CiTable != null && !CiTable.IsHidden(drParams))
             {
-                string tableCaption = CiTable.EvalTableCaptionSQL(GetState());
+                string tableCaption = CiTable.GetTableCaption(drParams);
                 TabPage tabPage = pgGridTabs.TabPages.Add(CiTable.TableName);
 
                 tabPage.Text = tableCaption;
@@ -1421,7 +1453,8 @@ namespace CodeClay
 
         private void BuildCardView(ASPxCardView dxTable, bool isSearchMode)
         {
-            if (CiTable != null)
+            DataRow drParams = GetState();
+            if (CiTable != null && !CiTable.IsHidden(drParams))
             {
                 int totalColumns = isSearchMode ? 1 : CiTable.ColCount;
                 string titlePrefix = isSearchMode ? "Search for: " : "";
@@ -1430,15 +1463,16 @@ namespace CodeClay
                     : (MyWebUtils.Application == "CPanel")
                     ? Color.DeepSkyBlue
                     : Color.Transparent;
-                dxTable.SettingsText.Title = titlePrefix + CiTable.EvalTableCaptionSQL(GetState());
+                dxTable.SettingsText.Title = titlePrefix + CiTable.GetTableCaption(drParams);
 
                 dxTable.CardLayoutProperties.ColCount = totalColumns;
 
                 // Set JSProperties
                 dxTable.JSProperties["cpTableName"] = CiTable.TableName;
+                dxTable.JSProperties["cpQuickInsert"] = CiTable.QuickInsert;
 
                 // Build field columns
-                CiField[] ciFields = isSearchMode ? CiTable.CiSearchableFields : CiTable.CiBrowsableFields;
+                CiField[] ciFields = isSearchMode ? CiTable.CiSearchableFields : CiTable.GetBrowsableFields(GetState());
                 foreach (CiField ciField in ciFields)
                 {
                     BuildCardColumn(dxTable, ciField, isSearchMode);
@@ -1460,14 +1494,15 @@ namespace CodeClay
 
         private void BuildGridView(ASPxGridView dxTable)
         {
-            if (CiTable != null)
+            DataRow drParams = GetState();
+            if (CiTable != null && !CiTable.IsHidden(drParams))
             {
                 dxTable.Styles.TitlePanel.BackColor = (MyWebUtils.Application == "CPanel")
                     ? Color.DeepSkyBlue
                     : Color.Transparent;
 
-                dxTable.SettingsText.Title = CiTable.EvalTableCaptionSQL(GetState());
-                dxTable.SettingsDetail.ShowDetailRow = (CiTable.Get<CiTable>().Length > 0);
+                dxTable.SettingsText.Title = CiTable.GetTableCaption(drParams);
+                dxTable.SettingsDetail.ShowDetailRow = (CiTable.Get<CiTable>().Where(c => !c.IsHidden(drParams)).Count() > 0);
                 dxTable.SettingsEditing.Mode = GridViewEditingMode.Inline;
                 dxTable.SettingsEditing.NewItemRowPosition = CiTable.InsertRowAtBottom
                     ? GridViewNewItemRowPosition.Bottom
@@ -1478,7 +1513,7 @@ namespace CodeClay
                 dxTable.JSProperties["cpQuickInsert"] = CiTable.QuickInsert;
 
                 // Build field columns
-                CiField[] ciFields = CiTable.CiBrowsableFields;
+                CiField[] ciFields = CiTable.GetBrowsableFields(drParams);
                 foreach (CiField ciField in ciFields)
                 {
                     BuildGridColumn(dxTable, ciField);
@@ -1954,7 +1989,7 @@ namespace CodeClay
             if (CiTable != null)
             {
                 string tableName = CiTable.TableName;
-                string childTableName = (CiTable.CiTables.Length > 0) ? CiTable.CiTables[0].TableName : "";
+                string subTableName = (CiTable.CiTables.Length > 0) ? CiTable.CiTables[0].TableName : "";
 
                 if (MyUtils.IsEmpty(command))
                 {
@@ -1968,10 +2003,10 @@ namespace CodeClay
                         {
                             UiApplication.Me.SetCommandFired(tableName, command);
                         }
-                        else if (childTableName.Length > 0)
+                        else if (subTableName.Length > 0)
                         {
                             UiApplication.Me.SetCommandFired(tableName, "");
-                            UiApplication.Me.SetCommandFired(childTableName, "New");
+                            UiApplication.Me.SetCommandFired(subTableName, "New");
                         }
                         break;
 
@@ -1980,10 +2015,10 @@ namespace CodeClay
                         {
                             UiApplication.Me.SetCommandFired(tableName, command);
                         }
-                        else if (childTableName.Length > 0)
+                        else if (subTableName.Length > 0)
                         {
                             UiApplication.Me.SetCommandFired(tableName, "");
-                            UiApplication.Me.SetCommandFired(childTableName, "Edit");
+                            UiApplication.Me.SetCommandFired(subTableName, "Edit");
                         }
                         break;
 
@@ -2135,9 +2170,10 @@ namespace CodeClay
             if (CiTable != null)
             {
                 string tableName = CiTable.TableName;
+                DataRow drParams = GetState();
                 foreach (CiField ciField in CiTable.CiFields)
                 {
-                    if (!ciField.IsVisible)
+                    if (!ciField.IsVisible(drParams))
                     {
                         string fieldName = ciField.FieldName;
                         script += string.Format("InitField(\'{0}\', \'{1}\', \'{2}\'); ",
@@ -2146,6 +2182,11 @@ namespace CodeClay
                             this[fieldName]);
                     }
                 }
+            }
+
+            if (MyUtils.IsEmpty(script))
+            {
+                script = null;
             }
 
             return script;
@@ -2230,7 +2271,7 @@ namespace CodeClay
                 string appName = GetApplicationName(drKey);
                 string oldPuxUrl = MyWebUtils.MapPath(string.Format("Sites/{0}/{1}.pux", appName, oldTableName));
 
-                if (File.Exists(oldPuxUrl))
+                if (File.Exists(oldPuxUrl) && oldPuxUrl != puxUrl)
                 {
                     File.Delete(oldPuxUrl);
                 }
@@ -2254,7 +2295,7 @@ namespace CodeClay
 
         protected override void DeletePluginDefinitions(DataRow drPluginKey)
         {
-            MyWebUtils.GetBySQL("exec spSQL_del 'CiTable', null, @AppID, @TableID", drPluginKey, true);
+            //MyWebUtils.GetBySQL("exec spSQL_del 'CiTable', null, @AppID, @TableID", drPluginKey, true);
         }
 
         protected override void WriteToDB(DataRow drPluginDefinition)
@@ -2305,30 +2346,68 @@ namespace CodeClay
 
         protected override void DownloadDerivedValues(DataRow drPluginDefinition, XElement xPluginDefinition)
         {
-            DataTable dtFields = MyWebUtils.GetBySQL("select 1 from CiField where AppID = @AppID and TableID = @TableID",
-                drPluginDefinition);
+            xPluginDefinition.Add(new XElement("RowKey", "ID"));
 
-            if (dtFields.Rows.Count > 0)
+            //DataTable dtTableSQL = MyWebUtils.GetBySQL("?exec spSQL_sel 'CiTable', null, @AppID, @TableID, @TableID", drPluginDefinition, true);
+            //if (dtTableSQL != null)
+            //{
+            //    foreach (DataRow drTableSQL in dtTableSQL.Rows)
+            //    {
+            //        string sqlType = MyUtils.Coalesce(drTableSQL["SQLType"], "").ToString();
+            //        if (sqlType.EndsWith("SQL"))
+            //        {
+            //            string dPropertyName = sqlType.Substring(0, sqlType.Length - 3);
+            //            XElement xTableSQL = new XElement(GetXPropertyName(dPropertyName));
+            //            xTableSQL.Add(new XAttribute("lang", "sql"));
+            //            xTableSQL.Value = drTableSQL["SQL"].ToString();
+            //            xPluginDefinition.Add(xTableSQL);
+            //        }
+            //    }
+            //}
+
+            XAttribute xSrcAttr = xPluginDefinition.Attribute("Src");
+            if (xSrcAttr != null)
             {
-                xPluginDefinition.Add(new XElement("RowKey", ""));
+                xSrcAttr.Value += ".pux";
             }
 
-            DataTable dtTableSQL = MyWebUtils.GetBySQL("?exec spSQL_sel 'CiTable', null, @AppID, @TableID, @TableID", drPluginDefinition, true);
-            if (dtTableSQL != null)
+            //XElement xDefaultMacro = new XElement("DefaultMacro");
+
+            //if (MyUtils.IsEmpty(drPluginDefinition["ParentTableID"]))
+            //{
+            //    xDefaultMacro.Add(new XElement("ActionSQL", "select '- New -' as ID"));
+            //}
+            //else
+            //{
+            //    xDefaultMacro.Add(new XElement("ActionSQL", "select @ParentID as EditParentID, '- New -' as ID"));
+            //}
+            //xPluginDefinition.Add(xDefaultMacro);
+
+            XElement xDummyField = new XElement("CiField");
+            xDummyField.Add(new XElement("FieldName", "DummyForInsert"));
+            xDummyField.Add(new XElement("Hidden", true));
+            xPluginDefinition.Add(xDummyField);
+
+            DataTable dtSubTable = MyWebUtils.GetBySQL("select * from dbo.fnGetSubTablesFromSrc(@AppID, @TableID)", drPluginDefinition, true);
+            if (dtSubTable != null)
             {
-                foreach (DataRow drFieldSQL in dtTableSQL.Rows)
+                foreach (DataRow drSubTable in dtSubTable.Rows)
                 {
-                    string sqlType = MyUtils.Coalesce(drFieldSQL["SQLType"], "").ToString();
-                    if (sqlType.EndsWith("SQL"))
+                    string tableName = MyWebUtils.GetStringField(drSubTable, "TableName");
+                    if (!MyUtils.IsEmpty(tableName))
                     {
-                        string dPropertyName = sqlType.Substring(0, sqlType.Length - 3);
-                        XElement xTableSQL = new XElement(GetXPropertyName(dPropertyName));
-                        xTableSQL.Add(new XAttribute("lang", "sql"));
-                        xTableSQL.Value = drFieldSQL["SQL"].ToString();
-                        xPluginDefinition.Add(xTableSQL);
+                        XElement xTable = new XElement("CiTable");
+                        xPluginDefinition.Add(xTable);
+
+                        XElement xTableName = new XElement("TableName", tableName);
+                        xTable.Add(xTableName);
+
+                        XElement xHidden = new XElement("Hidden", true);
+                        xTable.Add(xHidden);
                     }
                 }
             }
+
         }
 
         protected override void UploadDerivedValues(DataRow drPluginDefinition, XElement xPluginDefinition)
@@ -2351,11 +2430,11 @@ namespace CodeClay
 
         protected override List<XiPlugin> GetXiChildPlugins()
         {
-            return new List<XiPlugin>() { new XiField(), new XiChildTable(), new XiMacro(), new XiButtonField() };
+            return new List<XiPlugin>() { new XiField(), new XiSubTable(), new XiMacro(), new XiButtonField() };
         }
     }
 
-    public class XiChildTable: XiTable
+    public class XiSubTable: XiTable
     {
         // --------------------------------------------------------------------------------------------------
         // Methods (Override)
@@ -2363,8 +2442,7 @@ namespace CodeClay
 
         protected override DataTable GetPluginDefinitions(DataRow drPluginKey)
         {
-            return MyWebUtils.GetBySQL("select * from CiTable where AppID = @AppID and TableID in " +
-                "(select NestedTableID from CiField where AppID = @AppID and TableID = @TableID)",
+            return MyWebUtils.GetBySQL("select * from CiTable where AppID = @AppID and ParentTableID = @TableID",
                 drPluginKey,
                 true);
         }
@@ -2374,44 +2452,23 @@ namespace CodeClay
             // Do nothing
         }
 
-        protected override void WriteToDB(DataRow drPluginDefinition)
+        protected override List<XiPlugin> GetXiChildPlugins()
+        {
+            return new List<XiPlugin>() {};
+        }
+
+        protected override void DownloadDerivedValues(DataRow drPluginDefinition, XElement xPluginDefinition)
         {
             if (drPluginDefinition != null)
             {
-                DataTable dt = drPluginDefinition.Table;
-                if (dt != null)
+                XAttribute xSrc = xPluginDefinition.Attribute("Src");
+                if (xSrc == null)
                 {
-                    DataColumnCollection dc = dt.Columns;
-                    MyWebUtils.AddColumnIfRequired(dc, "FieldID");
-                    MyWebUtils.AddColumnIfRequired(dc, "FieldName");
-                    MyWebUtils.AddColumnIfRequired(dc, "Type");
-                    MyWebUtils.AddColumnIfRequired(dc, "Width");
-                    MyWebUtils.AddColumnIfRequired(dc, "InRowKey");
-
-                    drPluginDefinition["FieldName"] = drPluginDefinition["TableName"];
-                    drPluginDefinition["Type"] = "Table";
-
-                    string insertColumnNames = "@AppID, @TableID, @FieldName, @Caption, @Type, @Width, @InRowKey";
-                    string insertSQL = string.Format("?exec spField_ins {0}", insertColumnNames);
-
-                    drPluginDefinition["FieldID"] = MyWebUtils.EvalSQL(insertSQL, drPluginDefinition, true);
-
-                    DataTable dtField = MyWebUtils.GetBySQL("?exec spField_sel @AppID, @TableID, @FieldID", drPluginDefinition);
-                    if (MyWebUtils.GetNumberOfRows(dtField) > 0 && dtField.Columns.Contains("NestedTableID"))
-                    {
-                        drPluginDefinition["TableID"] = dtField.Rows[0]["NestedTableID"];
-                    }
-
-                    DataTable dtNestedTable = MyWebUtils.GetBySQL("select * from CiTable where AppID = @AppID and TableID = @TableID", drPluginDefinition);
-                    if (MyWebUtils.GetNumberOfRows(dtNestedTable) > 0 && dtNestedTable.Columns.Contains("Src"))
-                    {
-                        DataRow drNestedTable = dtNestedTable.Rows[0];
-                        drNestedTable["Src"] = drPluginDefinition["Src"];
-                        drNestedTable["Caption"] = "";
-                        drNestedTable["PageSize"] = 100;
-                        base.WriteToDB(drNestedTable);
-                    }
+                    xSrc = new XAttribute("Src", "");
+                    xPluginDefinition.Add(xSrc);
                 }
+
+                xSrc.Value = MyWebUtils.GetStringField(drPluginDefinition, "TableName") + ".pux?ParentID=@ID";
             }
         }
     }

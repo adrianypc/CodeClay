@@ -1,7 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
-<CiCheckField>
-  <FieldName>Completed</FieldName>
-  <Caption>Completed</Caption>
-  <Value>false</Value>
-  <Editable>true</Editable>
-</CiCheckField>

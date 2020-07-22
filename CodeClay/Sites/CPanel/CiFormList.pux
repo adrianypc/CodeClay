@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <CiTable>
-	<TableName>CiTableList</TableName>
-	<TableCaption>Table List</TableCaption>
+	<TableName>CiFormList</TableName>
+	<TableCaption>Form List</TableCaption>
 	<DefaultView>Grid</DefaultView>
   <RowKey>AppID,TableID</RowKey>
   <DoubleClickMacroName>Details</DoubleClickMacroName>
@@ -24,19 +24,44 @@
   </CiTextField>
   <CiTextField>
     <FieldName>TableName</FieldName>
-    <Caption>Table Name</Caption>
+    <Caption>Form Name</Caption>
     <Width>10</Width>
   </CiTextField>
   <CiTextField>
     <FieldName>OldTableName</FieldName>
-    <Caption>Table Name</Caption>
+    <Caption>Form Name</Caption>
     <Computed>true</Computed>
     <Value>TableName</Value>
     <Hidden>true</Hidden>
   </CiTextField>
+  <CiTextField>
+    <FieldName>Caption</FieldName>
+    <Caption>Caption</Caption>
+  </CiTextField>
+  <CiComboField>
+    <FieldName>DefaultView</FieldName>
+    <Caption>Default View</Caption>
+    <DropdownSQL>select Code from Dropdown where Category = 'View'</DropdownSQL>
+    <Width>10</Width>
+  </CiComboField>
+  <CiComboField>
+    <FieldName>Src</FieldName>
+    <Caption>Source Table</Caption>
+    <DropdownSQL>
+      select TableName as Code
+      from CiTable T
+      where AppID = @AppID
+      and   (@TableID is null or TableID != @TableID)
+      and   Bound = 1
+      and not exists (select 1 from CiField where AppID = T.AppID and NestedTableID = T.TableID)
+      order by TableName
+    </DropdownSQL>
+    <DropdownWidth>300</DropdownWidth>
+    <Width>10</Width>
+  </CiComboField>
   <CiLinkField>
     <FieldName>TableUrl</FieldName>
-    <Caption>Table Url</Caption>
+    <Caption>Form Url</Caption>
     <Editable>false</Editable>
     <Width>40</Width>
   </CiLinkField>
@@ -44,28 +69,22 @@
     <FieldName>TableName</FieldName>
     <ActionSQL>select 'Default.aspx?Application=' + @AppName + '&amp;PluginSrc=' + @TableName + '.pux' as TableUrl</ActionSQL>
   </CiFieldExitMacro>
-  <DefaultMacro>
-    <ActionSQL>
-      select  '- New -' as TableID
-    </ActionSQL>
-  </DefaultMacro>
   <SelectMacro>
-    <ActionSQL>?exec spTable_sel @AppID, null, 1</ActionSQL>
+    <ActionSQL>?exec spTable_sel @AppID, null, 0</ActionSQL>
   </SelectMacro>
   <InsertMacro>
-    <ActionSQL>?exec spTable_ins @AppID, @TableName, @TableName, 'Grid', true</ActionSQL>
+    <ActionSQL>?exec spTable_ins @AppID, @TableName, @Caption, @DefaultView, 0, @Src</ActionSQL>
     <ActionSQL>select @AppID as AppID, @TableID as TableID</ActionSQL>
     <CiSerializeMacro>
       <Direction>Download</Direction>
     </CiSerializeMacro>
   </InsertMacro>
   <UpdateMacro>
-    <ActionSQL>exec spTable_updShort @AppID, @TableID, @TableName, @TableName, 'Grid', true</ActionSQL>
+    <ActionSQL>exec spTable_updShort @AppID, @TableID, @TableName, @Caption, @DefaultView, false, @Src</ActionSQL>
     <ActionSQL>select @AppID as AppID, @TableID as TableID, @OldTableName as OldTableName</ActionSQL>
     <CiSerializeMacro>
       <Direction>Download</Direction>
     </CiSerializeMacro>
-    <VisibleSQL>select 1 from Singleton where @TableName != 'Dropdown'</VisibleSQL>
   </UpdateMacro>
   <DeleteMacro>
     <ActionSQL>exec spTable_del @AppID, @TableID</ActionSQL>
@@ -73,14 +92,12 @@
     <CiSerializeMacro>
       <Direction>Download</Direction>
     </CiSerializeMacro>
-    <VisibleSQL>select 1 from Singleton where @TableName != 'Dropdowns'</VisibleSQL>
   </DeleteMacro>
   <CiMacro>
     <MacroName>Details</MacroName>
-    <Caption>Table Design</Caption>
+    <Caption>Form Design</Caption>
     <ActionSQL>select @AppID as AppID, @TableID as TableID</ActionSQL>
-    <NavigateUrl>CiTableDetails.pux</NavigateUrl>
+    <NavigateUrl>CiFormDetails.pux</NavigateUrl>
     <NavigatePos>NewTab</NavigatePos>
-    <VisibleSQL>select 1 from Singleton where @TableName != 'Dropdowns'</VisibleSQL>
   </CiMacro>
 </CiTable>

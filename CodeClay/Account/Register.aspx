@@ -7,7 +7,7 @@
     </p>
 
     <div class="form-horizontal">
-        <h4>Create your Code Clay account.</h4>
+        <h4>Please create your Codistri account.</h4>
         <hr />
         <asp:ValidationSummary runat="server" CssClass="text-danger" />
         <div class="form-group">

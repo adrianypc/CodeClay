@@ -674,24 +674,31 @@ namespace CodeClay
             object oldAppName = MyWebUtils.GetField(drKey, "OldAppName");
             if (!MyUtils.IsEmpty(oldAppName))
             {
-                string newAppName = GetApplicationName(drKey);
-
-                if (newAppName != oldAppName.ToString())
+                string oldAppDir = MyWebUtils.MapPath(string.Format("Sites/{0}", oldAppName));
+                if (!MyUtils.IsEmpty(puxUrl))
                 {
-                    string oldAppDir = MyWebUtils.MapPath(string.Format("Sites/{0}", oldAppName));
-                    string newAppDir = MyWebUtils.MapPath(string.Format("Sites/{0}", newAppName));
-                    if (Directory.Exists(oldAppDir))
+                    string newAppName = GetApplicationName(drKey);
+
+                    if (newAppName != oldAppName.ToString())
                     {
-                        Directory.Move(oldAppDir, newAppDir);
+                        string newAppDir = MyWebUtils.MapPath(string.Format("Sites/{0}", newAppName));
+                        if (Directory.Exists(oldAppDir))
+                        {
+                            Directory.Move(oldAppDir, newAppDir);
+                        }
                     }
+                }
+                else
+                {
+                    Directory.Delete(oldAppDir, true);
                 }
             }
             else
             {
                 FileInfo fi = new FileInfo(puxUrl);
                 string destinationFolder = MyWebUtils.MapPath(string.Format("Sites/{0}", fi.Directory.Name));
-                string sourceDropdownPUX = MyWebUtils.MapPath(string.Format("Sites/{0}/Dropdowns.pux", "Template"));
-                string destinationDropdownPUX = string.Format("{0}/Dropdowns.pux", destinationFolder);
+                string sourceDropdownPUX = MyWebUtils.MapPath(string.Format("Sites/{0}/Dropdown.pux", "Template"));
+                string destinationDropdownPUX = string.Format("{0}/Dropdown.pux", destinationFolder);
 
                 if (!File.Exists(destinationDropdownPUX))
                 {
@@ -703,7 +710,7 @@ namespace CodeClay
                     File.Copy(sourceDropdownPUX, destinationDropdownPUX);
                 }
 
-                MyWebUtils.EvalSQL("exec spDropdown_build @AppID", drKey, true);
+                //MyWebUtils.EvalSQL("exec spDropdown_build @AppID", drKey, true);
             }
 
             base.DownloadFile(drKey, puxUrl);
@@ -712,6 +719,11 @@ namespace CodeClay
         public override string GetPuxUrl(DataRow drPluginKey)
         {
             string appName = GetApplicationName(drPluginKey);
+
+            if (MyUtils.IsEmpty(appName))
+            {
+                return null;
+            }
 
             return MyWebUtils.MapPath(string.Format("Sites/{0}/UiApplication.pux", appName));
         }
@@ -737,6 +749,7 @@ namespace CodeClay
         {
             xPluginDefinition.Add(new XElement("IsDesigner", true));
             xPluginDefinition.Add(new XElement("ProviderName", "System.Data.SqlClient"));
+            xPluginDefinition.Add(new XElement("HomePluginSrc", "Dropdown.pux"));
 
             string databaseName = MyWebUtils.GetField(drPluginDefinition, "SQLDatabaseName") as string;
             string connectionString = UiApplication.Me.CiApplication.ConnectionString;
@@ -748,8 +761,8 @@ namespace CodeClay
                 new XElement("CiMenu",
                     new XElement("MenuName", "Setup"),
                     new XElement("CiMenu",
-                        new XElement("MenuName", "Dropdowns"),
-                        new XElement("PluginSrc", "Dropdowns.pux")))));
+                        new XElement("MenuName", "Dropdown"),
+                        new XElement("PluginSrc", "Dropdown.pux")))));
         }
     }
 }

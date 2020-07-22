@@ -43,7 +43,16 @@ namespace CodeClay
 
         protected override DataTable RunActionSQL(DataRow drParams)
         {
-            DataTable dt = base.RunActionSQL(drParams);
+            DataTable dt = null;
+
+            if (ActionSQL.Length == 0)
+            {
+                dt = drParams.Table;
+            }
+            else
+            {
+                dt = base.RunActionSQL(drParams);
+            }
 
             int? appID = MyWebUtils.GetField<int>(drParams, "AppID");
             int? tableID = MyWebUtils.GetField<int>(drParams, "TableID");

@@ -29,6 +29,10 @@
     <Caption>Field Name</Caption>
     <Editable>false</Editable>
   </CiTextField>
+  <CiMemoField>
+    <FieldName>Caption</FieldName>
+    <Caption>Caption</Caption>
+  </CiMemoField>
   <CiField>
     <FieldName>Type</FieldName>
     <Caption>Type</Caption>
@@ -51,6 +55,7 @@
   <CiCheckField>
     <FieldName>Searchable</FieldName>
     <Caption>Can search on this field?</Caption>
+    <Editable lang="sql">select 1 from Singleton where @Type is not null</Editable>
   </CiCheckField>
   <CiMemoField>
     <FieldName>Value</FieldName>

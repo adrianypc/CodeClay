@@ -1,6 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
-<CiDateField>
-  <FieldName>DateOfBirth</FieldName>
-  <Value>6-11-1969</Value>
-  <Editable>true</Editable>
-</CiDateField>

@@ -199,6 +199,7 @@
         <asp:Parameter Name="Parameters" Type="Object" />
         <asp:Parameter Name="RowKey" Type="String" />
         <asp:Parameter Name="Script" Type="String" Direction="Output" />
+        <asp:Parameter Name="IsInvalid" Type="Boolean" Direction="Output" />
     </UpdateParameters>
     <InsertParameters>
         <asp:Parameter Name="Table" Type="Object"  />
@@ -206,6 +207,7 @@
         <asp:Parameter Name="Parameters" Type="Object" />
         <asp:Parameter Name="RowKey" Type="String" Direction="InputOutput" />
         <asp:Parameter Name="Script" Type="String" Direction="Output" />
+        <asp:Parameter Name="IsInvalid" Type="Boolean" Direction="Output" />
     </InsertParameters>
     <DeleteParameters>
         <asp:Parameter Name="Table" Type="Object"  />
@@ -213,6 +215,7 @@
         <asp:Parameter Name="Parameters" Type="Object" />
         <asp:Parameter Name="RowKey" Type="String" />
         <asp:Parameter Name="Script" Type="String" Direction="Output" />
+        <asp:Parameter Name="IsInvalid" Type="Boolean" Direction="Output" />
     </DeleteParameters>
 </asp:ObjectDataSource>
             

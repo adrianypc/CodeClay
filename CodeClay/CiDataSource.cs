@@ -45,7 +45,7 @@ namespace CodeClay
                     CiMacro ciMacro = ciTable.SearchMacro;
                     if (ciMacro != null)
                     {
-                        ciMacro.Run(drParams);
+                        ciMacro.Run(drParams, true);
                         dt = ciMacro.ResultTable;
                         script = ciMacro.ResultScript;
                     }
@@ -71,7 +71,7 @@ namespace CodeClay
             return dt;
         }
 
-        public void UpdateTable(object table, string view, object parameters, string rowKey, ref string script)
+        public void UpdateTable(object table, string view, object parameters, string rowKey, ref string script, ref bool isInvalid)
         {
             DataRow drParams = parameters as DataRow;
 
@@ -83,11 +83,12 @@ namespace CodeClay
                 {
                     ciMacro.Run(drParams);
                     script = ciMacro.ResultScript;
+                    isInvalid = !MyUtils.IsEmpty(ciMacro.ErrorMessage);
                 }
             }
         }
 
-        public void InsertTable(object table, string view, object parameters, ref string rowKey, ref string script)
+        public void InsertTable(object table, string view, object parameters, ref string rowKey, ref string script, ref bool isInvalid)
         {
             DataRow drParams = parameters as DataRow;
 
@@ -99,6 +100,7 @@ namespace CodeClay
                 {
                     ciMacro.Run(drParams);
                     script = ciMacro.ResultScript;
+                    isInvalid = !MyUtils.IsEmpty(ciMacro.ErrorMessage);
 
                     DataTable dt = ciMacro.ResultTable;
                     if (MyWebUtils.GetNumberOfRows(dt) > 0)
@@ -122,7 +124,7 @@ namespace CodeClay
             }
         }
 
-        public void DeleteTable(object table, string view, object parameters, string rowKey, ref string script)
+        public void DeleteTable(object table, string view, object parameters, string rowKey, ref string script, ref bool isInvalid)
         {
             DataRow drParams = parameters as DataRow;
 
@@ -134,6 +136,7 @@ namespace CodeClay
                 {
                     ciMacro.Run(drParams);
                     script = ciMacro.ResultScript;
+                    isInvalid = !MyUtils.IsEmpty(ciMacro.ErrorMessage);
                 }
             }
         }

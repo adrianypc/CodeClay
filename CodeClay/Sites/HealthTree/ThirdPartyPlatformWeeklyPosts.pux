@@ -34,7 +34,7 @@
 	</CiTextField>
     <CiTextField>
         <FieldName>ProductName</FieldName>
-        <Caption>Proudct</Caption>
+        <Caption>Product</Caption>
         <Editable>false</Editable>
         <width>40</width>
     </CiTextField>

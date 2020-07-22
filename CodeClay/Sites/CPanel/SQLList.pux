@@ -3,13 +3,9 @@
 	<TableName>SQLList</TableName>
 	<TableCaption lang="sql">select @SQLType</TableCaption>
 	<DefaultView>Grid</DefaultView>
-  <RowKey>EntityType,SQLType,AppID,TableID,EntityID,LineNum</RowKey>
+  <RowKey>AppID,TableID,MacroID,SQLType,LineNum</RowKey>
   <CiField>
-    <FieldName>EntityType</FieldName>
-    <Hidden>true</Hidden>
-  </CiField>
-  <CiField>
-    <FieldName>SQLType</FieldName>
+    <FieldName>Editable</FieldName>
     <Hidden>true</Hidden>
   </CiField>
   <CiField>
@@ -23,8 +19,12 @@
     <Hidden>true</Hidden>
   </CiField>
   <CiField>
-    <FieldName>EntityID</FieldName>
-    <Caption>Entity ID</Caption>
+    <FieldName>MacroID</FieldName>
+    <Caption>Macro ID</Caption>
+    <Hidden>true</Hidden>
+  </CiField>
+  <CiField>
+    <FieldName>SQLType</FieldName>
     <Hidden>true</Hidden>
   </CiField>
   <CiField>
@@ -37,30 +37,29 @@
     <Caption>Edit the SQL</Caption>
   </CiMemoField>
   <SelectMacro>
-    <ActionSQL>?exec spSQL_sel @EntityType, @SQLType, @AppID, @TableID, @EntityID</ActionSQL>
+    <ActionSQL>?exec spSQL_sel @AppID, @TableID, @MacroID, @SQLType</ActionSQL>
   </SelectMacro>
   <InsertMacro>
-    <ActionSQL>exec spSQL_ins @EntityType, @SQLType, @AppID, @TableID, @EntityID, @SQL</ActionSQL>
+    <ActionSQL>exec spSQL_ins @AppID, @TableID, @MacroID, @SQLType, @SQL</ActionSQL>
     <ActionSQL>select @AppID as AppID, @TableID as TableID</ActionSQL>
-    <VisibleSQL>select 1 from CiTable where AppID = @AppID and TableID = @TableID and Bound = 0 or Bound is null</VisibleSQL>
     <CiSerializeMacro>
       <Direction>Download</Direction>
     </CiSerializeMacro>
   </InsertMacro>
   <UpdateMacro>
-    <ActionSQL>exec spSQL_upd @EntityType, @SQLType, @AppID, @TableID, @EntityID, @LineNum, @SQL</ActionSQL>
+    <ActionSQL>exec spSQL_upd @AppID, @TableID, @MacroID, @SQLType, @LineNum, @SQL</ActionSQL>
     <ActionSQL>select @AppID as AppID, @TableID as TableID</ActionSQL>
-    <VisibleSQL>select 1 from CiTable where AppID = @AppID and TableID = @TableID and Bound = 0 or Bound is null</VisibleSQL>
     <CiSerializeMacro>
       <Direction>Download</Direction>
     </CiSerializeMacro>
+    <VisibleSQL1>select 1 from Singleton where @Editable = 1</VisibleSQL1>
   </UpdateMacro>
   <DeleteMacro>
-    <ActionSQL>exec spSQL_del @EntityType, @SQLType, @AppID, @TableID, @EntityID, @LineNum</ActionSQL>
+    <ActionSQL>exec spSQL_del @AppID, @TableID, @MacroID, @SQLType, @LineNum</ActionSQL>
     <ActionSQL>select @AppID as AppID, @TableID as TableID</ActionSQL>
-    <VisibleSQL>select 1 from CiTable where AppID = @AppID and TableID = @TableID and Bound = 0 or Bound is null</VisibleSQL>
     <CiSerializeMacro>
       <Direction>Download</Direction>
     </CiSerializeMacro>
+    <VisibleSQL>select 1 from Singleton where @Editable = 1</VisibleSQL>
   </DeleteMacro>
 </CiTable>

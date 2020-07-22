@@ -1,0 +1,83 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<CiTable>
+	<TableName>CiSubTableList</TableName>
+	<TableCaption>Subtable List</TableCaption>
+	<DefaultView>Grid</DefaultView>
+  <RowKey>AppID,TableID,SubTableID</RowKey>
+  <DoubleClickMacroName>Details</DoubleClickMacroName>
+  <CiField>
+    <FieldName>AppID</FieldName>
+    <Caption>App ID</Caption>
+    <Hidden>true</Hidden>
+  </CiField>
+  <CiCheckField>
+    <FieldName>Bound</FieldName>
+    <Hidden>true</Hidden>
+  </CiCheckField>
+  <CiField>
+    <FieldName>SavedTableID</FieldName>
+    <Hidden>true</Hidden>
+    <Computed>true</Computed>
+    <Value>TableID</Value>
+  </CiField>
+  <CiField>
+    <FieldName>TableID</FieldName>
+    <Caption>Table ID</Caption>
+    <Hidden>true</Hidden>
+  </CiField>
+  <CiField>
+    <FieldName>SavedSubTableID</FieldName>
+    <Computed>true</Computed>
+    <Value>SubTableID</Value>
+    <Hidden>true</Hidden>
+  </CiField>
+  <CiComboField>
+    <FieldName>SubTableID</FieldName>
+    <Caption>Sub Table</Caption>
+    <DropdownSQL>
+      select  TableID,
+              TableName
+      from    CiTable
+      where   AppID = @AppID
+      and     Bound = @Bound
+      order by TableID
+    </DropdownSQL>
+    <Width>9</Width>
+    <DropdownWidth>300</DropdownWidth>
+    <TextFieldName>SubTableName</TextFieldName>
+  </CiComboField>
+  <SelectMacro>
+    <ActionSQL>?exec spSubTable_sel @AppID, @TableID</ActionSQL>
+  </SelectMacro>
+  <InsertMacro>
+    <ActionSQL>exec spSubTable_upd  @AppID, @TableID, @SubTableID</ActionSQL>
+    <ActionSQL>select AppID, TableID from CiTable where AppID = @AppID and TableID in (dbo.fnGetInt(@TableID), dbo.fnGetInt(@SavedSubTableID), dbo.fnGetInt(@SubTableID))</ActionSQL>
+    <CiSerializeMacro>
+      <ActionSQL>select @AppID as AppID, @SavedTableID as TableID</ActionSQL>
+      <Direction>Download</Direction>
+    </CiSerializeMacro>
+  </InsertMacro>
+  <UpdateMacro>
+    <ActionSQL>exec spSubTable_upd  @AppID, @TableID, @SubTableID</ActionSQL>
+    <ActionSQL>select AppID, TableID from CiTable where AppID = @AppID and TableID in (dbo.fnGetInt(@TableID), dbo.fnGetInt(@SavedSubTableID), dbo.fnGetInt(@SubTableID))</ActionSQL>
+    <CiSerializeMacro>
+      <ActionSQL>select @AppID as AppID, @SavedTableID as TableID</ActionSQL>
+      <Direction>Download</Direction>
+    </CiSerializeMacro>
+  </UpdateMacro>
+  <DeleteMacro>
+    <ActionSQL>exec spSubTable_upd  @AppID, null, @SubTableID</ActionSQL>
+    <ActionSQL>select AppID, TableID from CiTable where AppID = @AppID and TableID in (dbo.fnGetInt(@TableID), dbo.fnGetInt(@SavedSubTableID), dbo.fnGetInt(@SubTableID))</ActionSQL>
+    <CiSerializeMacro>
+      <ActionSQL>select @AppID as AppID, @SavedTableID as TableID</ActionSQL>
+      <Direction>Download</Direction>
+    </CiSerializeMacro>
+  </DeleteMacro>
+  <CiMacro>
+    <MacroName>Details</MacroName>
+    <Caption>Table Design</Caption>
+    <ActionSQL>select @AppID as AppID, @SubTableID as TableID</ActionSQL>
+    <NavigateUrl>CiTableDetails.pux</NavigateUrl>
+    <NavigatePos>NewTab</NavigatePos>
+  </CiMacro>
+</CiTable>

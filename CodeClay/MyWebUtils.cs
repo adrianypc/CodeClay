@@ -148,6 +148,18 @@ namespace CodeClay
             return null;
         }
 
+        public static string GetStringField(DataRow dr, string fieldName)
+        {
+            object fieldValue = GetField(dr, fieldName);
+
+            if (fieldValue != null)
+            {
+                return fieldValue.ToString();
+            }
+
+            return null;
+        }
+
         public static DataRow AppendColumns(DataRow dr, DataRow dr2, bool coalesce = true)
         {
             if (dr == null && dr2 == null)
@@ -474,7 +486,7 @@ namespace CodeClay
                 HttpResponse myResponse = page.Response;
                 IPrincipal myUser = page.User;
 
-                if ((sessionCount == 0 && !page.IsCallback || UiApplication.Me == null) && myResponse != null)
+                if ((sessionCount == 0 && !page.IsCallback) && myResponse != null)
                 {
                     myResponse.Redirect(loginUrl);
                 }

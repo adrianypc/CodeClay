@@ -24,7 +24,11 @@
   <CiComboField>
     <FieldName>Type</FieldName>
     <Caption>Type</Caption>
-    <DropdownSQL>select Code from Dropdown where Category = 'MacroType' order by SortOrder</DropdownSQL>
+    <DropdownSQL>
+      select Code from Dropdown where Category = 'MacroType'
+      and (not exists (select 1 from CiTable where AppID = @AppID and TableID = @TableID and DefaultView = 'Card') or (Code != 'Menu'))
+      order by SortOrder
+    </DropdownSQL>
     <Width>10</Width>
     <DropdownWidth>100</DropdownWidth>
   </CiComboField>
@@ -70,11 +74,11 @@
   </DeleteMacro>
   <CiFieldExitMacro>
     <FieldName>Type</FieldName>
-    <ActionSQL>select @Type as MacroName, '-' as Caption from Singleton where @Type in ('Select', 'Insert', 'Update', 'Delete')</ActionSQL>
+    <ActionSQL>select @Type as MacroName, '-' as Caption from Singleton where @Type in ('Select', 'Insert', 'Update', 'Delete', 'Default', 'Field Exit')</ActionSQL>
   </CiFieldExitMacro>
   <CiMacro>
     <MacroName>Details</MacroName>
-    <Caption>Details</Caption>
+    <Caption>Macro Design</Caption>
     <ActionSQL>
       select  @AppID as AppID,
               @TableID as TableID,
@@ -84,6 +88,7 @@
                 else 'CiMacroDetails.pux'
                 end
     </ActionSQL>
-    <NavigatePos>NewTab</NavigatePos>
+    <NavigateUrl lang="sql">select @NavigateUrl as NavigateUrl</NavigateUrl>
+    <NavigatePos>Popup</NavigatePos>
   </CiMacro>
 </CiTable>

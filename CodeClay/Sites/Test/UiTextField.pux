@@ -1,6 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
-<CiTextField>
-  <FieldName>Name</FieldName>
-  <Value>Adrian Chen</Value>
-  <Editable>false</Editable>
-</CiTextField>

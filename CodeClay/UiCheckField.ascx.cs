@@ -101,14 +101,5 @@ namespace CodeClay
         {
             Refresh();
         }
-
-        // --------------------------------------------------------------------------------------------------
-        // Methods (Override)
-        // --------------------------------------------------------------------------------------------------
-
-        public override Color GetBackColor(bool isEditable)
-        {
-            return Color.Transparent;
-        }
     }
 }

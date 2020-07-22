@@ -1,18 +1,22 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<CiTable>
-  <TableName>Tasks</TableName>
-  <TableCaption>Tasks</TableCaption>
+<CiTable Src="Tasks.pux">
+  <TableName>MyTasks</TableName>
+  <TableCaption>My Tasks</TableCaption>
+  <DefaultView>Card</DefaultView>
   <RowKey>ID</RowKey>
   <CiField>
     <FieldName>DummyForInsert</FieldName>
     <Hidden>true</Hidden>
   </CiField>
+  <CiTable>
+    <TableName>Logs</TableName>
+    <Hidden>true</Hidden>
+  </CiTable>
   <CiTextField>
     <FieldName>ID</FieldName>
-    <Caption>Task ID</Caption>
+    <Caption>ID</Caption>
     <Editable>false</Editable>
-    <Searchable>true</Searchable>
-    <Width>5</Width>
+    <Width>10</Width>
   </CiTextField>
   <CiTextField>
     <FieldName>Description</FieldName>
@@ -35,10 +39,12 @@
     <Width>10</Width>
     <MaxValue>1000</MaxValue>
   </CiNumericField>
-  <CiTable Src="Logs.pux?ParentID=@ID">
-    <TableName>Logs</TableName>
-    <TableCaption>Logs</TableCaption>
-  </CiTable>
+  <CiCurrencyField>
+    <FieldName>Cost</FieldName>
+    <Caption>Cost ($)</Caption>
+    <Editable>false</Editable>
+    <Width>10</Width>
+  </CiCurrencyField>
   <SelectMacro>
     <ActionSQL>select ID, Description, Due, Billable, Effort from Tasks where (@ID is null or ID = @ID) order by ID</ActionSQL>
   </SelectMacro>
@@ -56,4 +62,7 @@
   <DefaultMacro>
     <ActionSQL>select '- New -' as ID</ActionSQL>
   </DefaultMacro>
+  <CiFieldExitMacro>
+    <MacroName>Calculate Cost</MacroName>
+  </CiFieldExitMacro>
 </CiTable>

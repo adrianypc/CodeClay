@@ -1,52 +1,60 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <CiTable>
-  <TableName>UnpaidSupplierOrder</TableName>
-  <TableCaption lang="sql">
-      select coalesce((select invoicestatus from interbranchinvoices where IsNumeric(@InvoiceNo) = 1 and Invoiceno = @InvoiceNo),'Unpaid') +' '+'Supplier Orders'
-  </TableCaption>
-  <RowKey>InvoiceNo,SupplierOrderNo</RowKey>
-  <DefaultView>Grid</DefaultView>
-  <CiTextField>
-    <FieldName>InvoiceNo</FieldName>
-    <Hidden>true</Hidden>
-  </CiTextField>
-  <CiTextField>
-    <FieldName>SupplierID</FieldName>
-    <Hidden>true</Hidden>
-  </CiTextField>
-  <CiTextField>
-    <FieldName>SupplierName</FieldName>
-    <Caption>Supplier</Caption>
-    <Editable>false</Editable>
-  </CiTextField>
-  <CiTextField>
-    <FieldName>SupplierOrderNo</FieldName>
-    <Caption>Supplier Order#</Caption>
-    <Editable>false</Editable>
-  </CiTextField>
-  <CiDateField>
-    <FieldName>SupplierOrderDate</FieldName>
-    <Caption>Order Date</Caption>
-    <Editable>true</Editable>
-    <ColumnFormat>dd/MM/yyyy</ColumnFormat>
-    <Mandatory>true</Mandatory>
-  </CiDateField>
-  <CiTextField>
-    <FieldName>TotalItemPrice</FieldName>
-    <Caption>Total Price (SG$)</Caption>
-    <Mask>Currency</Mask>
-    <Editable>false</Editable>
-  </CiTextField>
-  <CiTextField>
-    <FieldName>ShippingCost</FieldName>
-    <Caption>Shipping (SG$)</Caption>
-    <Mask>Currency</Mask>
-    <Editable>false</Editable>
-  </CiTextField>
-  <CiTextField>
-    <FieldName>GrandTotal</FieldName>
-    <Caption>Grand Total (SG$)</Caption>
-    <Mask>Currency</Mask>
-    <Editable>false</Editable>
-  </CiTextField>
+    <TableName>UnpaidSupplierOrder</TableName>
+    <TableCaption lang="sql">
+        select coalesce((select invoicestatus from interbranchinvoices where IsNumeric(@InvoiceNo) = 1 and Invoiceno = @InvoiceNo),'Unpaid') +' '+'Supplier Orders'
+    </TableCaption>
+    <RowKey>InvoiceNo,SupplierOrderNo</RowKey>
+    <DefaultView>Grid</DefaultView>
+    <DoubleClickMacroName>SupplierOrderDetail</DoubleClickMacroName>
+    <CiTextField>
+        <FieldName>InvoiceNo</FieldName>
+        <Hidden>true</Hidden>
+    </CiTextField>
+    <CiTextField>
+        <FieldName>SupplierID</FieldName>
+        <Hidden>true</Hidden>
+    </CiTextField>
+    <CiTextField>
+        <FieldName>SupplierName</FieldName>
+        <Caption>Supplier</Caption>
+        <Editable>false</Editable>
+    </CiTextField>
+    <CiTextField>
+        <FieldName>SupplierOrderNo</FieldName>
+        <Caption>Supplier Order#</Caption>
+        <Editable>false</Editable>
+    </CiTextField>
+    <CiDateField>
+        <FieldName>SupplierOrderDate</FieldName>
+        <Caption>Order Date</Caption>
+        <Editable>true</Editable>
+        <ColumnFormat>dd/MM/yyyy</ColumnFormat>
+        <Mandatory>true</Mandatory>
+    </CiDateField>
+    <CiTextField>
+        <FieldName>TotalItemPrice</FieldName>
+        <Caption>Total Price (SG$)</Caption>
+        <Mask>Currency</Mask>
+        <Editable>false</Editable>
+    </CiTextField>
+    <CiTextField>
+        <FieldName>ShippingCost</FieldName>
+        <Caption>Shipping (SG$)</Caption>
+        <Mask>Currency</Mask>
+        <Editable>false</Editable>
+    </CiTextField>
+    <CiTextField>
+        <FieldName>GrandTotal</FieldName>
+        <Caption>Grand Total (SG$)</Caption>
+        <Mask>Currency</Mask>
+        <Editable>false</Editable>
+    </CiTextField>
+    <CiMacro>
+        <MacroName>SupplierOrderDetail</MacroName>
+        <Caption>Supplier Order Detail</Caption>
+        <ActionSQL>select @SupplierOrderNo as SupplierOrderNo, @SupplierID as SupplierID</ActionSQL>
+        <NavigateUrl>SupplierOrder.pux</NavigateUrl>
+        <NavigatePos>Popup</NavigatePos>
+    </CiMacro>
 </CiTable>

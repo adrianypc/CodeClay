@@ -23,102 +23,43 @@
     <FieldName>TableName</FieldName>
     <Caption>Table Name</Caption>
   </CiTextField>
-  <CiTextField>
-    <FieldName>OldTableName</FieldName>
-    <Caption>Table Name</Caption>
+  <CiField>
+    <FieldName>SavedParentTableID</FieldName>
     <Computed>true</Computed>
-    <Value>TableName</Value>
+    <Value>ParentTableID</Value>
     <Hidden>true</Hidden>
-  </CiTextField>
-  <CiMemoField>
-    <FieldName>CaptionOrSQL</FieldName>
-    <Caption>Caption</Caption>
-  </CiMemoField>
-  <CiCheckField>
-    <FieldName>IsCaptionSQL</FieldName>
-    <Caption>SQL?</Caption>
-    <Width>5</Width>
-  </CiCheckField>
+  </CiField>
   <CiComboField>
-    <FieldName>Src</FieldName>
-    <Caption>Source</Caption>
-    <DropdownSQL>select TableName + '.pux' as Code
-      from CiTable T
-      where AppID = @AppID
-      and not exists (select 1 from CiField where AppID = T.AppID and NestedTableID = T.TableID)
-      order by TableName</DropdownSQL>
+    <FieldName>ParentTableID</FieldName>
+    <Caption>Subtable of</Caption>
+    <DropdownSQL>
+      select  TableID,
+              TableName
+      from    CiTable T
+      where   AppID = @AppID
+      and     Bound = 1
+      order by TableID
+    </DropdownSQL>
     <DropdownWidth>300</DropdownWidth>
+    <TextFieldName>ParentTableName</TextFieldName>
   </CiComboField>
-  <CiComboField>
-    <FieldName>DefaultView</FieldName>
-    <Caption>Default View</Caption>
-    <DropdownSQL>select Code from Dropdown where Category = 'View'</DropdownSQL>
-  </CiComboField>
-  <CiNumericField>
-    <FieldName>ColCount</FieldName>
-    <Caption>#columns per Card</Caption>
-    <Value>1</Value>
-    <Editable lang="sql">select 1 from Singleton where @DefaultView = 'Card'</Editable>
-  </CiNumericField>
-  <CiCheckField>
-    <FieldName>InsertRowAtBottom</FieldName>
-    <Caption>Display [New] row at bottom of Grid</Caption>
-    <Editable lang="sql">select 1 from Singleton where @DefaultView = 'Grid'</Editable>
-  </CiCheckField>
-  <CiComboField>
-    <FieldName>DoubleClickMacroName</FieldName>
-    <Caption>Macro to run when double clicking on row of Grid</Caption>
-    <DropdownSQL>select MacroName from CiMacro where Type = 'Menu' order by MacroName</DropdownSQL>
-  </CiComboField>
-  <CiCheckField>
-    <FieldName>BubbleUpdate</FieldName>
-    <Caption>Refresh if child tables are updated</Caption>
-    <Hidden>true</Hidden>
-  </CiCheckField>
-  <CiCheckField>
-    <FieldName>QuickInsert</FieldName>
-    <Caption>Prompt for new record after insertion</Caption>
-  </CiCheckField>
   <CiLinkField>
     <FieldName>TableUrl</FieldName>
     <Caption>Table Url</Caption>
     <Editable>false</Editable>
   </CiLinkField>
-  <CiTable Src="CiFieldList.pux" />
-  <CiTable Src="CiMacroList.pux" />
+  <CiTable Src="CiFieldList.pux?AppID=@AppID&amp;TableID=@TableID" />
+  <CiTable Src="CiSubTableList.pux?AppID=@AppID&amp;TableID=@TableID&amp;Bound=true">
+    <TableCaption>Subtable List</TableCaption>
+  </CiTable>
   <SelectMacro>
-    <ActionSQL>?exec spTable_sel @AppID, @TableID</ActionSQL>
+    <ActionSQL>?exec spTable_sel @AppID, @TableID, true</ActionSQL>
   </SelectMacro>
   <UpdateMacro>
-    <ActionSQL>
-      exec spTable_updLong @AppID, @TableID, @TableName, @Src, @CaptionOrSQL, @IsCaptionSQL, @DefaultView,
-      @LayoutUrl, @ColCount, @BubbleUpdate, @QuickInsert, @InsertRowAtBottom,
-      @DoubleClickMacroName
-    </ActionSQL>
-    <ActionSQL>select @AppID as AppID, @TableID as TableID, @OldTableName as OldTableName</ActionSQL>
+    <ActionSQL>exec spTable_updShort @AppID, @TableID, @TableName, @TableName, 'Grid', true, null, @ParentTableID</ActionSQL>
+    <ActionSQL>select AppID, TableID from CiTable where AppID = @AppID and TableID in (dbo.fnGetInt(@TableID), dbo.fnGetInt(@ParentTableID), dbo.fnGetInt(@SavedParentTableID))</ActionSQL>
     <CiSerializeMacro>
       <Direction>Download</Direction>
     </CiSerializeMacro>
   </UpdateMacro>
-  <CiMacro>
-    <MacroName>DownloadPUX</MacroName>
-    <Caption>Download PUX</Caption>
-    <IconID>arrows_movedown_16x16office2013</IconID>
-    <Toolbar>true</Toolbar>
-    <ActionSQL>
-      select 'Sites\' + @AppName + '\' + @TableName + '.pux' as NavigateUrl
-    </ActionSQL>
-    <NavigatePos>NewTab</NavigatePos>
-  </CiMacro>
-  <CiMacro>
-    <MacroName>UploadPUX</MacroName>
-    <Caption>Upload PUX</Caption>
-    <IconID>arrows_moveup_16x16office2013</IconID>
-    <Toolbar>true</Toolbar>
-    <ActionSQL>
-      select  @AppID as AppID, @TableID as TableID
-    </ActionSQL>
-    <NavigateUrl>SerializeMacro.pux</NavigateUrl>
-    <NavigatePos>Popup|600|200</NavigatePos>
-  </CiMacro>
 </CiTable>

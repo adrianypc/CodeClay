@@ -14,23 +14,19 @@
     <Caption>Application Name</Caption>
     <Editable>false</Editable>
   </CiTextField>
-  <CiCheckField>
-    <FieldName>UserDefined</FieldName>
-    <Caption>User Defined?</Caption>
-    <Width>10</Width>
-  </CiCheckField>
   <CiComboField>
     <FieldName>HomePluginSrc</FieldName>
-    <Caption>Home Table</Caption>
-    <DropdownSQL>select TableName + '.pux' as PuxFile from CiTable where AppID = @AppID order by TableName</DropdownSQL>
+    <Caption>Home Form</Caption>
+    <DropdownSQL>select TableName as 'Form Name' from CiTable where AppID = @AppID and Bound = 0 order by TableName</DropdownSQL>
   </CiComboField>
   <CiLinkField>
     <FieldName>AppUrl</FieldName>
     <Caption>Url</Caption>
     <Editable>false</Editable>
   </CiLinkField>
-  <CiTable Src="ApplicationUserList.pux" />
+  <CiTable Src="CiUserList.pux" />
   <CiTable Src="CiTableList.pux" />
+  <CiTable Src="CiFormList.pux" />
   <SelectMacro>
     <ActionSQL>?exec spApplication_sel @AppID, @CI_UserEmail</ActionSQL>
   </SelectMacro>

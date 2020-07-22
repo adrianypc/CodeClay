@@ -78,11 +78,18 @@ namespace CodeClay
                     if (ciChildPlugin != null)
                     {
                         object parameterValue = SrcParams[parameterName];
-                        ciChildPlugin.Value = MyUtils.Coalesce(parameterValue, "").ToString();
+                        string strParameterValue = MyUtils.Coalesce(parameterValue, "").ToString();
+                        if (!strParameterValue.StartsWith("@"))
+                        {
+                            ciChildPlugin.Value = strParameterValue;
+                        }
                     }
                 }
             }
         }
+
+        [XmlSqlElement("Hidden", typeof(bool))]
+        public XmlElement Hidden { get; set; } = MyWebUtils.CreateXmlElement("Hidden", false);
 
         [XmlElement("Searchable")]
         public bool Searchable { get; set; } = false;
@@ -192,6 +199,7 @@ namespace CodeClay
         [XmlElement("CiButtonField", typeof(CiButtonField))]
         [XmlElement("CiCheckField", typeof(CiCheckField))]
         [XmlElement("CiComboField", typeof(CiComboField))]
+        [XmlElement("CiCurrencyField", typeof(CiCurrencyField))]
         [XmlElement("CiDateField", typeof(CiDateField))]
         [XmlElement("CiField", typeof(CiField))]
         [XmlElement("CiImageField", typeof(CiImageField))]
@@ -314,6 +322,11 @@ namespace CodeClay
         // Methods (Virtual)
         // --------------------------------------------------------------------------------------------------
 
+        public virtual bool IsHidden(DataRow drParams)
+        {
+            return MyWebUtils.Eval<bool>(Hidden, drParams);
+        }
+
         public virtual string GetUiPluginName()
         {
             string ciPluginName = this.GetType().Name;
@@ -380,7 +393,7 @@ namespace CodeClay
                 Type pluginType = Type.GetType("CodeClay." + ciPluginName);
 
                 TextReader reader = new StringReader(puxContents);
-                if (reader != null)
+                if (reader != null && pluginType != null)
                 {
                     XmlSerializer serializer = new XmlSerializer(pluginType);
                     if (serializer != null)
@@ -701,7 +714,16 @@ namespace CodeClay
                 Hashtable srcParams = CiPlugin.SrcParams;
                 if (srcParams != null && srcParams.ContainsKey(key))
                 {
-                    return srcParams[key];
+                    object value = srcParams[key];
+                    string strValue = MyUtils.Coalesce(value, "").ToString();
+
+                    if (strValue.StartsWith("@"))
+                    {
+                        key = strValue.Substring(1);
+                        value = UiParentPlugin != null ? GetParentValue(key) : this[key];
+                    }
+
+                    return value;
                 }
             }
 
@@ -755,7 +777,9 @@ namespace CodeClay
 
             if (ciChildPlugin != null)
             {
-                return ciChildPlugin.Value;
+                object value = ciChildPlugin.Value;
+
+                return ciChildPlugin.GetNativeValue(value);
             }
 
             return null;
@@ -818,7 +842,7 @@ namespace CodeClay
                         string key = item as string;
                         if (!MyUtils.IsEmpty(key))
                         {
-                            object value = srcParams[key];
+                            object value = GetSrcParamsValue(key);
                             dc.Add(key);
                             dr[key] = value;
                         }
@@ -873,8 +897,24 @@ namespace CodeClay
 
                         if (!MyUtils.IsEmpty(key))
                         {
-                            dc.Add(key);
-                            dr[key] = value;
+                            CiPlugin ciChildPlugin = CiPlugin.GetById(key);
+
+                            if (ciChildPlugin != null)
+                            {
+                                value = ciChildPlugin.GetNativeValue(value);
+                                Type valueType = ciChildPlugin.GetNativeType(value);
+
+                                dc.Add(key, valueType);
+                                dr[key] = value;
+
+                                if (ciChildPlugin.Searchable)
+                                {
+                                    string searchKey = ciChildPlugin.SearchableID;
+
+                                    dc.Add(searchKey, valueType);
+                                    dr[searchKey] = value;
+                                }
+                            }
                         }
                     }
                 }

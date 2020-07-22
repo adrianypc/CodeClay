@@ -125,14 +125,5 @@ namespace CodeClay
                     : textField;
             }
         }
-
-        // --------------------------------------------------------------------------------------------------
-        // Methods (Override)
-        // --------------------------------------------------------------------------------------------------
-
-        public override Color GetBackColor(bool isEditable)
-        {
-            return Color.Transparent;
-        }
     }
 }

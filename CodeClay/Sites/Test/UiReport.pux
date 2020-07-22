@@ -1,6 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
-<CiReport>
-  <Url>Tasks.xml</Url>
-  <ReportSQL>select * from tblTasks where TaskCode= @TaskCode</ReportSQL>
-  <Designer>false</Designer>
-</CiReport>

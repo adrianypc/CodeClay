@@ -26,11 +26,14 @@
         <ColumnFormat>dd/MM/yyyy</ColumnFormat>
         <Mandatory>true</Mandatory>
     </CiDateField>
-    <CiTextField>
-		<FieldName>AuthorName</FieldName>
-		<Caption>Author</Caption>
-        <width>20</width>
-	</CiTextField>
+    <CiComboField>
+        <FieldName>AuthorName</FieldName>
+        <Caption>Author</Caption>
+        <Editable>true</Editable>
+        <RowSpan>2</RowSpan>
+        <Width>10</Width>
+        <DropdownSQL>select coalesce(OtherNames+' '+Surname,'') as Author from ApplicationUser where Enabled = 1 order by Author</DropdownSQL>
+    </CiComboField>
     <CiNumericField>
         <FieldName>QtyInStock</FieldName>
         <Caption>Qty In Stock</Caption>

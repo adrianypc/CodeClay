@@ -44,24 +44,23 @@
   <CiComboField>
     <FieldName>NavigateUrl</FieldName>
     <Caption>Navigate URL</Caption>
-    <DropdownSQL>select TableName + '.pux' as PuxFile from CiTable where AppID = @AppID order by TableName</DropdownSQL>
+    <DropdownSQL>select TableName + '.pux' as PuxFile from CiTable where AppID = @AppID and TableID != @TableID and Bound = 0 order by TableName</DropdownSQL>
+    <InsertSQL>select 1 from Singleton</InsertSQL>
     <Editable lang="sql">select 1 from Singleton where @Type not in ('Select', 'Insert', 'Update', 'Delete') </Editable>
-    <Hidden>true</Hidden>
   </CiComboField>
   <CiComboField>
     <FieldName>NavigatePos</FieldName>
     <Caption>Navigate Position</Caption>
     <DropdownSQL>select Code from Dropdown where Category = 'NavigatePos' order by Code</DropdownSQL>
     <Editable lang="sql">select 1 from Singleton where @Type not in ('Select', 'Insert', 'Update', 'Delete') </Editable>
-    <Hidden>true</Hidden>
   </CiComboField>
   <CiCheckField>
     <FieldName>Confirm</FieldName>
     <Caption>Confirm?</Caption>
     <Value>false</Value>
     <Mandatory>true</Mandatory>
-    <Hidden>true</Hidden>
     <Editable lang="sql">select 1 from Singleton where @Type not in ('Select', 'Insert', 'Update', 'Delete') </Editable>
+    <Hidden>true</Hidden>
   </CiCheckField>
   <CiTable Src="SQLList.pux?EntityType=CiMacro&amp;SQLType=ActionSQL">
     <TableName>ActionSQLList</TableName>

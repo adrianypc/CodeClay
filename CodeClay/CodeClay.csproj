@@ -243,6 +243,7 @@
     <Content Include="PluginScripts\UiMacro.js" />
     <Content Include="PluginScripts\UiTable.js" />
     <Content Include="PluginScripts\UiApplication.js" />
+    <Content Include="PluginScripts\UiCurrencyField.js" />
     <Content Include="PluginScripts\UiTextField.js" />
     <Content Include="PluginScripts\UiDateField.js" />
     <Content Include="PluginScripts\UiCheckField.js" />
@@ -265,6 +266,7 @@
     <Content Include="UiReport.ascx" />
     <Content Include="UiTable.ascx" />
     <Content Include="UiNumericField.ascx" />
+    <Content Include="UiCurrencyField.ascx" />
     <Content Include="UiTextField.ascx" />
     <Content Include="UiMenu.ascx" />
     <Content Include="Contact.aspx" />
@@ -566,6 +568,12 @@
     </Compile>
     <Compile Include="UiNumericField.ascx.designer.cs">
       <DependentUpon>UiNumericField.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UiCurrencyField.ascx.cs">
+      <DependentUpon>UiCurrencyField.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UiCurrencyField.ascx.designer.cs">
+      <DependentUpon>UiCurrencyField.ascx</DependentUpon>
     </Compile>
     <Compile Include="UiTextField.ascx.cs">
       <DependentUpon>UiTextField.ascx</DependentUpon>

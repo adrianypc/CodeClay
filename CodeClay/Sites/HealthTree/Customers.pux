@@ -74,11 +74,11 @@
         <Summary>Sum</Summary>
         <Mask>Currency</Mask>
       </CiTextField>
-      <CiTableX Src="CustomerOrder.pux">
+      <CiTable Src="CustomerOrder.pux">
 	    <SelectMacro>
 		    <ActionSQL>?exec spCustomerOrders_selbyCustomerID @CustomerID</ActionSQL>
 	    </SelectMacro>
-      </CiTableX>
+      </CiTable>
 	  <DefaultMacro>
 		<ActionSQL>select '-New-' as CustomerID, 0 as Points</ActionSQL>
 	  </DefaultMacro>

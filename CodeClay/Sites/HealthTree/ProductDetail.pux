@@ -137,7 +137,7 @@
     </InsertMacro>
 	<UpdateMacro>
 		<ActionSQL>
-			exec spProduct_upd @ProductID, @ProductName, @ProductDescription, @SupplierID, @SupplierSKU,
+			?exec spProduct_upd @ProductID, @ProductName, @ProductDescription, @SupplierID, @SupplierSKU,
 				@ReorderThreshold, @UnitCostPrice, @UnitSellingPrice,@HealthTreeURL,@IsActive,@IsDropShipping,@ProductCategory
 		</ActionSQL>
 	</UpdateMacro>

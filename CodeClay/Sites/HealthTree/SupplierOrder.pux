@@ -53,20 +53,17 @@
     <Caption>Shipping ($)</Caption>
     <Mask>Currency</Mask>
   </CiTextField>
-  <CiTextField>
+  <CiCurrencyField>
     <FieldName>TotalAmount</FieldName>
     <Caption>Total ($)</Caption>
-    <Mask>Currency</Mask>
     <Editable>false</Editable>
-  </CiTextField>
+  </CiCurrencyField>
   <CiComboField>
     <FieldName>CurrentCurrency</FieldName>
     <TextFieldName>CurrencyName</TextFieldName>
     <Caption>Currency Code</Caption>
     <Editable>true</Editable>
-    <Code>CurrencyCode</Code>
-    <Description>CurrencyName</Description>
-    <DropdownSQL>select Description as CurrencyName,Code as CurrencyCode from Dropdown where Category='Currency'</DropdownSQL>
+    <DropdownSQL>select Code as CurrencyCode, Description as CurrencyName from Dropdown where Category='Currency'</DropdownSQL>
     <Mandatory>true</Mandatory>
  </CiComboField>
  <CiLinkField>
@@ -75,12 +72,12 @@
      <Editable>false</Editable>
     <Width>50</Width>
  </CiLinkField>
- <CiTextField>
+ <CiNumericField>
     <FieldName>ConversionRate</FieldName>
     <Caption>Conversion Rate</Caption>
     <Editable lang="sql">select 1 from tblSingleton where @CurrentCurrency != 'SGD'</Editable>
     <Mandatory>true</Mandatory>
- </CiTextField>
+ </CiNumericField>
  <CiTextField>
     <FieldName>TotalAmountInSGD</FieldName>
      <Caption>Total (S$)</Caption>

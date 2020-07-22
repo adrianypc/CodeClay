@@ -30,12 +30,6 @@ namespace CodeClay
         [XmlElement("InsertSQL")]
         public string InsertSQL { get; set; } = "";
 
-        [XmlElement("Code")]
-        public string Code { get; set; } = "";
-
-        [XmlElement("Description")]
-        public string Description { get; set; } = "";
-
         [XmlElement("DropdownWidth")]
         public int DropdownWidth { get; set; } = 100;
 
@@ -109,15 +103,16 @@ namespace CodeClay
 
                 string valueField = "";
                 string textField = "";
+                DataColumnCollection columns = DataSource.Columns;
 
-                if (CiComboField != null)
+                if (CiComboField != null && columns != null && columns.Count >= 2)
                 {
-                    valueField = CiComboField.Code;
-                    textField = CiComboField.Description;
+                    valueField = columns[0].ColumnName;
+                    textField = columns[1].ColumnName;
                 }
 
                 int textColumnIndex = 0;
-                foreach (DataColumn dc in DataSource.Columns)
+                foreach (DataColumn dc in columns)
                 {
                     string columnName = dc.ColumnName;
                     if (columnName != "RowKey")

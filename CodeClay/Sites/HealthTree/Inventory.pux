@@ -2,7 +2,7 @@
 <CiTable>
     <TableName>Inventory</TableName>
     <TableCaption>Inventory</TableCaption>
-    <RowKey>InventoryItemNo</RowKey>
+    <RowKey>InventoryItemNo,ProductID</RowKey>
     <DefaultView>Grid</DefaultView>
     <CiTextField>
         <FieldName>InventoryItemNo</FieldName>

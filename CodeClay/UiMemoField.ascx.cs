@@ -131,7 +131,7 @@ namespace CodeClay
                     dxHtmlMemo.ClientIDMode = ClientIDMode.Static;
                     dxHtmlMemo.Width = CiMemoField.EditorWidth;
                     dxHtmlMemo.Html = fieldValue.ToString();
-                    dxHtmlMemo.Visible = CiMemoField.IsVisible;
+                    dxHtmlMemo.Visible = CiMemoField.IsVisible(drParams);
 
                     dxHtmlMemo.JSProperties["cpHasFieldExitMacro"] = (CiMemoField.CiFieldExitMacros.Length > 0);
                     dxHtmlMemo.JSProperties["cpTableName"] = tableName;

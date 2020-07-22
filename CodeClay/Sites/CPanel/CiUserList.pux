@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <CiTable>
-	<TableName>ApplicationUserList</TableName>
-	<TableCaption>Application User List</TableCaption>
+	<TableName>UserList</TableName>
+	<TableCaption>User List</TableCaption>
 	<DefaultView>Grid</DefaultView>
   <RowKey>AppID,UserEmail</RowKey>
   <CiTextField>
@@ -17,6 +17,7 @@
   <CiComboField>
     <FieldName>Role</FieldName>
     <Caption>Role</Caption>
+    <Width>20</Width>
     <DropdownSQL>select Code from Dropdown where Category = 'Role' order by Code</DropdownSQL>
   </CiComboField>
   <SelectMacro>
