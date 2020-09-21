@@ -1,7 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<CiTable Src="Tasks.pux">
-  <TableName>MyTasks</TableName>
-  <TableCaption>My Fabbo Tasks</TableCaption>
+<CiTable>
+  <TableName>MyTable</TableName>
+  <TableCaption>My Tasks</TableCaption>
+  <DefaultView>Card</DefaultView>
   <RowKey>ID</RowKey>
   <CiField>
     <FieldName>DummyForInsert</FieldName>
@@ -14,11 +15,4 @@
     <Searchable>true</Searchable>
     <Width>10</Width>
   </CiTextField>
-  <SelectMacro>
-    <ActionSQL>select  Description, ID from Tasks where (@ID is null or ID like '%' + @ID + '%') order by ID</ActionSQL>
-  </SelectMacro>
-  <UpdateMacro />
-  <DeleteMacro>
-    <Confirm>true</Confirm>
-  </DeleteMacro>
 </CiTable>

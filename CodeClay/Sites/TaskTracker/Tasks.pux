@@ -11,43 +11,22 @@
     <FieldName>ID</FieldName>
     <Caption>Task ID</Caption>
     <Editable>false</Editable>
-    <Searchable>true</Searchable>
-    <Width>5</Width>
+    <Width>10</Width>
   </CiTextField>
   <CiTextField>
     <FieldName>Description</FieldName>
-    <Caption>Task Description</Caption>
-    <Width>70</Width>
+    <Caption>Description</Caption>
+    <Width>90</Width>
   </CiTextField>
-  <CiDateField>
-    <FieldName>Due</FieldName>
-    <Caption>Due Date</Caption>
-    <Width>10</Width>
-  </CiDateField>
-  <CiCheckField>
-    <FieldName>Billable</FieldName>
-    <Caption>Billable</Caption>
-    <Width>5</Width>
-  </CiCheckField>
-  <CiNumericField>
-    <FieldName>Effort</FieldName>
-    <Caption>Effort (H)</Caption>
-    <Width>10</Width>
-    <MaxValue>1000</MaxValue>
-  </CiNumericField>
-  <CiTable Src="Logs.pux?ParentID=@ID">
-    <TableName>Logs</TableName>
-    <TableCaption>Logs</TableCaption>
-  </CiTable>
   <SelectMacro>
-    <ActionSQL>select ID, Description, Due, Billable, Effort from Tasks where (@ID is null or ID = @ID) order by ID</ActionSQL>
+    <ActionSQL>select Description, ID from Tasks order by ID</ActionSQL>
   </SelectMacro>
   <InsertMacro>
-    <ActionSQL>insert into Tasks (Description, Due, Billable, Effort) values (@Description, @Due, @Billable, @Effort)</ActionSQL>
+    <ActionSQL>insert into Tasks (Description) values (@Description)</ActionSQL>
     <ValidateSQL></ValidateSQL>
   </InsertMacro>
   <UpdateMacro>
-    <ActionSQL>update Tasks set Description = @Description, Due = @Due, Billable = @Billable, Effort = @Effort where ID = @ID</ActionSQL>
+    <ActionSQL>update Tasks set Description = @Description where ID = @ID</ActionSQL>
     <ValidateSQL></ValidateSQL>
   </UpdateMacro>
   <DeleteMacro>

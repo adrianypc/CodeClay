@@ -351,8 +351,13 @@ namespace CodeClay
             {
                 navigateUrl = "..";
             }
+            else if (NavigatePos == "Download")
+            {
+                navigateUrl = "";
+                return "Download('Adrian.txt', 'Something goes here')";
+            }
 
-            if (!MyUtils.IsEmpty(navigateUrl))
+                if (!MyUtils.IsEmpty(navigateUrl))
             {
                 navigateUrl += parameterQueryString;
 
@@ -485,7 +490,7 @@ namespace CodeClay
 
         protected override DataTable GetPluginDefinitions(DataRow drPluginKey)
         {
-            return MyWebUtils.GetBySQL("?exec spMacro_sel @AppID, @TableID", drPluginKey, true);
+            return MyWebUtils.GetBySQL("?exec spMacro_sel @AppID, @TableID, null, '!Stub'", drPluginKey, true);
         }
 
         protected override List<XElement> GetPluginDefinitions(List<XElement> xElements)
@@ -498,35 +503,36 @@ namespace CodeClay
             return null;
         }
 
-        protected override void DeletePluginDefinitions(DataRow drPluginKey)
-        {
-            MyWebUtils.GetBySQL("exec spMacro_del @AppID, @TableID", drPluginKey, true);
-        }
-
         protected override void WriteToDB(DataRow drPluginDefinition)
         {
-            string insertColumnNames = "@AppID, @TableID, @MacroName, @Caption, @Type";
-            string insertSQL = string.Format("?exec spMacro_ins {0}", insertColumnNames);
+            object objMacroID = MyWebUtils.EvalSQL("select MacroID from CiMacro " +
+                "where AppID = @AppID and TableID = @TableID and MacroName = @MacroName", drPluginDefinition);
 
-            object objMacroID = MyWebUtils.EvalSQL(insertSQL, drPluginDefinition, true);
             if (!MyUtils.IsEmpty(objMacroID))
             {
                 drPluginDefinition["MacroID"] = objMacroID;
-
-                string updateColumnNames = "@AppID, @TableID, @MacroID, @NavigateUrl" +
-                    ", @NavigatePos, @Confirm";
-                string updateSQL = string.Format("exec spMacro_updLong {0}", updateColumnNames);
-
-                MyWebUtils.GetBySQL(updateSQL, drPluginDefinition, true);
-
-                if (drPluginDefinition["Type"].ToString() == "Field Exit")
-                {
-                    StoreTriggerFields(drPluginDefinition);
-                }
-
-                StoreSQL("ActionSQL", mActionSQL, drPluginDefinition);
-                StoreSQL("VisibleSQL", mVisibleSQL, drPluginDefinition);
             }
+            else
+            {
+                string insertColumnNames = "@AppID, @TableID, @MacroName, @Caption, @Type";
+                string insertSQL = string.Format("?exec spMacro_ins {0}", insertColumnNames);
+
+                drPluginDefinition["MacroID"] = MyWebUtils.EvalSQL(insertSQL, drPluginDefinition, true);
+            }
+
+            string updateColumnNames = "@AppID, @TableID, @MacroID, @NavigateUrl" +
+                ", @NavigatePos, @Confirm, @Type";
+            string updateSQL = string.Format("exec spMacro_updLong {0}", updateColumnNames);
+
+            MyWebUtils.GetBySQL(updateSQL, drPluginDefinition, true);
+
+            if (drPluginDefinition["Type"].ToString() == "Field Exit")
+            {
+                StoreTriggerFields(drPluginDefinition);
+            }
+
+            StoreSQL("ActionSQL", mActionSQL, drPluginDefinition);
+            StoreSQL("VisibleSQL", mVisibleSQL, drPluginDefinition);
         }
 
         protected override void DownloadDerivedValues(DataRow drPluginDefinition, XElement xPluginDefinition)
@@ -546,14 +552,28 @@ namespace CodeClay
                     {
                         if (xPluginDefinition.Name == macroType + "Macro")
                         {
-                            xPluginDefinition.Element("MacroName").Remove();
-                            xPluginDefinition.Element("Caption").Remove();
+                            XElement xMacroName = xPluginDefinition.Element("MacroName");
+                            if (xMacroName != null)
+                            {
+                                xMacroName.Remove();
+                            }
+
+                            XElement xCaption = xPluginDefinition.Element("Caption");
+                            if (xCaption != null)
+                            {
+                                xCaption.Remove();
+                            }
                         }
                     }
                     else if (macroType == "Field Exit")
                     {
                         xPluginDefinition.Name = "CiFieldExitMacro";
-                        xPluginDefinition.Element("Caption").Remove();
+
+                        XElement xCaption = xPluginDefinition.Element("Caption");
+                        if (xCaption != null)
+                        {
+                            xCaption.Remove();
+                        }
                     }
                 }
 

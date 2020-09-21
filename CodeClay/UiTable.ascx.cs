@@ -858,6 +858,7 @@ namespace CodeClay
         protected void dxCard_CustomJSProperties(object sender, ASPxCardViewClientJSPropertiesEventArgs e)
         {
             e.Properties["cpDisabledMacros"] = GetDisabledMacros();
+            e.Properties["cpConfirmableMacros"] = GetConfirmableMacros();
             if (CiTable != null)
             {
                 e.Properties["cpPuxFile"] = CiTable.PuxFile;
@@ -1036,6 +1037,7 @@ namespace CodeClay
         protected void dxGrid_CustomJSProperties(object sender, ASPxGridViewClientJSPropertiesEventArgs e)
         {
             e.Properties["cpDisabledMacros"] = GetDisabledMacros();
+            e.Properties["cpConfirmableMacros"] = GetConfirmableMacros();
             if (CiTable != null)
             {
                 e.Properties["cpPuxFile"] = CiTable.PuxFile;
@@ -1657,10 +1659,15 @@ namespace CodeClay
                 DevExpress.Web.MenuItem dxMenuItem = dxMoreMenu.Items.FindByName("Designer");
                 if (dxMenuItem != null)
                 {
-                    dxMenuItem.NavigateUrl = "Default.aspx?Application=CPanel&PluginSrc=Designer.pux" +
-                        string.Format("&AppName={0}&TableName={1}",
-                            MyWebUtils.Application,
-                            CiTable.TableName);
+                    string tableName = CiTable.TableName;
+                    DataRow dr = MyWebUtils.GetTableDetails(tableName);
+                    bool? bound = MyWebUtils.GetField<bool>(dr, "Bound");
+                    string designerPuxFile = bound.HasValue && bound.Value ? "CiTableDetails.pux" : "CiFormDetails.pux";
+
+                    dxMenuItem.NavigateUrl = string.Format("Default.aspx?Application=CPanel&PluginSrc={0}&AppID={1}&TableID={2}",
+                            designerPuxFile,
+                            MyWebUtils.GetField<int>(dr, "AppID"),
+                            MyWebUtils.GetField<int>(dr, "TableID"));
                 }
             }
         }
@@ -1909,6 +1916,28 @@ namespace CodeClay
             }
 
             return disabledMacros;
+        }
+
+        private string GetConfirmableMacros()
+        {
+            string confirmableMacros = "";
+
+            ArrayList ciConfirmableMacros = new ArrayList();
+            int i = 0;
+            foreach (CiMacro ciMacro in CiTable.CiMacros)
+            {
+                if (ciMacro != null && ciMacro.Confirm)
+                {
+                    if (i++ > 0)
+                    {
+                        confirmableMacros += LIST_SEPARATOR;
+                    }
+
+                    confirmableMacros += ciMacro.MacroName;
+                }
+            }
+
+            return confirmableMacros;
         }
 
         private string OpenMenu(string xPos, string yPos)
@@ -2295,13 +2324,14 @@ namespace CodeClay
 
         protected override void DeletePluginDefinitions(DataRow drPluginKey)
         {
-            //MyWebUtils.GetBySQL("exec spSQL_del 'CiTable', null, @AppID, @TableID", drPluginKey, true);
+            MyWebUtils.GetBySQL("exec spField_del @AppID, @TableID", drPluginKey, true);
+            MyWebUtils.GetBySQL("exec spMacro_del @AppID, @TableID", drPluginKey, true);
         }
 
         protected override void WriteToDB(DataRow drPluginDefinition)
         {
             MyWebUtils.GetBySQL("exec spTable_updLong " +
-                "@AppID, @TableID, @TableName, @Src, @CaptionOrSQL, @IsCaptionSQL, @DefaultView, " +
+                "@AppID, @TableID, @TableName, @Src, @Caption, @DefaultView, " +
                 "@LayoutUrl, @ColCount, @BubbleUpdate, @QuickInsert, @InsertRowAtBottom, " +
                 "@DoubleClickMacroName,	null",
                 drPluginDefinition,
@@ -2348,40 +2378,11 @@ namespace CodeClay
         {
             xPluginDefinition.Add(new XElement("RowKey", "ID"));
 
-            //DataTable dtTableSQL = MyWebUtils.GetBySQL("?exec spSQL_sel 'CiTable', null, @AppID, @TableID, @TableID", drPluginDefinition, true);
-            //if (dtTableSQL != null)
-            //{
-            //    foreach (DataRow drTableSQL in dtTableSQL.Rows)
-            //    {
-            //        string sqlType = MyUtils.Coalesce(drTableSQL["SQLType"], "").ToString();
-            //        if (sqlType.EndsWith("SQL"))
-            //        {
-            //            string dPropertyName = sqlType.Substring(0, sqlType.Length - 3);
-            //            XElement xTableSQL = new XElement(GetXPropertyName(dPropertyName));
-            //            xTableSQL.Add(new XAttribute("lang", "sql"));
-            //            xTableSQL.Value = drTableSQL["SQL"].ToString();
-            //            xPluginDefinition.Add(xTableSQL);
-            //        }
-            //    }
-            //}
-
             XAttribute xSrcAttr = xPluginDefinition.Attribute("Src");
             if (xSrcAttr != null)
             {
                 xSrcAttr.Value += ".pux";
             }
-
-            //XElement xDefaultMacro = new XElement("DefaultMacro");
-
-            //if (MyUtils.IsEmpty(drPluginDefinition["ParentTableID"]))
-            //{
-            //    xDefaultMacro.Add(new XElement("ActionSQL", "select '- New -' as ID"));
-            //}
-            //else
-            //{
-            //    xDefaultMacro.Add(new XElement("ActionSQL", "select @ParentID as EditParentID, '- New -' as ID"));
-            //}
-            //xPluginDefinition.Add(xDefaultMacro);
 
             XElement xDummyField = new XElement("CiField");
             xDummyField.Add(new XElement("FieldName", "DummyForInsert"));
@@ -2416,13 +2417,30 @@ namespace CodeClay
 
             if (drPluginDefinition != null && xPluginDefinition != null)
             {
+                foreach (XAttribute xProperty in xPluginDefinition.Attributes())
+                {
+                    string xPropertyName = xProperty.Name.ToString();
+                    switch (xPropertyName)
+                    {
+                        case "Src":
+                            string filename = xProperty.Value;
+                            if (!MyUtils.IsEmpty(filename) && filename.ToLower().EndsWith(".pux"))
+                            {
+                                filename = filename.Substring(0, filename.Length - 4);
+                            }
+                            drPluginDefinition["Src"] = filename;
+                            break;
+                    }
+                }
+
                 foreach (XElement xProperty in xPluginDefinition.Elements())
                 {
                     string xPropertyName = xProperty.Name.ToString();
-                    if (xPropertyName == "TableCaption")
+                    switch (xPropertyName)
                     {
-                        drPluginDefinition["CaptionOrSQL"] = xProperty.Value;
-                        drPluginDefinition["IsCaptionSQL"] = xProperty.Attributes("lang").Count() > 0;
+                        case "TableCaption":
+                            drPluginDefinition["Caption"] = xProperty.Value;
+                            break;
                     }
                 }
             }

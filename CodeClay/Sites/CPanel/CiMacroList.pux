@@ -38,11 +38,36 @@
     <Width>20</Width>
     <Editable lang="sql">select 1 from Singleton where @Type not in ('Select', 'Insert', 'Update', 'Delete', 'Default') </Editable>
   </CiTextField>
-  <CiTextField>
-    <FieldName>Caption</FieldName>
-    <Caption>Caption</Caption>
-    <Editable lang="sql">select 1 from Singleton where @Type not in ('Select', 'Insert', 'Update', 'Delete', 'Default', 'Field Exit') </Editable>
-  </CiTextField>
+  <CiCheckField>
+    <FieldName>Confirm</FieldName>
+    <Caption>Confirm?</Caption>
+    <Value>false</Value>
+    <Editable lang="sql">select 1 from Singleton where @Type not in ('Select', 'Insert', 'Default') </Editable>
+    <Width>10</Width>
+  </CiCheckField>
+  <CiComboField>
+    <FieldName>NavigateUrl</FieldName>
+    <Caption>Navigate URL</Caption>
+    <DropdownSQL>select TableName + '.pux' as PuxFile from CiTable where AppID = @AppID and TableID != @TableID and Bound = 0 order by TableName</DropdownSQL>
+    <InsertSQL>select 1 from Singleton</InsertSQL>
+    <Editable lang="sql">select 1 from Singleton where @Type not in ('Select', 'Insert', 'Update', 'Delete', 'Default') </Editable>
+  </CiComboField>
+  <CiComboField>
+    <FieldName>NavigatePos</FieldName>
+    <Caption>Navigate Position</Caption>
+    <DropdownSQL>select Code from Dropdown where Category = 'NavigatePos' order by Code</DropdownSQL>
+    <Editable lang="sql">select 1 from Singleton where @Type not in ('Select', 'Insert', 'Update', 'Delete', 'Default') </Editable>
+    <Width>10</Width>
+  </CiComboField>
+  <CiTable Src="SQLList.pux?EntityType=CiMacro&amp;SQLType=VisibleSQL">
+    <TableName>VisibleSQLList</TableName>
+  </CiTable>
+  <CiTable Src="SQLList.pux?EntityType=CiMacro&amp;SQLType=ValidateSQL">
+    <TableName>ValidateSQLList</TableName>
+  </CiTable>
+  <CiTable Src="SQLList.pux?EntityType=CiMacro&amp;SQLType=ActionSQL">
+    <TableName>ActionSQLList</TableName>
+  </CiTable>
   <DefaultMacro>
     <ActionSQL>
       select  '- New -' as MacroID
@@ -59,7 +84,7 @@
     </CiSerializeMacro>
   </InsertMacro>
   <UpdateMacro>
-    <ActionSQL>exec spMacro_updShort @AppID, @TableID, @MacroID, @MacroName, @Caption, @Type</ActionSQL>
+    <ActionSQL>exec spMacro_updLong @AppID, @TableID, @MacroID, @NavigateUrl, @NavigatePos, @Confirm, @Type</ActionSQL>
     <ActionSQL>select @AppID as AppID, @TableID as TableID</ActionSQL>
     <CiSerializeMacro>
       <Direction>Download</Direction>
@@ -76,19 +101,4 @@
     <FieldName>Type</FieldName>
     <ActionSQL>select @Type as MacroName, '-' as Caption from Singleton where @Type in ('Select', 'Insert', 'Update', 'Delete', 'Default', 'Field Exit')</ActionSQL>
   </CiFieldExitMacro>
-  <CiMacro>
-    <MacroName>Details</MacroName>
-    <Caption>Macro Design</Caption>
-    <ActionSQL>
-      select  @AppID as AppID,
-              @TableID as TableID,
-              @MacroID as MacroID,
-              NavigateUrl =
-                case when @Type = 'Field Exit' then 'CiFieldExitMacroDetails.pux'
-                else 'CiMacroDetails.pux'
-                end
-    </ActionSQL>
-    <NavigateUrl lang="sql">select @NavigateUrl as NavigateUrl</NavigateUrl>
-    <NavigatePos>Popup</NavigatePos>
-  </CiMacro>
 </CiTable>

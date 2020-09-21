@@ -526,6 +526,24 @@ namespace CodeClay
             return MyWebUtils.IsTrueSQL("select dbo.fnIsAppOk(@CI_UserEmail, @Application)", dr, true);
         }
 
+        public static DataRow GetTableDetails(string tableName)
+        {
+            DataTable dt = new DataTable();
+            dt.Columns.Add("Application").DefaultValue = Application;
+            dt.Columns.Add("Table").DefaultValue = tableName;
+
+            DataRow dr = dt.NewRow();
+            dt.Rows.Add(dr);
+
+            DataTable dtResults = MyWebUtils.GetBySQL("?exec spTable_selByName @Application, @Table", dr, true);
+            if (MyWebUtils.GetNumberOfRows(dtResults) > 0)
+            {
+                return dtResults.Rows[0];
+            }
+
+            return null;
+        }
+
         public static string GetAuthorisedApp()
         {
             DataTable dt = new DataTable();

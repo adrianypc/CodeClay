@@ -692,7 +692,9 @@ namespace CodeClay
 
         protected override DataTable GetPluginDefinitions(DataRow drPluginKey)
         {
-            return MyWebUtils.GetBySQL("?exec spField_sel @AppID, @TableID, null, '!Button'", drPluginKey, true);
+            DataTable dt = MyWebUtils.GetBySQL("?exec spField_sel @AppID, @TableID, null, '!Button,Stub'", drPluginKey, true);
+
+            return dt;
         }
 
         protected override List<XElement> GetPluginDefinitions(List<XElement> xElements)
@@ -705,64 +707,36 @@ namespace CodeClay
             return null;
         }
 
-        protected override void DeletePluginDefinitions(DataRow drPluginKey)
-        {
-            MyWebUtils.GetBySQL("exec spField_del @AppID, @TableID", drPluginKey, true);
-            //MyWebUtils.GetBySQL("exec spSQL_del 'CiField', null, @AppID, @TableID", drPluginKey, true);
-        }
-
         protected override void WriteToDB(DataRow drPluginDefinition)
         {
-            string insertColumnNames = "@AppID, @TableID, @FieldName, @Caption, @Type, @Width, @InRowKey";
-            string insertSQL = string.Format("?exec spField_ins {0}", insertColumnNames);
+            object objFieldID = MyWebUtils.EvalSQL("select FieldID from CiField " +
+                "where AppID = @AppID and TableID = @TableID and FieldName = @FieldName", drPluginDefinition);
 
-            drPluginDefinition["FieldID"] = MyWebUtils.EvalSQL(insertSQL, drPluginDefinition, true);
+            if (objFieldID != null)
+            {
+                drPluginDefinition["FieldID"] = objFieldID;
+            }
+            else
+            {
+                string insertColumnNames = "@AppID, @TableID, @FieldName, @Caption, @Type, @Width, @InRowKey";
+                string insertSQL = string.Format("?exec spField_ins {0}", insertColumnNames);
 
-            string updateColumnNames = "@AppID, @TableID, @FieldID, @FieldName, @Editable, @Mandatory" +
+                drPluginDefinition["FieldID"] = MyWebUtils.EvalSQL(insertSQL, drPluginDefinition, true);
+            }
+
+            string updateColumnNames = "@AppID, @TableID, @FieldID, @FieldName, @Caption, @Type, @Editable, @Mandatory" +
                 ", @Hidden, @Searchable, @Summary, @ForeColor, @RowSpan, @ColSpan, @Width, @HorizontalAlign" +
                 ", @VerticalAlign, @Value, @DropdownSQL, @InsertSQL, @Code, @Description, @TextFieldName" +
                 ", @DropdownWidth, @Folder, @MinValue, @MaxValue, @Columns, @Mask, @NestedMacroID";
             string updateSQL = string.Format("exec spField_updLong {0}", updateColumnNames);
 
             MyWebUtils.GetBySQL(updateSQL, drPluginDefinition, true);
-
-            //DataRow drSQL = MyUtils.CloneDataRow(drPluginDefinition);
-            //DataColumnCollection dcSQL = drSQL.Table.Columns;
-            //MyWebUtils.AddColumnIfRequired(dcSQL, "EntityType");
-            //MyWebUtils.AddColumnIfRequired(dcSQL, "SQLType");
-            //MyWebUtils.AddColumnIfRequired(dcSQL, "EntityID");
-            //MyWebUtils.AddColumnIfRequired(dcSQL, "SQL");
-            //drSQL["EntityType"] = "CiField";
-            //drSQL["EntityID"] = drSQL["FieldID"];
-
-            //foreach (string propertyName in mPropertySQL.Keys)
-            //{
-            //    drSQL["SQLType"] = propertyName + "SQL";
-            //    drSQL["SQL"] = mPropertySQL[propertyName];
-            //    MyWebUtils.GetBySQL("exec spSQL_ins @EntityType, @DBChangeSQLType, @AppID, @TableID, @EntityID, @SQL", drSQL);
-            //}
         }
 
         protected override void DownloadDerivedValues(DataRow drPluginDefinition, XElement xPluginDefinition)
         {
             if (drPluginDefinition != null && xPluginDefinition != null)
             {
-                //DataTable dtFieldSQL = MyWebUtils.GetBySQL("?exec spSQL_sel 'CiField', null, @AppID, @TableID, @FieldID", drPluginDefinition, true);
-                //if (dtFieldSQL != null)
-                //{
-                //    foreach (DataRow drFieldSQL in dtFieldSQL.Rows)
-                //    {
-                //        string sqlType = MyUtils.Coalesce(drFieldSQL["SQLType"], "").ToString();
-                //        if (sqlType.EndsWith("SQL"))
-                //        {
-                //            XElement xFieldSQL = new XElement(sqlType.Substring(0, sqlType.Length - 3));
-                //            xFieldSQL.Add(new XAttribute("lang", "sql"));
-                //            xFieldSQL.Value = drFieldSQL["SQL"].ToString();
-                //            xPluginDefinition.Add(xFieldSQL);
-                //        }
-                //    }
-                //}
-
                 string fieldName = MyWebUtils.GetStringField(drPluginDefinition, "FieldName");
                 if (fieldName == "ParentID")
                 {

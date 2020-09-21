@@ -30,6 +30,10 @@
     <Editable>false</Editable>
     <Width>10</Width>
   </CiTextField>
+  <CiCheckField>
+    <FieldName>UserDefined</FieldName>
+    <Caption>User Defined</Caption>
+  </CiCheckField>
   <CiField>
     <FieldName>HomePluginSrc</FieldName>
     <Caption>Home Table</Caption>
@@ -47,20 +51,21 @@
   <DefaultMacro>
     <ActionSQL>
       select  '- New -' as AppID,
-              'Owner' as Role
+              'Owner' as Role,
+              1 as UserDefined
     </ActionSQL>
   </DefaultMacro>
   <SelectMacro>
     <ActionSQL>?exec spApplication_sel null, @CI_UserEmail</ActionSQL>
   </SelectMacro>
   <InsertMacro>
-    <ActionSQL>?exec spApplication_ins @AppName, @CI_UserEmail, true</ActionSQL>
+    <ActionSQL>?exec spApplication_ins @AppName, @CI_UserEmail, @UserDefined</ActionSQL>
     <CiSerializeMacro>
       <Direction>Download</Direction>
     </CiSerializeMacro>
   </InsertMacro>
   <UpdateMacro>
-    <ActionSQL>exec spApplication_upd @AppID, @AppName, true, @HomePluginSrc</ActionSQL>
+    <ActionSQL>exec spApplication_upd @AppID, @AppName, @UserDefined, @HomePluginSrc</ActionSQL>
     <ActionSQL>select @AppID as AppID, @OldAppName as OldAppName</ActionSQL>
     <CiSerializeMacro>
       <Direction>Download</Direction>

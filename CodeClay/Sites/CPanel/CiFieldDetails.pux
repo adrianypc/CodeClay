@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <CiTable>
 	<TableName>FieldDetails</TableName>
-  <TableCaption lang="sql">select coalesce(Type, 'Label') + ' Field Design: ' + FieldName from CiField where AppID = @AppID and TableID = @TableID and FieldID = @FieldID</TableCaption>
+  <TableCaption lang="sql">select coalesce(Type, 'Label') + ' Field Design: ' + FieldName from fnGetFields(@AppID, @TableID, @FieldID, null)</TableCaption>
   <DefaultView>Card</DefaultView>
   <RowKey>AppID,TableID,FieldID</RowKey>
   <CiField>
@@ -29,10 +29,10 @@
     <Caption>Field Name</Caption>
     <Editable>false</Editable>
   </CiTextField>
-  <CiMemoField>
+  <CiTextField>
     <FieldName>Caption</FieldName>
     <Caption>Caption</Caption>
-  </CiMemoField>
+  </CiTextField>
   <CiField>
     <FieldName>Type</FieldName>
     <Caption>Type</Caption>
@@ -115,7 +115,7 @@
   </SelectMacro>
   <UpdateMacro>
     <ActionSQL>
-      exec spField_updLong @AppID, @TableID, @FieldID, @FieldName, @Editable, @Mandatory, @Hidden, @Searchable, @Summary, @ForeColor,
+      exec spField_updLong @AppID, @TableID, @FieldID, @FieldName, @Caption, @Type, @Editable, @Mandatory, @Hidden, @Searchable, @Summary, @ForeColor,
         @RowSpan, @ColSpan, @Width, @HorizontalAlign, @VerticalAlign, @Value,
         @DropdownSQL, @InsertSQL, @Code, @Description, @TextFieldName, @DropdownWidth,
         @Folder, @MinValue, @MaxValue, @Columns, @Mask

@@ -440,10 +440,24 @@ function ClickToolbar(table, event, isSearching) {
             break;
 
         default:
-        	event.processOnServer = true;
+            if (UserProceeds(table, command)) {
+                event.processOnServer = true;
+            }
             break;
     }
 }
+
+function UserProceeds(dxTable, command) {
+    if (dxTable && command) {
+        var confirmableMacroList = dxTable.cpConfirmableMacros.split("|");
+        if (confirmableMacroList && confirmableMacroList.indexOf(command) >= 0) {
+            return confirm('Do you wish to proceed?');
+        }
+    }
+
+    return true;
+}
+
 
 // --------------------------------------------------------------------------------------------------
 // Popup menu functions
@@ -531,13 +545,15 @@ function dxPopupMenu_ItemClick(sender, event) {
 
                 default:
                     isCrudMacro = false;
-                    if (dxClickMenuPanel) {
-                        dxClickMenuPanel.Grid = dxPopupMenu.Grid;
-                        dxClickMenuPanel.PerformCallback(command);
-                    }
+                    if (UserProceeds(dxTable, command)) {
+                        if (dxClickMenuPanel) {
+                            dxClickMenuPanel.Grid = dxPopupMenu.Grid;
+                            dxClickMenuPanel.PerformCallback(command);
+                        }
 
-                    if (dxLoadingPanel) {
-                        dxLoadingPanel.Show();
+                        if (dxLoadingPanel) {
+                            dxLoadingPanel.Show();
+                        }
                     }
                     break;
             }

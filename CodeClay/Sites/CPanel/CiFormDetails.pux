@@ -132,17 +132,6 @@
     </CiSerializeMacro>
   </UpdateMacro>
   <CiMacro>
-    <MacroName>DownloadPUX</MacroName>
-    <Caption>Download PUX</Caption>
-    <IconID>arrows_movedown_16x16office2013</IconID>
-    <Toolbar>true</Toolbar>
-    <ActionSQL>
-      select 'Sites\' + @AppName + '\' + @TableName + '.pux' as NavigateUrl
-    </ActionSQL>
-    <NavigatePos>NewTab</NavigatePos>
-    <VisibleSQL>select 0</VisibleSQL>
-  </CiMacro>
-  <CiMacro>
     <MacroName>UploadPUX</MacroName>
     <Caption>Upload PUX</Caption>
     <IconID>arrows_moveup_16x16office2013</IconID>
@@ -152,6 +141,5 @@
     </ActionSQL>
     <NavigateUrl>SerializeMacro.pux</NavigateUrl>
     <NavigatePos>Popup|600|200</NavigatePos>
-    <VisibleSQL>select 0</VisibleSQL>
   </CiMacro>
 </CiTable>
