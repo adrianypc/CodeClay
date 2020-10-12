@@ -693,7 +693,7 @@ namespace CodeClay
                     Directory.Delete(oldAppDir, true);
                 }
             }
-            else
+            else if (IsUserDefinedApplication(drKey))
             {
                 FileInfo fi = new FileInfo(puxUrl);
                 string destinationFolder = MyWebUtils.MapPath(string.Format("Sites/{0}", fi.Directory.Name));
@@ -709,8 +709,6 @@ namespace CodeClay
 
                     File.Copy(sourceDropdownPUX, destinationDropdownPUX);
                 }
-
-                //MyWebUtils.EvalSQL("exec spDropdown_build @AppID", drKey, true);
             }
 
             base.DownloadFile(drKey, puxUrl);
@@ -763,6 +761,27 @@ namespace CodeClay
                     new XElement("CiMenu",
                         new XElement("MenuName", "Dropdown"),
                         new XElement("PluginSrc", "Dropdown.pux")))));
+        }
+
+        // --------------------------------------------------------------------------------------------------
+        // Helpers
+        // --------------------------------------------------------------------------------------------------
+
+        private bool IsUserDefinedApplication(DataRow drAppKey)
+        {
+            DataTable dt = MyWebUtils.GetBySQL("?exec spApplication_sel @AppID", drAppKey, true);
+
+            if (dt != null && dt.Columns.Contains("UserDefined") && MyWebUtils.GetNumberOfRows(dt) > 0)
+            {
+                object objUserDefined = dt.Rows[0]["UserDefined"];
+
+                if (objUserDefined != null)
+                {
+                    return Convert.ToBoolean(objUserDefined);
+                }
+            }
+
+            return true;
         }
     }
 }

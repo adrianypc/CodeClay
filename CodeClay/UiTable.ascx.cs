@@ -2326,16 +2326,7 @@ namespace CodeClay
         {
             MyWebUtils.GetBySQL("exec spField_del @AppID, @TableID", drPluginKey, true);
             MyWebUtils.GetBySQL("exec spMacro_del @AppID, @TableID", drPluginKey, true);
-        }
-
-        protected override void WriteToDB(DataRow drPluginDefinition)
-        {
-            MyWebUtils.GetBySQL("exec spTable_updLong " +
-                "@AppID, @TableID, @TableName, @Src, @Caption, @DefaultView, " +
-                "@LayoutUrl, @ColCount, @BubbleUpdate, @QuickInsert, @InsertRowAtBottom, " +
-                "@DoubleClickMacroName,	null",
-                drPluginDefinition,
-                true);
+            MyWebUtils.GetBySQL("exec spSubTable_del @AppID, @TableID", drPluginKey, true);
         }
 
         protected override string GetXPropertyName(string dPropertyName)
@@ -2374,9 +2365,36 @@ namespace CodeClay
             return dPropertyName;
         }
 
+        protected override void WriteToDB(DataRow drPluginDefinition)
+        {
+            MyWebUtils.GetBySQL("exec spTable_updLong " +
+                "@AppID, @TableID, @TableName, @Src, @Caption, @DefaultView, " +
+                "@LayoutUrl, @ColCount, @BubbleUpdate, @QuickInsert, @InsertRowAtBottom, " +
+                "@DoubleClickMacroName,	null",
+                drPluginDefinition,
+                true);
+        }
+
         protected override void DownloadDerivedValues(DataRow drPluginDefinition, XElement xPluginDefinition)
         {
-            xPluginDefinition.Add(new XElement("RowKey", "ID"));
+            DataTable dtPrimaryKey = MyWebUtils.GetBySQL("select FieldName from dbo.fnGetFields(@AppID, @TableID, null, null) where InRowKey = 1", drPluginDefinition);
+
+            string primaryKey = "";
+            if (MyWebUtils.GetNumberOfRows(dtPrimaryKey) > 0)
+            {
+                int i = 0;
+                foreach (DataRow drKey in dtPrimaryKey.Rows)
+                {
+                    if (i++ > 0)
+                    {
+                        primaryKey += ",";
+                    }
+
+                    primaryKey += MyWebUtils.GetStringField(drKey, "FieldName");
+                }
+            }
+
+            xPluginDefinition.Add(new XElement("RowKey", primaryKey));
 
             XAttribute xSrcAttr = xPluginDefinition.Attribute("Src");
             if (xSrcAttr != null)
@@ -2475,6 +2493,36 @@ namespace CodeClay
             return new List<XiPlugin>() {};
         }
 
+        protected override void WriteToDB(DataRow drPluginDefinition)
+        {
+            object objSubTableID = null;
+            DataTable dtPluginDefinition = drPluginDefinition.Table;
+
+            if (dtPluginDefinition != null)
+            {
+                DataColumnCollection dcPluginDefinition = dtPluginDefinition.Columns;
+
+                if (!dcPluginDefinition.Contains("SubTableID"))
+                {
+                    dcPluginDefinition.Add("SubTableID");
+                }
+
+                DataTable dtSubTable = MyWebUtils.GetBySQL("select TableID from CiTable where AppID = @AppID and TableName = @Src", drPluginDefinition);
+
+                if (MyWebUtils.GetNumberOfRows(dtSubTable) == 0)
+                {
+                    objSubTableID = MyWebUtils.EvalSQL("?exec spTable_ins @AppID, @TableName, @Caption", drPluginDefinition);
+                }
+                else
+                {
+                    objSubTableID = MyWebUtils.GetField(dtSubTable.Rows[0], "TableID");
+                }
+
+                drPluginDefinition["SubTableID"] = objSubTableID;
+                MyWebUtils.GetBySQL("exec spSubTable_upd @AppID, @TableID, @SubTableID", drPluginDefinition);
+            }
+        }
+
         protected override void DownloadDerivedValues(DataRow drPluginDefinition, XElement xPluginDefinition)
         {
             if (drPluginDefinition != null)
@@ -2486,7 +2534,13 @@ namespace CodeClay
                     xPluginDefinition.Add(xSrc);
                 }
 
-                xSrc.Value = MyWebUtils.GetStringField(drPluginDefinition, "TableName") + ".pux?ParentID=@ID";
+                string queryString = "";
+                DataTable dtIdentity = MyWebUtils.GetBySQL("select * from dbo.fnGetFields(@AppID, @TableID, null, 'Identity')", drPluginDefinition);
+                if (MyWebUtils.GetNumberOfRows(dtIdentity) > 0)
+                {
+                    queryString = "?ParentID=@ID";
+                }
+                xSrc.Value = MyWebUtils.GetStringField(drPluginDefinition, "TableName") + ".pux" + queryString;
             }
         }
     }

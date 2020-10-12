@@ -4,7 +4,7 @@
   <IsDesigner>true</IsDesigner>
   <ProviderName>System.Data.SqlClient</ProviderName>
   <HomePluginSrc>Dropdown.pux</HomePluginSrc>
-  <ConnectionString>Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\adrianypc\Documents\Databases\BeNatural.mdf;Initial Catalog=BeNatural;Integrated Security=True;Connect Timeout=30</ConnectionString>
+  <ConnectionString>Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=;Integrated Security=True;Connect Timeout=30</ConnectionString>
   <CiMenu>
     <MenuName>Application</MenuName>
     <CiMenu>

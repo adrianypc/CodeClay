@@ -32,7 +32,7 @@
   </CiTextField>
   <CiCheckField>
     <FieldName>UserDefined</FieldName>
-    <Caption>User Defined</Caption>
+    <Caption>Made in CPanel?</Caption>
   </CiCheckField>
   <CiField>
     <FieldName>HomePluginSrc</FieldName>
