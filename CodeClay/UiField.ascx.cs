@@ -42,8 +42,8 @@ namespace CodeClay
         [XmlSqlElement("Editable", typeof(bool))]
         public XmlElement Editable { get; set; } = MyWebUtils.CreateXmlElement("Editable", true);
 
-        [XmlElement("Mandatory")]
-        public bool Mandatory { get; set; } = false;
+        [XmlSqlElement("Mandatory", typeof(bool))]
+        public XmlElement Mandatory { get; set; } = MyWebUtils.CreateXmlElement("Mandatory", false);
 
         [XmlElement("Computed")]
         public bool Computed { get; set; } = false;
@@ -131,6 +131,15 @@ namespace CodeClay
         }
 
         [XmlIgnore]
+        public CiMacro[] CiMacros
+        {
+            get
+            {
+                return CiPlugins.Where(c => (c as CiMacro) != null).Select(c => c as CiMacro).ToArray();
+            }
+        }
+
+        [XmlIgnore]
         public CiTable CiTable
         {
             get { return CiParentPlugin as CiTable; }
@@ -189,6 +198,11 @@ namespace CodeClay
             return IsSearching || (Enabled && MyWebUtils.Eval<bool>(Editable, drParams));
         }
 
+        public virtual bool IsMandatory(DataRow drParams)
+        {
+            return IsSearching || (Enabled && MyWebUtils.Eval<bool>(Mandatory, drParams));
+        }
+
         public virtual bool IsVisible(DataRow drParams)
         {
             return IsSearching || (Browsable && !IsHidden(drParams));
@@ -226,7 +240,11 @@ namespace CodeClay
 
         public virtual ArrayList GetLeaderFieldNames()
         {
-            return MyUtils.GetParameters(MyWebUtils.GetSQLFromXml(Editable));
+            ArrayList fieldNames = MyUtils.GetParameters(MyWebUtils.GetSQLFromXml(Editable));
+            fieldNames.AddRange(MyUtils.GetParameters(MyWebUtils.GetSQLFromXml(Mandatory)));
+            fieldNames.AddRange(MyUtils.GetParameters(MyWebUtils.GetSQLFromXml(Hidden)));
+
+            return fieldNames;
         }
 
         public virtual CardViewColumn CreateCardColumn(UiTable uiTable)
@@ -453,12 +471,12 @@ namespace CodeClay
                 }
             }
 
-            Refresh();
+            Refresh(sender);
         }
 
         protected void dxLabelPanel_Callback(object sender, CallbackEventArgsBase e)
         {
-            Refresh();
+            Refresh(sender, e);
         }
 
         // --------------------------------------------------------------------------------------------------
@@ -522,16 +540,39 @@ namespace CodeClay
         // Methods (Virtual)
         // --------------------------------------------------------------------------------------------------
 
-        public virtual void Refresh()
+        public virtual void Refresh(object sender, CallbackEventArgsBase e = null)
         {
             if (mEditor != null && CiField != null)
             {
                 DataRow drParams = GetState();
+                string fieldName = "";
+                object fieldValue = "";
+
+                if (e != null)
+                {
+                    string[] nameValuePairs = e.Parameter.Split(LIST_SEPARATOR.ToCharArray());
+
+                    if (nameValuePairs.Length > 1)
+                    {
+                        fieldName = nameValuePairs[0];
+                        fieldValue = nameValuePairs[1];
+
+                        drParams[fieldName] = fieldValue;
+                    }
+
+                    if (nameValuePairs.Length > 3)
+                    {
+                        fieldName = nameValuePairs[2];
+                        fieldValue = nameValuePairs[3];
+
+                        drParams[fieldName] = fieldValue;
+                    }
+                }
 
                 CiTable ciTable = CiField.CiTable;
                 string tableName = (ciTable != null) ? ciTable.TableName : "";
-                string fieldName = CiField.IsSearching ? CiField.SearchableID : CiField.FieldName;
-                object fieldValue = MyUtils.Coalesce(MyWebUtils.GetField(drParams, fieldName), CiField.Value);
+                fieldName = CiField.IsSearching ? CiField.SearchableID : CiField.FieldName;
+                fieldValue = MyUtils.Coalesce(MyWebUtils.GetField(drParams, fieldName), CiField.Value);
                 string foreColor = CiField.ForeColor;
 
                 mEditor.ID = fieldName;
@@ -551,9 +592,10 @@ namespace CodeClay
                 mEditor.JSProperties["cpHasFieldExitMacro"] = (CiField.CiFieldExitMacros.Length > 0);
                 mEditor.JSProperties["cpTableName"] = tableName;
                 mEditor.JSProperties["cpFollowerFields"] = FollowerFieldNames;
-                mEditor.JSProperties["cpMandatory"] = CiField.Mandatory;
+                mEditor.JSProperties["cpMandatory"] = CiField.IsMandatory(drParams);
                 mEditor.JSProperties["cpEditable"] = CiField.IsEditable(drParams);
                 mEditor.JSProperties["cpTransparent"] = CiField.Transparent;
+                mEditor.JSProperties["cpVisible"] = CiField.IsVisible(drParams);
 
                 ASPxCallbackPanel editorPanel = mEditor.NamingContainer as ASPxCallbackPanel;
                 if (editorPanel != null)
@@ -629,6 +671,21 @@ namespace CodeClay
             }
 
             return editorValue;
+        }
+
+        protected virtual void SetupPopupMacro(UiButtonField uiPopupMacro)
+        {
+            uiPopupMacro.Visible = false;
+
+            foreach (CiMacro ciMacro in CiField.CiMacros)
+            {
+                uiPopupMacro.Visible = !MyUtils.IsEmpty(ciMacro.NavigateUrl.InnerText);
+                CiButtonField ciButtonField = new CiButtonField();
+                ciButtonField.FieldName = CiField.FieldName + "Popup";
+                uiPopupMacro.CiButtonField = ciButtonField;
+                ciButtonField.Add(ciMacro);
+                break;
+            }
         }
     }
 
@@ -731,6 +788,26 @@ namespace CodeClay
             string updateSQL = string.Format("exec spField_updLong {0}", updateColumnNames);
 
             MyWebUtils.GetBySQL(updateSQL, drPluginDefinition, true);
+
+            DataColumnCollection dcPluginDefinition = drPluginDefinition.Table.Columns;
+
+            if (!dcPluginDefinition.Contains("SQLType"))
+            {
+                dcPluginDefinition.Add("SQLType");
+            }
+
+            if (!dcPluginDefinition.Contains("SQL"))
+            {
+                dcPluginDefinition.Add("SQL");
+            }
+
+            MyWebUtils.GetBySQL("exec spFieldSQL_del @AppID, @TableID, @FieldID", drPluginDefinition, true);
+            foreach (string sqlType in mPropertySQL.Keys)
+            {
+                drPluginDefinition["SQLType"] = sqlType;
+                drPluginDefinition["SQL"] = mPropertySQL[sqlType];
+                MyWebUtils.GetBySQL("exec spFieldSQL_upd @AppID, @TableID, @FieldID, @SQLType, @SQL", drPluginDefinition, true);
+            }
         }
 
         protected override void DownloadDerivedValues(DataRow drPluginDefinition, XElement xPluginDefinition)
@@ -747,6 +824,29 @@ namespace CodeClay
 
                     XElement xFieldName = xPluginDefinition.Element("FieldName");
                     xFieldName.Value = "EditParentID";
+                }
+
+                DataTable dtFieldSQL = MyWebUtils.GetBySQL("?exec spFieldSQL_sel @AppID, @TableID, @FieldID", drPluginDefinition, true);
+                foreach (DataRow drFieldSQL in dtFieldSQL.Rows)
+                {
+                    string sqlType = MyWebUtils.GetStringField(drFieldSQL, "SQLType");
+                    string SQL = MyWebUtils.GetStringField(drFieldSQL, "SQL");
+                    XElement xSQLType = xPluginDefinition.Element(sqlType);
+                    if (xSQLType == null)
+                    {
+                        xSQLType = new XElement(sqlType);
+                        xPluginDefinition.Add(xSQLType);
+                    }
+
+                    XAttribute xLang = xSQLType.Attribute("lang");
+                    if (xLang == null)
+                    {
+                        xLang = new XAttribute("lang", "");
+                        xSQLType.Add(xLang);
+                    }
+
+                    xLang.Value = "sql";
+                    xSQLType.Value = SQL;
                 }
             }
         }

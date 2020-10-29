@@ -63,13 +63,12 @@
     <Editable>false</Editable>
     <Hidden>true</Hidden>
   </CiTextField>
-  <CiTextField>
+  <CiCurrencyField>
     <FieldName>TotalAmount</FieldName>
     <Caption>Order Total ($)</Caption>
     <Editable>false</Editable>
-    <Mask>Currency</Mask>
     <Width>8</Width>
-  </CiTextField>
+  </CiCurrencyField>
   <CiTextField>
     <FieldName>Comments</FieldName>
     <Caption>Comments</Caption>

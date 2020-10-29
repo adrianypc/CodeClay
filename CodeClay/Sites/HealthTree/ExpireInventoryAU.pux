@@ -85,10 +85,10 @@
         0 as QtyOverReceived
     </ActionSQL>
 	</DefaultMacro>
-	<SelectMacro>
+  <SelectMacro>
 	  <ActionSQL>?exec spInventory_selbyStatusAndBranch 'HT-AU','Y',@ProductID,'Y'</ActionSQL>
 	</SelectMacro>
- <InsertMacro>
+  <InsertMacro>
 	<ActionSQL>
         ?exec spInventory_upd
         -1,
@@ -105,7 +105,7 @@
         @CI_UserEmail
     </ActionSQL>
  </InsertMacro>
- <UpdateMacro>
+  <UpdateMacro>
    <ActionSQL>
     ?exec spInventory_upd
         @InventoryItemNo,

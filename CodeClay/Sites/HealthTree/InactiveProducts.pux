@@ -24,12 +24,12 @@
     </CiLinkField>
     <CiTextField>
 	    <FieldName>UnitCostPrice</FieldName>
-	    <Caption>Unit Cost Price ($)</Caption>
+	    <Caption>Unit Cost Price (A$)</Caption>
         <Editable>false</Editable>
     </CiTextField>
     <CiTextField>
 	    <FieldName>UnitSellingPrice</FieldName>
-	    <Caption>Unit Selling Price ($)</Caption>
+	    <Caption>Unit Selling Price (S$)</Caption>
         <Editable>false</Editable>
         <Width>10</Width>
     </CiTextField>

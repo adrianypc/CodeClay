@@ -145,7 +145,7 @@ namespace CodeClay
 
         protected void dxImagePanel_Callback(object sender, CallbackEventArgsBase e)
         {
-            Refresh();
+            Refresh(sender, e);
         }
 
         protected void dxUploadImage_FileUploadComplete(object sender, FileUploadCompleteEventArgs e)

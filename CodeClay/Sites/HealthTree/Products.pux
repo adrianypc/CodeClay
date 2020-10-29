@@ -20,14 +20,14 @@
     <Caption>HealthTree URL</Caption>
     <Width>50</Width>
   </CiLinkField>
-	<CiTextField>
+    <CiCurrencyField>
 		<FieldName>UnitCostPrice</FieldName>
 		<Caption>Unit Cost Price ($)</Caption>
-	</CiTextField>
-	<CiTextField>
+	</CiCurrencyField>
+    <CiCurrencyField>
 		<FieldName>UnitSellingPrice</FieldName>
 		<Caption>Unit Selling Price ($)</Caption>
-	</CiTextField>
+	</CiCurrencyField>
     <CiCheckField>
         <FieldName>IsActive</FieldName>
         <Caption>Enabled</Caption>
@@ -49,11 +49,11 @@
         <TextFieldName>SupplierName</TextFieldName>
 		<Caption>Supplier</Caption>
 		<DropdownSQL>select SupplierID, SupplierName from Supplier order by SupplierID</DropdownSQL>
-        <Hidden>true</Hidden>
 	</CiComboField>
 	<CiTextField>
 		<FieldName>SupplierSKU</FieldName>
 		<Caption>Supplier SKU</Caption>
+        <Hidden>true</Hidden>
 	</CiTextField>
 	<CiNumericField>
 		<FieldName>ReorderThreshold</FieldName>

@@ -1,0 +1,58 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<CiTable>
+  <TableName>InventoryMovementDetailReport</TableName>
+  <TableCaption>Inventory Movement Detail</TableCaption>
+  <RowKey>RunDate</RowKey>
+  <DefaultView>Grid</DefaultView>
+  <DoubleClickMacroName>ReportDetail</DoubleClickMacroName>
+  <CiField>
+    <FieldName>ID</FieldName>
+    <Hidden>true</Hidden>
+  </CiField>
+  <CiDateField>
+    <FieldName>RunDate</FieldName>
+    <Hidden>true</Hidden>
+  </CiDateField>
+  <CiDateField>
+    <FieldName>StartDate</FieldName>
+    <Hidden>true</Hidden>
+  </CiDateField>
+  <CiDateField>
+    <FieldName>EndDate</FieldName>
+    <Hidden>true</Hidden>
+  </CiDateField>
+  <CiTextField>
+      <FieldName>ProductID</FieldName>
+      <Hidden>true</Hidden>
+  </CiTextField>
+  <CiTextField>
+      <FieldName>ProductName</FieldName>
+      <Caption>Product Name</Caption>
+      <Editable>false</Editable>
+  </CiTextField>
+  <CiNumericField>
+      <FieldName>CurrentQuantityOnHand</FieldName>
+      <Caption>Quantity on Hand - Current</Caption>
+      <Editable>false</Editable>
+  </CiNumericField>
+  <CiNumericField>
+      <FieldName>QuantityOnHandAtRun</FieldName>
+      <Caption>Quantity on Hand - At Run Date</Caption>
+      <Editable>false</Editable>
+  </CiNumericField>
+  <CiNumericField>
+      <FieldName>QuantityAllocatedAtRun</FieldName>
+      <Caption>Quantity Allocated - At Run Date</Caption>
+      <Editable>false</Editable>
+  </CiNumericField>
+  <CiTextField>
+      <FieldName>PlatformOrderNumbers</FieldName>
+      <Caption>Platform Order Numbers</Caption>
+      <Editable>false</Editable>
+  </CiTextField>
+  <SelectMacro>
+	 <ActionSQL>
+         ?exec spInventoryMovement_Detail_sel @RunDate,@StartDate,@EndDate
+     </ActionSQL>
+  </SelectMacro>
+</CiTable>

@@ -12,47 +12,53 @@
         <ColumnFormat>dd/MM/yyyy</ColumnFormat>
         <Mandatory>true</Mandatory>
     </CiDateField>
-    <CiTextField>
+    <CiCurrencyField>
         <FieldName>AUS_TotalItemAmount</FieldName>
-        <Caption>Total Item Amount (AU$)</Caption>
-        <Mask>Currency</Mask>
+        <Caption>Total Item Amount (A$)</Caption>
         <Editable>false</Editable>
-    </CiTextField>
-    <CiTextField>
+    </CiCurrencyField>
+    <CiCurrencyField>
         <FieldName>AUS_TotalShipping</FieldName>
-        <Caption>Total Shipping (AU$)</Caption>
-        <Mask>Currency</Mask>
+        <Caption>Total Shipping (A$)</Caption>
         <Editable>false</Editable>
-    </CiTextField>
-    <CiTextField>
+    </CiCurrencyField>
+    <CiCurrencyField>
+        <FieldName>AUS_TotalAdjustments</FieldName>
+        <Caption>Total Adjustment (A$)</Caption>
+        <Value>0.00</Value>
+        <Editable>false</Editable>
+    </CiCurrencyField>
+    <CiCurrencyField>
         <FieldName>AUS_GrandTotal</FieldName>
-        <Caption>Grand Total (AU$)</Caption>
-        <Mask>Currency</Mask>
+        <Caption>Grand Total (A$)</Caption>
         <Editable>false</Editable>
-    </CiTextField>
+    </CiCurrencyField>
     <CiTextField>
         <FieldName>InvoiceNo</FieldName>
         <Caption>Invoice #</Caption>
         <Editable>false</Editable>
     </CiTextField>
-    <CiTextField>
+    <CiCurrencyField>
         <FieldName>TotalItemAmount</FieldName>
-        <Caption>Total Item Amount (SG$)</Caption>
-        <Mask>Currency</Mask>
+        <Caption>Total Item Amount (S$)</Caption>
         <Editable>false</Editable>
-    </CiTextField>
-    <CiTextField>
+    </CiCurrencyField>
+    <CiCurrencyField>
         <FieldName>TotalShipping</FieldName>
-        <Caption>Total Shipping (SG$)</Caption>
-        <Mask>Currency</Mask>
+        <Caption>Total Shipping (S$)</Caption>
         <Editable>false</Editable>
-    </CiTextField>
-    <CiTextField>
+    </CiCurrencyField>
+    <CiCurrencyField>
+        <FieldName>TotalAdjustments</FieldName>
+        <Caption>Total Adjustment (S$)</Caption>
+        <Value>0.00</Value>
+        <Editable>false</Editable>
+    </CiCurrencyField>
+    <CiCurrencyField>
         <FieldName>GrandTotal</FieldName>
-        <Caption>Grand Total (SG$)</Caption>
-        <Mask>Currency</Mask>
+        <Caption>Grand Total (S$)</Caption>
         <Editable>false</Editable>
-    </CiTextField>
+    </CiCurrencyField>
     <CiLinkField>
         <FieldName>InvoiceFileURL</FieldName>
         <Caption>File</Caption>
@@ -77,28 +83,55 @@
             <ActionSQL>?exec spSupplierOrders_selbyIBInvoiceNo @InvoiceNo</ActionSQL>
         </SelectMacro>
     </CiTable>
+    <CiTable Src="AdjInterBranchInvoice.pux">
+        <SelectMacro>
+            <ActionSQL>
+                select case when ISNUMERIC(@InvoiceNo) = 1 then @InvoiceNo else -1 end as InvoiceNo
+            </ActionSQL>
+            <ActionSQL>
+                select
+                InvoiceNo,
+                AdjItemNo,
+                AdjDate,
+                AdjAuthor,
+                AdjAmount,
+                AdjComments
+                from AdjInterBranchInvoice
+                where InvoiceNo = @InvoiceNo
+            </ActionSQL>
+        </SelectMacro>
+    </CiTable>
     <DefaultMacro>
         <ActionSQL>
-            select  '-New-' as InvoiceNo,
+            select
+            '-New-' as InvoiceNo,
             convert(datetime,cast(getdate() as nvarchar(12)),103) as InvoiceDate,
             'Unpaid' as InvoiceStatus,
             CAST(SUM(coalesce(SO.Shipping,0)) as decimal(10,2)) as AUS_TotalShipping,
-            CAST(SUM(coalesce(SO.Shipping,0)) + SUM(coalesce(SOI.Price,0)) as decimal(10,2)) as AUS_GrandTotal,
-            CAST(SUM(coalesce(SOI.Price,0)) as decimal(10,2)) as AUS_TotalItemAmount,
+            CAST(SUM(coalesce(SO.Shipping,0)) + SUM(coalesce(tab1.TotalItemPrice,0)) as decimal(10,2)) as AUS_GrandTotal,
+            CAST(SUM(coalesce(tab1.TotalItemPrice,0)) as decimal(10,2)) as AUS_TotalItemAmount,
             CAST(SUM(coalesce(SO.Shipping,0) * coalesce(SO.ConversionRate,0)) as decimal(10,2)) as TotalShipping,
-            CAST((SUM(coalesce(SO.Shipping,0) * coalesce(SO.ConversionRate,0)) + SUM(coalesce(SOI.Price,0) * coalesce(SO.ConversionRate,0))) as decimal(10,2)) as GrandTotal,
-            CAST(SUM(coalesce(SOI.Price,0) * coalesce(SO.ConversionRate,0)) as decimal(10,2)) as TotalItemAmount
-            from
-                (select * from Supplier
-                where BranchCode = 'HT-AU'
-                AND SupplierName not like 'HealthTree Australia%') tab
-            inner join SupplierOrders SO
-            on tab.SupplierID = SO.SupplierID
-            and SO.Status = 'Received'
-            and SO.IBInvoiceNo is null
-            inner join SupplierOrderItems SOI
-            on SO.SupplierOrderNo = SOI.SupplierOrderNo
-            where (SO.Reimbursed = 'N' or SO.Reimbursed is null)
+            CAST((SUM(coalesce(SO.Shipping,0) * coalesce(SO.ConversionRate,0)) + SUM(coalesce(tab1.TotalItemPrice,0) * coalesce(SO.ConversionRate,0))) as decimal(10,2)) as GrandTotal,
+            CAST(SUM(coalesce(tab1.TotalItemPrice,0) * coalesce(SO.ConversionRate,0)) as decimal(10,2)) as TotalItemAmount
+            from SupplierOrders SO
+            inner join
+            (select
+             SO.SupplierOrderNo,
+             coalesce(SUM(coalesce(SOI.Price,0)),0) as TotalItemPrice
+             from
+             (select * from Supplier
+              where BranchCode = 'HT-AU'
+              AND SupplierName not like 'HealthTree%') tab
+              inner join SupplierOrders SO
+              on tab.SupplierID = SO.SupplierID
+              and SO.Status = 'Received'
+              and SO.IBInvoiceNo is null
+              and SO.BranchCode = 'HT-AU'
+              inner join SupplierOrderItems SOI
+              on SO.SupplierOrderNo = SOI.SupplierOrderNo
+              where (SO.Reimbursed = 'N' or SO.Reimbursed is null)
+              group by SO.SupplierOrderNo)tab1
+             on SO.SupplierOrderNo = tab1.SupplierOrderNo
         </ActionSQL>
     </DefaultMacro>
     <SelectMacro>

@@ -1,9 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <CiTable>
   <TableName>CustomerSalesReport</TableName>
-  <TableCaption>Quarterly Customer Sales Report</TableCaption>
+  <TableCaption>Quarterly Customer Sales</TableCaption>
   <RowKey>RunMonth</RowKey>
   <DefaultView>Grid</DefaultView>
+  <DoubleClickMacroName>ReportDetail</DoubleClickMacroName>
   <CiField>
     <FieldName>ID</FieldName>
     <Hidden>true</Hidden>
@@ -18,12 +19,11 @@
     <Caption>Number of Transactions</Caption>
     <Editable>true</Editable>
   </CiTextField>
-  <CiTextField>
+  <CiCurrencyField>
     <FieldName>TotalAmount</FieldName>
     <Caption>Total ($)</Caption>
-    <Mask>Currency</Mask>
     <Editable>true</Editable>
-  </CiTextField>
+  </CiCurrencyField>
   <CiTextField>
      <FieldName>StartDate</FieldName>
      <Caption>From Date</Caption>
@@ -37,7 +37,7 @@
   <DefaultMacro>
 	 <ActionSQL>?exec spQuarterlyCustomerSales_Default_Generation</ActionSQL>
 	</DefaultMacro>
-	<SelectMacro>
+  <SelectMacro>
 	 <ActionSQL>
         select  RunMonth,TotalTrans,TotalAmount,
                 cast(StartDate as nvarchar(12)) as StartDate,
@@ -45,7 +45,7 @@
         from QuarterlyCustomerSale order by RunMonth desc
      </ActionSQL>
 	</SelectMacro>
-	<InsertMacro>
+  <InsertMacro>
       <ActionSQL>
           insert into QuarterlyCustomerSale (RunMonth,TotalTrans,TotalAmount,StartDate,EndDate) values
           (@RunMonth,@TotalTrans,@TotalAmount,
@@ -67,4 +67,11 @@
     <VisibleSQL>select 1 from tblSingleton where @RunMonth is not null</VisibleSQL>
     <Toolbar>true</Toolbar>
   </CiMacro>
+  <CiMacro>
+        <MacroName>ReportDetail</MacroName>
+        <Caption>Detail</Caption>
+        <ActionSQL>select @RunMonth as RunMonth</ActionSQL>
+        <NavigateUrl>CustomerSalesDetailReport.pux</NavigateUrl>
+        <NavigatePos>Popup</NavigatePos>
+    </CiMacro>
 </CiTable>

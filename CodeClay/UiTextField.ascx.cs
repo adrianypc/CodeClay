@@ -57,7 +57,7 @@ namespace CodeClay
 
         protected void dxTextPanel_Callback(object sender, CallbackEventArgsBase e)
         {
-            Refresh();
+            Refresh(sender, e);
         }
     }
 }

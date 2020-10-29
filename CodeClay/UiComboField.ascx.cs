@@ -149,30 +149,7 @@ namespace CodeClay
 
         protected void dxComboPanel_Callback(object sender, CallbackEventArgsBase e)
         {
-            Refresh();
-            
-            ASPxCallbackPanel dxComboPanel = sender as ASPxCallbackPanel;
-            if (dxComboPanel != null)
-            {
-                string fieldName = CiField.FieldName;
-                ASPxComboBox dxComboBox = dxComboPanel.FindControl(fieldName) as ASPxComboBox;
-                if (dxComboBox != null)
-                {
-                    string fieldValue = e.Parameter;
-                    dxComboBox.Text = fieldValue;
-                    if (dxComboBox.Items.FindByTextWithTrim(fieldValue) == null)
-                    {
-                        string insertSQL = CiComboField.InsertSQL;
-
-                        if (!MyUtils.IsEmpty(insertSQL))
-                        {
-                            DataRow drParams = GetState();
-                            drParams[fieldName] = fieldValue;
-                            MyWebUtils.EvalSQL(insertSQL, drParams);
-                        }
-                    }
-                }
-            }
+            Refresh(sender, e);            
         }
 
         protected void MyComboData_Selecting(object sender, ObjectDataSourceSelectingEventArgs e)
@@ -183,6 +160,52 @@ namespace CodeClay
         protected void MyComboData_Selected(object sender, ObjectDataSourceStatusEventArgs e)
         {
             this.DataSource = e.ReturnValue as DataTable;
+        }
+
+        // --------------------------------------------------------------------------------------------------
+        // Methods (override)
+        // --------------------------------------------------------------------------------------------------
+
+        public override void Refresh(object sender, CallbackEventArgsBase e = null)
+        {
+            base.Refresh(sender, e);
+
+            ASPxCallbackPanel dxComboPanel = sender as ASPxCallbackPanel;
+            if (dxComboPanel != null)
+            {
+                DataRow drParams = GetState();
+
+                string fieldName = CiField.FieldName;
+                string fieldValue = MyWebUtils.GetStringField(drParams, fieldName);
+
+                if (e != null)
+                {
+                    string[] nameValuePairs = e.Parameter.Split(LIST_SEPARATOR.ToCharArray());
+
+                    if (nameValuePairs.Length > 1)
+                    {
+                        fieldName = nameValuePairs[0];
+                        fieldValue = nameValuePairs[1];
+
+                        drParams[fieldName] = fieldValue;
+                    }
+                }
+
+                ASPxComboBox dxComboBox = dxComboPanel.FindControl(fieldName) as ASPxComboBox;
+                if (dxComboBox != null)
+                {
+                    dxComboBox.Text = fieldValue;
+                    if (dxComboBox.Items.FindByTextWithTrim(fieldValue) == null)
+                    {
+                        string insertSQL = CiComboField.InsertSQL;
+
+                        if (!MyUtils.IsEmpty(insertSQL))
+                        {
+                            MyWebUtils.EvalSQL(insertSQL, drParams);
+                        }
+                    }
+                }
+            }
         }
     }
 }

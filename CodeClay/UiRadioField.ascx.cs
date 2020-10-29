@@ -92,7 +92,7 @@ namespace CodeClay
 
         protected void dxRadioPanel_Callback(object sender, CallbackEventArgsBase e)
         {
-            Refresh();
+            Refresh(sender, e);
         }
 
         protected void MyRadioData_Selecting(object sender, ObjectDataSourceSelectingEventArgs e)

@@ -108,7 +108,7 @@ function dxUpdateText_Init(sender, event) {
 
     RegisterEditor(dxUploadText,
         function () { return this.GetText(); },
-        function (value) { this.SetText(value); }
+        function (value) { if (!this.GetReadOnly()) this.SetText(value); }
     );
 }
 

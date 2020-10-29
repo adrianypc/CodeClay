@@ -38,6 +38,11 @@
      <Caption>Expiry Date</Caption>
      <ColumnFormat>dd/MM/yyyy</ColumnFormat>
   </CiDateField>
+  <CiCurrencyField>
+      <FieldName>CostValue</FieldName>
+      <Caption>Value (A$)</Caption>
+      <Editable>false</Editable>
+  </CiCurrencyField>
   <CiNumericField>
 		<FieldName>QuantityOnHand</FieldName>
 		<Caption>Quantity on Hand</Caption>

@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <CiTable>
-  <TableName>ActiveInventoryAU</TableName>
-  <TableCaption>Inventory AU (Active)</TableCaption>
+  <TableName>ActiveInventoryKS</TableName>
+  <TableCaption>Inventory KS (Active)</TableCaption>
   <RowKey>InventoryItemNo,ProductID,BranchCode</RowKey>
   <DefaultView>Grid</DefaultView>
   <DoubleClickMacroName>StocklevelUpdate</DoubleClickMacroName>
@@ -34,18 +34,18 @@
     <ColumnFormat>dd/MM/yyyy</ColumnFormat>
   </CiDateField>
   <CiDateField>
-    <FieldName>ExpiryDate</FieldName>
-    <Caption>Expiry Date</Caption>
-    <ColumnFormat>dd/MM/yyyy</ColumnFormat>
+     <FieldName>ExpiryDate</FieldName>
+     <Caption>Expiry Date</Caption>
+     <ColumnFormat>dd/MM/yyyy</ColumnFormat>
   </CiDateField>
   <CiCurrencyField>
-    <FieldName>CostValue</FieldName>
-    <Caption>Value (A$)</Caption>
-    <Editable>false</Editable>
+     <FieldName>CostValue</FieldName>
+     <Caption>Value (A$)</Caption>
+     <Editable>false</Editable>
   </CiCurrencyField>
   <CiNumericField>
-	<FieldName>QuantityOnHand</FieldName>
-	<Caption>Quantity on Hand</Caption>
+		<FieldName>QuantityOnHand</FieldName>
+		<Caption>Quantity on Hand</Caption>
   </CiNumericField>
   <CiNumericField>
     <FieldName>QuantityOrdered</FieldName>
@@ -73,9 +73,9 @@
     <Editable>false</Editable>
   </CiNumericField>
   <CiTable Src="InactiveInventory.pux">
-     <SelectMacro>
+    <SelectMacro>
        <ActionSQL>?exec spInventory_Inactive_sel @ProductID,@BranchCode</ActionSQL>
-     </SelectMacro>
+    </SelectMacro>
   </CiTable>
   <DefaultMacro>
 	<ActionSQL>
@@ -91,7 +91,7 @@
     </ActionSQL>
 	</DefaultMacro>
 	<SelectMacro>
-	  <ActionSQL>?exec spInventory_selbyStatusAndBranch 'HT-AU','Y',@ProductID</ActionSQL>
+	  <ActionSQL>?exec spInventory_selbyStatusAndBranch 'HT-KS','Y',@ProductID</ActionSQL>
 	</SelectMacro>
  <InsertMacro>
 	<ActionSQL>
@@ -112,20 +112,20 @@
  </InsertMacro>
  <UpdateMacro>
    <ActionSQL>
-    ?exec spInventory_upd
-        @InventoryItemNo,
-        @ProductID,
-        @BranchCode,
-        @DateOfStocktake,
-        @QuantityOnHand,
-        @QuantityOrdered,
-        @QuantityAllocated,
-        @QuantityAvailable,
-        @QtyUnderReceived,
-        @QtyOverReceived,
-        @ExpiryDate,
-        @CI_UserEmail
-    </ActionSQL>
+       ?exec spInventory_upd
+       @InventoryItemNo,
+       @ProductID,
+       @BranchCode,
+       @DateOfStocktake,
+       @QuantityOnHand,
+       @QuantityOrdered,
+       @QuantityAllocated,
+       @QuantityAvailable,
+       @QtyUnderReceived,
+       @QtyOverReceived,
+       @ExpiryDate,
+       @CI_UserEmail
+   </ActionSQL>
     <VisibleSQL>select 1 from Inventory where InventoryItemNo = @InventoryItemNo</VisibleSQL>
   </UpdateMacro>
   <DeleteMacro>
@@ -138,11 +138,11 @@
     <MacroName>StocklevelUpdate</MacroName>
     <Caption>Stock level is correct TODAY</Caption>
     <ActionSQL>?exec spInventory_upd_datestocktake @InventoryItemNo,@CI_UserEmail</ActionSQL>
-  </CiMacro>
-  <CiFieldExitMacro>
+   </CiMacro>
+   <CiFieldExitMacro>
     <FieldName>QuantityOnHand</FieldName>
     <ActionSQL>
-        select (coalesce(@QuantityOnHand,0) + coalesce(@QuantityOrdered,0)) - coalesce(@QuantityAllocated,0) as QuantityAvailable
+            select (coalesce(@QuantityOnHand,0) + coalesce(@QuantityOrdered,0)) - coalesce(@QuantityAllocated,0) as QuantityAvailable
     </ActionSQL>
-  </CiFieldExitMacro>
+   </CiFieldExitMacro>
 </CiTable>

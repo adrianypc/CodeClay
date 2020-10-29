@@ -8,6 +8,7 @@
     <PanelCollection>
         <dx:PanelContent>
             <dx:ASPxTextbox ID="dxTextBox" ClientInstanceName="dxTextBox" runat="server" Theme="Aqua">
+                <ClientSideEvents KeyPress="dxTextBox_KeyPress" />
                 <ValidationSettings ErrorDisplayMode="ImageWithTooltip" />
             </dx:ASPxTextbox>
         </dx:PanelContent>

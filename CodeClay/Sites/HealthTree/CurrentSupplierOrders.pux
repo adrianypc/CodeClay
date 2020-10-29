@@ -45,8 +45,20 @@
         <width>6</width>
     </CiCheckField>
     <CiTextField>
+        <FieldName>TotalSales</FieldName>
+        <Caption>Sales S$</Caption>
+        <Mask>Currency</Mask>
+        <Editable>false</Editable>
+    </CiTextField>
+    <CiTextField>
+        <FieldName>Shipping</FieldName>
+        <Caption>Shipping S$</Caption>
+        <Mask>Currency</Mask>
+        <Editable>false</Editable>
+    </CiTextField>
+    <CiTextField>
         <FieldName>TotalAmountInSGD</FieldName>
-        <Caption>Total SG$</Caption>
+        <Caption>Total S$</Caption>
         <Mask>Currency</Mask>
         <Editable>false</Editable>
     </CiTextField>
@@ -54,9 +66,17 @@
 		<ActionSQL>?exec spSupplierOrders_selbyStatus 'Active',0</ActionSQL>
 	</SelectMacro>
     <CiMacro>
+        <MacroName>NewTransferOrder</MacroName>
+        <Caption>New Transfer Order</Caption>
+        <ActionSQL>select 'New' as Command,cast(1 as bit) as IsTransferred</ActionSQL>
+        <NavigateUrl>SupplierOrder.pux</NavigateUrl>
+        <NavigatePos>Popup</NavigatePos>
+        <Toolbar>true</Toolbar>
+    </CiMacro>
+    <CiMacro>
         <MacroName>NewOrder</MacroName>
-        <Caption>New</Caption>
-        <ActionSQL>select 'New' as Command</ActionSQL>
+        <Caption>New Supplier Order</Caption>
+        <ActionSQL>select 'New' as Command,cast(0 as bit) as IsTransferred</ActionSQL>
         <NavigateUrl>SupplierOrder.pux</NavigateUrl>
         <NavigatePos>Popup</NavigatePos>
         <Toolbar>true</Toolbar>
@@ -64,7 +84,7 @@
     <CiMacro>
         <MacroName>SupplierOrderDetail</MacroName>
         <Caption>Supplier Order Detail</Caption>
-        <ActionSQL>select @SupplierOrderNo as SupplierOrderNo, @SupplierID as SupplierID, 'Current' as CalledFrom</ActionSQL>
+        <ActionSQL>select @SupplierOrderNo as SupplierOrderNo, @SupplierID as SupplierID, 'Current' as CalledFrom,@IsTransferred as IsTransferred</ActionSQL>
         <NavigateUrl>SupplierOrder.pux</NavigateUrl>
         <NavigatePos>Popup</NavigatePos>
     </CiMacro>

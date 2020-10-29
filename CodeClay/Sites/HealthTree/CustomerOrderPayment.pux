@@ -24,14 +24,13 @@
         <Caption>Author</Caption>
         <width>20</width>
     </CiTextField>
-    <CiTextField>
+    <CiCurrencyField>
         <FieldName>PaymentAmount</FieldName>
         <Caption>Payment ($)</Caption>
         <Width>20</Width>
-        <Mask>Currency</Mask>
         <Editable>true</Editable>
         <Mandatory>true</Mandatory>
-    </CiTextField>
+    </CiCurrencyField>
     <DefaultMacro>
         <ActionSQL>
             select

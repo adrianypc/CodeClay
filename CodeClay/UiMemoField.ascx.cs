@@ -101,14 +101,14 @@ namespace CodeClay
 
         protected void dxMemoPanel_Callback(object sender, CallbackEventArgsBase e)
         {
-            Refresh();
+            Refresh(sender, e);
         }
 
         // --------------------------------------------------------------------------------------------------
         // Methods (override)
         // --------------------------------------------------------------------------------------------------
 
-        public override void Refresh()
+        public override void Refresh(object sender, CallbackEventArgsBase e = null)
         {
             if (AllowHtml)
             {
@@ -150,7 +150,7 @@ namespace CodeClay
             }
             else
             {
-                base.Refresh();
+                base.Refresh(sender, e);
             }
         }
     }

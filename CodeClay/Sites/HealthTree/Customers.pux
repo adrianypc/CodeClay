@@ -66,14 +66,13 @@
 		<Caption>Referrer</Caption>
 		<DropdownSQL>select Code from Dropdown where Category = 'Referrer' order by Code</DropdownSQL>
 	  </CiComboField>
-	  <CiTextField>
+    <CiCurrencyField>
   		<FieldName>Points</FieldName>
 	  	<Caption>Points</Caption>
 	  	<Editable>false</Editable>
         <Hidden>false</Hidden>
         <Summary>Sum</Summary>
-        <Mask>Currency</Mask>
-      </CiTextField>
+      </CiCurrencyField>
       <CiTable Src="CustomerOrder.pux">
 	    <SelectMacro>
 		    <ActionSQL>?exec spCustomerOrders_selbyCustomerID @CustomerID</ActionSQL>

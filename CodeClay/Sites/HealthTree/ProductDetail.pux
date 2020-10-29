@@ -22,16 +22,24 @@
         <Caption>HealthTree URL</Caption>
         <Editable lang="sql">select distinct 1 from tblSingleton where @CalledFrom is null</Editable>
     </CiLinkField>
-	<CiTextField>
+    <CiCurrencyField>
 		<FieldName>UnitCostPrice</FieldName>
 		<Caption>Unit Cost Price ($)</Caption>
         <Editable lang="sql">select distinct 1 from tblSingleton where @CalledFrom is null</Editable>
-    </CiTextField>
-	<CiTextField>
+    </CiCurrencyField>
+    <CiCurrencyField>
 		<FieldName>UnitSellingPrice</FieldName>
 		<Caption>Unit Selling Price ($)</Caption>
         <Editable lang="sql">select distinct 1 from tblSingleton where @CalledFrom is null</Editable>
-    </CiTextField>
+    </CiCurrencyField>
+    <CiComboField>
+        <FieldName>SupplierID</FieldName>
+        <Code>SupplierID</Code>
+        <Description>SupplierName</Description>
+        <TextFieldName>SupplierName</TextFieldName>
+        <Caption>Supplier</Caption>
+        <DropdownSQL>select SupplierID, SupplierName from Supplier order by SupplierID</DropdownSQL>
+    </CiComboField>
     <CiTextField>
         <FieldName>SupplierSKU</FieldName>
         <Caption>Supplier SKU</Caption>
@@ -104,15 +112,6 @@
 		<Caption>Product Description</Caption>
         <Hidden>true</Hidden>
 	</CiMemoField>
-	<CiComboField>
-		<FieldName>SupplierID</FieldName>
-        <Code>SupplierID</Code>
-        <Description>SupplierName</Description>
-        <TextFieldName>SupplierName</TextFieldName>
-		<Caption>Supplier</Caption>
-		<DropdownSQL>select SupplierID, SupplierName from Supplier order by SupplierID</DropdownSQL>
-        <Hidden>true</Hidden>
-	</CiComboField>
 	<CiNumericField>
 		<FieldName>ReorderThreshold</FieldName>
 		<Caption>Reorder Threshold</Caption>

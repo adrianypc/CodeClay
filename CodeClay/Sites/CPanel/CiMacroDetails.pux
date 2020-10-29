@@ -62,13 +62,13 @@
     <Editable lang="sql">select 1 from Singleton where @Type not in ('Select', 'Insert', 'Update', 'Delete') </Editable>
     <Hidden>true</Hidden>
   </CiCheckField>
-  <CiTable Src="SQLList.pux?EntityType=CiMacro&amp;SQLType=ActionSQL">
+  <CiTable Src="CiMacroSQLList.pux?EntityType=CiMacro&amp;SQLType=ActionSQL">
     <TableName>ActionSQLList</TableName>
   </CiTable>
-  <CiTable Src="SQLList.pux?EntityType=CiMacro&amp;SQLType=VisibleSQL">
+  <CiTable Src="CiMacroSQLList.pux?EntityType=CiMacro&amp;SQLType=VisibleSQL">
     <TableName>VisibleSQLList</TableName>
   </CiTable>
-  <CiTable Src="SQLList.pux?EntityType=CiMacro&amp;SQLType=ValidateSQL">
+  <CiTable Src="CiMacroSQLList.pux?EntityType=CiMacro&amp;SQLType=ValidateSQL">
     <TableName>ValidateSQLList</TableName>
   </CiTable>
   <SelectMacro>

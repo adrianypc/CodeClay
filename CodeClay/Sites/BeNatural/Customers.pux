@@ -76,15 +76,15 @@
     <ActionSQL>select '-New-' as CustomerID</ActionSQL>
   </DefaultMacro>
   <InsertMacro>
-    <ActionSQL>
-		  ?exec spCustomer_ins @BranchCode, @LastName, @OtherNames, @DateOfBirth, @Address, @CountryCode,
-			@Postcode, @Email, @Mobile, @Referrer
-		</ActionSQL>
+    <ActionSQL></ActionSQL>
   </InsertMacro>
   <UpdateMacro>
-    <ActionSQL>
-			?exec spCustomer_upd @CustomerID, @BranchCode, @LastName, @OtherNames, @DateOfBirth, @Address, @CountryCode,
-			@Postcode, @Email, @Mobile, @Referrer
-		</ActionSQL>
+    <ActionSQL></ActionSQL>
   </UpdateMacro>
+  <CiMacro>
+    <MacroName>Journals</MacroName>
+    <NavigateUrl>CustomerJournals.pux</NavigateUrl>
+    <NavigatePos>Popup</NavigatePos>
+    <ActionSQL>select cast(@CustomerID as int) as CustomerID</ActionSQL>
+  </CiMacro>
 </CiTable>

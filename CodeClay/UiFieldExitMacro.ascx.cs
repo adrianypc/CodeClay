@@ -256,12 +256,12 @@ namespace CodeClay
                 }
             }
 
-            script += GetFormatScript(fieldName);
+            script += GetFollowerScript(fieldName);
 
 			return script;
 		}
 
-        private string GetFormatScript(string fieldName)
+        private string GetFollowerScript(string fieldName)
         {
             string script = "";
 
@@ -275,7 +275,7 @@ namespace CodeClay
                     {
                         foreach (CiField ciFollowerField in ciField.CiFollowerFields)
                         {
-                            script += GetEditableScript(ciFollowerField);
+                            script += GetFormatScript(ciFollowerField);
                         }
                     }
                 }
@@ -284,7 +284,7 @@ namespace CodeClay
             return script;
         }
 
-        private string GetEditableScript(CiField ciField)
+        private string GetFormatScript(CiField ciField)
         {
             string script = "";
 
@@ -293,14 +293,17 @@ namespace CodeClay
                 DataRow drParams = GetState();
                 CiTable ciTable = ciField.CiTable;
 
-                bool isEditable = MyWebUtils.Eval<bool>(ciField.Editable, drParams);
+                bool isEditable = ciField.IsEditable(drParams);
+                bool isMandatory = ciField.IsMandatory(drParams);
+                bool isVisible = ciField.IsVisible(drParams);
 
-                script += string.Format("FormatField('{0}', '{1}', {2}, {3}, {4});",
+                script += string.Format("FormatField('{0}', '{1}', {2}, {3}, {4}, {5});",
                     ciTable.TableName,
                     ciField.FieldName,
-                    ciField.Mandatory.ToString().ToLower(),
+                    isMandatory.ToString().ToLower(),
                     isEditable.ToString().ToLower(),
-                    ciField.Transparent.ToString().ToLower());
+                    ciField.Transparent.ToString().ToLower(),
+                    isVisible.ToString().ToLower());
             }
 
             return script;

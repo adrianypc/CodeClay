@@ -314,7 +314,8 @@ namespace CodeClay
             bool isPuxUrl = false;
 
             // Reformat URL if navigateUrl refers to a PUX file
-            if (!MyUtils.IsEmpty(navigateUrl) && !navigateUrl.Contains(@"\") && navigateUrl.EndsWith(".pux"))
+            string[] navigateUrlTokens = navigateUrl.Split('&');
+            if (!MyUtils.IsEmpty(navigateUrl) && !navigateUrl.Contains(@"\") && navigateUrlTokens[0].EndsWith(".pux"))
             {
                 bool isPopup = !MyUtils.IsEmpty(NavigatePos) && NavigatePos.StartsWith("Popup");
 
@@ -588,7 +589,7 @@ namespace CodeClay
                     }
                 }
 
-                DataTable dtActionSQL = MyWebUtils.GetBySQL("?exec spSQL_sel @AppID, @TableID, @MacroID, 'ActionSQL'", drPluginDefinition, true);
+                DataTable dtActionSQL = MyWebUtils.GetBySQL("?exec spMacroSQL_sel @AppID, @TableID, @MacroID, 'ActionSQL'", drPluginDefinition, true);
                 if (dtActionSQL != null)
                 {
                     foreach (DataRow drActionSQL in dtActionSQL.Rows)
@@ -599,7 +600,7 @@ namespace CodeClay
                     }
                 }
 
-                DataTable dtVisibleSQL = MyWebUtils.GetBySQL("?exec spSQL_sel @AppID, @TableID, @MacroID, 'VisibleSQL'", drPluginDefinition, true);
+                DataTable dtVisibleSQL = MyWebUtils.GetBySQL("?exec spMacroSQL_sel @AppID, @TableID, @MacroID, 'VisibleSQL'", drPluginDefinition, true);
                 if (dtVisibleSQL != null)
                 {
                     foreach (DataRow drVisibleSQL in dtVisibleSQL.Rows)
@@ -610,7 +611,7 @@ namespace CodeClay
                     }
                 }
 
-                DataTable dtValidateSQL = MyWebUtils.GetBySQL("?exec spSQL_sel @AppID, @TableID, @MacroID, 'ValidateSQL'", drPluginDefinition, true);
+                DataTable dtValidateSQL = MyWebUtils.GetBySQL("?exec spMacroSQL_sel @AppID, @TableID, @MacroID, 'ValidateSQL'", drPluginDefinition, true);
                 if (dtValidateSQL != null)
                 {
                     foreach (DataRow drValidateSQL in dtValidateSQL.Rows)
@@ -731,14 +732,14 @@ namespace CodeClay
                     dt.Columns.Add("SQL");
                 }
 
-                string deleteSQL = string.Format("exec spSQL_del @AppID, @TableID, @MacroID, '{0}'", sqlType);
+                string deleteSQL = string.Format("exec spMacroSQL_del @AppID, @TableID, @MacroID, '{0}'", sqlType);
                 MyWebUtils.GetBySQL(deleteSQL, drPluginDefinition, true);
 
                 foreach (string sql in sqlList)
                 {
                     drPluginDefinition["SQL"] = sql;
 
-                    string insertSQL = string.Format("exec spSQL_ins @AppID, @TableID, @MacroID, '{0}', @SQL", sqlType);
+                    string insertSQL = string.Format("exec spMacroSQL_ins @AppID, @TableID, @MacroID, '{0}', @SQL", sqlType);
                     MyWebUtils.GetBySQL(insertSQL, drPluginDefinition, true);
                 }
             }

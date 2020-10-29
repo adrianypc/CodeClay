@@ -72,7 +72,7 @@ namespace CodeClay
 
         protected void dxSpinEditPanel_Callback(object sender, CallbackEventArgsBase e)
         {
-            Refresh();
+            Refresh(sender, e);
         }
     }
 }

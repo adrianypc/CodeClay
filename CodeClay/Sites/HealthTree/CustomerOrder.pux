@@ -16,7 +16,7 @@
     <CiTextField>
         <FieldName>PlatformOrderNo</FieldName>
         <Caption>Platform Order#</Caption>
-        <Editable lang="sql">select  1 from tblSingleton where @Platform in ('LZ','PP')</Editable>
+        <Editable lang="sql">select  1 from tblSingleton where @Platform in ('LZ','PP','QT','SP')</Editable>
     </CiTextField>
     <CiTextField>
         <FieldName>OrderID</FieldName>
@@ -92,7 +92,7 @@
         <Caption>Delivery Country</Caption>
         <Code>Code</Code>
         <Description>Description</Description>
-        <DropdownSQL>select  Description,Code from Dropdown where Category = 'Country' order by Code</DropdownSQL>
+        <DropdownSQL>select  Code,Description from Dropdown where Category = 'Country' order by Code</DropdownSQL>
         <Mandatory>true</Mandatory>
     </CiComboField>
     <CiTextField>
@@ -109,22 +109,19 @@
         <FieldName>Mobile</FieldName>
         <Caption>Mobile</Caption>
     </CiTextField>
-    <CiTextField>
+    <CiCurrencyField>
         <FieldName>Shipping</FieldName>
         <Caption>Shipping ($)</Caption>
-        <Mask>Currency</Mask>
-    </CiTextField>
-    <CiTextField>
+    </CiCurrencyField>
+    <CiCurrencyField>
         <FieldName>Discount</FieldName>
         <Caption>Discount ($)</Caption>
-        <Mask>Currency</Mask>
-    </CiTextField>
-    <CiTextField>
+    </CiCurrencyField>
+    <CiCurrencyField>
         <FieldName>TotalAmount</FieldName>
         <Caption>Total ($)</Caption>
-        <Mask>Currency</Mask>
         <Editable>false</Editable>
-    </CiTextField>
+    </CiCurrencyField>
     <CiMemoField>
         <FieldName>Comments</FieldName>
         <Caption>Comments</Caption>
@@ -320,10 +317,10 @@
     <CiFieldExitMacro>
         <FieldName>PlatformOrderNo</FieldName>
         <ActionSQL>
-            select case when @Platform not in ('PP','LZ')  then  @Platform + cast(@CustomerOrderNo as varchar)
-                        else case when substring(@PlatformOrderNo,1,2) in (select code from Dropdown where Category = 'Platform') then @Platform + substring(@PlatformOrderNo,3,LEN(@PlatformOrderNo))
-                                  else @Platform + cast(@PlatformOrderNo as varchar) end
-                    end as OrderID
+            select case when @Platform not in ('PP','LZ','QT','SP')  then  @Platform + cast(@CustomerOrderNo as varchar)
+            else case when substring(@PlatformOrderNo,1,2) in (select code from Dropdown where Category = 'Platform') then @Platform + substring(@PlatformOrderNo,3,LEN(@PlatformOrderNo))
+            else @Platform + cast(@PlatformOrderNo as varchar) end
+            end as OrderID
             from tblSingleton
         </ActionSQL>
    </CiFieldExitMacro>
@@ -331,16 +328,16 @@
         <FieldName>Platform</FieldName>
         <ActionSQL>
             select
-            case when @Platform not in ('PP','LZ') then @Platform + cast(@CustomerOrderNo as nvarchar)
-            else case 
-                    when substring(@PlatformOrderNo,1,2) in (select code from Dropdown where Category = 'Platform') then @Platform + substring(@PlatformOrderNo,3,LEN(@PlatformOrderNo))
-                    else @Platform + cast(@PlatformOrderNo as varchar) end
-            end as PlatformOrderNo,
-            case when @Platform not in ('PP','LZ') then @Platform + cast(@CustomerOrderNo as nvarchar)
-            else case 
-                    when substring(@PlatformOrderNo,1,2) in (select code from Dropdown where Category = 'Platform') then @Platform + substring(@PlatformOrderNo,3,LEN(@PlatformOrderNo))
-                    else @Platform + cast(@PlatformOrderNo as varchar) end
-            end as OrderID
+                case when @Platform not in ('PP','LZ','QT','SP') then @Platform + cast(@CustomerOrderNo as nvarchar)
+                else case
+                when substring(@PlatformOrderNo,1,2) in (select code from Dropdown where Category = 'Platform') then @Platform + substring(@PlatformOrderNo,3,LEN(@PlatformOrderNo))
+                else @Platform + cast(@PlatformOrderNo as varchar) end
+                end as PlatformOrderNo,
+                case when @Platform not in ('PP','LZ','QT','SP') then @Platform + cast(@CustomerOrderNo as nvarchar)
+                else case
+                when substring(@PlatformOrderNo,1,2) in (select code from Dropdown where Category = 'Platform') then @Platform + substring(@PlatformOrderNo,3,LEN(@PlatformOrderNo))
+                else @Platform + cast(@PlatformOrderNo as varchar) end
+                end as OrderID
             from tblSingleton
         </ActionSQL>
     </CiFieldExitMacro>

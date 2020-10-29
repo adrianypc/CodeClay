@@ -44,19 +44,28 @@
         <Editable>false</Editable>
         <width>6</width>
     </CiCheckField>
-    <CiTextField>
-        <FieldName>TotalAmountInSGD</FieldName>
-        <Caption>Total SG$</Caption>
-        <Mask>Currency</Mask>
+    <CiCurrencyField>
+        <FieldName>TotalSales</FieldName>
+        <Caption>Sales S$</Caption>
         <Editable>false</Editable>
-    </CiTextField>
+    </CiCurrencyField>
+    <CiCurrencyField>
+        <FieldName>Shipping</FieldName>
+        <Caption>Shipping S$</Caption>
+        <Editable>false</Editable>
+    </CiCurrencyField>
+    <CiCurrencyField>
+        <FieldName>TotalAmountInSGD</FieldName>
+        <Caption>Total S$</Caption>
+        <Editable>false</Editable>
+    </CiCurrencyField>
     <SelectMacro>
 	    <ActionSQL>?exec spSupplierOrders_selbyStatus 'Received',0</ActionSQL>
     </SelectMacro>
     <CiMacro>
-    <MacroName>SupplierOrderDetail</MacroName>
-    <ActionSQL>select @SupplierOrderNo as SupplierOrderNo, @SupplierID as SupplierID, 'Historical' as CalledFrom</ActionSQL>
-    <NavigateUrl>SupplierOrder.pux</NavigateUrl>
-    <NavigatePos>Popup</NavigatePos>
+        <MacroName>SupplierOrderDetail</MacroName>
+        <ActionSQL>select @SupplierOrderNo as SupplierOrderNo, @SupplierID as SupplierID, 'Historical' as CalledFrom,@IsTransferred as IsTransferred</ActionSQL>
+        <NavigateUrl>SupplierOrder.pux</NavigateUrl>
+        <NavigatePos>Popup</NavigatePos>
     </CiMacro>
 </CiTable>

@@ -15,18 +15,28 @@
   </CiTextField>
   <CiTextField>
     <FieldName>Description</FieldName>
-    <Caption>Description</Caption>
-    <Width>90</Width>
+    <Caption>Task Description</Caption>
+    <Width>80</Width>
   </CiTextField>
+  <CiTextField>
+    <FieldName>Type</FieldName>
+    <Caption>Task Type</Caption>
+    <Width>10</Width>
+  </CiTextField>
+  <CiCheckField>
+    <FieldName>Status</FieldName>
+    <Caption>Status</Caption>
+    <Width>5</Width>
+  </CiCheckField>
   <SelectMacro>
-    <ActionSQL>select Description, ID from Tasks order by ID</ActionSQL>
+    <ActionSQL>select  Description, ID, Status, Type from Tasks order by ID</ActionSQL>
   </SelectMacro>
   <InsertMacro>
-    <ActionSQL>insert into Tasks (Description) values (@Description)</ActionSQL>
+    <ActionSQL>insert into Tasks (Description, Status, Type) values (@Description, @Status, @Type)</ActionSQL>
     <ValidateSQL></ValidateSQL>
   </InsertMacro>
   <UpdateMacro>
-    <ActionSQL>update Tasks set Description = @Description where ID = @ID</ActionSQL>
+    <ActionSQL>update Tasks set Description = @Description, Status = @Status, Type = @Type where ID = @ID</ActionSQL>
     <ValidateSQL></ValidateSQL>
   </UpdateMacro>
   <DeleteMacro>

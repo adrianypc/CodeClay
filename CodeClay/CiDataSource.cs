@@ -235,6 +235,7 @@ namespace CodeClay
 
                     if (!dt.Columns.Contains(fieldName))
                     {
+                        DataColumn dc = dt.Columns.Add(fieldName);
                         string expression = "";
 
                         if (ciField.Computed)
@@ -245,13 +246,12 @@ namespace CodeClay
                         {
                             if (MyUtils.IsEmpty(defaultValue) && drParams != null && drParams.Table.Columns.Contains(fieldName))
                             {
-                                defaultValue = drParams[fieldName].ToString();
+                                defaultValue = drParams[fieldName].ToString().Replace("'", "''");
                             }
 
                             expression = string.Format("'{0}'", defaultValue);
                         }
 
-                        DataColumn dc = dt.Columns.Add(fieldName);
                         dc.Expression = expression;
                     }
                     else if (ciField.GetType() == typeof(CiField) && !MyUtils.IsEmpty(defaultValue))

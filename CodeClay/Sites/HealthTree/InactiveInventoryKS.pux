@@ -1,10 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <CiTable>
-  <TableName>ActiveInventoryAU</TableName>
-  <TableCaption>Inventory AU (Active)</TableCaption>
+  <TableName>InactiveInventoryKS</TableName>
+  <TableCaption>Inventory KS (Inactive)</TableCaption>
   <RowKey>InventoryItemNo,ProductID,BranchCode</RowKey>
   <DefaultView>Grid</DefaultView>
-  <DoubleClickMacroName>StocklevelUpdate</DoubleClickMacroName>
   <CiTextField>
     <FieldName>InventoryItemNo</FieldName>
     <Hidden>true</Hidden>
@@ -17,7 +16,7 @@
     <Description>ProductName</Description>
     <DropdownSQL>select ProductID,ProductName from Product order by ProductID</DropdownSQL>
     <Editable>false</Editable>
-   <Searchable>true</Searchable>
+    <Searchable>true</Searchable>
   </CiComboField>
   <CiComboField>
     <FieldName>BranchCode</FieldName>
@@ -34,18 +33,13 @@
     <ColumnFormat>dd/MM/yyyy</ColumnFormat>
   </CiDateField>
   <CiDateField>
-    <FieldName>ExpiryDate</FieldName>
-    <Caption>Expiry Date</Caption>
-    <ColumnFormat>dd/MM/yyyy</ColumnFormat>
+        <FieldName>ExpiryDate</FieldName>
+        <Caption>Expiry Date</Caption>
+        <ColumnFormat>dd/MM/yyyy</ColumnFormat>
   </CiDateField>
-  <CiCurrencyField>
-    <FieldName>CostValue</FieldName>
-    <Caption>Value (A$)</Caption>
-    <Editable>false</Editable>
-  </CiCurrencyField>
   <CiNumericField>
-	<FieldName>QuantityOnHand</FieldName>
-	<Caption>Quantity on Hand</Caption>
+		<FieldName>QuantityOnHand</FieldName>
+		<Caption>Quantity on Hand</Caption>
   </CiNumericField>
   <CiNumericField>
     <FieldName>QuantityOrdered</FieldName>
@@ -73,9 +67,9 @@
     <Editable>false</Editable>
   </CiNumericField>
   <CiTable Src="InactiveInventory.pux">
-     <SelectMacro>
+    <SelectMacro>
        <ActionSQL>?exec spInventory_Inactive_sel @ProductID,@BranchCode</ActionSQL>
-     </SelectMacro>
+    </SelectMacro>
   </CiTable>
   <DefaultMacro>
 	<ActionSQL>
@@ -91,7 +85,7 @@
     </ActionSQL>
 	</DefaultMacro>
 	<SelectMacro>
-	  <ActionSQL>?exec spInventory_selbyStatusAndBranch 'HT-AU','Y',@ProductID</ActionSQL>
+	  <ActionSQL>?exec spInventory_selbyStatusAndBranch 'HT-KS','N',@ProductID</ActionSQL>
 	</SelectMacro>
  <InsertMacro>
 	<ActionSQL>
@@ -134,11 +128,6 @@
     </ActionSQL>
     <VisibleSQL>select 1 from Inventory where InventoryItemNo = @InventoryItemNo</VisibleSQL>
   </DeleteMacro>
-  <CiMacro>
-    <MacroName>StocklevelUpdate</MacroName>
-    <Caption>Stock level is correct TODAY</Caption>
-    <ActionSQL>?exec spInventory_upd_datestocktake @InventoryItemNo,@CI_UserEmail</ActionSQL>
-  </CiMacro>
   <CiFieldExitMacro>
     <FieldName>QuantityOnHand</FieldName>
     <ActionSQL>

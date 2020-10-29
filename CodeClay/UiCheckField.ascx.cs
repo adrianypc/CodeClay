@@ -94,12 +94,14 @@ namespace CodeClay
                 {
                     // Do nothing
                 }
+
+                SetupPopupMacro(dxPopupMacro);
             }
         }
 
         protected void dxCheckPanel_Callback(object sender, CallbackEventArgsBase e)
         {
-            Refresh();
+            Refresh(sender, e);
         }
     }
 }

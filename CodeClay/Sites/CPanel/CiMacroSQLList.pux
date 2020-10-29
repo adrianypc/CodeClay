@@ -37,28 +37,27 @@
     <Caption>Edit the SQL</Caption>
   </CiMemoField>
   <SelectMacro>
-    <ActionSQL>?exec spSQL_sel @AppID, @TableID, @MacroID, @SQLType</ActionSQL>
+    <ActionSQL>?exec spMacroSQL_sel @AppID, @TableID, @MacroID, @SQLType</ActionSQL>
   </SelectMacro>
   <InsertMacro>
-    <ActionSQL>exec spSQL_inherit @AppID, @TableID, @MacroID</ActionSQL>
-    <ActionSQL>exec spSQL_ins @AppID, @TableID, @MacroID, @SQLType, @SQL</ActionSQL>
+    <ActionSQL>exec spMacroSQL_inherit @AppID, @TableID, @MacroID</ActionSQL>
+    <ActionSQL>exec spMacroSQL_ins @AppID, @TableID, @MacroID, @SQLType, @SQL</ActionSQL>
     <ActionSQL>select @AppID as AppID, @TableID as TableID</ActionSQL>
     <CiSerializeMacro>
       <Direction>Download</Direction>
     </CiSerializeMacro>
   </InsertMacro>
   <UpdateMacro>
-    <ActionSQL>exec spSQL_inherit @AppID, @TableID, @MacroID</ActionSQL>
-    <ActionSQL>exec spSQL_upd @AppID, @TableID, @MacroID, @SQLType, @LineNum, @SQL</ActionSQL>
+    <ActionSQL>exec spMacroSQL_inherit @AppID, @TableID, @MacroID</ActionSQL>
+    <ActionSQL>exec spMacroSQL_upd @AppID, @TableID, @MacroID, @SQLType, @LineNum, @SQL</ActionSQL>
     <ActionSQL>select @AppID as AppID, @TableID as TableID</ActionSQL>
     <CiSerializeMacro>
       <Direction>Download</Direction>
     </CiSerializeMacro>
-    <VisibleSQL1>select 1 from Singleton where @Editable = 1</VisibleSQL1>
   </UpdateMacro>
   <DeleteMacro>
-    <ActionSQL>exec spSQL_inherit @AppID, @TableID, @MacroID</ActionSQL>
-    <ActionSQL>exec spSQL_del @AppID, @TableID, @MacroID, @SQLType, @LineNum</ActionSQL>
+    <ActionSQL>exec spMacroSQL_inherit @AppID, @TableID, @MacroID</ActionSQL>
+    <ActionSQL>exec spMacroSQL_del @AppID, @TableID, @MacroID, @SQLType, @LineNum</ActionSQL>
     <ActionSQL>select @AppID as AppID, @TableID as TableID</ActionSQL>
     <CiSerializeMacro>
       <Direction>Download</Direction>

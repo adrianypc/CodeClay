@@ -33,15 +33,6 @@ namespace CodeClay
             }
         }
 
-        [XmlIgnore]
-        public CiMacro[] CiMacros
-        {
-            get
-            {
-                return CiPlugins.Where(c => (c as CiMacro) != null).Select(c => c as CiMacro).ToArray();
-            }
-        }
-
         // --------------------------------------------------------------------------------------------------
         // Methods (Overrides)
         // --------------------------------------------------------------------------------------------------
@@ -118,15 +109,19 @@ namespace CodeClay
                     buttonText = ciMacro.Caption;
                 }
 
-                dxButton.Text = buttonText;
-
                 string fieldName = CiButtonField.FieldName;
-                dxButton.JSProperties["cpFieldName"] = fieldName;
                 ASPxCallbackPanel editorPanel = dxButton.NamingContainer as ASPxCallbackPanel;
                 if (editorPanel != null)
                 {
+                    editorPanel.ID = fieldName + "Panel";
+                    editorPanel.ClientIDMode = ClientIDMode.Static;
                     editorPanel.JSProperties["cpFieldName"] = fieldName;
                 }
+
+                dxButton.ID = fieldName;
+                dxButton.ClientIDMode = ClientIDMode.Static;
+                dxButton.Text = buttonText;
+                dxButton.JSProperties["cpFieldName"] = fieldName;
             }
         }
 
@@ -187,7 +182,7 @@ namespace CodeClay
             {
                 string[] parameters = macroString.Split(LIST_SEPARATOR.ToCharArray());
 
-                if (parameters.Length == 2)
+                if (parameters.Length > 1)
                 {
                     string buttonText = parameters[0];
                     string itemIndexString = parameters[1];

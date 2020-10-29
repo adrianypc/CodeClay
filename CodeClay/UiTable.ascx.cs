@@ -760,6 +760,8 @@ namespace CodeClay
                 BuildCardView(dxSearch, true);
                 dxSearch.AddNewCard();
             }
+
+            dxSearch.Attributes.Add("onkeypress", String.Format("dxTable_KeyPress(event, {0});", dxSearch.ClientInstanceName));
         }
 
         protected void dxSearch_Load(object sender, EventArgs e)
@@ -845,6 +847,8 @@ namespace CodeClay
             {
                 dxCard.JSProperties["cpBubbleUpdate"] = CiTable.BubbleUpdate;
             }
+
+            dxCard.Attributes.Add("onkeypress", String.Format("dxTable_KeyPress(event, {0});", dxCard.ClientInstanceName));
         }
 
         protected void dxCard_Load(object sender, EventArgs e)
@@ -1024,6 +1028,8 @@ namespace CodeClay
                 dxLoadingPanel.JSProperties["cpTableName"] = tableName;
                 dxGrid.JSProperties["cpBubbleUpdate"] = CiTable.BubbleUpdate;
             }
+
+            dxGrid.Attributes.Add("onkeypress", String.Format("dxTable_KeyPress(event, {0});", dxGrid.ClientInstanceName));
         }
 
         protected void dxGrid_Load(object sender, EventArgs e)
@@ -2121,7 +2127,7 @@ namespace CodeClay
                 foreach (CiField ciField in CiTable.CiFields)
                 {
                     string fieldName = ciField.FieldName;
-                    if (ciField.Mandatory && MyUtils.IsEmpty(this[fieldName]))
+                    if (ciField.IsMandatory(GetState()) && MyUtils.IsEmpty(this[fieldName]))
                     {
                         ErrorFieldName = fieldName;
                         ErrorMessage = "Please fill in the missing information";

@@ -30,15 +30,14 @@
 		<FieldName>Quantity</FieldName>
 		<Caption>Quantity Ordered</Caption>
 		<Width>20</Width>
-	</CiNumericField>
-  <CiTextField>
+  </CiNumericField>
+  <CiCurrencyField>
     <FieldName>Amount</FieldName>
     <Caption>Price ($)</Caption>
     <Width>20</Width>
-    <Mask>Currency</Mask>
     <Editable>true</Editable>
     <Mandatory>true</Mandatory>
-  </CiTextField>
+  </CiCurrencyField>
   <CiCheckField>
     <FieldName>DropShipping</FieldName>
     <Caption>Drop Shipping</Caption>

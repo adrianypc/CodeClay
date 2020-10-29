@@ -9,35 +9,36 @@
 	    <FieldName>ProductID</FieldName>
 	    <Caption>Product ID</Caption>
 	    <Editable>false</Editable>
-        <width>8</width>
+        <Width>8</Width>
     </CiTextField>
     <CiTextField>
-	    <FieldName>ProductName</FieldName>
-	    <Caption>Product Name</Caption>
+        <FieldName>ProductName</FieldName>
+        <Caption>Product Name</Caption>
         <Editable>false</Editable>
-        <width>30</width>
+        <Width>40</Width>
     </CiTextField>
     <CiLinkField>
         <FieldName>HealthTreeURL</FieldName>
         <Caption>HealthTree URL</Caption>
         <Editable>false</Editable>
-        <Width>30</Width>
+        <Width>35</Width>
     </CiLinkField>
     <CiTextField>
 	    <FieldName>UnitCostPrice</FieldName>
-	    <Caption>Unit Cost Price ($)</Caption>
+	    <Caption>Unit Cost Price (A$)</Caption>
         <Editable>false</Editable>
+        <Width>13</Width>
     </CiTextField>
     <CiTextField>
 	    <FieldName>UnitSellingPrice</FieldName>
-	    <Caption>Unit Selling Price ($)</Caption>
-        <Width>10</Width>
+	    <Caption>Unit Selling Price (S$)</Caption>
         <Editable>false</Editable>
+        <Width>13</Width>
     </CiTextField>
     <CiCheckField>
         <FieldName>IsDropShipping</FieldName>
         <Caption>DropShipping</Caption>
-        <width>4</width>
+        <Width>10</Width>
         <Editable>false</Editable>
     </CiCheckField>
     <SelectMacro>

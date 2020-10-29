@@ -94,7 +94,7 @@ namespace CodeClay
 
         protected void dxCurrencyPanel_Callback(object sender, CallbackEventArgsBase e)
         {
-            Refresh();
+            Refresh(sender, e);
         }
     }
 }

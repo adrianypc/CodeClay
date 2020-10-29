@@ -12,6 +12,14 @@
 	);
 }
 
+function dxTextBox_KeyPress(sender, event) {
+    switch (event.htmlEvent.keyCode) {
+        case 13:
+            dxTextBox_ValueChanged(sender, event);
+            break;
+    }
+}
+
 function dxTextBox_ValueChanged(sender, event) {
     var dxTextBox = sender;
     var tableName = dxTextBox.cpTableName;

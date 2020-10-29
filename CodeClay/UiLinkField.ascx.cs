@@ -120,7 +120,7 @@ namespace CodeClay
 
         protected void dxLinkPanel_Callback(object sender, CallbackEventArgsBase e)
         {
-            Refresh();
+            Refresh(sender, e);
         }
 
         protected void dxUpload_FileUploadComplete(object sender, FileUploadCompleteEventArgs e)

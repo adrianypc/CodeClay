@@ -49,7 +49,7 @@
 	<CiMemoField>
 		<FieldName>BrandInfo</FieldName>
 		<Caption>Brand Info</Caption>
-    <Hidden>true</Hidden>
+        <Hidden>true</Hidden>
 	</CiMemoField>
   <CiTable Src="SupplierOrder.pux">
     <SelectMacro>

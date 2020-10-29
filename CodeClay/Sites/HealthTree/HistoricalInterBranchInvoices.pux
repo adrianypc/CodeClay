@@ -16,12 +16,11 @@
     <Caption>Invoice #</Caption>
     <Editable>false</Editable>
   </CiTextField>
-  <CiTextField>
+  <CiCurrencyField>
      <FieldName>GrandTotal</FieldName>
      <Caption>Grand Total ($)</Caption>
-     <Mask>Currency</Mask>
      <Editable>false</Editable>
-  </CiTextField>
+  </CiCurrencyField>
   <SelectMacro>
     <ActionSQL>?exec spInterBranchInvoice_selbyStatus 'Paid',-1</ActionSQL>
   </SelectMacro>

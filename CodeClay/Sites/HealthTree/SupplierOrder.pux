@@ -1,7 +1,16 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <CiTable>
 	<TableName>SupplierOrder</TableName>
-	<TableCaption>Supplier Order</TableCaption>
+	<TableCaption lang="sql">
+        select 
+            case 
+                when @IsTransferred = cast(1 as bit) then 'Transfer Order' 
+                when @SupplierID is not null then
+                    case 
+                        when (select 1 from Supplier where SupplierID = @SupplierID and SupplierName not like 'HealthTree%') = 1 then 'Supplier Order'
+                        else 'Transfer Order' end
+                else 'Supplier Order' end
+    </TableCaption>
 	<RowKey>SupplierOrderNo</RowKey>
 	<DefaultView>Card</DefaultView>
   <CiTextField>
@@ -31,7 +40,14 @@
     <FieldName>IsTransferred</FieldName>
     <Caption>Transfer Order</Caption>
     <Editable lang="sql">select distinct 1 from SupplierOrders where @Status = 'Open' </Editable>
+    <Hidden>true</Hidden>
   </CiCheckField>
+  <CiComboField>
+    <FieldName>CusBranchCode</FieldName>
+    <Caption>From Branch</Caption>
+    <DropdownSQL>select Code from Dropdown where Category = 'Branch' order by Code</DropdownSQL>
+    <Editable lang="sql">select 1 from tblSingleton where @IsTransferred = cast(1 as bit)</Editable>
+  </CiComboField>
   <CiComboField>
     <FieldName>SupplierID</FieldName>
     <TextFieldName>SupplierName</TextFieldName>
@@ -42,17 +58,22 @@
     <Mandatory>true</Mandatory>
     <Editable lang="sql">select 1 from tblSingleton where cast(0 as bit) = @IsTransferred</Editable>
   </CiComboField>
+  <CiComboField>
+    <FieldName>BranchCode</FieldName>
+    <Caption>To Branch</Caption>
+    <DropdownSQL>select Code from Dropdown where Category = 'Branch' order by Code</DropdownSQL>
+    <Mandatory>true</Mandatory>
+  </CiComboField>
   <CiLinkField>
     <FieldName>OrderFileURL</FieldName>
     <Caption>Order File</Caption>
     <Folder lang="sql">select 'SavedFiles\SupplierOrders\' + ltrim(str(@SupplierID)) + '\F' + ltrim(str(@SupplierOrderNo))</Folder>
     <Width>50</Width>
   </CiLinkField>
-  <CiTextField>
+  <CiCurrencyField>
     <FieldName>Shipping</FieldName>
     <Caption>Shipping ($)</Caption>
-    <Mask>Currency</Mask>
-  </CiTextField>
+  </CiCurrencyField>
   <CiCurrencyField>
     <FieldName>TotalAmount</FieldName>
     <Caption>Total ($)</Caption>
@@ -72,18 +93,22 @@
      <Editable>false</Editable>
     <Width>50</Width>
  </CiLinkField>
- <CiNumericField>
+ <CiTextField>
     <FieldName>ConversionRate</FieldName>
     <Caption>Conversion Rate</Caption>
     <Editable lang="sql">select 1 from tblSingleton where @CurrentCurrency != 'SGD'</Editable>
     <Mandatory>true</Mandatory>
- </CiNumericField>
- <CiTextField>
-    <FieldName>TotalAmountInSGD</FieldName>
-     <Caption>Total (S$)</Caption>
-    <Mask>Currency</Mask>
-    <Editable>false</Editable>
  </CiTextField>
+ <CiCurrencyField>
+    <FieldName>TotalAmountInSGD</FieldName>
+    <Caption>Total (S$)</Caption>
+    <Editable>false</Editable>
+ </CiCurrencyField>
+ <CiLinkField>
+    <FieldName>DeliveryURL</FieldName>
+    <Caption>Delivery URL</Caption>
+    <Width>50</Width>
+ </CiLinkField>
  <CiMemoField>
     <FieldName>Comments</FieldName>
     <Caption>Comments</Caption>
@@ -95,14 +120,27 @@
   <CiTable Src="SupplierOrderItems.pux" />
   <DefaultMacro>
     <ActionSQL>
-      select
-      '-New-' as SupplierOrderNo,
-      convert(datetime,cast(getdate() as nvarchar(12)),103) as SupplierOrderDate,
-      coalesce(@SupplierID,1) as SupplierID,
-      'Unique Health Products' as SupplierName,
-      'Open' as Status,
-      cast(0 as bit) as IsTransferred
-      from SupplierOrders
+        select
+        '-New-' as SupplierOrderNo,
+        convert(datetime,cast(getdate() as nvarchar(12)),103) as SupplierOrderDate,
+        coalesce(@IsTransferred,cast(0 as bit)) as IsTransferred,
+        case
+            when @SupplierID is not null then @SupplierID
+            when @SupplierID is null and @IsTransferred = cast(1 as bit) then
+                (select SupplierID from Supplier where SupplierName like 'HealthTree - Transfer%')
+            when @SupplierID is null and @IsTransferred = cast(0 as bit) then
+                (select SupplierID from Supplier where SupplierName = 'Unique Health Products')
+        end as SupplierID,
+        case when @IsTransferred = cast(1 as bit) then 'HealthTree - Transfer' else 'Unique Health Products' end as SupplierName,
+        'Open' as Status,
+        case 
+            when @IsTransferred = cast(1 as bit) then
+                (select BranchCode from Supplier where SupplierName like 'HealthTree - Transfer%')
+            else
+                (select BranchCode from Supplier where SupplierName = 'Unique Health Products')
+        end as BranchCode,
+        case when @IsTransferred = cast(1 as bit) then 'HT-AU' else '' end as CusBranchCode
+        from SupplierOrders
     </ActionSQL>
   </DefaultMacro>
   <SelectMacro>
@@ -128,7 +166,10 @@
         @ConversionRate,
         @TotalAmountInSGD,
         @ExchangeRateURL,
-        @Comments
+        @DeliveryURL,
+        @Comments,
+        @BranchCode,
+        @CusBranchCode
     </ActionSQL>
     <VisibleSQL>select distinct 1 from SupplierOrders where @CalledFrom is null</VisibleSQL>
     </InsertMacro>
@@ -148,7 +189,10 @@
         @ConversionRate,
         @TotalAmountInSGD,
         @ExchangeRateURL,
-        @Comments
+        @DeliveryURL,
+        @Comments,
+        @BranchCode,
+        @CusBranchCode
     </ActionSQL>
     <VisibleSQL>
         select 1 from SupplierOrders
@@ -195,11 +239,12 @@
     </VisibleSQL>
   </CiMacro>
   <CiMacro>
-    <MacroName>Create Transfer Order</MacroName>
+    <MacroName>Spawn Transfer Order</MacroName>
     <ActionSQL>?exec spSupplierOrders_transfer_ins @SupplierOrderNo</ActionSQL>
     <VisibleSQL>
-      select 1 from SupplierOrders
-      where SupplierOrderNo = case when isnumeric(@SupplierOrderNo) = 1 then @SupplierOrderNo else -1 end
+        select 1 from SupplierOrders
+        where SupplierOrderNo = case when isnumeric(@SupplierOrderNo) = 1 then @SupplierOrderNo else -1 end
+        and not exists (select 1 from supplier where SupplierID = @SupplierID and (SupplierName LIKE '%HealthTree Singapore%' or SupplierName LIKE '%HealthTree KhaiSing%'))
     </VisibleSQL>
     <NavigateUrl>SupplierOrder.pux</NavigateUrl>
   </CiMacro>
@@ -240,9 +285,15 @@
      </ActionSQL>
   </CiFieldExitMacro>
   <CiFieldExitMacro>
-     <FieldName>IsTransferred</FieldName>
-     <ActionSQL>
-         select SupplierID,SupplierName from Supplier where SupplierName like '%HealthTree Australia%' and @IsTransferred = cast(1 as bit)
-     </ActionSQL>
+    <FieldName>IsTransferred</FieldName>
+    <ActionSQL>
+        select SupplierID,SupplierName,BranchCode,'HT-AU' as CusBranchCode from Supplier where SupplierName like '%HealthTree - Transfer%' and @IsTransferred = cast(1 as bit)
+    </ActionSQL>
+  </CiFieldExitMacro>
+  <CiFieldExitMacro>
+    <FieldName>SupplierID</FieldName>
+    <ActionSQL>
+        select BranchCode from Supplier where SupplierID = @SupplierID
+    </ActionSQL>
   </CiFieldExitMacro>
 </CiTable>

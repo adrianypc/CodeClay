@@ -114,7 +114,7 @@ namespace CodeClay
 
         protected void dxDatePanel_Callback(object sender, CallbackEventArgsBase e)
         {
-            Refresh();
+            Refresh(sender, e);
         }
     }
 }
