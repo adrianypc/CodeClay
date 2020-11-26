@@ -404,13 +404,11 @@ namespace CodeClay
 
                             return ciPlugin;
                         }
-                        catch (Exception)
+                        finally
                         {
-                            // Do nothing, NULL will be returned
+                            reader.Close();
                         }
                     }
-
-                    reader.Close();
                 }
             }
 
@@ -1256,7 +1254,7 @@ namespace CodeClay
 
         public virtual string GetPuxUrl(DataRow drPluginKey)
         {
-            string appName = GetApplicationName(drPluginKey);
+            string appName = MyWebUtils.GetApplicationName(drPluginKey);
 
             if (PluginType != null)
             {
@@ -1371,23 +1369,6 @@ namespace CodeClay
         // --------------------------------------------------------------------------------------------------
         // Helpers
         // --------------------------------------------------------------------------------------------------
-
-        protected string GetApplicationName(DataRow drAppKey)
-        {
-            DataTable dt = MyWebUtils.GetBySQL("?exec spApplication_sel @AppID", drAppKey, true);
-
-            if (dt != null && dt.Columns.Contains("AppName") && MyWebUtils.GetNumberOfRows(dt) > 0)
-            {
-                object objAppName = dt.Rows[0]["AppName"];
-
-                if (objAppName != null)
-                {
-                    return objAppName.ToString();
-                }
-            }
-
-            return null;
-        }
 
         private bool IsConfigurableProperty(Type pluginType, string propertyName)
         {

@@ -12,6 +12,18 @@
 	);
 }
 
+function dxCurrencyBox_KeyPress(sender, event) {
+    var key = event.htmlEvent.keyCode;
+
+    switch (key) {
+        case 13:
+            dxCurrencyBox_ValueChanged(sender, event);
+            break;
+    }
+
+    RunKeyPress(sender, key);
+}
+
 function dxCurrencyBox_ValueChanged(sender, event) {
     var dxCurrencyBox = sender;
     var tableName = dxCurrencyBox.cpTableName;
@@ -30,5 +42,5 @@ function dxCurrencyPanel_Init(sender, event) {
 }
 
 function dxCurrencyPanel_EndCallback(sender, event) {
-    RefreshNextFollower();
+    RefreshNextFollower(sender.cpLeader);
 }

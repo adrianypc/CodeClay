@@ -318,7 +318,7 @@ namespace CodeClay
             }
         }
 
-		[XmlIgnore]
+        [XmlIgnore]
 		public CiFieldExitMacro[] CiFieldExitMacros
 		{
 			get
@@ -760,8 +760,6 @@ namespace CodeClay
                 BuildCardView(dxSearch, true);
                 dxSearch.AddNewCard();
             }
-
-            dxSearch.Attributes.Add("onkeypress", String.Format("dxTable_KeyPress(event, {0});", dxSearch.ClientInstanceName));
         }
 
         protected void dxSearch_Load(object sender, EventArgs e)
@@ -847,8 +845,6 @@ namespace CodeClay
             {
                 dxCard.JSProperties["cpBubbleUpdate"] = CiTable.BubbleUpdate;
             }
-
-            dxCard.Attributes.Add("onkeypress", String.Format("dxTable_KeyPress(event, {0});", dxCard.ClientInstanceName));
         }
 
         protected void dxCard_Load(object sender, EventArgs e)
@@ -890,11 +886,13 @@ namespace CodeClay
         {
             dxCard.SettingsPager.SettingsTableLayout.RowsPerPage = 1;
             e.Cancel = !ValidationOK("New");
+            UiApplication.Me.SetCommandFired(CiTable.TableName, "UpdateNew");
         }
 
         protected void dxCard_CardUpdating(object sender, DevExpress.Web.Data.ASPxDataUpdatingEventArgs e)
         {
             e.Cancel = !ValidationOK("Edit");
+            UiApplication.Me.SetCommandFired(CiTable.TableName, "Update");
         }
 
         protected void dxCard_CancelCardEditing(object sender, ASPxStartCardEditingEventArgs e)
@@ -1028,8 +1026,6 @@ namespace CodeClay
                 dxLoadingPanel.JSProperties["cpTableName"] = tableName;
                 dxGrid.JSProperties["cpBubbleUpdate"] = CiTable.BubbleUpdate;
             }
-
-            dxGrid.Attributes.Add("onkeypress", String.Format("dxTable_KeyPress(event, {0});", dxGrid.ClientInstanceName));
         }
 
         protected void dxGrid_Load(object sender, EventArgs e)
@@ -1064,11 +1060,13 @@ namespace CodeClay
         protected void dxGrid_RowInserting(object sender, DevExpress.Web.Data.ASPxDataInsertingEventArgs e)
         {
             e.Cancel = !ValidationOK("New");
+            UiApplication.Me.SetCommandFired(CiTable.TableName, "UpdateNew");
         }
 
         protected void dxGrid_RowUpdating(object sender, DevExpress.Web.Data.ASPxDataUpdatingEventArgs e)
         {
             e.Cancel = !ValidationOK("Edit");
+            UiApplication.Me.SetCommandFired(CiTable.TableName, "Update");
         }
 
         protected void dxGrid_BeforeColumnSortingGrouping(object sender, ASPxGridViewBeforeColumnGroupingSortingEventArgs e)
@@ -1929,8 +1927,15 @@ namespace CodeClay
             string confirmableMacros = "";
 
             ArrayList ciConfirmableMacros = new ArrayList();
+            CiMacro[] ciCrudMacros = new CiMacro[] {
+                CiTable.SelectMacro,
+                CiTable.InsertMacro,
+                CiTable.UpdateMacro,
+                CiTable.DeleteMacro,
+                CiTable.DefaultMacro};
+
             int i = 0;
-            foreach (CiMacro ciMacro in CiTable.CiMacros)
+            foreach (CiMacro ciMacro in CiTable.CiMacros.Union(ciCrudMacros).ToArray())
             {
                 if (ciMacro != null && ciMacro.Confirm)
                 {
@@ -2303,7 +2308,7 @@ namespace CodeClay
             object oldTableName = MyWebUtils.GetField(drKey, "OldTableName");
             if (!MyUtils.IsEmpty(oldTableName))
             {
-                string appName = GetApplicationName(drKey);
+                string appName = MyWebUtils.GetApplicationName(drKey);
                 string oldPuxUrl = MyWebUtils.MapPath(string.Format("Sites/{0}/{1}.pux", appName, oldTableName));
 
                 if (File.Exists(oldPuxUrl) && oldPuxUrl != puxUrl)

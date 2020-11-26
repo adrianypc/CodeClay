@@ -16,7 +16,7 @@ function dxLinkPanel_Init(sender, event) {
 }
 
 function dxLinkPanel_EndCallback(sender, event) {
-    RefreshNextFollower();
+    RefreshNextFollower(sender.cpLeader);
 }
 
 function dxDelete_Init(sender, event) {

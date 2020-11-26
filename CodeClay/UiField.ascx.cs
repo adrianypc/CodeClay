@@ -557,7 +557,11 @@ namespace CodeClay
                         fieldName = nameValuePairs[0];
                         fieldValue = nameValuePairs[1];
 
-                        drParams[fieldName] = fieldValue;
+                        CiField ciField = CiField.CiTable.GetField(fieldName);
+                        if (ciField != null)
+                        {
+                            drParams[fieldName] = ciField.GetNativeValue(fieldValue);
+                        }
                     }
 
                     if (nameValuePairs.Length > 3)
@@ -565,7 +569,11 @@ namespace CodeClay
                         fieldName = nameValuePairs[2];
                         fieldValue = nameValuePairs[3];
 
-                        drParams[fieldName] = fieldValue;
+                        CiField ciField = CiField.CiTable.GetField(fieldName);
+                        if (ciField != null)
+                        {
+                            drParams[fieldName] = ciField.GetNativeValue(fieldValue);
+                        }
                     }
                 }
 
@@ -617,6 +625,9 @@ namespace CodeClay
                     {
                         eventHandlerName = mEditor.ClientInstanceName + "_ValueChanged";
                         mEditor.SetClientSideEventHandler("ValueChanged", FormatEvent(eventHandlerName));
+
+                        eventHandlerName = mEditor.ClientInstanceName + "_KeyPress";
+                        mEditor.SetClientSideEventHandler("KeyPress", FormatEvent(eventHandlerName));
                     }
                 }
             }

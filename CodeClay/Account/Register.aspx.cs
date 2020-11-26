@@ -25,7 +25,9 @@ namespace CodeClay.Account
                 manager.SendEmail(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>.");
 
                 signInManager.SignIn( user, isPersistent: false, rememberBrowser: false);
-                IdentityHelper.RedirectToReturnUrl(Request.QueryString["ReturnUrl"], Response);
+                MyWebUtils.ShowAlert(Page, "Please check your Inbox for an email confirming your registration", "Login.aspx");
+                
+                //IdentityHelper.RedirectToReturnUrl(Request.QueryString["ReturnUrl"], Response);
             }
             else 
             {

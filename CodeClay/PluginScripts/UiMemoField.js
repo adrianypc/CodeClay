@@ -32,11 +32,25 @@ function dxHtmlMemo_Init(sender, event) {
 
 function dxMemo_KeyPress(sender, event) {
     var dxMemo = sender;
+    var key = event.htmlEvent.keyCode;
 
     if (dxMemo) {
-        switch (event.htmlEvent.keyCode) {
-            case 13:
+        switch (key) {
+            case 10:
                 dxMemo.SetHeight(dxMemo.GetInputElement().scrollHeight + 15);
+                var oldText = dxMemo.GetText();
+                var caretPos = dxMemo.GetCaretPosition();
+                var newText1 = oldText.substr(0, caretPos);
+                var newText2 = oldText.substr(caretPos, oldText.length - caretPos);
+                dxMemo.SetText(newText1 + '\n' + newText2);
+                dxMemo.SetCaretPosition(caretPos + 1);
+                break;
+
+            case 13:
+                dxMemo_ValueChanged(sender, event);
+
+            default:
+                RunKeyPress(sender, key);
                 break;
         }
     }
@@ -71,5 +85,5 @@ function dxMemoPanel_Init(sender, event) {
 }
 
 function dxMemoPanel_EndCallback(sender, event) {
-    RefreshNextFollower();
+    RefreshNextFollower(sender.cpLeader);
 }

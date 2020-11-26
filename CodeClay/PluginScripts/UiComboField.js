@@ -8,8 +8,20 @@
 
     RegisterEditor(dxComboBox,
 		function () { return this.GetText(); },
-		function (value) { this.SetText(value); }
+		function (value) { if (this.GetText() != value) this.SetText(value); }
 	);
+}
+
+function dxComboBox_KeyPress(sender, event) {
+    var key = event.keyCode || event.which;
+
+    switch (key) {
+        case 13:
+            dxComboBox_ValueChanged(sender, event);
+            break;
+    }
+
+    RunKeyPress(sender, key);
 }
 
 function dxComboBox_ValueChanged(sender, event) {
@@ -30,5 +42,5 @@ function dxComboPanel_Init(sender, event) {
 }
 
 function dxComboPanel_EndCallback(sender, event) {
-    RefreshNextFollower();
+    RefreshNextFollower(sender.cpLeader);
 }

@@ -83,6 +83,9 @@ namespace CodeClay
             mEditor = dxCheckBox;
             base.Page_Load(sender, e);
 
+            mEditor.Attributes.Add("onkeypress", String.Format("dxCheckBox_KeyPress({0}, event);",
+                mEditor.ClientInstanceName));
+
             // Setup checkbox value
             if (CiField != null)
             {

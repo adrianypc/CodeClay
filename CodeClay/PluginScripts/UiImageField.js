@@ -15,7 +15,7 @@ function dxImagePanel_Init(sender, event) {
 }
 
 function dxImagePanel_EndCallback(sender, event) {
-    RefreshNextFollower();
+    RefreshNextFollower(sender.cpLeader);
 }
 
 function dxDeleteImage_Init(sender, event) {

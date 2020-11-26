@@ -9,7 +9,6 @@
     <PanelCollection>
         <dx:PanelContent>
             <dx:ASPxMemo ID="dxMemo" ClientInstanceName="dxMemo" runat="server" Theme="Aqua" BackColor="PaleGoldenrod" height="40px" MaxLength="4000">
-                <ClientSideEvents KeyPress="dxMemo_KeyPress" />
                 <ValidationSettings ErrorDisplayMode="ImageWithTooltip" />
             </dx:ASPxMemo>
             <dxh:ASPxHtmlEditor ID="dxHtmlMemo" ClientInstanceName="dxHtmlMemo" runat="server" Theme="Aqua">

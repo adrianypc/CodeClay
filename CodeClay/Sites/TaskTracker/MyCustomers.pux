@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CiTable Src="Customers.pux">
+  <TableName>MyCustomers</TableName>
+  <TableCaption>My Customers</TableCaption>
+  <DefaultView>Card</DefaultView>
+  <RowKey>ID</RowKey>
+  <CiField>
+    <FieldName>DummyForInsert</FieldName>
+    <Hidden>true</Hidden>
+  </CiField>
+  <CiTable>
+    <TableName>Tasks</TableName>
+    <Hidden>true</Hidden>
+  </CiTable>
+  <CiTextField>
+    <FieldName>ID</FieldName>
+    <Caption>Customer ID</Caption>
+    <Editable>false</Editable>
+    <Searchable>true</Searchable>
+    <Width>10</Width>
+  </CiTextField>
+  <CiTable Src="MyTasks.pux?ParentID=@ID">
+    <TableName>MyTasks</TableName>
+    <TableCaption>My Tasks</TableCaption>
+  </CiTable>
+</CiTable>

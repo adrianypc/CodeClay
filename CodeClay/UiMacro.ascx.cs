@@ -358,7 +358,7 @@ namespace CodeClay
                 return "Download('Adrian.txt', 'Something goes here')";
             }
 
-                if (!MyUtils.IsEmpty(navigateUrl))
+            if (!MyUtils.IsEmpty(navigateUrl))
             {
                 navigateUrl += parameterQueryString;
 
@@ -521,9 +521,9 @@ namespace CodeClay
                 drPluginDefinition["MacroID"] = MyWebUtils.EvalSQL(insertSQL, drPluginDefinition, true);
             }
 
-            string updateColumnNames = "@AppID, @TableID, @MacroID, @NavigateUrl" +
+            string updateColumnNames = "@AppID, @TableID, @MacroID, @MacroName, @NavigateUrl" +
                 ", @NavigatePos, @Confirm, @Type";
-            string updateSQL = string.Format("exec spMacro_updLong {0}", updateColumnNames);
+            string updateSQL = string.Format("exec spMacro_upd {0}", updateColumnNames);
 
             MyWebUtils.GetBySQL(updateSQL, drPluginDefinition, true);
 

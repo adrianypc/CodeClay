@@ -94,13 +94,14 @@
     <VisibleSQL>select 1 from Singleton where @FieldName != 'ParentID'</VisibleSQL>
   </UpdateMacro>
   <DeleteMacro>
-    <ActionSQL>select AppID, TableID, @TableID as SavedTableID from fnGetInheritedTables(@AppID, @TableID, 1)</ActionSQL>
     <ActionSQL>exec spField_del  @AppID, @TableID, @FieldID</ActionSQL>
     <ActionSQL>select AppID, TableID from fnGetInheritedTables(@AppID, @SavedTableID, 1)</ActionSQL>
     <CiSerializeMacro>
       <Direction>Download</Direction>
     </CiSerializeMacro>
-    <VisibleSQL>select 1 from CiTable where AppID = @AppID and TableID = @TableID and Src is null and @FieldName not in ('ParentID', 'ID')</VisibleSQL>
+    <VisibleSQL>
+      select 1 from CiTable where AppID = @AppID and TableID = @TableID and @FieldName not in ('ParentID', 'ID')
+      and not exists (select 1 from fnGetAncestorFieldByName(@AppID, @TableID, @FieldName))</VisibleSQL>
   </DeleteMacro>
   <CiMacro>
     <MacroName>Details</MacroName>

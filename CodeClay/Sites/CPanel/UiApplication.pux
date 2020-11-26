@@ -11,5 +11,14 @@
       <MenuName>Application List</MenuName>
       <PluginSrc>CiApplicationList.pux</PluginSrc>
     </CiMenu>
+    <CiMenu>
+      <MenuName>Current Application</MenuName>
+      <PluginSrc>CiApplicationDetails.pux&amp;AppID=@AppID</PluginSrc>
+    </CiMenu>
+    <CiMenu>
+      <MenuName>Current Dropdowns</MenuName>
+      <AppName>@CI_AppName</AppName>
+      <PluginSrc>Dropdown.pux</PluginSrc>
+    </CiMenu>
   </CiMenu>
 </CiApplication>

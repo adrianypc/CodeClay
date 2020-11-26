@@ -97,7 +97,14 @@ namespace CodeClay
 
         public virtual void LoadUiPlugin(string puxFile)
         {
-            LoadUiPlugin(CiPlugin.CreateCiPlugin(puxFile));
+            try
+            {
+                LoadUiPlugin(CiPlugin.CreateCiPlugin(puxFile));
+            }
+            catch (Exception ex)
+            {
+                MyWebUtils.ShowAlert(Page, ex.Message);
+            }
         }
 
         public virtual void LoadUiPlugin(CiPlugin ciPlugin)

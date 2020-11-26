@@ -68,6 +68,10 @@
   <CiTable Src="CiMacroSQLList.pux?EntityType=CiMacro&amp;SQLType=ActionSQL">
     <TableName>ActionSQLList</TableName>
   </CiTable>
+  <CiTable Src="TriggerFieldList.pux">
+    <TableName>TriggerFieldLList</TableName>
+    <Hidden lang="sql">select 1 from Singleton where @Type is not null and @Type != 'Field Exit'</Hidden>
+  </CiTable>
   <DefaultMacro>
     <ActionSQL>
       select  '- New -' as MacroID
@@ -84,7 +88,7 @@
     </CiSerializeMacro>
   </InsertMacro>
   <UpdateMacro>
-    <ActionSQL>exec spMacro_updLong @AppID, @TableID, @MacroID, @NavigateUrl, @NavigatePos, @Confirm, @Type</ActionSQL>
+    <ActionSQL>exec spMacro_upd @AppID, @TableID, @MacroID, @MacroName, @NavigateUrl, @NavigatePos, @Confirm, @Type</ActionSQL>
     <ActionSQL>select @AppID as AppID, @TableID as TableID</ActionSQL>
     <CiSerializeMacro>
       <Direction>Download</Direction>

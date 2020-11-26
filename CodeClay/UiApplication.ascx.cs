@@ -677,7 +677,7 @@ namespace CodeClay
                 string oldAppDir = MyWebUtils.MapPath(string.Format("Sites/{0}", oldAppName));
                 if (!MyUtils.IsEmpty(puxUrl))
                 {
-                    string newAppName = GetApplicationName(drKey);
+                    string newAppName = MyWebUtils.GetApplicationName(drKey);
 
                     if (newAppName != oldAppName.ToString())
                     {
@@ -716,7 +716,7 @@ namespace CodeClay
 
         public override string GetPuxUrl(DataRow drPluginKey)
         {
-            string appName = GetApplicationName(drPluginKey);
+            string appName = MyWebUtils.GetApplicationName(drPluginKey);
 
             if (MyUtils.IsEmpty(appName))
             {

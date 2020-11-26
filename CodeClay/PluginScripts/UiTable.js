@@ -330,21 +330,6 @@ function dxGrid_RowDblClick(sender, event) {
 	}
 }
 
-function dxTable_KeyPress(event, sender) {
-    var dxTable = sender;
-    var tableName = dxTable.cpTableName;
-    var key = event.keyCode || event.which;
-
-    if (dxTable.IsEditing()) {
-        if (key == 13) {
-            dxTable.Command = "Update";
-            dxTable.UpdateEdit();
-        }
-        else if (key == 27)
-            dxTable.CancelEdit();
-    }
-}
-
 // --------------------------------------------------------------------------------------------------
 // Toolbar functions
 // --------------------------------------------------------------------------------------------------
@@ -436,10 +421,12 @@ function ClickToolbar(table, event, isSearching) {
             break;
 
         case "Update":
-            if (isSearching) {
-                Navigate(puxFile);
+            if (UserProceeds(table, "Edit")) {
+                if (isSearching) {
+                    Navigate(puxFile);
+                }
+                break;
             }
-            break;
 
         case "Cancel":
             CopyState(dxBackupClientState, dxClientState);
@@ -555,7 +542,9 @@ function dxPopupMenu_ItemClick(sender, event) {
                     break;
 
                 case "Delete":
-                    dxTable.DeleteRow(rowIndex);
+                    if (UserProceeds(dxTable, command)) {
+                        dxTable.DeleteRow(rowIndex);
+                    }
                     break;
 
                 default:

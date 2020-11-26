@@ -13,11 +13,15 @@
 }
 
 function dxTextBox_KeyPress(sender, event) {
-    switch (event.htmlEvent.keyCode) {
+    var key = event.htmlEvent.keyCode;
+
+    switch (key) {
         case 13:
             dxTextBox_ValueChanged(sender, event);
             break;
     }
+
+    RunKeyPress(sender, key);
 }
 
 function dxTextBox_ValueChanged(sender, event) {
@@ -38,5 +42,5 @@ function dxTextPanel_Init(sender, event) {
 }
 
 function dxTextPanel_EndCallback(sender, event) {
-    RefreshNextFollower();
+    RefreshNextFollower(sender.cpLeader);
 }

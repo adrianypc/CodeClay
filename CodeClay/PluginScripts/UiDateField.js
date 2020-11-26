@@ -12,6 +12,18 @@
 	);
 }
 
+function dxDateBox_KeyPress(sender, event) {
+    var key = event.keyCode || event.which;
+
+    switch (key) {
+        case 13:
+            dxDateBox_ValueChanged(sender, event);
+            break;
+    }
+
+    RunKeyPress(sender, key);
+}
+
 function dxDateBox_ValueChanged(sender, event) {
     var dxDateBox = sender;
     var tableName = dxDateBox.cpTableName;
@@ -30,5 +42,5 @@ function dxDatePanel_Init(sender, event) {
 }
 
 function dxDatePanel_EndCallback(sender, event) {
-    RefreshNextFollower();
+    RefreshNextFollower(sender.cpLeader);
 }

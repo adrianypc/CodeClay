@@ -12,6 +12,18 @@
 	);
 }
 
+function dxSpinEdit_KeyPress(sender, event) {
+    var key = event.htmlEvent.keyCode;
+
+    switch (key) {
+        case 13:
+            dxSpinEdit_ValueChanged(sender, event);
+            break;
+    }
+
+    RunKeyPress(sender, key);
+}
+
 function dxSpinEdit_ValueChanged(sender, event) {
     var dxSpinEdit = sender;
     var tableName = dxSpinEdit.cpTableName;
@@ -30,5 +42,5 @@ function dxSpinEditPanel_Init(sender, event) {
 }
 
 function dxSpinEditPanel_EndCallback(sender, event) {
-    RefreshNextFollower();
+    RefreshNextFollower(sender.cpLeader);
 }

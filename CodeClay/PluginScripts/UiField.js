@@ -107,10 +107,13 @@ function GetFormattedFieldName(widget) {
 
 function GetField(tableName, fieldName) {
 	if (tableName && fieldName) {
-		return dxClientState.Get(tableName + "." + fieldName);
+        var fieldValue = dxClientState.Get(tableName + "." + fieldName);
+        if (fieldValue != null) {
+            return fieldValue;
+        }
 	}
 
-	return null;
+	return '';
 }
 
 function InitField(tableName, fieldName, fieldValue) {
@@ -241,6 +244,26 @@ function RunExitMacro(editor) {
     }
 }
 
+function RunKeyPress(sender, key) {
+    var dxField = sender;
+    var tableName = dxField.cpTableName;
+    var dxTable = tables[tableName];
+
+    if (dxTable && dxTable.IsEditing()) {
+        switch (key) {
+            case 13:
+                dxTable.Command = "Update";
+                dxTable.UpdateEdit();
+                break;
+            case 27:
+                dxTable.Command = "Cancel";
+                dxTable.CancelEdit();
+                break;
+        }
+    }
+}
+
+
 function RefreshFirstFollower(leader) {
 	// Refresh the 1st follower field in list of names
 	var followerFields = leader.cpFollowerFields;
@@ -283,6 +306,7 @@ function RefreshNextFollower(leader) {
                     leaderName = leader.name;
                     leaderValue = GetField(tableName, leaderName);
                     leaderNameValuePair = LIST_SEPARATOR + leaderName + LIST_SEPARATOR + leaderValue;
+                    editorPanel.cpLeader = leader;
                 }
 
                 if (fieldLoadingPanel && !fieldLoadingPanel.GetVisible()) {

@@ -3,6 +3,7 @@
   <TableName>Customers</TableName>
   <TableCaption>Customers</TableCaption>
   <InsertRowAtBottom>false</InsertRowAtBottom>
+  <DoubleClickMacroName>Journals</DoubleClickMacroName>
   <RowKey>CustomerID</RowKey>
   <CiField>
     <FieldName>DummyForInsert</FieldName>
@@ -25,8 +26,9 @@
   </CiTextField>
   <CiTextField>
     <FieldName>OtherNames</FieldName>
-    <Caption>Other Names</Caption>
+    <Caption>Other Name</Caption>
     <Searchable>true</Searchable>
+    <Mandatory lang="sql">select 1 from tblSingleton where @LastName is not null</Mandatory>
   </CiTextField>
   <CiDateField>
     <FieldName>DateOfBirth</FieldName>
@@ -76,10 +78,10 @@
     <ActionSQL>select '-New-' as CustomerID</ActionSQL>
   </DefaultMacro>
   <InsertMacro>
-    <ActionSQL></ActionSQL>
+    <ActionSQL>?exec spCustomer_ins @BranchCode, @LastName, @OtherNames, @DateOfBirth, @Address, @CountryCode, @Postcode, @Email, @Mobile, @Referrer</ActionSQL>
   </InsertMacro>
   <UpdateMacro>
-    <ActionSQL></ActionSQL>
+    <ActionSQL>?exec spCustomer_upd @CustomerID, @BranchCode, @LastName, @OtherNames, @DateOfBirth, @Address, @CountryCode, @Postcode, @Email, @Mobile, @Referrer</ActionSQL>
   </UpdateMacro>
   <CiMacro>
     <MacroName>Journals</MacroName>

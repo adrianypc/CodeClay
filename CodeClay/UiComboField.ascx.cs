@@ -83,6 +83,9 @@ namespace CodeClay
             mEditor = dxComboBox;
             base.Page_Load(sender, e);
 
+            mEditor.Attributes.Add("onkeypress", String.Format("dxComboBox_KeyPress({0}, event);",
+                mEditor.ClientInstanceName));
+
             // Setup combo columns
             dxComboBox.Columns.Clear();
 

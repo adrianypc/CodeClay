@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNet.Identity;
 using System;
+using System.Collections;
+using System.Data;
 using System.Web;
 using System.Xml.Serialization;
 
@@ -18,6 +20,9 @@ namespace CodeClay
 
         [XmlElement("MenuName")]
         public string MenuName { get; set; } = "";
+
+        [XmlElement("AppName")]
+        public string AppName { get; set; } = "";
 
         [XmlElement("PluginSrc")]
         public string PluginSrc { get; set; } = "";
@@ -95,8 +100,7 @@ namespace CodeClay
                 string pluginSrc = ciMenu.PluginSrc;
                 if (!MyUtils.IsEmpty(pluginSrc))
                 {
-                    dxMenuItem.NavigateUrl = pluginSrc.StartsWith("http://") ? pluginSrc
-                        : string.Format("~/Default.aspx?Application={0}&PluginSrc={1}", MyWebUtils.Application, pluginSrc);
+                    dxMenuItem.NavigateUrl = GetQueryString(ciMenu.AppName, pluginSrc);
                 }
 
                 dxParentMenuItem.Items.Insert(menuIndex, dxMenuItem);
@@ -107,6 +111,38 @@ namespace CodeClay
                     CreateMenuItem(ciChildMenu, dxMenuItem, dxMenuItem.Items.Count);
                 }
             }
+        }
+
+        private string GetQueryString(string appName, string pluginSrc)
+        {
+            string url = pluginSrc;
+
+            ArrayList parameterNames = MyUtils.GetParameters(url);
+            DataRow drParams = GetState();
+
+            foreach (string parameterName in parameterNames)
+            {
+                url = url.Replace("@" + parameterName, MyWebUtils.GetStringField(drParams, parameterName));
+            }
+
+            if (!MyUtils.IsEmpty(appName))
+            {
+                if (appName.Trim() == "@CI_AppName")
+                {
+                    appName = MyWebUtils.GetApplicationName(GetState());
+                }
+            }
+            else
+            {
+                appName = MyWebUtils.Application;
+            }
+
+            if (!url.StartsWith("http://"))
+            {
+                url = string.Format("~/Default.aspx?Application={0}&PluginSrc={1}", appName, url);
+            }
+
+            return url;
         }
     }
 }

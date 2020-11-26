@@ -506,7 +506,16 @@ namespace CodeClay
                     }
                     else if (myResponse != null && !IsUserAuthorised())
                     {
-                        myResponse.Redirect("~/Default.aspx?Application=" + GetAuthorisedApp());
+                        string authorisedApp = GetAuthorisedApp();
+                        string errorMessage = string.Format("You are not authorised to access {0} and are being redirected to {1}", Application, authorisedApp);
+                        string redirectUrl = "Default.aspx?Application=" + authorisedApp;
+
+                        string script = string.Format("alert('{0}'); window.location.href = '{1}'", errorMessage, redirectUrl);
+
+                        if (page != null && !page.ClientScript.IsClientScriptBlockRegistered("alert"))
+                        {
+                            page.ClientScript.RegisterClientScriptBlock(page.GetType(), "alert", script, true /* addScriptTags */);
+                        }
                     }
                 }
             }
@@ -596,6 +605,41 @@ namespace CodeClay
 
             return dr;
         }
+
+        public static void ShowAlert(Page page, string message, string webFileName = null)
+        {
+            string script = string.Format("alert('{0}')",
+                message);
+
+            if (MyUtils.IsEmpty(script))
+            {
+                script += string.Format("; window.location.href = '{0}'",
+                    webFileName);
+            }
+
+            if (page != null && !page.ClientScript.IsClientScriptBlockRegistered("alert"))
+            {
+                page.ClientScript.RegisterClientScriptBlock(page.GetType(), "alert", script, true);
+            }
+        }
+
+        public static string GetApplicationName(DataRow drAppKey)
+        {
+            DataTable dt = MyWebUtils.GetBySQL("?exec spApplication_sel @AppID", drAppKey, true);
+
+            if (dt != null && dt.Columns.Contains("AppName") && MyWebUtils.GetNumberOfRows(dt) > 0)
+            {
+                object objAppName = dt.Rows[0]["AppName"];
+
+                if (objAppName != null)
+                {
+                    return objAppName.ToString();
+                }
+            }
+
+            return null;
+        }
+
     }
 
     public class DataSetSerializer : IDataSerializer

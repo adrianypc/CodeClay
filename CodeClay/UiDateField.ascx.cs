@@ -97,6 +97,9 @@ namespace CodeClay
             mEditor = dxDateBox;
             base.Page_Load(sender, e);
 
+            mEditor.Attributes.Add("onkeypress", String.Format("dxDateBox_KeyPress({0}, event);",
+                mEditor.ClientInstanceName));
+
             // Setup date value
             try
             {
