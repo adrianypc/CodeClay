@@ -26,7 +26,7 @@
 
 <uc:UiFieldExitMacro ID="uiFieldExitMacro" runat="server" />
 
-<dx:ASPxCardView ID="dxSearch" ClientInstanceName="dxSearch" runat="server" Theme="Aqua" AutoGenerateColumns="false" Width="100%" DataSourceID="MyTableData" KeyFieldName="RowKey" CssClass="cssSmallFont"
+<dx:ASPxCardView ID="dxSearch" ClientInstanceName="dxSearch" runat="server" Theme="" AutoGenerateColumns="false" Width="100%" DataSourceID="MyTableData" KeyFieldName="RowKey" CssClass="cssSmallFont"
     OnInit="dxSearch_Init" OnLoad="dxSearch_Load" OnCustomJSProperties="dxSearch_CustomJSProperties"
     OnInitNewCard="dxSearch_InitNewCard" OnCardInserting="dxSearch_CardInserting" OnCancelCardEditing="dxSearch_CancelCardEditing">
     <ClientSideEvents Init="dxSearch_Init" />
@@ -64,7 +64,7 @@
     </Toolbars>
 </dx:ASPxCardView>
 
-<dx:ASPxCardView ID="dxCard" ClientInstanceName="dxCard" runat="server" Theme="Aqua" DataSourceID="MyTableData" AutoGenerateColumns="false" Width="100%" KeyFieldName="RowKey" CssClass="cssSmallFont"
+<dx:ASPxCardView ID="dxCard" ClientInstanceName="dxCard" runat="server" Theme="" DataSourceID="MyTableData" AutoGenerateColumns="false" Width="100%" KeyFieldName="RowKey" CssClass="cssSmallFont"
     OnInit="dxCard_Init" OnLoad="dxCard_Load" OnCustomJSProperties="dxCard_CustomJSProperties" OnCustomCallback="dxCard_CustomCallback" OnCustomColumnDisplayText="dxCard_CustomColumnDisplayText"
     OnInitNewCard ="dxCard_InitNewCard" OnCardInserting="dxCard_CardInserting"
     OnCancelCardEditing="dxCard_CancelCardEditing"  OnCardUpdating="dxCard_CardUpdating"
@@ -78,7 +78,7 @@
     <SettingsBehavior AllowFocusedCard="true" AllowSelectByCardClick="false" ConfirmDelete="true"  />
     <SettingsEditing Mode="EditForm" />
     <SettingsLoadingPanel Mode="ShowAsPopup" />
-    <SettingsPager Position="Top">
+    <SettingsPager Position="Bottom">
         <SettingsTableLayout ColumnCount="1" RowsPerPage="1"/>
     </SettingsPager>
     <SettingsText Title="Loading screen ..." />
@@ -96,11 +96,12 @@
                 <dx:CardViewToolbarItem Name="More" Text="More">
                     <Items>
                         <dx:CardViewToolbarItem Name="Inspect" Text="Inspect" />
-                        <dx:CardViewToolbarItem Name="ExportToPdf" Command="ExportToPdf" />
                         <dx:CardViewToolbarItem Name="Designer" Text="Designer" Command="Custom" Target="_blank" />
+                        <dx:CardViewToolbarItem Name="ExportToPdf" Command="ExportToPdf" />
                     </Items>
                 </dx:CardViewToolbarItem>
                 <dx:CardViewToolbarItem Name="Search" Text="Search" Image-IconID="actions_search_16x16devav" />
+                <dx:CardViewToolbarItem Name="Quit" Text="Quit" Image-IconID="actions_cancel_16x16" Target="_top" />
                 <dx:CardViewToolbarItem Name="New" Command="New"/>
                 <dx:CardViewToolbarItem Name="Edit" Command="Edit"/>
                 <dx:CardViewToolbarItem Name="Delete" Command="Delete"/>
@@ -116,7 +117,7 @@
                 <tr>
                     <td style="width:15px"></td>
                     <td>
-                        <dx:ASPxPageControl ID="pgCardTabs" ClientInstanceName="pgCardTabs" Theme="Aqua" runat="server" Width="100%" EnableCallBacks="true" SaveStateToCookies="true"
+                        <dx:ASPxPageControl ID="pgCardTabs" ClientInstanceName="pgCardTabs" Theme="" runat="server" Width="100%" EnableCallBacks="true" SaveStateToCookies="true"
                             OnInit="pgCardTabs_Init">
                         </dx:ASPxPageControl>
                     </td>
@@ -128,7 +129,7 @@
     </Templates>
 </dx:ASPxCardView>
 
-<dx:ASPxGridView ID="dxGrid" ClientInstanceName="dxGrid" runat="server" Theme="Aqua" DataSourceID="MyTableData" AutoGenerateColumns="false" Width="100%" KeyFieldName="RowKey" CssClass="cssSmallFont"
+<dx:ASPxGridView ID="dxGrid" ClientInstanceName="dxGrid" runat="server" Theme="" DataSourceID="MyTableData" AutoGenerateColumns="false" Width="100%" KeyFieldName="RowKey" CssClass="cssSmallFont"
     OnInit="dxGrid_Init" OnLoad="dxGrid_Load" OnCustomJSProperties="dxGrid_CustomJSProperties" OnCustomCallback="dxGrid_CustomCallback" OnSummaryDisplayText="dxGrid_SummaryDisplayText" OnCustomColumnDisplayText="dxGrid_CustomColumnDisplayText"
     OnBeforeColumnSortingGrouping="dxGrid_BeforeColumnSortingGrouping" OnInitNewRow="dxGrid_InitNewRow" OnToolbarItemClick="dxGrid_ToolbarItemClick"
     OnRowValidating="dxGrid_RowValidating" OnRowUpdating="dxGrid_RowUpdating" OnRowInserting="dxGrid_RowInserting" OnStartRowEditing="dxGrid_StartRowEditing">
@@ -162,12 +163,13 @@
                 <dx:GridViewToolbarItem Name="More" Text="More">
                     <Items>
                         <dx:GridViewToolbarItem Name="Inspect" Text="Inspect" />
+                        <dx:GridViewToolbarItem Name="Designer" Text="Designer" Command="Custom" Target="_blank" />
                         <dx:GridViewToolbarItem Name="ExportToPdf" Command="ExportToPdf" />
                         <dx:GridViewToolbarItem Name="ExportToXlsx" Command="ExportToXlsx" />
-                        <dx:GridViewToolbarItem Name="Designer" Text="Designer" Command="Custom" Target="_blank" />
                     </Items>
                 </dx:GridViewToolbarItem>
                 <dx:GridViewToolbarItem Name="Search" Text="Search" Image-IconID="actions_search_16x16devav"  />
+                <dx:GridViewToolbarItem Name="Quit" Text="Quit" Image-IconID="actions_cancel_16x16" />
                 <dx:GridViewToolbarItem Name="New" Command="New" />
                 <dx:GridViewToolbarItem Name="Divider" Text="" Enabled="false"  ItemStyle-Width="100%" />
                 <dx:GridViewToolbarItem Name="Update" Command="Update" Text="Accept" Image-IconID="actions_apply_16x16" />
@@ -177,7 +179,7 @@
     </Toolbars>
     <Templates>
         <DetailRow>
-            <dx:ASPxPageControl ID="pgGridTabs" ClientInstanceName="pgGridTabs" Theme="Aqua" runat="server" Width="100%" OnInit="pgGridTabs_Init">
+            <dx:ASPxPageControl ID="pgGridTabs" ClientInstanceName="pgGridTabs" Theme="" runat="server" Width="100%" OnInit="pgGridTabs_Init">
             </dx:ASPxPageControl>
         </DetailRow>
     </Templates>
@@ -219,13 +221,13 @@
     </DeleteParameters>
 </asp:ObjectDataSource>
             
-<dx:ASPxCallbackPanel ID="dxOpenMenuPanel" ClientInstanceName="dxOpenMenuPanel" runat="server" Theme="Aqua" OnCallback="dxOpenMenuPanel_Callback">
+<dx:ASPxCallbackPanel ID="dxOpenMenuPanel" ClientInstanceName="dxOpenMenuPanel" runat="server" Theme="" OnCallback="dxOpenMenuPanel_Callback">
     <SettingsLoadingPanel Enabled="false" />
     <ClientSideEvents Init="dxOpenMenuPanel_Init" />
     <ClientSideEvents EndCallback="dxOpenMenuPanel_EndCallback" />
     <PanelCollection>
         <dx:PanelContent>
-            <dx:ASPxPopupMenu ID="dxPopupMenu" ClientInstanceName="dxPopupMenu" runat="server" Theme="Aqua">
+            <dx:ASPxPopupMenu ID="dxPopupMenu" ClientInstanceName="dxPopupMenu" runat="server" Theme="">
                 <ClientSideEvents Init="dxPopupMenu_Init" />
                 <ClientSideEvents ItemClick="dxPopupMenu_ItemClick" />
             </dx:ASPxPopupMenu>

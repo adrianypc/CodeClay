@@ -5,6 +5,10 @@
   <ProviderName>System.Data.SqlClient</ProviderName>
   <ConnectionString>Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=CPanel;Integrated Security=True;Connect Timeout=30</ConnectionString>
   <HomePluginSrc>CiApplicationList.pux</HomePluginSrc>
+  <Theme>Aqua</Theme>
+  <CiMenu>
+    <MenuName>Shortcut</MenuName>
+  </CiMenu>
   <CiMenu>
     <MenuName>Application</MenuName>
     <CiMenu>
@@ -12,13 +16,24 @@
       <PluginSrc>CiApplicationList.pux</PluginSrc>
     </CiMenu>
     <CiMenu>
-      <MenuName>Current Application</MenuName>
+      <MenuName>Application Design</MenuName>
       <PluginSrc>CiApplicationDetails.pux&amp;AppID=@AppID</PluginSrc>
+      <PluginPos>NewTab</PluginPos>
+      <Hidden lang="sql">select 1 from Singleton where @AppID is null</Hidden>
     </CiMenu>
     <CiMenu>
-      <MenuName>Current Dropdowns</MenuName>
+      <MenuName>Application Dropdowns</MenuName>
       <AppName>@CI_AppName</AppName>
       <PluginSrc>Dropdown.pux</PluginSrc>
+      <PluginPos>NewTab</PluginPos>
+      <Hidden lang="sql">select 1 from Singleton where @AppID is null</Hidden>
+    </CiMenu>
+    <CiMenu>
+      <MenuName>Setup</MenuName>
+      <CiMenu>
+        <MenuName>Dropdown</MenuName>
+        <PluginSrc>Dropdown.pux</PluginSrc>
+      </CiMenu>
     </CiMenu>
   </CiMenu>
 </CiApplication>

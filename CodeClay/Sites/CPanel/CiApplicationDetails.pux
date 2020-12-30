@@ -14,6 +14,23 @@
     <Caption>Application Name</Caption>
     <Editable>false</Editable>
   </CiTextField>
+  <CiTextField>
+    <FieldName>OldAppName</FieldName>
+    <Caption>App Name</Caption>
+    <Computed>true</Computed>
+    <Value>AppName</Value>
+    <Hidden>true</Hidden>
+  </CiTextField>
+  <CiCheckField>
+    <FieldName>UserDefined</FieldName>
+    <Caption>Made in CPanel?</Caption>
+    <Editable>false</Editable>
+  </CiCheckField>
+  <CiComboField>
+    <FieldName>Theme</FieldName>
+    <Caption>Theme</Caption>
+    <DropdownSQL>select Code from Dropdown where Category = 'Theme' order by Code</DropdownSQL>
+  </CiComboField>
   <CiComboField>
     <FieldName>HomePluginSrc</FieldName>
     <Caption>Home Form</Caption>
@@ -27,11 +44,12 @@
   <CiTable Src="CiUserList.pux" />
   <CiTable Src="CiTableList.pux" />
   <CiTable Src="CiFormList.pux" />
+  <CiTable Src="CiMenuList.pux" />
   <SelectMacro>
     <ActionSQL>?exec spApplication_sel @AppID, @CI_UserEmail</ActionSQL>
   </SelectMacro>
   <UpdateMacro>
-    <ActionSQL>exec spApplication_upd @AppID, @AppName, @UserDefined, @HomePluginSrc</ActionSQL>
+    <ActionSQL>exec spApplication_upd @AppID, @AppName, @UserDefined, @HomePluginSrc, @Theme</ActionSQL>
     <ActionSQL>select @AppID as AppID, @OldAppName as OldAppName</ActionSQL>
     <CiSerializeMacro>
       <Direction>Download</Direction>

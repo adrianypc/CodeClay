@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using System.Drawing;
 using System.IO;
 using System.Web.UI;
@@ -63,7 +64,8 @@ namespace CodeClay
         // Properties
         // --------------------------------------------------------------------------------------------------
 
-        public string NavigateUrl { get; set; } = "";
+        public string LinkText { get; set; } = "";
+        public string LinkUrl { get; set; } = "";
 
         public CiLinkField CiLinkField
         {
@@ -83,23 +85,23 @@ namespace CodeClay
             bool folderExists = (CiLinkField != null) && (CiLinkField.Folder != null);
             string tableName = (CiTable != null) ? CiTable.TableName : "";
             string fieldName = (CiLinkField != null) ? CiLinkField.FieldName : "";
-            string navigateUrl = MyUtils.Coalesce(NavigateUrl, defaultNavigateUrl);
+            string navigateUrl = MyUtils.Coalesce(LinkUrl, defaultNavigateUrl);
             bool emptyUrl = MyUtils.IsEmpty(navigateUrl);
-            string linkText = folderExists ? Path.GetFileName(navigateUrl) : navigateUrl;
 
             dxLink.Caption = null;
             dxLink.BackColor = Color.Transparent;
             dxLink.Visible = !IsItemEditing;
             dxLink.ClientVisible = !emptyUrl;
-            dxLink.Text = linkText;
+            dxLink.Text = LinkText;
             dxLink.NavigateUrl = navigateUrl;
             dxLink.JSProperties["cpTableName"] = tableName;
             dxLink.JSProperties["cpFieldName"] = fieldName;
             dxLink.JSProperties["cpShortNavigateUrl"] = navigateUrl;
+            dxLink.JSProperties["cpTextFieldName"] = CiLinkField.TextFieldName;
 
             dxEditLink.Visible = folderExists && IsItemEditing;
             dxEditLink.ClientVisible = !emptyUrl;
-            dxEditLink.Text = linkText;
+            dxEditLink.Text = LinkText;
             dxEditLink.NavigateUrl = navigateUrl;
             dxEditLink.JSProperties["cpTableName"] = tableName;
             dxEditLink.JSProperties["cpFieldName"] = fieldName;
@@ -112,7 +114,7 @@ namespace CodeClay
             dxUpload.ClientVisible = emptyUrl;
 
             dxUpdateText.Visible = !folderExists && IsItemEditing;
-            dxUpdateText.Text = linkText;
+            dxUpdateText.Text = LinkText;
             dxUpdateText.JSProperties["cpTableName"] = tableName;
             dxUpdateText.JSProperties["cpFieldName"] = fieldName;
             dxUpdateText.JSProperties["cpShortNavigateUrl"] = navigateUrl;
@@ -160,6 +162,7 @@ namespace CodeClay
             if (UiTable != null && CiField != null && ItemIndex >= 0)
             {
                 string fieldName = CiField.FieldName;
+                string textFieldName = CiField.TextFieldName;
 
                 if (UiTable.IsCardView)
                 {
@@ -169,7 +172,16 @@ namespace CodeClay
                         ASPxCardView dxCard = cardContainer.CardView;
                         if (dxCard != null)
                         {
-                            NavigateUrl = dxCard.GetCardValues(ItemIndex, fieldName).ToString();
+                            LinkUrl = dxCard.GetCardValues(ItemIndex, fieldName).ToString();
+
+                            if (!MyUtils.IsEmpty(textFieldName))
+                            {
+                                LinkText = dxCard.GetCardValues(ItemIndex, textFieldName).ToString();
+                            }
+                            else
+                            {
+                                LinkText = LinkUrl;
+                            }
                         }
                     }
                 }
@@ -181,15 +193,24 @@ namespace CodeClay
                         ASPxGridView dxGrid = gridContainer.Grid;
                         if (dxGrid != null)
                         {
-                            NavigateUrl = dxGrid.GetRowValues(ItemIndex, fieldName).ToString();
+                            LinkUrl = dxGrid.GetRowValues(ItemIndex, fieldName).ToString();
+
+                            if (!MyUtils.IsEmpty(textFieldName))
+                            {
+                                LinkText = dxGrid.GetRowValues(ItemIndex, textFieldName).ToString();
+                            }
+                            else
+                            {
+                                LinkText = LinkUrl;
+                            }
                         }
                     }
                 }
             }
 
-            if (NavigateUrl == "&nbsp;")
+            if (LinkUrl == "&nbsp;")
             {
-                NavigateUrl = "";
+                LinkUrl = "";
             }
         }
 

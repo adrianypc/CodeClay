@@ -16,11 +16,11 @@
             <table style="width:100%">
                 <tr>
                     <td>
-                        <dx:ASPxImage ID="dxImage" ClientInstanceName="dxImage" runat="server" Theme="Aqua" BackColor="Transparent" />
-                        <dx:ASPxImage ID="dxEditImage" ClientInstanceName="dxEditImage" runat="server" Theme="Aqua" BackColor="Transparent">
+                        <dx:ASPxImage ID="dxImage" ClientInstanceName="dxImage" runat="server" Theme="" BackColor="Transparent" />
+                        <dx:ASPxImage ID="dxEditImage" ClientInstanceName="dxEditImage" runat="server" Theme="" BackColor="Transparent">
                             <ClientSideEvents Init="dxEditImage_Init" />
                         </dx:ASPxImage>
-                        <dx:ASPxUploadControl ID="dxUploadImage" ClientInstanceName="dxUploadImage" runat="server" Theme="Aqua" Width="100%" ShowUploadButton="true" OnFileUploadComplete="dxUploadImage_FileUploadComplete">
+                        <dx:ASPxUploadControl ID="dxUploadImage" ClientInstanceName="dxUploadImage" runat="server" Theme="" Width="100%" ShowUploadButton="true" OnFileUploadComplete="dxUploadImage_FileUploadComplete">
                             <ClientSideEvents Init="dxUploadImage_Init" />
                             <ClientSideEvents FileUploadComplete="dxUploadImage_FileUploadComplete" />
                         </dx:ASPxUploadControl>
@@ -28,7 +28,7 @@
                     <asp:Panel ID="deleteButtonPanel" runat="server">
                         <td style="width:5px" />
                         <td style="width:15px">
-                            <dx:ASPxButton ID="dxDeleteImage" ClientInstanceName="dxDeleteImage" runat="server" Theme="Aqua" Image-IconID="edit_delete_16x16" AutoPostBack="false" RenderMode="Link">
+                            <dx:ASPxButton ID="dxDeleteImage" ClientInstanceName="dxDeleteImage" runat="server" Theme="" Image-IconID="edit_delete_16x16" AutoPostBack="false" RenderMode="Link">
                                 <ClientSideEvents Init="dxDeleteImage_Init" />
                                 <ClientSideEvents Click="dxDeleteImage_Click" />
                             </dx:ASPxButton>

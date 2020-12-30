@@ -18,7 +18,8 @@
   <CiComboField>
     <FieldName>CustomerID</FieldName>
     <Caption>Customer:</Caption>
-    <Editable>false</Editable>
+    <Editable lang="sql">select 1 from tblSingleton where IsNumeric(@CustomerID) = 0</Editable>
+    <Mandatory>true</Mandatory>
     <Width>40</Width>
     <DropdownSQL>select CustomerID,coalesce(OtherNames,'')+' '+coalesce(LastName,'') as CustomerName from Customer</DropdownSQL>
     <DropdownWidth>0</DropdownWidth>
@@ -27,7 +28,7 @@
     <FieldName>JournalDate</FieldName>
     <Caption>Date:</Caption>
     <Editable>false</Editable>
-    <Width>15</Width>
+    <Width>20</Width>
   </CiDateField>
   <CiTextField>
     <FieldName>JournalTime</FieldName>
@@ -42,25 +43,26 @@
     <Width>80</Width>
     <Value>Improved or worse - Dreams or nightmares – Wake up feeling fresh or tired</Value>
   </CiField>
-  <CiTextField>
+  <CiNumericField>
     <FieldName>Sleep_Hours</FieldName>
-    <Caption>    1.1. hours of sleep? [3 - 10]</Caption>
+    <Caption>   1.1. hours of sleep? [3 - 10]</Caption>
     <Width>10</Width>
-  </CiTextField>
+    <MaxValue>1000</MaxValue>
+  </CiNumericField>
   <CiTextField>
     <FieldName>Sleep_Times</FieldName>
-    <Caption>1.2. time to bed? [hh:mm]</Caption>
+    <Caption>   1.2. time to bed? [hh:mm]</Caption>
     <Width>15</Width>
   </CiTextField>
   <CiComboField>
     <FieldName>Sleep_Dreams</FieldName>
-    <Caption>1.3. dreams: [y; n]</Caption>
+    <Caption>   1.3. dreams: [y; n]</Caption>
     <Width>10</Width>
     <DropdownSQL>select Code from Dropdown where Category = 'J_Yes_No' order by Code</DropdownSQL>
   </CiComboField>
   <CiComboField>
     <FieldName>Sleep_Wakeup</FieldName>
-    <Caption>1.4. wake up state: [fresh; tired]</Caption>
+    <Caption>   1.4. wake up state: [fresh; tired]</Caption>
     <Width>20</Width>
     <DropdownSQL>select Code from Dropdown where Category = 'J_S_Wakeup' order by Code</DropdownSQL>
     <InsertSQL>insert into Dropdown (Category, Code) values ('J_S_Wakeup', @Sleep_Wakeup)</InsertSQL>
@@ -74,24 +76,24 @@
   </CiField>
   <CiComboField>
     <FieldName>ME_Mood</FieldName>
-    <Caption>2.1. Mood:</Caption>
+    <Caption>   2.1. Mood:</Caption>
     <Width>40</Width>
     <DropdownSQL>select Description from Dropdown where Category = 'J_Mental' order by Description</DropdownSQL>
   </CiComboField>
   <CiTextField>
     <FieldName>ME_TimeSpent</FieldName>
-    <Caption>2.2. Time spent in nature? hh:mm</Caption>
+    <Caption>   2.2. Time spent in nature? hh:mm</Caption>
     <Width>15</Width>
   </CiTextField>
   <CiComboField>
     <FieldName>ME_Yin</FieldName>
-    <Caption>2.3. How did you find the Yin practice?</Caption>
+    <Caption>   2.3. How did you find the Yin practice?</Caption>
     <Width>20</Width>
     <DropdownSQL>select Code from Dropdown where Category = 'J_M_Y_Y' order by Code</DropdownSQL>
   </CiComboField>
   <CiComboField>
     <FieldName>ME_Yoga</FieldName>
-    <Caption>2.4. How was the evening yoga nidra?</Caption>
+    <Caption>   2.4. How was the evening yoga nidra?</Caption>
     <Width>20</Width>
     <DropdownSQL>select Code from Dropdown where Category = 'J_M_Y_Y' order by Code</DropdownSQL>
   </CiComboField>
@@ -102,49 +104,57 @@
     <Width>80</Width>
     <Value>Any changes to cycle – PMS worse or better –</Value>
   </CiField>
+  <CiCurrencyField>
+    <FieldName>M_Waking</FieldName>
+    <Caption>   3.1. Waking Temperature: [nn.n degrees celsius]</Caption>
+    <Width>10</Width>
+  </CiCurrencyField>
   <CiComboField>
     <FieldName>M_Still</FieldName>
-    <Caption>3.2. Still menstruating? [y; n]</Caption>
+    <Caption>   3.2. Still menstruating? [y; n]</Caption>
     <Width>20</Width>
     <DropdownSQL>select Code from Dropdown where Category = 'J_Yes_No' order by Code</DropdownSQL>
   </CiComboField>
   <CiComboField>
     <FieldName>M_Still_Colour</FieldName>
-    <Caption>3.2.1. Colour:</Caption>
+    <Caption>      3.2.1. Colour:</Caption>
     <Editable lang="sql">select 1 from tblSingleton where @M_Still = 'Y'</Editable>
+    <AutoBlank>true</AutoBlank>
     <Width>20</Width>
     <DropdownSQL>select Code from Dropdown where Category = 'J_SM_Color' order by Code</DropdownSQL>
     <Mandatory lang="sql">select 1 from tblSingleton where @M_Still = 'Y'</Mandatory>
   </CiComboField>
   <CiComboField>
     <FieldName>M_Still_Heaviness</FieldName>
-    <Caption>3.2.2. Heaviness/lightness:</Caption>
+    <Caption>      3.2.2. Heaviness/lightness:</Caption>
     <Editable lang="sql">select 1 from tblSingleton where @M_Still = 'Y'</Editable>
+    <AutoBlank>true</AutoBlank>
     <Width>20</Width>
     <DropdownSQL>select Code from Dropdown where Category = 'J_SM_H' order by Code</DropdownSQL>
   </CiComboField>
   <CiComboField>
     <FieldName>M_Still_Pain</FieldName>
-    <Caption>3.2.3. Pain:</Caption>
+    <Caption>      3.2.3. Pain:</Caption>
     <Editable lang="sql">select 1 from tblSingleton where @M_Still = 'Y'</Editable>
+    <AutoBlank>true</AutoBlank>
     <Width>20</Width>
     <DropdownSQL>select Code from Dropdown where Category = 'J_SM_Pain' order by Code</DropdownSQL>
   </CiComboField>
   <CiComboField>
     <FieldName>M_New_Cycle</FieldName>
-    <Caption>3.3. New cycle menstruation restarts [y; n]</Caption>
+    <Caption>   3.3. New cycle menstruation restarts [y; n]</Caption>
     <Width>15</Width>
     <DropdownSQL>select Code from Dropdown where Category = 'J_Yes_No' order by Code</DropdownSQL>
   </CiComboField>
   <CiComboField>
     <FieldName>M_Cervical</FieldName>
-    <Caption>3.4. Cervical discharge: [y; n]</Caption>
+    <Caption>   3.4. Cervical discharge: [y; n]</Caption>
     <Width>15</Width>
     <DropdownSQL>select Code from Dropdown where Category = 'J_Yes_No' order by Code</DropdownSQL>
   </CiComboField>
   <CiComboField>
     <FieldName>M_Colour</FieldName>
-    <Caption>3.5 Colour/texture:</Caption>
+    <Caption>   3.5 Colour/texture:</Caption>
     <Width>25</Width>
     <DropdownSQL>select Description from Dropdown where Category = 'J_M_Text' order by Description</DropdownSQL>
   </CiComboField>
@@ -157,32 +167,32 @@
   </CiField>
   <CiComboField>
     <FieldName>E_Last_24Hr</FieldName>
-    <Caption>4.1. In the last 24 hours - did you exercise?</Caption>
+    <Caption>   4.1. In the last 24 hours - did you exercise?</Caption>
     <Width>20</Width>
     <DropdownSQL>select Code from Dropdown where Category = 'J_Yes_No' order by Code</DropdownSQL>
   </CiComboField>
   <CiTextField>
     <FieldName>E_Dur_Strenuous</FieldName>
-    <Caption>4.1.1. Duration of strenuous /aerobic exercise</Caption>
+    <Caption>      4.1.1. Duration of strenuous /aerobic exercise</Caption>
     <Editable lang="sql">select 1 from tblSingleton where @E_Last_24Hr = 'Y'</Editable>
     <Width>15</Width>
   </CiTextField>
   <CiTextField>
     <FieldName>E_Dur_Strengthening</FieldName>
-    <Caption>4.1.2. Duration of strengthening/gym work exercise</Caption>
+    <Caption>      4.1.2. Duration of strengthening/gym work exercise</Caption>
     <Editable lang="sql">select 1 from tblSingleton where @E_Last_24Hr = 'Y'</Editable>
     <Width>15</Width>
   </CiTextField>
   <CiComboField>
     <FieldName>E_Stretching</FieldName>
-    <Caption>4.1.3. How was stretching/ yoga/ pilates in our programme ?</Caption>
+    <Caption>      4.1.3. How was stretching/ yoga/ pilates in our programme ?</Caption>
     <Editable lang="sql">select 1 from tblSingleton where @E_Last_24Hr = 'Y'</Editable>
     <Width>25</Width>
     <DropdownSQL>select Code from Dropdown where Category = 'J_Ex_Yoga' order by Code</DropdownSQL>
   </CiComboField>
   <CiTextField>
     <FieldName>E_Dur_Stretching</FieldName>
-    <Caption>4.1.4. Duration of stretching/ yoga/ pilates outside of our programme</Caption>
+    <Caption>      4.1.4. Duration of stretching/ yoga/ pilates outside of our programme</Caption>
     <Editable lang="sql">select 1 from tblSingleton where @E_Last_24Hr = 'Y'</Editable>
     <Width>20</Width>
   </CiTextField>
@@ -194,62 +204,62 @@
   </CiField>
   <CiComboField>
     <FieldName>Diet_Breakfast</FieldName>
-    <Caption>5.1. Did you try our breakfast?  [y; n]</Caption>
+    <Caption>   5.1. Did you try our breakfast?  [y; n]</Caption>
     <Width>20</Width>
     <DropdownSQL>select Code from Dropdown where Category = 'J_Yes_No' order by Code</DropdownSQL>
   </CiComboField>
   <CiComboField>
     <FieldName>Diet_Breakfast_No</FieldName>
-    <Caption>5.1.1. No:</Caption>
-    <Editable lang="sql">select 1 from tblSingleton where @Diet_Breakfast = 'Y'</Editable>
-    <Width>30</Width>
+    <Caption>      5.1.1. No:</Caption>
+    <Editable lang="sql">select 1 from tblSingleton where @Diet_Breakfast = 'N'</Editable>
+    <Width>40</Width>
     <DropdownSQL>select Description from Dropdown where Category = 'J_Diet_No' order by Description</DropdownSQL>
   </CiComboField>
   <CiComboField>
     <FieldName>Diet_Breakfast_Yes</FieldName>
-    <Caption>5.1.2. Yes:</Caption>
+    <Caption>      5.1.2. Yes:</Caption>
     <Editable lang="sql">select 1 from tblSingleton where @Diet_Breakfast = 'Y'</Editable>
-    <Width>40</Width>
+    <Width>50</Width>
     <DropdownSQL>select Description from Dropdown where Category = 'J_Diet_Yes' order by Description</DropdownSQL>
   </CiComboField>
   <CiComboField>
     <FieldName>Diet_Lunch</FieldName>
-    <Caption>5.2. Did you try our lunch?  [y; n]</Caption>
+    <Caption>   5.2. Did you try our lunch?  [y; n]</Caption>
     <Width>20</Width>
     <DropdownSQL>select Code from Dropdown where Category = 'J_Yes_No' order by Code</DropdownSQL>
   </CiComboField>
   <CiComboField>
     <FieldName>Diet_Lunch_No</FieldName>
-    <Caption>5.2.1. No:</Caption>
-    <Editable lang="sql">select 1 from tblSingleton where @Diet_Lunch = 'Y'</Editable>
-    <Width>30</Width>
+    <Caption>      5.2.1. No:</Caption>
+    <Editable lang="sql">select 1 from tblSingleton where @Diet_Lunch = 'N'</Editable>
+    <Width>40</Width>
     <DropdownSQL>select Description from Dropdown where Category = 'J_Diet_No' order by Description</DropdownSQL>
   </CiComboField>
   <CiComboField>
     <FieldName>Diet_Lunch_Yes</FieldName>
-    <Caption>5.2.2. Yes:</Caption>
+    <Caption>      5.2.2. Yes:</Caption>
     <Editable lang="sql">select 1 from tblSingleton where @Diet_Lunch = 'Y'</Editable>
-    <Width>40</Width>
+    <Width>50</Width>
     <DropdownSQL>select Description from Dropdown where Category = 'J_Diet_Yes' order by Description</DropdownSQL>
   </CiComboField>
   <CiComboField>
     <FieldName>Diet_Dinner</FieldName>
-    <Caption>5.3. Did you try our dinner?  [y; n]</Caption>
+    <Caption>   5.3. Did you try our dinner?  [y; n]</Caption>
     <Width>20</Width>
     <DropdownSQL>select Code from Dropdown where Category = 'J_Yes_No' order by Code</DropdownSQL>
   </CiComboField>
   <CiComboField>
     <FieldName>Diet_Dinner_No</FieldName>
-    <Caption>5.3.1. No:</Caption>
-    <Editable lang="sql">select 1 from tblSingleton where @Diet_Dinner = 'Y'</Editable>
-    <Width>30</Width>
+    <Caption>      5.3.1. No:</Caption>
+    <Editable lang="sql">select 1 from tblSingleton where @Diet_Dinner = 'N'</Editable>
+    <Width>40</Width>
     <DropdownSQL>select Description from Dropdown where Category = 'J_Diet_No' order by Description</DropdownSQL>
   </CiComboField>
   <CiComboField>
     <FieldName>Diet_Dinner_Yes</FieldName>
-    <Caption>5.3.2. Yes:</Caption>
+    <Caption>      5.3.2. Yes:</Caption>
     <Editable lang="sql">select 1 from tblSingleton where @Diet_Dinner = 'Y'</Editable>
-    <Width>40</Width>
+    <Width>50</Width>
     <DropdownSQL>select Description from Dropdown where Category = 'J_Diet_Yes' order by Description</DropdownSQL>
   </CiComboField>
   <CiMemoField>
@@ -268,6 +278,6 @@
     <ActionSQL>?exec spCustomerJournals_sel @CustomerID</ActionSQL>
   </SelectMacro>
   <DefaultMacro>
-    <ActionSQL>select '- New -' as ID, @CustomerID as CustomerID, getdate() as JournalDate, substring(CONVERT(VARCHAR, GETDATE(), 108),0,6) as JournalTime</ActionSQL>
+    <ActionSQL>?exec spCustomerJournals_default @CustomerID</ActionSQL>
   </DefaultMacro>
 </CiTable>

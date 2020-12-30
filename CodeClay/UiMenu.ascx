@@ -3,7 +3,7 @@
 
 <asp:LoginView ID="loginView" runat="server">
     <AnonymousTemplate>
-        <dx:ASPxMenu ID="dxAnonymousMenu" ClientInstanceName="dxAnonymousMenu" runat="server" Theme="Aqua" AutoSeparators="RootOnly" AutoPostBack="false" Width="100%">
+        <dx:ASPxMenu ID="dxAnonymousMenu" ClientInstanceName="dxAnonymousMenu" runat="server" Theme="" AutoSeparators="RootOnly" AutoPostBack="false" Width="100%">
             <Items>
                 <dx:MenuItem Name="Home" Text="Home" NavigateUrl="~" ItemStyle-Width="8%"></dx:MenuItem>
                 <dx:MenuItem Name="About" Text="About" NavigateUrl="~/About" ItemStyle-Width="8%"></dx:MenuItem>
@@ -16,7 +16,7 @@
         </dx:ASPxMenu>
     </AnonymousTemplate>
     <LoggedInTemplate>
-        <dx:ASPxMenu ID="dxMenu" ClientInstanceName="dxMenu" runat="server" Theme="Aqua" AutoSeparators="RootOnly" AutoPostBack="false" Width="100%" OnInit="dxMenu_Init">
+        <dx:ASPxMenu ID="dxMenu" ClientInstanceName="dxMenu" runat="server" Theme="" AutoSeparators="RootOnly" AutoPostBack="false" Width="100%" OnInit="dxMenu_Init">
             <Items>
                 <dx:MenuItem Name="Home" Text="Home" NavigateUrl="~/Default.aspx?Application=CPanel" ItemStyle-Width="8%"></dx:MenuItem>
                 <dx:MenuItem Name="About" Text="About" NavigateUrl="~/About" ItemStyle-Width="8%"></dx:MenuItem>

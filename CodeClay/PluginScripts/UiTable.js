@@ -414,6 +414,10 @@ function ClickToolbar(table, event, isSearching) {
             Navigate(puxFile);
             break;
 
+        case "Quit":
+            window.parent.HidePopup();
+            break;
+
         case "New":
         case "Edit":
         case "Delete":

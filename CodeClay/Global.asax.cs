@@ -6,6 +6,7 @@ using System.Web.Optimization;
 using System.Web.Routing;
 using System.Web.Security;
 
+// Extra references
 using DevExpress.XtraReports.Native;
 
 namespace CodeClay

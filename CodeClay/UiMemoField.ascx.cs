@@ -136,6 +136,12 @@ namespace CodeClay
                     dxHtmlMemo.JSProperties["cpHasFieldExitMacro"] = (CiMemoField.CiFieldExitMacros.Length > 0);
                     dxHtmlMemo.JSProperties["cpTableName"] = tableName;
                     dxHtmlMemo.JSProperties["cpFollowerFields"] = FollowerFieldNames;
+                    dxHtmlMemo.JSProperties["cpMandatory"] = CiField.IsMandatory(drParams);
+                    dxHtmlMemo.JSProperties["cpEditable"] = CiField.IsEditable(drParams);
+                    dxHtmlMemo.JSProperties["cpAutoBlank"] = CiField.AutoBlank;
+                    dxHtmlMemo.JSProperties["cpTransparent"] = CiField.Transparent;
+                    dxHtmlMemo.JSProperties["cpVisible"] = CiField.IsVisible(drParams);
+                    dxHtmlMemo.JSProperties["cpIsHtml"] = true;
 
                     ASPxCallbackPanel editorPanel = dxHtmlMemo.NamingContainer as ASPxCallbackPanel;
                     if (editorPanel != null)

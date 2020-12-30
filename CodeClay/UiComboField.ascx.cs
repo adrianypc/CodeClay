@@ -97,7 +97,7 @@ namespace CodeClay
 					? DropDownStyle.DropDownList
 					: DropDownStyle.DropDown;
 
-                dxComboBox.JSProperties["cpAlternateName"] = CiComboField.TextFieldName;
+                dxComboBox.JSProperties["cpTextFieldName"] = CiComboField.TextFieldName;
 			}
 
             if (DataSource != null)

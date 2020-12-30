@@ -524,15 +524,16 @@ namespace CodeClay
             return false;
         }
 
-        public static bool IsUserAuthorised()
+        public static bool IsUserAuthorised(string role = null)
         {
             DataTable dt = new DataTable();
             dt.Columns.Add("Application").DefaultValue = Application;
+            dt.Columns.Add("Role").DefaultValue = role;
 
             DataRow dr = dt.NewRow();
             dt.Rows.Add(dr);
 
-            return MyWebUtils.IsTrueSQL("select dbo.fnIsAppOk(@CI_UserEmail, @Application)", dr, true);
+            return MyWebUtils.IsTrueSQL("select dbo.fnIsAppOk(@CI_UserEmail, @Application, @Role)", dr, true);
         }
 
         public static DataRow GetTableDetails(string tableName)

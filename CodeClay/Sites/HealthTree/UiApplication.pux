@@ -1,11 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <CiApplication>
-  <AppName>TaskTracker</AppName>
-  <Theme>Mulberry</Theme>
+  <AppName>HealthTree</AppName>
+  <Theme>Youthful</Theme>
   <IsDesigner>true</IsDesigner>
   <ProviderName>System.Data.SqlClient</ProviderName>
   <HomePluginSrc>Dropdown.pux</HomePluginSrc>
-  <ConnectionString>Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=U_TaskTracker;Integrated Security=True;Connect Timeout=30</ConnectionString>
+  <ConnectionString>Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=HealthTree;Integrated Security=True;Connect Timeout=30</ConnectionString>
   <CiMenu>
     <MenuName>Shortcut</MenuName>
   </CiMenu>

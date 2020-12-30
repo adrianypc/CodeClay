@@ -11,10 +11,8 @@
             <table>
                 <tr>
                     <td>
-                        <dx:ASPxCheckBox ID="dxCheckBox" ClientInstanceName="dxCheckBox" runat="server" Theme="Aqua" />
+                        <dx:ASPxCheckBox ID="dxCheckBox" ClientInstanceName="dxCheckBox" runat="server" Theme="" />
                     </td>
-                    <td style="width:15px">&nbsp;</td>
-                    <td><uc:UiButtonField ID="dxPopupMacro" runat="server" /></td>
                 </tr>
             </table>
         </dx:PanelContent>

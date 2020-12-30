@@ -35,11 +35,12 @@
     <Caption>1.  Sleep:</Caption>
     <Width>10</Width>
   </CiMemoField>
-  <CiTextField>
+  <CiNumericField>
     <FieldName>Sleep_Hours</FieldName>
-    <Caption>1.1. hours of sleep? [3 - 10]</Caption>
+    <Caption>1.1. hours of sleep? [3 - 10]</Caption>
     <Width>10</Width>
-  </CiTextField>
+    <MaxValue>1000</MaxValue>
+  </CiNumericField>
   <CiTextField>
     <FieldName>Sleep_Times</FieldName>
     <Caption>1.2. time to bed? [hh:mm]</Caption>
@@ -85,11 +86,11 @@
     <Caption>3. Menstruation:</Caption>
     <Width>10</Width>
   </CiMemoField>
-  <CiTextField>
+  <CiCurrencyField>
     <FieldName>M_Waking</FieldName>
-    <Caption>3.1. Waking Temperature: [nn.n degrees celsius]</Caption>
+    <Caption>3.1. Waking Temperature: [nn.n degrees celsius]</Caption>
     <Width>10</Width>
-  </CiTextField>
+  </CiCurrencyField>
   <CiTextField>
     <FieldName>M_Still</FieldName>
     <Caption>3.2. Still menstruating? [y; n]</Caption>

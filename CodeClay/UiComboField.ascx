@@ -7,7 +7,7 @@
     <ClientSideEvents EndCallback="dxComboPanel_EndCallback" />
     <PanelCollection>
         <dx:PanelContent>
-            <dx:ASPxComboBox ID="dxComboBox" ClientInstanceName="dxComboBox" runat="server" Theme="Aqua" DropDownStyle="DropDownList" DataSourceID="MyComboData"
+            <dx:ASPxComboBox ID="dxComboBox" ClientInstanceName="dxComboBox" runat="server" Theme="" DropDownStyle="DropDownList" DataSourceID="MyComboData"
                 TextFormatString="{0}">
             </dx:ASPxComboBox>
         </dx:PanelContent>

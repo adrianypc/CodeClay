@@ -7,7 +7,7 @@
     <ClientSideEvents EndCallback="dxButtonPanel_EndCallback" />
     <PanelCollection>
         <dx:PanelContent>
-            <dx:ASPxButton ID="dxButton" ClientInstanceName="dxButton" runat="server" Theme="Aqua" AutoPostBack="false">
+            <dx:ASPxButton ID="dxButton" ClientInstanceName="dxButton" runat="server" Theme="" AutoPostBack="false">
                 <ClientSideEvents Click="dxButton_Click" />
             </dx:ASPxButton>
         </dx:PanelContent>

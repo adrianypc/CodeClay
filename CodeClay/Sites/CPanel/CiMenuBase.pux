@@ -1,0 +1,77 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<CiTable>
+	<TableName>CiMenuBase</TableName>
+	<TableCaption>Menu Base</TableCaption>
+	<DefaultView>Grid</DefaultView>
+  <RowKey>AppID,MenuID</RowKey>
+  <CiField>
+    <FieldName>AppID</FieldName>
+    <Caption>App ID</Caption>
+    <Hidden>true</Hidden>
+  </CiField>
+  <CiTextField>
+    <FieldName>ParentMenuID</FieldName>
+    <Caption>Parent Menu ID</Caption>
+    <Hidden>true</Hidden>
+    <Value>0</Value>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>MenuID</FieldName>
+    <Caption>Menu ID</Caption>
+    <Hidden>true</Hidden>
+  </CiTextField>
+  <CiNumericField>
+    <FieldName>MenuIndex</FieldName>
+    <Caption>Index</Caption>
+    <Width>6</Width>
+    <Editable lang="sql">select 1 from Singleton where @MenuIndex is not null and isnumeric(@MenuIndex) = 1</Editable>
+  </CiNumericField>
+  <CiNumericField>
+    <FieldName>OldMenuIndex</FieldName>
+    <Hidden>true</Hidden>
+    <Computed>true</Computed>
+    <Value>MenuIndex</Value>
+  </CiNumericField>
+  <CiTextField>
+    <FieldName>MenuName</FieldName>
+    <Caption>Menu Name</Caption>
+    <Width>20</Width>
+  </CiTextField>
+  <CiComboField>
+    <FieldName>MenuUrl</FieldName>
+    <Caption>Menu URL</Caption>
+    <InsertSQL>select 'Allow whatever the user enters' from Singleton</InsertSQL>
+    <DropdownSQL>select TableName + '.pux' as PuxFile from CiTable where AppID = @AppID and Bound = 0 order by TableName</DropdownSQL>
+    <DropdownWidth>200</DropdownWidth>
+  </CiComboField>
+  <DefaultMacro>
+    <ActionSQL>
+      select  @ParentMenuID as ParentMenuID, '- New -' as MenuIndex
+    </ActionSQL>
+  </DefaultMacro>
+  <SelectMacro>
+    <ActionSQL>?exec spMenu_sel @AppID, @ParentMenuID</ActionSQL>
+  </SelectMacro>
+  <InsertMacro>
+    <ActionSQL>exec spMenu_ins @AppID, @ParentMenuID, @MenuName, @MenuUrl</ActionSQL>
+    <ActionSQL>select @AppID as AppID, @MenuID as MenuID</ActionSQL>
+    <CiSerializeMacro>
+      <Direction>Download</Direction>
+    </CiSerializeMacro>
+  </InsertMacro>
+  <UpdateMacro>
+    <ActionSQL>exec spMenu_upd @AppID, @MenuID, @MenuIndex, @MenuName, @MenuUrl</ActionSQL>
+    <ActionSQL>select @AppID as AppID, @MenuID as MenuID</ActionSQL>
+    <CiSerializeMacro>
+      <Direction>Download</Direction>
+    </CiSerializeMacro>
+  </UpdateMacro>
+  <DeleteMacro>
+    <ValidateSQL>select 'Please delete sub menu items first' from Singleton where exists (select 1 from CiMenu where AppID = @AppID and ParentMenuID = @MenuID)</ValidateSQL>
+    <ActionSQL>exec spMenu_del @AppID, @MenuID</ActionSQL>
+    <ActionSQL>select @AppID as AppID, @MenuID as MenuID</ActionSQL>
+    <CiSerializeMacro>
+      <Direction>Download</Direction>
+    </CiSerializeMacro>
+  </DeleteMacro>
+</CiTable>

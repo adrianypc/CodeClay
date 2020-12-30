@@ -69,6 +69,9 @@ namespace CodeClay
         [XmlElement("Browsable")]
         public bool Browsable { get; set; } = true;
 
+        [XmlElement("AutoBlank")]
+        public bool AutoBlank { get; set; } = false;
+
         // --------------------------------------------------------------------------------------------------
         // Properties (Derived)
         // --------------------------------------------------------------------------------------------------
@@ -296,7 +299,7 @@ namespace CodeClay
                 }
 
                 dxLayoutItem.Visible = IsVisible(dr);
-                dxLayoutItem.Caption = caption;
+                dxLayoutItem.Caption = caption; //.Replace(' ', Convert.ToChar(160));
                 dxLayoutItem.RowSpan = RowSpan;
                 dxLayoutItem.ColSpan = ColSpan;
                 dxLayoutItem.Width = GetColumnWidth(dr);
@@ -602,6 +605,7 @@ namespace CodeClay
                 mEditor.JSProperties["cpFollowerFields"] = FollowerFieldNames;
                 mEditor.JSProperties["cpMandatory"] = CiField.IsMandatory(drParams);
                 mEditor.JSProperties["cpEditable"] = CiField.IsEditable(drParams);
+                mEditor.JSProperties["cpAutoBlank"] = CiField.AutoBlank;
                 mEditor.JSProperties["cpTransparent"] = CiField.Transparent;
                 mEditor.JSProperties["cpVisible"] = CiField.IsVisible(drParams);
 
@@ -792,7 +796,7 @@ namespace CodeClay
                 drPluginDefinition["FieldID"] = MyWebUtils.EvalSQL(insertSQL, drPluginDefinition, true);
             }
 
-            string updateColumnNames = "@AppID, @TableID, @FieldID, @FieldName, @Caption, @Type, @Editable, @Mandatory" +
+            string updateColumnNames = "@AppID, @TableID, @FieldID, @FieldName, @Caption, @Type, @Editable, @AutoBlank, @Mandatory" +
                 ", @Hidden, @Searchable, @Summary, @ForeColor, @RowSpan, @ColSpan, @Width, @HorizontalAlign" +
                 ", @VerticalAlign, @Value, @DropdownSQL, @InsertSQL, @Code, @Description, @TextFieldName" +
                 ", @DropdownWidth, @Folder, @MinValue, @MaxValue, @Columns, @Mask, @NestedMacroID";

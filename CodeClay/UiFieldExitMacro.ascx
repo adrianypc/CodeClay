@@ -16,7 +16,7 @@
 	}
 </script>
 
-<dx:ASPxTextBox ID="dxTestField" ClientInstanceName="dxTestField" runat="server" Theme="Aqua" AutoPostBack="false" ClientIDMode="Static">
+<dx:ASPxTextBox ID="dxTestField" ClientInstanceName="dxTestField" runat="server" Theme="" AutoPostBack="false" ClientIDMode="Static">
 	<ClientSideEvents Init="dxTestField_Init" />
 	<ClientSideEvents TextChanged="dxTestField_TextChanged" />
 </dx:ASPxTextBox>

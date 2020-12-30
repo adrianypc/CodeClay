@@ -34,6 +34,11 @@
     <FieldName>UserDefined</FieldName>
     <Caption>Made in CPanel?</Caption>
   </CiCheckField>
+  <CiComboField>
+    <FieldName>Theme</FieldName>
+    <Caption>Theme</Caption>
+    <DropdownSQL>select Code from Dropdown where Category = 'Theme' order by Code</DropdownSQL>
+  </CiComboField>
   <CiField>
     <FieldName>HomePluginSrc</FieldName>
     <Caption>Home Table</Caption>
@@ -59,13 +64,13 @@
     <ActionSQL>?exec spApplication_sel null, @CI_UserEmail</ActionSQL>
   </SelectMacro>
   <InsertMacro>
-    <ActionSQL>?exec spApplication_ins @AppName, @CI_UserEmail, @UserDefined</ActionSQL>
+    <ActionSQL>?exec spApplication_ins @AppName, @CI_UserEmail, @UserDefined, @Theme</ActionSQL>
     <CiSerializeMacro>
       <Direction>Download</Direction>
     </CiSerializeMacro>
   </InsertMacro>
   <UpdateMacro>
-    <ActionSQL>exec spApplication_upd @AppID, @AppName, @UserDefined, @HomePluginSrc</ActionSQL>
+    <ActionSQL>exec spApplication_upd @AppID, @AppName, @UserDefined, @HomePluginSrc, @Theme</ActionSQL>
     <ActionSQL>select @AppID as AppID, @OldAppName as OldAppName</ActionSQL>
     <CiSerializeMacro>
       <Direction>Download</Direction>

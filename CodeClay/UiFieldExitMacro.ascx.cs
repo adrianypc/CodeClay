@@ -297,12 +297,11 @@ namespace CodeClay
                 bool isMandatory = ciField.IsMandatory(drParams);
                 bool isVisible = ciField.IsVisible(drParams);
 
-                script += string.Format("FormatField('{0}', '{1}', {2}, {3}, {4}, {5});",
+                script += string.Format("FormatField('{0}', '{1}', {2}, {3}, {4});",
                     ciTable.TableName,
                     ciField.FieldName,
                     isMandatory.ToString().ToLower(),
                     isEditable.ToString().ToLower(),
-                    ciField.Transparent.ToString().ToLower(),
                     isVisible.ToString().ToLower());
             }
 

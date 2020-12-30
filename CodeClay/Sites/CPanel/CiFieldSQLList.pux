@@ -1,0 +1,43 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<CiTable>
+  <TableName>CiFieldSQL</TableName>
+  <TableCaption>Field properties SQL</TableCaption>
+  <DefaultView>Grid</DefaultView>
+  <RowKey>SQLType</RowKey>
+  <CiField>
+    <FieldName>AppID</FieldName>
+    <Hidden>true</Hidden>
+  </CiField>
+  <CiField>
+    <FieldName>TableID</FieldName>
+    <Hidden>true</Hidden>
+  </CiField>
+  <CiField>
+    <FieldName>FieldID</FieldName>
+    <Hidden>true</Hidden>
+  </CiField>
+  <CiComboField>
+    <FieldName>SQLType</FieldName>
+    <Width>20</Width>
+    <DropdownSQL>select Code from Dropdown where Category = 'FieldSQLType' order by Code</DropdownSQL>
+    <Editable lang="sql">select 1 from Singleton where @SQLType is null</Editable>
+  </CiComboField>
+  <CiMemoField>
+    <FieldName>SQL</FieldName>
+  </CiMemoField>
+  <SelectMacro>
+    <ActionSQL>?exec spFieldSQL_sel @AppID, @TableID, @FieldID</ActionSQL>
+  </SelectMacro>
+  <InsertMacro>
+    <ActionSQL>exec spFieldSQL_ins @AppID, @TableID, @FieldID, @SQLType, @SQL</ActionSQL>
+    <NavigatePos>Parent</NavigatePos>
+  </InsertMacro>
+  <UpdateMacro>
+    <ActionSQL>exec spFieldSQL_upd @AppID, @TableID, @FieldID, @SQLType, @SQL</ActionSQL>
+    <NavigatePos>Parent</NavigatePos>
+  </UpdateMacro>
+  <DeleteMacro>
+    <ActionSQL>exec spFieldSQL_del @AppID, @TableID, @FieldID, @SQLType</ActionSQL>
+    <NavigatePos>Parent</NavigatePos>
+  </DeleteMacro>
+</CiTable>

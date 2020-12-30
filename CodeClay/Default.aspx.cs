@@ -44,9 +44,15 @@ namespace CodeClay
         protected void Page_Load(object sender, EventArgs e)
         {
             UiApplication.Me = CreateUiPlugin(APPLICATION_PUX_FILE) as UiApplication;
+            CiApplication ciApplication = UiApplication.Me.CiApplication;
 
-            if (!MyWebUtils.IsTimeOutReached(this))
+
+            if (!MyWebUtils.IsTimeOutReached(this) && ciApplication != null)
             {
+                ASPxWebControl.GlobalTheme = ciApplication.Theme;
+                ASPxWebControl.GlobalThemeBaseColor = ciApplication.ThemeColor;
+                ASPxWebControl.GlobalThemeFont = ciApplication.ThemeFont;
+
                 MyWebUtils.RegisterPluginScripts(this);
 
                 myOuterPanel.Controls.AddAt(0, UiApplication.Me);
@@ -63,7 +69,7 @@ namespace CodeClay
                 {
                     if (MyUtils.IsEmpty(puxFile))
                     {
-                        puxFile = UiApplication.Me.CiApplication.HomePluginSrc;
+                        puxFile = ciApplication.HomePluginSrc;
                     }
 
                     LoadUiPlugin(puxFile);

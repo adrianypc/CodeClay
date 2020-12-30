@@ -6,7 +6,7 @@
     <ClientSideEvents Init="dxLabelPanel_Init" />
     <PanelCollection>
         <dx:PanelContent>
-            <dx:ASPxLabel ID="dxLabel" ClientInstanceName="dxLabel" runat="server" Theme="Aqua" EncodeHtml="false" />
+            <dx:ASPxLabel ID="dxLabel" ClientInstanceName="dxLabel" runat="server" Theme="" EncodeHtml="false" />
         </dx:PanelContent>
     </PanelCollection>
 </dx:ASPxCallbackPanel>

@@ -261,6 +261,18 @@ namespace CodeClay
         }
 
         [XmlIgnore]
+        public CiMacro QuitMacro
+        {
+            get
+            {
+                CiMacro quitMacro = new CiMacro();
+                quitMacro.Caption = "Quit";
+
+                return quitMacro;
+            }
+        }
+
+        [XmlIgnore]
         public DataTable DataTable
         {
             get
@@ -1466,8 +1478,6 @@ namespace CodeClay
                 string titlePrefix = isSearchMode ? "Search for: " : "";
 
                 dxTable.Styles.TitlePanel.BackColor = isSearchMode ? Color.SpringGreen
-                    : (MyWebUtils.Application == "CPanel")
-                    ? Color.DeepSkyBlue
                     : Color.Transparent;
                 dxTable.SettingsText.Title = titlePrefix + CiTable.GetTableCaption(drParams);
 
@@ -1503,12 +1513,8 @@ namespace CodeClay
             DataRow drParams = GetState();
             if (CiTable != null && !CiTable.IsHidden(drParams))
             {
-                dxTable.Styles.TitlePanel.BackColor = (MyWebUtils.Application == "CPanel")
-                    ? Color.DeepSkyBlue
-                    : Color.Transparent;
-
                 dxTable.SettingsText.Title = CiTable.GetTableCaption(drParams);
-                dxTable.SettingsDetail.ShowDetailRow = (CiTable.Get<CiTable>().Where(c => !c.IsHidden(drParams)).Count() > 0);
+                dxTable.SettingsDetail.ShowDetailRow = (CiTable.Get<CiTable>().Count() > 0);
                 dxTable.SettingsEditing.Mode = GridViewEditingMode.Inline;
                 dxTable.SettingsEditing.NewItemRowPosition = CiTable.InsertRowAtBottom
                     ? GridViewNewItemRowPosition.Bottom
@@ -1660,18 +1666,36 @@ namespace CodeClay
         {
             if (dxMoreMenu != null)
             {
-                DevExpress.Web.MenuItem dxMenuItem = dxMoreMenu.Items.FindByName("Designer");
+                bool isDeveloper = MyWebUtils.IsUserAuthorised("Developer");
+                DevExpress.Web.MenuItem dxMenuItem = null;
+
+                dxMenuItem = dxMoreMenu.Items.FindByName("Inspect");
                 if (dxMenuItem != null)
                 {
-                    string tableName = CiTable.TableName;
-                    DataRow dr = MyWebUtils.GetTableDetails(tableName);
-                    bool? bound = MyWebUtils.GetField<bool>(dr, "Bound");
-                    string designerPuxFile = bound.HasValue && bound.Value ? "CiTableDetails.pux" : "CiFormDetails.pux";
+                    dxMenuItem.Visible = isDeveloper;
+                }
 
-                    dxMenuItem.NavigateUrl = string.Format("Default.aspx?Application=CPanel&PluginSrc={0}&AppID={1}&TableID={2}",
-                            designerPuxFile,
-                            MyWebUtils.GetField<int>(dr, "AppID"),
-                            MyWebUtils.GetField<int>(dr, "TableID"));
+                dxMenuItem = dxMoreMenu.Items.FindByName("Designer");
+                if (dxMenuItem != null)
+                {
+                    if (isDeveloper)
+                    {
+                        dxMenuItem.Visible = true;
+
+                        string tableName = CiTable.TableName;
+                        DataRow dr = MyWebUtils.GetTableDetails(tableName);
+                        bool? bound = MyWebUtils.GetField<bool>(dr, "Bound");
+                        string designerPuxFile = bound.HasValue && bound.Value ? "CiTableDetails.pux" : "CiFormDetails.pux";
+
+                        dxMenuItem.NavigateUrl = string.Format("Default.aspx?Application=CPanel&PluginSrc={0}&AppID={1}&TableID={2}",
+                                designerPuxFile,
+                                MyWebUtils.GetField<int>(dr, "AppID"),
+                                MyWebUtils.GetField<int>(dr, "TableID"));
+                    }
+                    else
+                    {
+                        dxMenuItem.Visible = false;
+                    }
                 }
             }
         }
@@ -1816,6 +1840,11 @@ namespace CodeClay
                 if (isSearchable && isBrowsing && isTopTable)
                 {
                     macros.Add("Search");
+                }
+
+                if (!isEditing && MyWebUtils.IsPopup(Page) && isTopTable)
+                {
+                    macros.Add("Quit");
                 }
 
                 if (!MyUtils.IsEmpty(CiTable.InsertMacro) && isBrowsing && !isParentInserting)

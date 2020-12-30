@@ -7,7 +7,7 @@
     <ClientSideEvents EndCallback="dxCurrencyPanel_EndCallback" />
     <PanelCollection>
         <dx:PanelContent>
-            <dx:ASPxTextbox ID="dxCurrencyBox" ClientInstanceName="dxCurrencyBox" runat="server" Theme="Aqua">
+            <dx:ASPxTextbox ID="dxCurrencyBox" ClientInstanceName="dxCurrencyBox" runat="server" Theme="">
                 <ValidationSettings ErrorDisplayMode="ImageWithTooltip" />
             </dx:ASPxTextbox>
         </dx:PanelContent>

@@ -1,14 +1,31 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <CiApplication>
   <AppName>BeNatural</AppName>
+  <HomePluginSrc>Customers.pux</HomePluginSrc>
+  <Theme>Office2003Olive</Theme>
   <IsDesigner>true</IsDesigner>
   <ProviderName>System.Data.SqlClient</ProviderName>
-  <HomePluginSrc>Dropdown.pux</HomePluginSrc>
   <ConnectionString>Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=BeNatural;Integrated Security=True;Connect Timeout=30</ConnectionString>
+  <CiMenu>
+    <MenuName>Shortcut</MenuName>
+  </CiMenu>
   <CiMenu>
     <MenuName>Application</MenuName>
     <CiMenu>
+      <MenuName>Customer Information</MenuName>
+      <PluginSrc></PluginSrc>
+      <CiMenu>
+        <MenuName>Customers</MenuName>
+        <PluginSrc>Customers.pux</PluginSrc>
+      </CiMenu>
+      <CiMenu>
+        <MenuName>Notes</MenuName>
+        <PluginSrc>CustomerCaseNotes.pux&amp;CustomerID=1</PluginSrc>
+      </CiMenu>
+    </CiMenu>
+    <CiMenu>
       <MenuName>Setup</MenuName>
+      <PluginSrc></PluginSrc>
       <CiMenu>
         <MenuName>Dropdown</MenuName>
         <PluginSrc>Dropdown.pux</PluginSrc>

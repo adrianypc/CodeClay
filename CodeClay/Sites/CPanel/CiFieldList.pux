@@ -38,6 +38,7 @@
   <CiTextField>
     <FieldName>Caption</FieldName>
     <Caption>Caption</Caption>
+    <Editable lang="sql">select 1 from Singleton where @Type is not null</Editable>
   </CiTextField>
   <CiComboField>
     <FieldName>Type</FieldName>
@@ -103,6 +104,10 @@
       select 1 from CiTable where AppID = @AppID and TableID = @TableID and @FieldName not in ('ParentID', 'ID')
       and not exists (select 1 from fnGetAncestorFieldByName(@AppID, @TableID, @FieldName))</VisibleSQL>
   </DeleteMacro>
+  <CiFieldExitMacro>
+    <FieldName>Type</FieldName>
+    <ActionSQL>select Caption = '*' from Singleton where @Type is null</ActionSQL>
+  </CiFieldExitMacro>
   <CiMacro>
     <MacroName>Details</MacroName>
     <Caption>Field Design</Caption>

@@ -7,7 +7,7 @@
     <ClientSideEvents EndCallback="dxDatePanel_EndCallback" />
     <PanelCollection>
         <dx:PanelContent>
-            <dx:ASPxDateEdit ID="dxDateBox" ClientInstanceName="dxDateBox" runat="server" Theme="Aqua" />
+            <dx:ASPxDateEdit ID="dxDateBox" ClientInstanceName="dxDateBox" runat="server" Theme="" />
         </dx:PanelContent>
     </PanelCollection>
 </dx:ASPxCallbackPanel>

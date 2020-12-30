@@ -8,10 +8,10 @@
     <ClientSideEvents EndCallback="dxMemoPanel_EndCallback" />
     <PanelCollection>
         <dx:PanelContent>
-            <dx:ASPxMemo ID="dxMemo" ClientInstanceName="dxMemo" runat="server" Theme="Aqua" BackColor="PaleGoldenrod" height="40px" MaxLength="4000">
+            <dx:ASPxMemo ID="dxMemo" ClientInstanceName="dxMemo" runat="server" Theme="" BackColor="PaleGoldenrod" height="40px" MaxLength="4000">
                 <ValidationSettings ErrorDisplayMode="ImageWithTooltip" />
             </dx:ASPxMemo>
-            <dxh:ASPxHtmlEditor ID="dxHtmlMemo" ClientInstanceName="dxHtmlMemo" runat="server" Theme="Aqua">
+            <dxh:ASPxHtmlEditor ID="dxHtmlMemo" ClientInstanceName="dxHtmlMemo" runat="server" Theme="">
                 <ClientSideEvents Init="dxHtmlMemo_Init" />
                 <ClientSideEvents HtmlChanged="dxHtmlMemo_HtmlChanged" />
             </dxh:ASPxHtmlEditor>

@@ -15,6 +15,7 @@ using System.Threading;
 
 // Extra references
 using CodistriCore;
+using DevExpress.Web;
 
 namespace CodeClay
 {
@@ -44,6 +45,15 @@ namespace CodeClay
 
         [XmlElement("AppName")]
         public string AppName { get; set; } = "";
+
+        [XmlElement("Theme")]
+        public string Theme { get; set; } = ASPxWebControl.GlobalTheme;
+
+        [XmlElement("ThemeColor")]
+        public string ThemeColor { get; set; } = ASPxWebControl.GlobalThemeBaseColor;
+
+        [XmlElement("ThemeFont")]
+        public string ThemeFont { get; set; } = ASPxWebControl.GlobalThemeFont;
     }
 
     public partial class UiApplication : UiPlugin
@@ -747,7 +757,16 @@ namespace CodeClay
         {
             xPluginDefinition.Add(new XElement("IsDesigner", true));
             xPluginDefinition.Add(new XElement("ProviderName", "System.Data.SqlClient"));
-            xPluginDefinition.Add(new XElement("HomePluginSrc", "Dropdown.pux"));
+
+            XElement xHomePluginSrc = xPluginDefinition.Element("HomePluginSrc");
+            if (xHomePluginSrc != null)
+            {
+                string homePluginSrc = xHomePluginSrc.Value;
+                if (!MyUtils.IsEmpty(homePluginSrc) && !homePluginSrc.EndsWith(".pux"))
+                {
+                    xHomePluginSrc.Value = homePluginSrc + ".pux";
+                }
+            }
 
             string databaseName = MyWebUtils.GetField(drPluginDefinition, "SQLDatabaseName") as string;
             string connectionString = UiApplication.Me.CiApplication.ConnectionString;
@@ -755,12 +774,13 @@ namespace CodeClay
             xPluginDefinition.Add(new XElement("ConnectionString", connectionString));
 
             xPluginDefinition.Add(new XElement("CiMenu",
-                new XElement("MenuName", "Application"),
-                new XElement("CiMenu",
-                    new XElement("MenuName", "Setup"),
-                    new XElement("CiMenu",
-                        new XElement("MenuName", "Dropdown"),
-                        new XElement("PluginSrc", "Dropdown.pux")))));
+                new XElement("MenuName", "Shortcut")));
+
+            XElement xMenu = new XElement("CiMenu", new XElement("MenuName", "Application"));
+            xPluginDefinition.Add(xMenu);
+
+            DataRow drMenuParams = CreateMenuParams(drPluginDefinition);
+            DownloadMenu(xMenu, drMenuParams);
         }
 
         // --------------------------------------------------------------------------------------------------
@@ -769,19 +789,47 @@ namespace CodeClay
 
         private bool IsUserDefinedApplication(DataRow drAppKey)
         {
+            bool? userDefined = false;
             DataTable dt = MyWebUtils.GetBySQL("?exec spApplication_sel @AppID", drAppKey, true);
 
-            if (dt != null && dt.Columns.Contains("UserDefined") && MyWebUtils.GetNumberOfRows(dt) > 0)
+            if (dt != null && MyWebUtils.GetNumberOfRows(dt) > 0)
             {
-                object objUserDefined = dt.Rows[0]["UserDefined"];
-
-                if (objUserDefined != null)
-                {
-                    return Convert.ToBoolean(objUserDefined);
-                }
+                userDefined = MyWebUtils.GetField<bool>(dt.Rows[0], "UserDefined");
             }
 
-            return true;
+            return userDefined.GetValueOrDefault(false);
+        }
+
+        private void DownloadMenu(XElement xMenu, DataRow drParams)
+        {
+            DataTable dtMenus = MyWebUtils.GetBySQL("?exec spMenu_sel @AppID, @ParentMenuID, null", drParams);
+            if (MyWebUtils.GetNumberOfRows(dtMenus) > 0)
+            {
+                foreach (DataRow drMenu in dtMenus.Rows)
+                {
+                    XElement xMenuItem = new XElement("CiMenu");
+                    xMenuItem.Add(new XElement("MenuName", MyWebUtils.GetStringField(drMenu, "MenuName")));
+                    xMenuItem.Add(new XElement("PluginSrc", MyWebUtils.GetStringField(drMenu, "MenuUrl")));
+
+                    xMenu.Add(xMenuItem);
+
+                    DataRow drMenuParams = CreateMenuParams(drMenu);
+                    DownloadMenu(xMenuItem, drMenuParams);
+                }
+            }
+        }
+
+        private DataRow CreateMenuParams(DataRow drParams)
+        {
+            DataRow drMenuParams = MyWebUtils.CreateDataRow();
+            DataColumnCollection dcMenuParams = drMenuParams.Table.Columns;
+            MyWebUtils.AddColumnIfRequired(dcMenuParams, "AppID");
+            MyWebUtils.AddColumnIfRequired(dcMenuParams, "ParentMenuID");
+
+            drMenuParams["AppID"] = MyWebUtils.GetField<int>(drParams, "AppID");
+            drMenuParams["ParentMenuID"] = MyUtils.Coalesce(MyWebUtils.GetField<int>(drParams, "MenuID"), 0);
+
+            return drMenuParams;
         }
     }
 }

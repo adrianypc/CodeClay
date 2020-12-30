@@ -42,33 +42,20 @@
     <FieldName>Editable</FieldName>
     <Caption>Editable field?</Caption>
     <Editable lang="sql">select 1 from Singleton where @Type is not null</Editable>
-    <CiMacro>
-      <Caption>...</Caption>
-      <ActionSQL>select @AppID as AppID, @TableID as TableID, @FieldID as FieldID, 'Editable' as SQLType</ActionSQL>
-      <NavigateUrl>CiFieldSQL.pux&amp;Command=New</NavigateUrl>
-      <NavigatePos>Popup|600|400</NavigatePos>
-    </CiMacro>
+  </CiCheckField>
+  <CiCheckField>
+    <FieldName>AutoBlank</FieldName>
+    <Caption>Blank out when not editable?</Caption>
+    <Editable lang="sql">select 1 from Singleton where @Type is not null</Editable>
   </CiCheckField>
   <CiCheckField>
     <FieldName>Mandatory</FieldName>
     <Caption>Mandatory field?</Caption>
     <Editable lang="sql">select 1 from Singleton where @Type is not null</Editable>
-    <CiMacro>
-      <Caption>...</Caption>
-      <ActionSQL>select @AppID as AppID, @TableID as TableID, @FieldID as FieldID, 'Mandatory' as SQLType</ActionSQL>
-      <NavigateUrl>CiFieldSQL.pux&amp;Command=New</NavigateUrl>
-      <NavigatePos>Popup|600|400</NavigatePos>
-    </CiMacro>
   </CiCheckField>
   <CiCheckField>
     <FieldName>Hidden</FieldName>
     <Caption>Invisible field?</Caption>
-    <CiMacro>
-      <Caption>...</Caption>
-      <ActionSQL>select @AppID as AppID, @TableID as TableID, @FieldID as FieldID, 'Hidden' as SQLType</ActionSQL>
-      <NavigateUrl>CiFieldSQL.pux&amp;Command=New</NavigateUrl>
-      <NavigatePos>Popup|600|400</NavigatePos>
-    </CiMacro>
   </CiCheckField>
   <CiCheckField>
     <FieldName>Searchable</FieldName>
@@ -128,12 +115,15 @@
     <Mandatory>true</Mandatory>
     <Hidden>true</Hidden>
   </CiComboField>
+  <CiTable Src="CiFieldSQLList.pux">
+    <TableName>FieldSQLList</TableName>
+  </CiTable>
   <SelectMacro>
     <ActionSQL>?exec spField_sel @AppID, @TableID, @FieldID</ActionSQL>
   </SelectMacro>
   <UpdateMacro>
     <ActionSQL>
-      exec spField_updLong @AppID, @TableID, @FieldID, @FieldName, @Caption, @Type, @Editable, @Mandatory, @Hidden, @Searchable, @Summary, @ForeColor,
+      exec spField_updLong @AppID, @TableID, @FieldID, @FieldName, @Caption, @Type, @Editable, @AutoBlank, @Mandatory, @Hidden, @Searchable, @Summary, @ForeColor,
         @RowSpan, @ColSpan, @Width, @HorizontalAlign, @VerticalAlign, @Value,
         @DropdownSQL, @InsertSQL, @Code, @Description, @TextFieldName, @DropdownWidth,
         @Folder, @MinValue, @MaxValue, @Columns, @Mask

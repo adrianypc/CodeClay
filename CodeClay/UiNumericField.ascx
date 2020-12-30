@@ -7,7 +7,7 @@
     <ClientSideEvents EndCallback="dxSpinEditPanel_EndCallback" />
     <PanelCollection>
         <dx:PanelContent>
-            <dx:ASPxSpinEdit ID="dxSpinEdit" ClientInstanceName="dxSpinEdit" runat="server" Theme="Aqua">
+            <dx:ASPxSpinEdit ID="dxSpinEdit" ClientInstanceName="dxSpinEdit" runat="server" Theme="">
                 <ValidationSettings ErrorDisplayMode="ImageWithTooltip" />
             </dx:ASPxSpinEdit>
         </dx:PanelContent>

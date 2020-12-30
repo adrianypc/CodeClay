@@ -97,8 +97,6 @@ namespace CodeClay
                 {
                     // Do nothing
                 }
-
-                SetupPopupMacro(dxPopupMacro);
             }
         }
 

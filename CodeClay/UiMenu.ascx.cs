@@ -26,6 +26,9 @@ namespace CodeClay
 
         [XmlElement("PluginSrc")]
         public string PluginSrc { get; set; } = "";
+
+        [XmlElement("PluginPos")]
+        public string PluginPos { get; set; } = "";
     }
 
     public partial class UiMenu : UiPlugin
@@ -40,38 +43,76 @@ namespace CodeClay
             set { CiPlugin = value; }
         }
 
+        protected CiMenu CiShortcutMenu { get; set; } = null;
+
+        protected string CurrentUrl { get; set; } = null;
+
         // --------------------------------------------------------------------------------------------------
         // Event Handlers
         // --------------------------------------------------------------------------------------------------
-        
+
         protected void dxMenu_Init(object sender, EventArgs e)
         {
             ASPxMenu dxMenu = sender as ASPxMenu;
             if (dxMenu != null)
             {
                 MenuItem dxRootItem = dxMenu.RootItem;
-
-                MenuItem dxUserMenuItem = dxRootItem.Items.FindByName("User");
-                if (dxUserMenuItem != null)
+                if (dxRootItem != null)
                 {
-                    dxUserMenuItem.Text = Context.User.Identity.Name;
-                }
-                
-                CiApplication ciApplication = UiApplication.Me.CiApplication;
-                if (ciApplication != null)
-                {
-                    CiMenu[] ciMenus = ciApplication.Get<CiMenu>();
-                    if (ciMenus != null)
+                    MenuItem dxUserMenuItem = dxRootItem.Items.FindByName("User");
+                    if (dxUserMenuItem != null)
                     {
-                        MenuItem dxDividerMenuItem = dxRootItem.Items.FindByName("Divider");
-                        if (dxDividerMenuItem != null)
-                        {
-                            int menuIndex = dxDividerMenuItem.Index;
+                        dxUserMenuItem.Text = Context.User.Identity.Name;
+                    }
 
-                            foreach (CiMenu ciMenu in ciMenus)
+                    CurrentUrl = MyWebUtils.QueryString.ToString();
+
+                    CiApplication ciApplication = UiApplication.Me.CiApplication;
+                    if (ciApplication != null)
+                    {
+                        if (!CurrentUrl.Contains(".pux"))
+                        {
+                            string homePluginSrc = ciApplication.HomePluginSrc;
+                            if (!MyUtils.IsEmpty(homePluginSrc))
                             {
-                                CreateMenuItem(ciMenu, dxRootItem, ++menuIndex);
+                                CurrentUrl += string.Format("&PluginSrc={0}", homePluginSrc);
                             }
+                        }
+
+                        CiMenu[] ciMenus = ciApplication.Get<CiMenu>();
+                        if (ciMenus != null)
+                        {
+                            MenuItem dxDividerMenuItem = dxRootItem.Items.FindByName("Divider");
+                            if (dxDividerMenuItem != null)
+                            {
+                                int menuIndex = dxDividerMenuItem.Index;
+
+                                foreach (CiMenu ciMenu in ciMenus)
+                                {
+                                    CreateMenuItem(ciMenu, dxRootItem, ++menuIndex);
+                                }
+                            }
+                        }
+
+                        MenuItem dxShortcutMenuItem = dxRootItem.Items.FindByName("Shortcut");
+                        if (dxShortcutMenuItem != null)
+                        {
+                            bool hasShortCutMenu = (CiShortcutMenu != null);
+
+                            if (hasShortCutMenu)
+                            {
+                                string shortcutMenuName = CiShortcutMenu.MenuName;
+                                if (shortcutMenuName != "Application")
+                                {
+                                    dxShortcutMenuItem.Text = shortcutMenuName;
+                                    foreach (CiMenu ciMenu in CiShortcutMenu.Get<CiMenu>())
+                                    {
+                                        CreateMenuItem(ciMenu, dxShortcutMenuItem, dxShortcutMenuItem.Items.Count);
+                                    }
+                                }
+                            }
+
+                            dxShortcutMenuItem.Visible = hasShortCutMenu && (dxShortcutMenuItem.Items.Count > 1);
                         }
                     }
                 }
@@ -92,15 +133,19 @@ namespace CodeClay
         {
             if (ciMenu != null && dxParentMenuItem != null)
             {
+                string menuName = ciMenu.MenuName;
                 MenuItem dxMenuItem = new MenuItem();
 
                 // Create menu item
-                dxMenuItem.Text = ciMenu.MenuName;
+                dxMenuItem.Name = menuName;
+                dxMenuItem.Text = menuName;
+                dxMenuItem.Visible = !MyWebUtils.Eval<bool>(ciMenu.Hidden, GetState());
 
                 string pluginSrc = ciMenu.PluginSrc;
                 if (!MyUtils.IsEmpty(pluginSrc))
                 {
                     dxMenuItem.NavigateUrl = GetQueryString(ciMenu.AppName, pluginSrc);
+                    dxMenuItem.Target = (ciMenu.PluginPos == "NewTab") ? "_blank" : "_self";
                 }
 
                 dxParentMenuItem.Items.Insert(menuIndex, dxMenuItem);
@@ -109,6 +154,11 @@ namespace CodeClay
                 foreach (CiMenu ciChildMenu in ciMenu.Get<CiMenu>())
                 {
                     CreateMenuItem(ciChildMenu, dxMenuItem, dxMenuItem.Items.Count);
+                    string childMenuUrl = string.Format("Application={0}&PluginSrc={1}", MyWebUtils.Application, ciChildMenu.PluginSrc);
+                    if (CurrentUrl == childMenuUrl && CiShortcutMenu == null)
+                    {
+                        CiShortcutMenu = ciMenu;
+                    }
                 }
             }
         }

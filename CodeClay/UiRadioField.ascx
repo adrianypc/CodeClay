@@ -7,7 +7,7 @@
     <ClientSideEvents EndCallback="dxRadioPanel_EndCallback" />
     <PanelCollection>
         <dx:PanelContent>
-            <dx:ASPxRadioButtonList ID="dxRadioBox" ClientInstanceName="dxRadioBox" runat="server" Theme="Aqua" DataSourceID="MyRadioData" RepeatLayout="Table"
+            <dx:ASPxRadioButtonList ID="dxRadioBox" ClientInstanceName="dxRadioBox" runat="server" Theme="" DataSourceID="MyRadioData" RepeatLayout="Table"
                 RepeatDirection="Vertical" >
             </dx:ASPxRadioButtonList>
         </dx:PanelContent>

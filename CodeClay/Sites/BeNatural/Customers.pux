@@ -28,7 +28,6 @@
     <FieldName>OtherNames</FieldName>
     <Caption>Other Name</Caption>
     <Searchable>true</Searchable>
-    <Mandatory lang="sql">select 1 from tblSingleton where @LastName is not null</Mandatory>
   </CiTextField>
   <CiDateField>
     <FieldName>DateOfBirth</FieldName>
@@ -78,10 +77,12 @@
     <ActionSQL>select '-New-' as CustomerID</ActionSQL>
   </DefaultMacro>
   <InsertMacro>
-    <ActionSQL>?exec spCustomer_ins @BranchCode, @LastName, @OtherNames, @DateOfBirth, @Address, @CountryCode, @Postcode, @Email, @Mobile, @Referrer</ActionSQL>
+    <ActionSQL>?exec spCustomer_ins @BranchCode, @LastName, @OtherNames, @DateOfBirth, @Address, @CountryCode,
+			@Postcode, @Email, @Mobile, @Referrer</ActionSQL>
   </InsertMacro>
   <UpdateMacro>
-    <ActionSQL>?exec spCustomer_upd @CustomerID, @BranchCode, @LastName, @OtherNames, @DateOfBirth, @Address, @CountryCode, @Postcode, @Email, @Mobile, @Referrer</ActionSQL>
+    <ActionSQL>?exec spCustomer_upd @CustomerID, @BranchCode, @LastName, @OtherNames, @DateOfBirth, @Address, @CountryCode,
+			@Postcode, @Email, @Mobile, @Referrer</ActionSQL>
   </UpdateMacro>
   <CiMacro>
     <MacroName>Journals</MacroName>

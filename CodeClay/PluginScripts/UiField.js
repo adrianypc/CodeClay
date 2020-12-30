@@ -49,15 +49,15 @@ function dxFieldExitPanel_EndCallback(sender, event) {
 
 function RegisterEditor(editor, getvalue_function, setvalue_function) {
     if (editor) {
-        InitEditor(editor);
+        FormatEditor(editor);
 
 		var tableName = editor.cpTableName;
         var fieldName = editor.name;
-        var alternateFieldName = editor.cpAlternateName;
+        var textFieldName = editor.cpTextFieldName;
 
 		if (tableName) {
 			fieldName = tableName + "." + fieldName;
-            alternateFieldName = tableName + "." + alternateFieldName;
+            textFieldName = tableName + "." + textFieldName;
 		}
 
 		editor.GetEditorValue = getvalue_function;
@@ -67,8 +67,8 @@ function RegisterEditor(editor, getvalue_function, setvalue_function) {
 			editors[fieldName] = editor;
 		}
 
-        if (editors && alternateFieldName) {
-            editors[alternateFieldName] = editor;
+        if (editors && textFieldName) {
+            editors[textFieldName] = editor;
         }
 	}
 }
@@ -159,52 +159,61 @@ function SetEditorEditable(tableName, fieldName, editable) {
     var editor = editors[tableName + "." + fieldName];
 
     if (editor) {
-        var mandatory = editor.cpMandatory;
-        var transparent = editor.cpTransparent;
-        var visible = editor.cpVisible;
+        editor.cpEditable = editable;
 
-        FormatEditor(editor, mandatory, editable, transparent, visible);
+        FormatEditor(editor);
     }
 }
 
-function InitEditor(editor) {
+function FormatEditor(editor) {
     if (editor) {
         var mandatory = editor.cpMandatory;
         var editable = editor.cpEditable;
         var transparent = editor.cpTransparent;
         var visible = editor.cpVisible;
+        var autoBlank = editor.cpAutoBlank
+        var tableName = editor.cpTableName;
+        var isHtml = editor.cpIsHtml
+        var fieldName = editor.name;
 
-        FormatEditor(editor, mandatory, editable, transparent, visible);
-    }
-}
-
-function FormatEditor(editor, mandatory, editable, transparent, visible) {
-    if (editor) {
         var mainElement = editor.GetMainElement();
-        var inputElement = editor.GetInputElement();
+        var inputElement = isHtml ? null : editor.GetInputElement();
 
-        if (mainElement && inputElement) {
+        if (typeof isHtml == 'undefined') { isHtml = false; }
+
+        if (mainElement) {
             if (visible) {
                 editor.SetVisible(true);
                 if (editable) {
                     if (transparent) {
                         mainElement.style.backgroundColor = "Transparent";
-                        inputElement.style.backgroundColor = "Transparent";
+                        if (!isHtml) {
+                            inputElement.style.backgroundColor = "Transparent";
+                        }
                     }
                     else if (mandatory) {
                         mainElement.style.backgroundColor = "LightPink";
-                        inputElement.style.backgroundColor = "LightPink";
+                        if (!isHtml) {
+                            inputElement.style.backgroundColor = "LightPink";
+                        }
                     }
                     else {
                         mainElement.style.backgroundColor = "PaleGoldenrod";
-                        inputElement.style.backgroundColor = "PaleGoldenrod";
+                        if (!isHtml) {
+                            inputElement.style.backgroundColor = "PaleGoldenrod";
+                        }
                     }
-                    editor.SetReadOnly(false);
+                    if (!isHtml) editor.SetReadOnly(false);
                 }
                 else {
                     mainElement.style.backgroundColor = "Transparent";
-                    inputElement.style.backgroundColor = "Transparent";
+                    if (!isHtml) {
+                        inputElement.style.backgroundColor = "Transparent";
+                    }
                     editor.SetReadOnly(true);
+                    if (autoBlank) {
+                        SetEditorValue(tableName, fieldName, '');
+                    }
                 }
             }
             else {
@@ -214,10 +223,14 @@ function FormatEditor(editor, mandatory, editable, transparent, visible) {
     }
 }
 
-function FormatField(tableName, fieldName, mandatory, editable, transparent, visible) {
+function FormatField(tableName, fieldName, mandatory, editable, visible) {
     var editor = editors[tableName + "." + fieldName];
 
-    FormatEditor(editor, mandatory, editable, transparent, visible);
+    editor.cpMandatory = mandatory;
+    editor.cpEditable = editable;
+    editor.cpVisible = visible;
+
+    FormatEditor(editor);
 }
 
 function RunExitMacro(editor) {

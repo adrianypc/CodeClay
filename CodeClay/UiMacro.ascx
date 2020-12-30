@@ -11,6 +11,6 @@ function dxMacroLabel_Init(sender, event) {
 }
 </script>
 
-<dx:ASPxLabel ID="dxMacroLabel" ClientInstanceName="dxMacroLabel" runat="server" Theme="Aqua" Text="Run macro">
+<dx:ASPxLabel ID="dxMacroLabel" ClientInstanceName="dxMacroLabel" runat="server" Theme="" Text="Run macro">
     <ClientSideEvents Init="dxMacroLabel_Init" />
 </dx:ASPxLabel>
