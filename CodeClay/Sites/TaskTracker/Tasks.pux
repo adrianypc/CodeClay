@@ -8,56 +8,47 @@
     <Hidden>true</Hidden>
   </CiField>
   <CiTextField>
-    <FieldName>EditParentID</FieldName>
-    <Caption>Customer ID</Caption>
-    <Width>10</Width>
-    <Hidden lang="sql">select 1 from Singleton where @ParentID is not null</Hidden>
-  </CiTextField>
-  <CiTextField>
     <FieldName>ID</FieldName>
     <Caption>Task ID</Caption>
     <Editable>false</Editable>
-    <Width>5</Width>
+    <Width>10</Width>
   </CiTextField>
   <CiTextField>
     <FieldName>Description</FieldName>
-    <Caption>Task Description</Caption>
-    <Width>60</Width>
+    <Caption>Task Description</Caption>
+    <Width>65</Width>
   </CiTextField>
-  <CiCheckField>
-    <FieldName>Billable</FieldName>
-    <Caption>Billable?</Caption>
-    <Width>5</Width>
-  </CiCheckField>
-  <CiNumericField>
-    <FieldName>Effort</FieldName>
-    <Caption>Effort (hours)</Caption>
+  <CiTextField>
+    <FieldName>Type</FieldName>
+    <Caption>Task Type</Caption>
     <Width>10</Width>
+  </CiTextField>
+  <CiCurrencyField>
+    <FieldName>Cost</FieldName>
+    <Caption>Cost</Caption>
+    <Width>10</Width>
+  </CiCurrencyField>
+  <CiNumericField>
+    <FieldName>Billable</FieldName>
+    <Caption>Billable</Caption>
+    <Width>5</Width>
     <MaxValue>1000</MaxValue>
   </CiNumericField>
-  <CiTable Src="Logs.pux?ParentID=@ID">
-    <TableName>Logs</TableName>
-    <TableCaption>Logs</TableCaption>
-  </CiTable>
-  <CiTable Src="Timings.pux?ParentID=@ID">
-    <TableName>Timings</TableName>
-    <TableCaption>Timings</TableCaption>
-  </CiTable>
   <SelectMacro>
-    <ActionSQL>select  Billable, Description, Effort, ID, ParentID as EditParentID from Tasks where (@ParentID is null or ParentID = @ParentID) order by ID</ActionSQL>
+    <ActionSQL>select  Billable, Cost, Description, ID, Type from Tasks order by ID</ActionSQL>
   </SelectMacro>
   <InsertMacro>
-    <ActionSQL>insert into Tasks (Billable, Description, Effort, ParentID) values (@Billable, @Description, @Effort, @EditParentID)</ActionSQL>
+    <ActionSQL>insert into Tasks (Billable, Cost, Description, Type) values (@Billable, @Cost, @Description, @Type)</ActionSQL>
     <ValidateSQL></ValidateSQL>
   </InsertMacro>
   <UpdateMacro>
-    <ActionSQL>update Tasks set Billable = @Billable, Description = @Description, Effort = @Effort, ParentID = @EditParentID where ID = @ID</ActionSQL>
+    <ActionSQL>update Tasks set Billable = @Billable, Cost = @Cost, Description = @Description, Type = @Type where ID = @ID</ActionSQL>
     <ValidateSQL></ValidateSQL>
   </UpdateMacro>
   <DeleteMacro>
     <ActionSQL>delete from Tasks where ID = @ID</ActionSQL>
   </DeleteMacro>
   <DefaultMacro>
-    <ActionSQL>select @ParentID as EditParentID, '- New -' as ID</ActionSQL>
+    <ActionSQL>select '- New -' as ID</ActionSQL>
   </DefaultMacro>
 </CiTable>

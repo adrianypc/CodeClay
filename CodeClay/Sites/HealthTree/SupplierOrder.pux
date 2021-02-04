@@ -1,0 +1,300 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<CiTable>
+	<TableName>SupplierOrder</TableName>
+	<TableCaption lang="sql">
+        select 
+            case 
+                when @IsTransferred = cast(1 as bit) then 'Transfer Order' 
+                when @SupplierID is not null then
+                    case 
+                        when (select 1 from Supplier where SupplierID = @SupplierID and SupplierName not like 'HealthTree%') = 1 then 'Supplier Order'
+                        else 'Transfer Order' end
+                else 'Supplier Order' end
+    </TableCaption>
+	<RowKey>SupplierOrderNo</RowKey>
+	<DefaultView>Card</DefaultView>
+  <CiTextField>
+    <FieldName>SupplierOrderNo</FieldName>
+    <Caption>Supplier Order #</Caption>
+    <Editable>false</Editable>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>Status</FieldName>
+    <Caption>Status</Caption>
+    <Editable>false</Editable>
+  </CiTextField>
+  <CiDateField>
+    <FieldName>SupplierOrderDate</FieldName>
+    <Caption>Order Date</Caption>
+    <Editable>true</Editable>
+    <ColumnFormat>dd/MM/yyyy</ColumnFormat>
+    <Mandatory>true</Mandatory>
+  </CiDateField>
+  <CiDateField>
+    <FieldName>DeliveryDate</FieldName>
+    <Caption>Delivery Date</Caption>
+    <Editable>true</Editable>
+    <ColumnFormat>dd/MM/yyyy</ColumnFormat>
+  </CiDateField>
+  <CiCheckField>
+    <FieldName>IsTransferred</FieldName>
+    <Caption>Transfer Order</Caption>
+    <Editable lang="sql">select distinct 1 from SupplierOrders where @Status = 'Open' </Editable>
+    <Hidden>true</Hidden>
+  </CiCheckField>
+  <CiComboField>
+    <FieldName>CusBranchCode</FieldName>
+    <Caption>From Branch</Caption>
+    <DropdownSQL>select Code from Dropdown where Category = 'Branch' order by Code</DropdownSQL>
+    <Editable lang="sql">select 1 from tblSingleton where @IsTransferred = cast(1 as bit)</Editable>
+  </CiComboField>
+  <CiComboField>
+    <FieldName>SupplierID</FieldName>
+    <TextFieldName>SupplierName</TextFieldName>
+    <Caption>Supplier</Caption>
+     <Code>SupplierID</Code>
+    <Description>SupplierName</Description>
+    <DropdownSQL>select SupplierID,SupplierName from Supplier order by SupplierName</DropdownSQL>
+    <Mandatory>true</Mandatory>
+    <Editable lang="sql">select 1 from tblSingleton where cast(0 as bit) = @IsTransferred</Editable>
+    <DropdownWidth>600</DropdownWidth>
+  </CiComboField>
+  <CiComboField>
+    <FieldName>BranchCode</FieldName>
+    <Caption>To Branch</Caption>
+    <DropdownSQL>select Code from Dropdown where Category = 'Branch' order by Code</DropdownSQL>
+    <Mandatory>true</Mandatory>
+  </CiComboField>
+  <CiLinkField>
+    <FieldName>OrderFileURL</FieldName>
+    <Caption>Order File</Caption>
+    <Folder lang="sql">select 'SavedFiles\SupplierOrders\' + ltrim(str(@SupplierID)) + '\F' + ltrim(str(@SupplierOrderNo))</Folder>
+    <Width>50</Width>
+  </CiLinkField>
+  <CiCurrencyField>
+    <FieldName>Shipping</FieldName>
+    <Caption>Shipping ($)</Caption>
+  </CiCurrencyField>
+  <CiCurrencyField>
+    <FieldName>TotalAmount</FieldName>
+    <Caption>Total ($)</Caption>
+    <Editable>false</Editable>
+  </CiCurrencyField>
+  <CiComboField>
+    <FieldName>CurrentCurrency</FieldName>
+    <TextFieldName>CurrencyName</TextFieldName>
+    <Caption>Currency Code</Caption>
+    <Editable>true</Editable>
+    <DropdownSQL>select Code as CurrencyCode, Description as CurrencyName from Dropdown where Category='Currency'</DropdownSQL>
+    <Mandatory>true</Mandatory>
+ </CiComboField>
+ <CiLinkField>
+    <FieldName>ExchangeRateURL</FieldName>
+    <Caption>Exchange Rate URL</Caption>
+     <Editable>false</Editable>
+    <Width>50</Width>
+ </CiLinkField>
+ <CiTextField>
+    <FieldName>ConversionRate</FieldName>
+    <Caption>Conversion Rate</Caption>
+    <Editable lang="sql">select 1 from tblSingleton where @CurrentCurrency != 'SGD'</Editable>
+    <Mandatory>true</Mandatory>
+ </CiTextField>
+ <CiCurrencyField>
+    <FieldName>TotalAmountInSGD</FieldName>
+    <Caption>Total (S$)</Caption>
+    <Editable>false</Editable>
+ </CiCurrencyField>
+ <CiLinkField>
+    <FieldName>DeliveryURL</FieldName>
+    <Caption>Delivery URL</Caption>
+    <Width>50</Width>
+ </CiLinkField>
+ <CiMemoField>
+    <FieldName>Comments</FieldName>
+    <Caption>Comments</Caption>
+ </CiMemoField>
+ <CiTextField>
+    <FieldName>CalledFrom</FieldName>
+     <Hidden>true</Hidden>
+  </CiTextField>
+  <CiTable src="SupplierOrderItems.pux" />
+  <DefaultMacro>
+    <ActionSQL>
+        select
+        '-New-' as SupplierOrderNo,
+        convert(datetime,cast(getdate() as nvarchar(12)),103) as SupplierOrderDate,
+        coalesce(@IsTransferred,cast(0 as bit)) as IsTransferred,
+        case
+            when @SupplierID is not null then @SupplierID
+            when @SupplierID is null and @IsTransferred = cast(1 as bit) then
+                (select SupplierID from Supplier where SupplierName like 'HealthTree - Transfer%')
+            when @SupplierID is null and @IsTransferred = cast(0 as bit) then
+                (select SupplierID from Supplier where SupplierName = 'Unique Health Products')
+        end as SupplierID,
+        case when @IsTransferred = cast(1 as bit) then 'HealthTree - Transfer' else 'Unique Health Products' end as SupplierName,
+        'Open' as Status,
+        case 
+            when @IsTransferred = cast(1 as bit) then
+                (select BranchCode from Supplier where SupplierName like 'HealthTree - Transfer%')
+            else
+                (select BranchCode from Supplier where SupplierName = 'Unique Health Products')
+        end as BranchCode,
+        case when @IsTransferred = cast(1 as bit) then 'HT-AU' else '' end as CusBranchCode
+        from SupplierOrders
+    </ActionSQL>
+  </DefaultMacro>
+  <SelectMacro>
+		<ActionSQL>?exec spSupplierOrders_sel @SupplierOrderNo, @SupplierID</ActionSQL>
+  </SelectMacro>
+  <InsertMacro>
+    <ActionSQL>
+      select  isnull(1 + max(SupplierOrderNo), 1) as SupplierOrderNo
+      from    SupplierOrders
+    </ActionSQL>
+    <ActionSQL>
+        ?exec spSupplierOrders_upd
+        @SupplierOrderNo,
+        @Status,
+        @SupplierID,
+        @SupplierOrderDate,
+        @OrderFileURL,
+        @Shipping,
+        @TotalAmount,
+        @DeliveryDate,
+        @IsTransferred,
+        @CurrentCurrency,
+        @ConversionRate,
+        @TotalAmountInSGD,
+        @ExchangeRateURL,
+        @DeliveryURL,
+        @Comments,
+        @BranchCode,
+        @CusBranchCode
+    </ActionSQL>
+    <VisibleSQL>select distinct 1 from SupplierOrders where @CalledFrom is null</VisibleSQL>
+    </InsertMacro>
+  <UpdateMacro>
+    <ActionSQL>
+        ?exec spSupplierOrders_upd
+        @SupplierOrderNo,
+        @Status,
+        @SupplierID,
+        @SupplierOrderDate,
+        @OrderFileURL,
+        @Shipping,
+        @TotalAmount,
+        @DeliveryDate,
+        @IsTransferred,
+        @CurrentCurrency,
+        @ConversionRate,
+        @TotalAmountInSGD,
+        @ExchangeRateURL,
+        @DeliveryURL,
+        @Comments,
+        @BranchCode,
+        @CusBranchCode
+    </ActionSQL>
+    <VisibleSQL>
+        select 1 from SupplierOrders
+        where SupplierOrderNo = case when isnumeric(@SupplierOrderNo) = 1 then @SupplierOrderNo else -1 end
+        and Status in ('Active','Open')</VisibleSQL>
+  </UpdateMacro>
+  <DeleteMacro>
+    <ActionSQL>exec spSupplierOrders_del @SupplierOrderNo</ActionSQL>
+    <VisibleSQL>
+        select 1 from SupplierOrders
+        where SupplierOrderNo = case when isnumeric(@SupplierOrderNo) = 1 then @SupplierOrderNo else -1 end
+        and Status in ('Active','Open')
+    </VisibleSQL>
+  </DeleteMacro>
+  <CiMacro>
+    <MacroName>Submit</MacroName>
+    <ActionSQL>exec spSupplierOrders_Status_upd @SupplierOrderNo,'Active',@CI_UserEmail</ActionSQL>
+    <ActionSQL>
+      select Status,
+      SupplierOrderDate
+      from SupplierOrders where SupplierOrderNo = @SupplierOrderNo
+    </ActionSQL>
+    <VisibleSQL>
+        select 1 from SupplierOrders
+        where SupplierOrderNo = case when isnumeric(@SupplierOrderNo) = 1 then @SupplierOrderNo else -1 end
+        and Status = 'Open'
+    </VisibleSQL>
+  </CiMacro>
+  <CiMacro>
+    <MacroName>Received</MacroName>
+    <ActionSQL>exec spSupplierOrders_Status_upd @SupplierOrderNo,'Received',@CI_UserEmail</ActionSQL>
+    <ActionSQL>
+      select Status,
+             DeliveryDate,
+             SupplierOrderNo
+      from SupplierOrders 
+      where SupplierOrderNo = @SupplierOrderNo
+    </ActionSQL>
+    <NavigateUrl>SupplierOrderEmail.pux</NavigateUrl>
+    <VisibleSQL>
+        select 1 from SupplierOrders
+        where SupplierOrderNo = case when isnumeric(@SupplierOrderNo) = 1 then @SupplierOrderNo else -1 end
+        and Status = 'Active'
+    </VisibleSQL>
+  </CiMacro>
+  <CiMacro>
+    <MacroName>Spawn Transfer Order</MacroName>
+    <ActionSQL>?exec spSupplierOrders_transfer_ins @SupplierOrderNo</ActionSQL>
+    <VisibleSQL>
+        select 1 from SupplierOrders
+        where SupplierOrderNo = case when isnumeric(@SupplierOrderNo) = 1 then @SupplierOrderNo else -1 end
+        and not exists (select 1 from supplier where SupplierID = @SupplierID and (SupplierName LIKE '%HealthTree Singapore%' or SupplierName LIKE '%HealthTree KhaiSing%'))
+    </VisibleSQL>
+    <NavigateUrl>SupplierOrder.pux</NavigateUrl>
+  </CiMacro>
+  <CiMacro>
+    <MacroName>Cancel Order</MacroName>
+    <ActionSQL>exec spSupplierOrders_cancellation @SupplierOrderNo</ActionSQL>
+    <ActionSQL>
+        select Status from SupplierOrders where SupplierOrderNo = @SupplierOrderNo
+    </ActionSQL>
+    <VisibleSQL>
+        select 1 from SupplierOrders
+        where SupplierOrderNo = case when isnumeric(@SupplierOrderNo) = 1 then @SupplierOrderNo else -1 end
+        and Status in ('Active','Open')
+    </VisibleSQL>
+  </CiMacro>
+  <CiFieldExitMacro>
+    <FieldName>Shipping</FieldName>
+    <ActionSQL>
+      select 
+        cast(@Shipping as decimal(10,2)) + coalesce(sum(Price),0) as TotalAmount
+      from SupplierOrderItems where SupplierOrderNo = @SupplierOrderNo
+    </ActionSQL>
+  </CiFieldExitMacro>
+  <CiFieldExitMacro>
+    <FieldName>CurrentCurrency</FieldName>
+    <FieldName>SupplierOrderDate</FieldName>
+    <ActionSQL>
+        select
+        case when @CurrentCurrency = 'SGD' then 1.00 else @ConversionRate end as ConversionRate,
+        case when @CurrentCurrency = 'SGD' then @TotalAmount else @TotalAmountInSGD end as TotalAmountInSGD,
+        'https://www.xe.com/currencytables/?from='+@CurrentCurrency+'&amp;date='+CONVERT(char(10),@SupplierOrderDate ,126) as ExchangeRateURL
+    </ActionSQL>
+  </CiFieldExitMacro>
+  <CiFieldExitMacro>
+     <FieldName>ConversionRate</FieldName>
+     <ActionSQL>
+         select cast(@TotalAmount * @ConversionRate as decimal(10,2)) as TotalAmountInSGD
+     </ActionSQL>
+  </CiFieldExitMacro>
+  <CiFieldExitMacro>
+    <FieldName>IsTransferred</FieldName>
+    <ActionSQL>
+        select SupplierID,SupplierName,BranchCode,'HT-AU' as CusBranchCode from Supplier where SupplierName like '%HealthTree - Transfer%' and @IsTransferred = cast(1 as bit)
+    </ActionSQL>
+  </CiFieldExitMacro>
+  <CiFieldExitMacro>
+    <FieldName>SupplierID</FieldName>
+    <ActionSQL>
+        select BranchCode from Supplier where SupplierID = @SupplierID
+    </ActionSQL>
+  </CiFieldExitMacro>
+</CiTable>

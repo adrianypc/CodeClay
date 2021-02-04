@@ -23,7 +23,7 @@
     <Caption>Special Notes</Caption>
     <Width>20</Width>
   </CiMemoField>
-  <CiTable Src="Tasks.pux?ParentID=@ID">
+  <CiTable src="Tasks.pux?ParentID=@ID">
     <TableName>Tasks</TableName>
     <TableCaption>Tasks</TableCaption>
   </CiTable>

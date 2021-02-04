@@ -51,7 +51,6 @@ namespace CodeClay
             {
                 ASPxWebControl.GlobalTheme = ciApplication.Theme;
                 ASPxWebControl.GlobalThemeBaseColor = ciApplication.ThemeColor;
-                ASPxWebControl.GlobalThemeFont = ciApplication.ThemeFont;
 
                 MyWebUtils.RegisterPluginScripts(this);
 

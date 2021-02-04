@@ -108,7 +108,7 @@
     <FieldName>Remarks</FieldName>
     <Caption>Remark</Caption>
   </CiMemoField>
-  <CiTable Src="BillItemDetail.pux"/>
+  <CiTable src="BillItemDetail.pux"/>
   <CiTextField>
     <FieldName>Deposit</FieldName>
     <Caption>Deposit</Caption>

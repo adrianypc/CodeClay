@@ -28,7 +28,7 @@
     <Caption>Pres No</Caption>
     <Editable>false</Editable>
   </CiTextField>
-  <CiTable Src= "AllocateDetail.pux"/>
+  <CiTable src= "AllocateDetail.pux"/>
   <SelectMacro>
     <ActionSQL>
       select

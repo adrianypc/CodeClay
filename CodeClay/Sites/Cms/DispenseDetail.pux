@@ -24,7 +24,7 @@
 		<Caption>Log ID</Caption>
 		<Hidden>true</Hidden>
 	</CiField>
-    <CiTable Src="DispenseItemList.pux" />
+    <CiTable src="DispenseItemList.pux" />
 	<SelectMacro>
 		<ActionSQL>
             select  *

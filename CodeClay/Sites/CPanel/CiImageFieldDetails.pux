@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<CiTable Src="CiFieldDetails.pux">
-  <CiButtonField Src="SQLFieldButton.pux?SQLType=FolderSQL">
+<CiTable src="CiFieldDetails.pux">
+  <CiButtonField src="SQLFieldButton.pux?SQLType=FolderSQL">
     <FieldName>FolderSQL</FieldName>
     <Caption>Folder</Caption>
   </CiButtonField>

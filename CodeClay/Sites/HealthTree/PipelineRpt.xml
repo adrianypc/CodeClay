@@ -1,0 +1,163 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<XtraReportsLayoutSerializer SerializerVersion="20.2.4.0" Ref="1" ControlType="DevExpress.XtraReports.UI.XtraReport, DevExpress.XtraReports.v20.2, Version=20.2.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" Name="XtraReport" VerticalContentSplitting="Smart" Landscape="true" PageWidth="1100" PageHeight="850" Version="20.2" DataMember="ReportFields" DataSource="#Ref-0">
+  <Extensions>
+    <Item1 Ref="2" Key="DataSerializationExtension" Value="DataSetSerializer" />
+  </Extensions>
+  <Bands>
+    <Item1 Ref="3" ControlType="TopMarginBand" Name="TopMargin" />
+    <Item2 Ref="4" ControlType="ReportHeaderBand" Name="ReportHeader" HeightF="60">
+      <Controls>
+        <Item1 Ref="5" ControlType="XRLabel" Name="label1" Text="Report Title" SizeF="114.292366,24.194334" LocationFloat="0,0" StyleName="Title" />
+      </Controls>
+    </Item2>
+    <Item3 Ref="6" ControlType="VerticalHeaderBand" Name="VerticalHeader" RepeatEveryPage="true" WidthF="105.772362" HeightF="224">
+      <Controls>
+        <Item1 Ref="7" ControlType="XRTable" Name="table1" AnchorHorizontal="Both" SizeF="105.772362,224" LocationFloat="0,0">
+          <Rows>
+            <Item1 Ref="8" ControlType="XRTableRow" Name="tableRow1" Weight="0.125">
+              <Cells>
+                <Item1 Ref="9" ControlType="XRTableCell" Name="tableCell1" Weight="2.4612198583685041" Text="Order Type" WordWrap="false" StyleName="HeaderData1VerticalFirstRow" />
+              </Cells>
+            </Item1>
+            <Item2 Ref="10" ControlType="XRTableRow" Name="tableRow2" Weight="0.125">
+              <Cells>
+                <Item1 Ref="11" ControlType="XRTableCell" Name="tableCell2" Weight="1.5166637955024316" Text="Order No" WordWrap="false" StyleName="HeaderData1VerticalRow_Even" />
+              </Cells>
+            </Item2>
+            <Item3 Ref="12" ControlType="XRTableRow" Name="tableRow3" Weight="0.125">
+              <Cells>
+                <Item1 Ref="13" ControlType="XRTableCell" Name="tableCell3" Weight="2.2578288684000025" Text="Order Date" WordWrap="false" StyleName="HeaderData1Vertical" />
+              </Cells>
+            </Item3>
+            <Item4 Ref="14" ControlType="XRTableRow" Name="tableRow4" Weight="0.125">
+              <Cells>
+                <Item1 Ref="15" ControlType="XRTableCell" Name="tableCell4" Weight="1" Text="Courier Tracking" WordWrap="false" StyleName="HeaderData1VerticalRow_Even" />
+              </Cells>
+            </Item4>
+            <Item5 Ref="16" ControlType="XRTableRow" Name="tableRow5" Weight="0.125">
+              <Cells>
+                <Item1 Ref="17" ControlType="XRTableCell" Name="tableCell5" Weight="160.58457557780395" Text="Completion Date" WordWrap="false" StyleName="HeaderData1Vertical" />
+              </Cells>
+            </Item5>
+            <Item6 Ref="18" ControlType="XRTableRow" Name="tableRow6" Weight="0.125">
+              <Cells>
+                <Item1 Ref="19" ControlType="XRTableCell" Name="tableCell6" Weight="0.74886014613743945" Text="Name" WordWrap="false" StyleName="HeaderData1VerticalRow_Even" />
+              </Cells>
+            </Item6>
+            <Item7 Ref="20" ControlType="XRTableRow" Name="tableRow7" Weight="0.125">
+              <Cells>
+                <Item1 Ref="21" ControlType="XRTableCell" Name="tableCell7" Weight="2.25670619138036" Text="Comments" WordWrap="false" StyleName="HeaderData1Vertical" />
+              </Cells>
+            </Item7>
+            <Item8 Ref="22" ControlType="XRTableRow" Name="tableRow8" Weight="0.125">
+              <Cells>
+                <Item1 Ref="23" ControlType="XRTableCell" Name="tableCell8" Weight="0.55240415688561439" Text="Link" WordWrap="false" StyleName="HeaderData1VerticalLastRow_Even" />
+              </Cells>
+            </Item8>
+          </Rows>
+        </Item1>
+      </Controls>
+    </Item3>
+    <Item4 Ref="24" ControlType="VerticalDetailBand" Name="VerticalDetail" WidthF="105.772362" HeightF="224" KeepTogether="true">
+      <Controls>
+        <Item1 Ref="25" ControlType="XRTable" Name="table2" AnchorHorizontal="Both" SizeF="105.772362,224" LocationFloat="0,0">
+          <Rows>
+            <Item1 Ref="26" ControlType="XRTableRow" Name="tableRow9" Weight="0.125">
+              <Cells>
+                <Item1 Ref="27" ControlType="XRTableCell" Name="tableCell9" Weight="0.40757790476128591" CanGrow="false" WordWrap="false" StyleName="DetailData1VerticalFirstRow">
+                  <ExpressionBindings>
+                    <Item1 Ref="28" EventName="BeforePrint" PropertyName="Text" Expression="[OrderType]" />
+                  </ExpressionBindings>
+                </Item1>
+              </Cells>
+            </Item1>
+            <Item2 Ref="29" ControlType="XRTableRow" Name="tableRow10" Weight="0.125">
+              <Cells>
+                <Item1 Ref="30" ControlType="XRTableCell" Name="tableCell10" Weight="0.40757790476128591" CanGrow="false" WordWrap="false" StyleName="DetailData1VerticalRow_Even">
+                  <ExpressionBindings>
+                    <Item1 Ref="31" EventName="BeforePrint" PropertyName="Text" Expression="[OrderNo]" />
+                  </ExpressionBindings>
+                </Item1>
+              </Cells>
+            </Item2>
+            <Item3 Ref="32" ControlType="XRTableRow" Name="tableRow11" Weight="0.125">
+              <Cells>
+                <Item1 Ref="33" ControlType="XRTableCell" Name="tableCell11" Weight="0.40757790476128591" CanGrow="false" WordWrap="false" StyleName="DetailData1Vertical">
+                  <ExpressionBindings>
+                    <Item1 Ref="34" EventName="BeforePrint" PropertyName="Text" Expression="[OrderDate]" />
+                  </ExpressionBindings>
+                </Item1>
+              </Cells>
+            </Item3>
+            <Item4 Ref="35" ControlType="XRTableRow" Name="tableRow12" Weight="0.125">
+              <Cells>
+                <Item1 Ref="36" ControlType="XRTableCell" Name="tableCell12" Weight="0.40757790476128591" CanGrow="false" WordWrap="false" StyleName="DetailData1VerticalRow_Even">
+                  <ExpressionBindings>
+                    <Item1 Ref="37" EventName="BeforePrint" PropertyName="Text" Expression="[CourierTracking]" />
+                  </ExpressionBindings>
+                </Item1>
+              </Cells>
+            </Item4>
+            <Item5 Ref="38" ControlType="XRTableRow" Name="tableRow13" Weight="0.125">
+              <Cells>
+                <Item1 Ref="39" ControlType="XRTableCell" Name="tableCell13" Weight="0.40757790476128591" CanGrow="false" WordWrap="false" StyleName="DetailData1Vertical">
+                  <ExpressionBindings>
+                    <Item1 Ref="40" EventName="BeforePrint" PropertyName="Text" Expression="[CompletionDate]" />
+                  </ExpressionBindings>
+                </Item1>
+              </Cells>
+            </Item5>
+            <Item6 Ref="41" ControlType="XRTableRow" Name="tableRow14" Weight="0.125">
+              <Cells>
+                <Item1 Ref="42" ControlType="XRTableCell" Name="tableCell14" Weight="0.40757790476128591" CanGrow="false" WordWrap="false" StyleName="DetailData1VerticalRow_Even">
+                  <ExpressionBindings>
+                    <Item1 Ref="43" EventName="BeforePrint" PropertyName="Text" Expression="[Name]" />
+                  </ExpressionBindings>
+                </Item1>
+              </Cells>
+            </Item6>
+            <Item7 Ref="44" ControlType="XRTableRow" Name="tableRow15" Weight="0.125">
+              <Cells>
+                <Item1 Ref="45" ControlType="XRTableCell" Name="tableCell15" Weight="0.40757790476128591" CanGrow="false" WordWrap="false" StyleName="DetailData1Vertical">
+                  <ExpressionBindings>
+                    <Item1 Ref="46" EventName="BeforePrint" PropertyName="Text" Expression="[Comments]" />
+                  </ExpressionBindings>
+                </Item1>
+              </Cells>
+            </Item7>
+            <Item8 Ref="47" ControlType="XRTableRow" Name="tableRow16" Weight="0.125">
+              <Cells>
+                <Item1 Ref="48" ControlType="XRTableCell" Name="tableCell16" Weight="0.40757790476128591" CanGrow="false" WordWrap="false" StyleName="DetailData1VerticalLastRow_Even">
+                  <ExpressionBindings>
+                    <Item1 Ref="49" EventName="BeforePrint" PropertyName="Text" Expression="[Link]" />
+                  </ExpressionBindings>
+                </Item1>
+              </Cells>
+            </Item8>
+          </Rows>
+        </Item1>
+      </Controls>
+    </Item4>
+    <Item5 Ref="50" ControlType="BottomMarginBand" Name="BottomMargin">
+      <Controls>
+        <Item1 Ref="51" ControlType="XRPageInfo" Name="pageInfo1" PageInfo="DateTime" SizeF="450,23" LocationFloat="0,0" StyleName="PageInfo" />
+        <Item2 Ref="52" ControlType="XRPageInfo" Name="pageInfo2" TextFormatString="Page {0} of {1}" TextAlignment="TopRight" SizeF="450,23" LocationFloat="450,0" StyleName="PageInfo" />
+      </Controls>
+    </Item5>
+  </Bands>
+  <StyleSheet>
+    <Item1 Ref="53" Name="Title" BorderStyle="Inset" Padding="6,6,0,0,100" Font="Arial, 14.25pt" ForeColor="255,75,75,75" BackColor="Transparent" BorderColor="Black" Sides="None" StringFormat="Near;Near;0;None;Character;Default" BorderWidthSerializable="1" />
+    <Item2 Ref="54" Name="PageInfo" BorderStyle="Inset" Padding="6,6,0,0,100" Font="Arial, 8.25pt, style=Bold" ForeColor="255,75,75,75" StringFormat="Near;Near;0;None;Character;Default" />
+    <Item3 Ref="55" Name="DetailData1Vertical" BorderStyle="Inset" Padding="6,6,0,0,100" Font="Arial, 8.25pt" ForeColor="255,51,51,51" BackColor="255,231,231,231" BorderColor="White" Sides="Right" StringFormat="Near;Center;0;None;Character;Default" TextAlignment="MiddleLeft" BorderWidthSerializable="2" />
+    <Item4 Ref="56" Name="DetailData1VerticalFirstRow" BorderStyle="Inset" Padding="6,6,0,0,100" Font="Arial, 8.25pt" ForeColor="255,51,51,51" BackColor="255,231,231,231" BorderColor="White" Sides="Top, Right" StringFormat="Near;Center;0;None;Character;Default" TextAlignment="MiddleLeft" BorderWidthSerializable="2" />
+    <Item5 Ref="57" Name="DetailData1VerticalRow_Even" BorderStyle="Inset" Padding="6,6,0,0,100" Font="Arial, 8.25pt" ForeColor="255,51,51,51" BackColor="Transparent" BorderColor="White" Sides="Right" StringFormat="Near;Center;0;None;Character;Default" TextAlignment="MiddleLeft" BorderWidthSerializable="2" />
+    <Item6 Ref="58" Name="DetailData1VerticalLastRow_Even" BorderStyle="Inset" Padding="6,6,0,0,100" Font="Arial, 8.25pt" ForeColor="255,51,51,51" BackColor="Transparent" BorderColor="White" Sides="Right, Bottom" StringFormat="Near;Center;0;None;Character;Default" TextAlignment="MiddleLeft" BorderWidthSerializable="2" />
+    <Item7 Ref="59" Name="HeaderData1Vertical" BorderStyle="Inset" Padding="6,6,0,0,100" Font="Arial, 8.25pt, style=Bold" ForeColor="White" BackColor="255,111,111,111" BorderColor="White" Sides="Right" StringFormat="Near;Center;0;None;Character;Default" TextAlignment="MiddleLeft" BorderWidthSerializable="2" />
+    <Item8 Ref="60" Name="HeaderData1VerticalFirstRow" BorderStyle="Inset" Padding="6,6,0,0,100" Font="Arial, 8.25pt, style=Bold" ForeColor="White" BackColor="255,111,111,111" BorderColor="White" Sides="Top, Right" StringFormat="Near;Center;0;None;Character;Default" TextAlignment="MiddleLeft" BorderWidthSerializable="2" />
+    <Item9 Ref="61" Name="HeaderData1VerticalRow_Even" BorderStyle="Inset" Padding="6,6,0,0,100" Font="Arial, 8.25pt, style=Bold" ForeColor="White" BackColor="255,131,131,131" BorderColor="White" Sides="Right" StringFormat="Near;Center;0;None;Character;Default" TextAlignment="MiddleLeft" BorderWidthSerializable="2" />
+    <Item10 Ref="62" Name="HeaderData1VerticalLastRow_Even" BorderStyle="Inset" Padding="6,6,0,0,100" Font="Arial, 8.25pt, style=Bold" ForeColor="White" BackColor="255,131,131,131" BorderColor="White" Sides="Right, Bottom" StringFormat="Near;Center;0;None;Character;Default" TextAlignment="MiddleLeft" BorderWidthSerializable="2" />
+  </StyleSheet>
+  <ObjectStorage>
+    <Item1 ObjectType="DevExpress.XtraReports.Serialization.ObjectStorageInfo, DevExpress.XtraReports.v20.2" Ref="0" Content="&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-16&quot;?&gt;&lt;NewDataSet&gt;&lt;xs:schema id=&quot;NewDataSet&quot; xmlns=&quot;&quot; xmlns:xs=&quot;http://www.w3.org/2001/XMLSchema&quot; xmlns:msdata=&quot;urn:schemas-microsoft-com:xml-msdata&quot;&gt;&lt;xs:element name=&quot;NewDataSet&quot; msdata:IsDataSet=&quot;true&quot; msdata:UseCurrentLocale=&quot;true&quot;&gt;&lt;xs:complexType&gt;&lt;xs:choice minOccurs=&quot;0&quot; maxOccurs=&quot;unbounded&quot;&gt;&lt;xs:element name=&quot;ReportFields&quot;&gt;&lt;xs:complexType&gt;&lt;xs:sequence&gt;&lt;xs:element name=&quot;OrderType&quot; type=&quot;xs:string&quot; minOccurs=&quot;0&quot; /&gt;&lt;xs:element name=&quot;OrderNo&quot; type=&quot;xs:string&quot; minOccurs=&quot;0&quot; /&gt;&lt;xs:element name=&quot;OrderDate&quot; type=&quot;xs:dateTime&quot; minOccurs=&quot;0&quot; /&gt;&lt;xs:element name=&quot;CourierTracking&quot; type=&quot;xs:string&quot; minOccurs=&quot;0&quot; /&gt;&lt;xs:element name=&quot;CompletionDate&quot; type=&quot;xs:dateTime&quot; minOccurs=&quot;0&quot; /&gt;&lt;xs:element name=&quot;Name&quot; type=&quot;xs:string&quot; minOccurs=&quot;0&quot; /&gt;&lt;xs:element name=&quot;Comments&quot; type=&quot;xs:string&quot; minOccurs=&quot;0&quot; /&gt;&lt;xs:element name=&quot;Link&quot; type=&quot;xs:string&quot; minOccurs=&quot;0&quot; /&gt;&lt;/xs:sequence&gt;&lt;/xs:complexType&gt;&lt;/xs:element&gt;&lt;/xs:choice&gt;&lt;/xs:complexType&gt;&lt;/xs:element&gt;&lt;/xs:schema&gt;&lt;ReportFields&gt;&lt;OrderType&gt;C&lt;/OrderType&gt;&lt;OrderNo&gt;PP10981&lt;/OrderNo&gt;&lt;OrderDate&gt;2021-01-02T00:00:00+08:00&lt;/OrderDate&gt;&lt;Name&gt;Tong&lt;/Name&gt;&lt;Comments&gt;2Jan: Waiting stocks from AU (2x JACK N JILL Buzzy Brush Replacement Heads 2pk)&lt;/Comments&gt;&lt;Link&gt;http://localhost/TestCodeclay/Default?Application=HealthTree&amp;amp;IsPopup=Y&amp;amp;PluginSrc=CustomerOrder.pux&amp;amp;CustomerOrderNo=646&lt;/Link&gt;&lt;/ReportFields&gt;&lt;ReportFields&gt;&lt;OrderType&gt;C&lt;/OrderType&gt;&lt;OrderNo&gt;PP10983&lt;/OrderNo&gt;&lt;OrderDate&gt;2021-01-03T00:00:00+08:00&lt;/OrderDate&gt;&lt;Name&gt;Tan &lt;/Name&gt;&lt;Link&gt;http://localhost/TestCodeclay/Default?Application=HealthTree&amp;amp;IsPopup=Y&amp;amp;PluginSrc=CustomerOrder.pux&amp;amp;CustomerOrderNo=648&lt;/Link&gt;&lt;/ReportFields&gt;&lt;ReportFields&gt;&lt;OrderType&gt;C&lt;/OrderType&gt;&lt;OrderNo&gt;SP210103B5EXE3BB&lt;/OrderNo&gt;&lt;OrderDate&gt;2021-01-03T00:00:00+08:00&lt;/OrderDate&gt;&lt;Name&gt;Looi&lt;/Name&gt;&lt;Link&gt;http://localhost/TestCodeclay/Default?Application=HealthTree&amp;amp;IsPopup=Y&amp;amp;PluginSrc=CustomerOrder.pux&amp;amp;CustomerOrderNo=647&lt;/Link&gt;&lt;/ReportFields&gt;&lt;ReportFields&gt;&lt;OrderType&gt;C&lt;/OrderType&gt;&lt;OrderNo&gt;FP109887&lt;/OrderNo&gt;&lt;OrderDate&gt;2021-01-08T00:00:00+08:00&lt;/OrderDate&gt;&lt;Name&gt;Ng&lt;/Name&gt;&lt;Link&gt;http://localhost/TestCodeclay/Default?Application=HealthTree&amp;amp;IsPopup=Y&amp;amp;PluginSrc=CustomerOrder.pux&amp;amp;CustomerOrderNo=649&lt;/Link&gt;&lt;/ReportFields&gt;&lt;ReportFields&gt;&lt;OrderType&gt;T&lt;/OrderType&gt;&lt;OrderNo&gt;128&lt;/OrderNo&gt;&lt;OrderDate&gt;2021-01-11T00:00:00+08:00&lt;/OrderDate&gt;&lt;CourierTracking&gt;&lt;/CourierTracking&gt;&lt;Name&gt;HealthTree - Transfer&lt;/Name&gt;&lt;Link&gt;http://localhost/TestCodeclay/Default?Application=HealthTree&amp;amp;IsPopup=Y&amp;amp;PluginSrc=SupplierOrder.pux&amp;amp;SupplierOrderNo=128&lt;/Link&gt;&lt;/ReportFields&gt;&lt;/NewDataSet&gt;" Type="System.Data.DataSet" />
+  </ObjectStorage>
+</XtraReportsLayoutSerializer>

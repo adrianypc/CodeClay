@@ -1,53 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<CiTable Src="Tasks.pux">
+<CiTable src="Tasks.pux">
   <TableName>MyTasks</TableName>
-  <TableCaption>My Tasks</TableCaption>
+  <TableCaption>My Task</TableCaption>
   <RowKey>ID</RowKey>
   <CiField>
     <FieldName>DummyForInsert</FieldName>
     <Hidden>true</Hidden>
   </CiField>
-  <CiTable>
-    <TableName>Logs</TableName>
-    <Hidden>true</Hidden>
-  </CiTable>
-  <CiTable>
-    <TableName>Timings</TableName>
-    <Hidden>true</Hidden>
-  </CiTable>
-  <CiTextField>
-    <FieldName>EditParentID</FieldName>
-    <Caption>Customer ID</Caption>
-    <Width>10</Width>
-    <Hidden lang="sql">select 1 from Singleton where @ParentID is not null</Hidden>
-  </CiTextField>
   <CiTextField>
     <FieldName>ID</FieldName>
-    <Caption>Task ID</Caption>
+    <Caption>ID</Caption>
     <Editable>false</Editable>
     <Searchable>true</Searchable>
     <Width>10</Width>
   </CiTextField>
-  <CiTextField>
-    <FieldName>Description</FieldName>
-    <Caption>Task Description</Caption>
-    <Width>40</Width>
-  </CiTextField>
-  <CiNumericField>
-    <FieldName>Effort</FieldName>
-    <Caption>Effort (hours)</Caption>
-    <Width>10</Width>
-    <MaxValue>1000</MaxValue>
-    <Editable lang="sql">select 1 from Singleton where @Billable = 1</Editable>
-  </CiNumericField>
-  <CiTextField>
-    <FieldName>Test</FieldName>
-    <Caption>Test</Caption>
-    <Width>10</Width>
-  </CiTextField>
-  <CiFieldExitMacro>
-    <MacroName>Calculate Cost</MacroName>
-    <FieldName>Effort</FieldName>
-    <ActionSQL>select Cost = 100 * @Effort</ActionSQL>
-  </CiFieldExitMacro>
 </CiTable>

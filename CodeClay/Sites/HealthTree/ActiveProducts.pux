@@ -1,0 +1,62 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<CiTable>
+    <TableName>ActiveProducts</TableName>
+    <TableCaption>Active Products</TableCaption>
+    <RowKey>ProductID</RowKey>
+    <DefaultView>Grid</DefaultView>
+    <DoubleClickMacroName>ProductDetail</DoubleClickMacroName>
+    <CiTextField>
+	    <FieldName>ProductID</FieldName>
+	    <Caption>Product ID</Caption>
+	    <Editable>false</Editable>
+        <Width>8</Width>
+    </CiTextField>
+    <CiTextField>
+        <FieldName>ProductName</FieldName>
+        <Caption>Product Name</Caption>
+        <Editable>false</Editable>
+        <Width>40</Width>
+    </CiTextField>
+    <CiLinkField>
+        <FieldName>HealthTreeURL</FieldName>
+        <Caption>HealthTree URL</Caption>
+        <Editable>false</Editable>
+        <Width>35</Width>
+    </CiLinkField>
+    <CiTextField>
+	    <FieldName>UnitCostPrice</FieldName>
+	    <Caption>Unit Cost Price (A$)</Caption>
+        <Editable>false</Editable>
+        <Width>13</Width>
+    </CiTextField>
+    <CiTextField>
+	    <FieldName>UnitSellingPrice</FieldName>
+	    <Caption>Unit Selling Price (S$)</Caption>
+        <Editable>false</Editable>
+        <Width>13</Width>
+    </CiTextField>
+    <CiCheckField>
+        <FieldName>IsDropShipping</FieldName>
+        <Caption>DropShipping</Caption>
+        <Width>10</Width>
+        <Editable>false</Editable>
+    </CiCheckField>
+    <SelectMacro>
+        <ActionSQL>?exec spProduct_selbyActivation 'Y'</ActionSQL>
+    </SelectMacro>
+    <CiMacro>
+        <MacroName>ProductDetail</MacroName>
+        <Caption>Detail</Caption>
+        <ActionSQL>select @ProductID as ProductID</ActionSQL>
+        <NavigateUrl>ProductDetail.pux</NavigateUrl>
+        <NavigatePos>Popup</NavigatePos>
+    </CiMacro>
+    <CiMacro>
+        <MacroName>NewProduct</MacroName>
+        <Caption>New</Caption>
+        <ActionSQL>select 'New' as Command</ActionSQL>
+        <NavigateUrl>ProductDetail.pux</NavigateUrl>
+        <NavigatePos>Popup</NavigatePos>
+        <Toolbar>true</Toolbar>
+    </CiMacro>
+</CiTable>

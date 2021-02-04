@@ -31,6 +31,11 @@
     <Caption>Theme</Caption>
     <DropdownSQL>select Code from Dropdown where Category = 'Theme' order by Code</DropdownSQL>
   </CiComboField>
+  <CiTextField>
+    <FieldName>ThemeColor</FieldName>
+    <Caption>Theme Color #AABBCC</Caption>
+    <Width>10</Width>
+  </CiTextField>
   <CiComboField>
     <FieldName>HomePluginSrc</FieldName>
     <Caption>Home Form</Caption>
@@ -41,15 +46,15 @@
     <Caption>Url</Caption>
     <Editable>false</Editable>
   </CiLinkField>
-  <CiTable Src="CiUserList.pux" />
-  <CiTable Src="CiTableList.pux" />
-  <CiTable Src="CiFormList.pux" />
-  <CiTable Src="CiMenuList.pux" />
+  <CiTable src="CiUserList.pux" />
+  <CiTable src="CiTableList.pux" />
+  <CiTable src="CiFormList.pux" />
+  <CiTable src="CiMenuList.pux" />
   <SelectMacro>
     <ActionSQL>?exec spApplication_sel @AppID, @CI_UserEmail</ActionSQL>
   </SelectMacro>
   <UpdateMacro>
-    <ActionSQL>exec spApplication_upd @AppID, @AppName, @UserDefined, @HomePluginSrc, @Theme</ActionSQL>
+    <ActionSQL>exec spApplication_upd @AppID, @AppName, @UserDefined, @HomePluginSrc, @Theme, @ThemeColor</ActionSQL>
     <ActionSQL>select @AppID as AppID, @OldAppName as OldAppName</ActionSQL>
     <CiSerializeMacro>
       <Direction>Download</Direction>

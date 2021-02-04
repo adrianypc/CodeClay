@@ -3,6 +3,7 @@
   <AppName>BeNatural</AppName>
   <HomePluginSrc>Customers.pux</HomePluginSrc>
   <Theme>Office2003Olive</Theme>
+  <ThemeColor>#5c898c</ThemeColor>
   <IsDesigner>true</IsDesigner>
   <ProviderName>System.Data.SqlClient</ProviderName>
   <ConnectionString>Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=BeNatural;Integrated Security=True;Connect Timeout=30</ConnectionString>

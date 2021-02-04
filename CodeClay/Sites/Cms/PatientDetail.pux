@@ -19,6 +19,6 @@
         @MPatientNo as MPatientNo
     </ActionSQL>
   </SelectMacro>
-  <CiTable Src="FProfile.pux" />
-  <CiTable Src="MProfile.pux" />
+  <CiTable src="FProfile.pux" />
+  <CiTable src="MProfile.pux" />
 </CiTable>

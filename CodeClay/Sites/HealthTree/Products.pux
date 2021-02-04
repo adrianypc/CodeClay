@@ -1,0 +1,81 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<CiTable>
+	<TableName>Products</TableName>
+	<TableCaption>Products</TableCaption>
+	<RowKey>ProductID</RowKey>
+    <InsertRowAtBottom>false</InsertRowAtBottom>
+	<DefaultView>Grid</DefaultView>
+	<CiTextField>
+		<FieldName>ProductID</FieldName>
+		<Caption>Product ID</Caption>
+		<Editable>false</Editable>
+        <Searchable>true</Searchable>
+	</CiTextField>
+	<CiTextField>
+		<FieldName>ProductName</FieldName>
+		<Caption>Product Name</Caption>
+	</CiTextField>
+  <CiLinkField>
+    <FieldName>HealthTreeURL</FieldName>
+    <Caption>HealthTree URL</Caption>
+    <Width>50</Width>
+  </CiLinkField>
+    <CiCurrencyField>
+		<FieldName>UnitCostPrice</FieldName>
+		<Caption>Unit Cost Price ($)</Caption>
+	</CiCurrencyField>
+    <CiCurrencyField>
+		<FieldName>UnitSellingPrice</FieldName>
+		<Caption>Unit Selling Price ($)</Caption>
+	</CiCurrencyField>
+    <CiCheckField>
+        <FieldName>IsActive</FieldName>
+        <Caption>Enabled</Caption>
+    </CiCheckField>
+    <CiTable src="Inventory.pux">
+	    <SelectMacro>
+		    <ActionSQL>?exec spInventory_selbyProductID @ProductID</ActionSQL>
+	    </SelectMacro>
+    </CiTable>
+	<CiMemoField>
+		<FieldName>ProductDescription</FieldName>
+		<Caption>Product Description</Caption>
+        <Hidden>true</Hidden>
+	</CiMemoField>
+	<CiComboField>
+		<FieldName>SupplierID</FieldName>
+        <Code>SupplierID</Code>
+        <Description>SupplierName</Description>
+        <TextFieldName>SupplierName</TextFieldName>
+		<Caption>Supplier</Caption>
+		<DropdownSQL>select SupplierID, SupplierName from Supplier order by SupplierID</DropdownSQL>
+	</CiComboField>
+	<CiTextField>
+		<FieldName>SupplierSKU</FieldName>
+		<Caption>Supplier SKU</Caption>
+        <Hidden>true</Hidden>
+	</CiTextField>
+	<CiNumericField>
+		<FieldName>ReorderThreshold</FieldName>
+		<Caption>Reorder Threshold</Caption>
+        <Hidden>true</Hidden>
+	</CiNumericField>
+    <DefaultMacro>
+		<ActionSQL>select '-New-' as ProductID, 1 as IsActive</ActionSQL>
+	</DefaultMacro>
+	<SelectMacro>
+  	<ActionSQL>?exec spProduct_sel @ProductID</ActionSQL>
+	</SelectMacro>
+	<InsertMacro>
+		<ActionSQL>
+			?exec spProduct_ins @ProductName, @ProductDescription, @SupplierID, @SupplierSKU,
+				@ReorderThreshold, @UnitCostPrice, @UnitSellingPrice,@HealthTreeURL,@IsActive
+		</ActionSQL>
+	</InsertMacro>
+	<UpdateMacro>
+		<ActionSQL>
+			?exec spProduct_upd @ProductID, @ProductName, @ProductDescription, @SupplierID, @SupplierSKU,
+				@ReorderThreshold, @UnitCostPrice, @UnitSellingPrice,@HealthTreeURL,@IsActive
+		</ActionSQL>
+	</UpdateMacro>
+</CiTable>

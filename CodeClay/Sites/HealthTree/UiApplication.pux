@@ -4,7 +4,6 @@
   <Theme>Youthful</Theme>
   <IsDesigner>true</IsDesigner>
   <ProviderName>System.Data.SqlClient</ProviderName>
-  <HomePluginSrc>Dropdown.pux</HomePluginSrc>
   <ConnectionString>Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=HealthTree;Integrated Security=True;Connect Timeout=30</ConnectionString>
   <CiMenu>
     <MenuName>Shortcut</MenuName>

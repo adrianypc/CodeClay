@@ -44,12 +44,7 @@
     <FieldName>Type</FieldName>
     <Caption>Type</Caption>
     <DropdownSQL>
-      select Code from Dropdown where Category = coalesce(
-      ( select  'DBFieldType'
-        from    CiTable
-        where   AppID = @AppID
-        and     TableID = @TableID
-        and     Bound = 1), 'FieldType')
+      select * from fnGetFieldTypes(@AppID, @TableID, @FieldID)
     </DropdownSQL>
     <Width>9</Width>
     <DropdownWidth>100</DropdownWidth>

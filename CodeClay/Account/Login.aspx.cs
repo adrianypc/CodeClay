@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using System.Web;
 using System.Web.UI;
 using Microsoft.AspNet.Identity;
@@ -17,9 +18,31 @@ namespace CodeClay.Account
             ForgotPasswordHyperLink.NavigateUrl = "Forgot";
             OpenAuthLogin.ReturnUrl = Request.QueryString["ReturnUrl"];
             var returnUrl = HttpUtility.UrlEncode(Request.QueryString["ReturnUrl"]);
+
             if (!String.IsNullOrEmpty(returnUrl))
             {
                 RegisterHyperLink.NavigateUrl += "?ReturnUrl=" + returnUrl;
+            }
+
+            string applicationName = MyWebUtils.Application;
+            if (!String.IsNullOrEmpty(applicationName))
+            {
+                Title = string.Format("Log in to {0}", applicationName);
+            }
+
+            if (UiApplication.Me != null)
+            {
+                CiApplication ciApplication = UiApplication.Me.CiApplication;
+                if (ciApplication != null)
+                {
+                    string themeColor = ciApplication.ThemeColor;
+
+                    if (!String.IsNullOrEmpty(themeColor))
+                    {
+                        btnLogin.ForeColor = Color.White;
+                        btnLogin.BackColor =  MyWebUtils.ToColor( themeColor);
+                    }
+                }
             }
         }
 

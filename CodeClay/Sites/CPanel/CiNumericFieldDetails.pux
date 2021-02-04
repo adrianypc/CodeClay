@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<CiTable Src="CiFieldDetails.pux">
+<CiTable src="CiFieldDetails.pux">
   <CiNumericField>
     <FieldName>MinValue</FieldName>
     <Caption>Min Value</Caption>

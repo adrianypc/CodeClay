@@ -86,7 +86,7 @@
     <Mandatory>true</Mandatory>
     <ColumnFormat>dd/MM/yyyy</ColumnFormat>
   </CiDateField>
-  <CiTable Src="StockAdjustmentItem.pux" />
+  <CiTable src="StockAdjustmentItem.pux" />
   <CiMemoField>
     <FieldName>SARemarks</FieldName>
     <Caption>Remarks</Caption>

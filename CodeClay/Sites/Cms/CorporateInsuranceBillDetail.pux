@@ -27,8 +27,8 @@
     <Description>[Display Date]</Description>
     <DropdownSQL>?exec spCorporateInsuranceBill @CustomerNo,null,null,null,6</DropdownSQL>
   </CiComboField>
-  <CiTable Src="UnprintedCorporateInsuranceBillItemDetail.pux"></CiTable>
-  <CiTable Src="PrintedCorporateInsuranceBillItemDetail.pux"></CiTable>
+  <CiTable src="UnprintedCorporateInsuranceBillItemDetail.pux"></CiTable>
+  <CiTable src="PrintedCorporateInsuranceBillItemDetail.pux"></CiTable>
   <CiTextField>
     <FieldName>Remarks</FieldName>
     <Caption>Remarks</Caption>

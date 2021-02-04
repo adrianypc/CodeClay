@@ -75,7 +75,7 @@
     <FieldName>Remarks</FieldName>
     <Caption>Remark</Caption>
   </CiTextField>
-  <CiTable Src="ReversalBillItemDetail.pux"></CiTable>
+  <CiTable src="ReversalBillItemDetail.pux"></CiTable>
   <CiTextField>
     <FieldName>DepositAllocated</FieldName>
     <Caption>Deposit Allocated</Caption>

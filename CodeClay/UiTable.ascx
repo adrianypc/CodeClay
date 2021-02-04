@@ -1,5 +1,5 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="UiTable.ascx.cs" Inherits="CodeClay.UiTable" %>
-<%@ Register Assembly="DevExpress.Web.v18.1, Version=18.1.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" Namespace="DevExpress.Web" TagPrefix="dx" %>
+<%@ Register Assembly="DevExpress.Web.v20.2, Version=20.2.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" Namespace="DevExpress.Web" TagPrefix="dx" %>
 <%@ Register Src="UiFieldExitMacro.ascx" TagPrefix="uc" TagName="UiFieldExitMacro" %>
 
 <style type="text/css">
@@ -158,7 +158,7 @@
         <dx:GridViewDataColumn Name="RowKey" FieldName="RowKey" Visible="false" />
     </Columns>
     <Toolbars>
-        <dx:GridViewToolbar ItemAlign="Right" EnableAdaptivity="true">
+        <dx:GridViewToolbar ItemAlign="Right">
             <Items>
                 <dx:GridViewToolbarItem Name="More" Text="More">
                     <Items>

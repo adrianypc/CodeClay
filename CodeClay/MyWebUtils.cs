@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Specialized;
 using System.Data;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Security.Principal;
@@ -641,6 +642,16 @@ namespace CodeClay
             return null;
         }
 
+        public static Color ToColor(string color)
+        {
+            byte a = 255;
+
+            byte r = (byte)(Convert.ToUInt32(color.Substring(1, 2), 16));
+            byte g = (byte)(Convert.ToUInt32(color.Substring(3, 2), 16));
+            byte b = (byte)(Convert.ToUInt32(color.Substring(5, 2), 16));
+
+            return Color.FromArgb(a, r, g, b);
+        }
     }
 
     public class DataSetSerializer : IDataSerializer

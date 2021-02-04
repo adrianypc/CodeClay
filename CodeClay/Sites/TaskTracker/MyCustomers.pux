@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<CiTable Src="Customers.pux">
+<CiTable src="Customers.pux">
   <TableName>MyCustomers</TableName>
   <TableCaption>My Customers</TableCaption>
   <DefaultView>Card</DefaultView>
@@ -19,7 +19,7 @@
     <Searchable>true</Searchable>
     <Width>10</Width>
   </CiTextField>
-  <CiTable Src="MyTasks.pux?ParentID=@ID">
+  <CiTable src="MyTasks.pux?ParentID=@ID">
     <TableName>MyTasks</TableName>
     <TableCaption>My Tasks</TableCaption>
   </CiTable>

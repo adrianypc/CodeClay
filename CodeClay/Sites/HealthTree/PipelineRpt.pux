@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<CiReport>
+  <Url>PipelineRpt.xml</Url>
+  <Designer>true</Designer>
+  <ReportSQL>?exec spPipeline_XAxis_sel 'localhost/TestCodeclay','HT-SG'</ReportSQL>
+</CiReport>

@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<CiTable>
+    <TableName>PipelineYAxis</TableName>
+    <TableCaption>Y-axis</TableCaption>
+    <RowKey>ProductName</RowKey>
+    <DefaultView>Grid</DefaultView>
+    <CiTextField>
+        <FieldName>ProductName</FieldName>
+        <Caption>Product Name</Caption>
+        <Editable>false</Editable>
+    </CiTextField>
+    <CiTextField>
+        <FieldName>Inventory_QOH</FieldName>
+        <Caption>Inventory QOH</Caption>
+        <Editable>false</Editable>
+    </CiTextField>
+    <CiTextField>
+        <FieldName>OrderType</FieldName>
+        <Caption>Order Type</Caption>
+        <Editable>false</Editable>
+        <Width>30</Width>
+    </CiTextField>
+    <SelectMacro>
+	    <ActionSQL>?exec spPipeline_YAxis_sel 'HT-SG'</ActionSQL>
+    </SelectMacro>
+</CiTable>

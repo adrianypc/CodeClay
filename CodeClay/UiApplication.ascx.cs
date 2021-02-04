@@ -51,9 +51,6 @@ namespace CodeClay
 
         [XmlElement("ThemeColor")]
         public string ThemeColor { get; set; } = ASPxWebControl.GlobalThemeBaseColor;
-
-        [XmlElement("ThemeFont")]
-        public string ThemeFont { get; set; } = ASPxWebControl.GlobalThemeFont;
     }
 
     public partial class UiApplication : UiPlugin

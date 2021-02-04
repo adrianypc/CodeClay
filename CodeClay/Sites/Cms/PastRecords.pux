@@ -15,11 +15,11 @@
 		<Hidden>true</Hidden>
     <Value>N</Value>
 	</CiField>
-  <CiTable Src="AppointmentList.pux">
+  <CiTable src="AppointmentList.pux">
     <DoubleClickMacroName>Appointment Detail</DoubleClickMacroName>
     <PageSize>10</PageSize>
   </CiTable>
-  <CiTable Src="PatientBillList.pux">
+  <CiTable src="PatientBillList.pux">
     <DoubleClickMacroName>Bill Detail</DoubleClickMacroName>
     <PageSize>10</PageSize>
   </CiTable>

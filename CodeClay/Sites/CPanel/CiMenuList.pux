@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<CiTable Src="CiMenuBase.pux?ParentMenuID=0">
+<CiTable src="CiMenuBase.pux?ParentMenuID=0">
   <TableName>CiMenuList</TableName>
   <TableCaption>Menu List</TableCaption>
-  <CiTable Src="CiMenuBase.pux?ParentMenuID=@MenuID">
+  <CiTable src="CiMenuBase.pux?ParentMenuID=@MenuID">
     <TableName>CiSubMenuList</TableName>
     <TableCaption>Sub Menu</TableCaption>
   </CiTable>

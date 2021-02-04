@@ -29,7 +29,7 @@
         <Caption>Comments</Caption>
         <Editable>false</Editable>
     </CiMemoField>
-    <CiTable Src="PrescriptionItemList.pux" />
+    <CiTable src="PrescriptionItemList.pux" />
 	<SelectMacro>
 		<ActionSQL>
 			select  *

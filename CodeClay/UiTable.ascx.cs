@@ -148,6 +148,7 @@ namespace CodeClay
                         mDeleteMacro.MacroName = "Delete";
 						mDeleteMacro.Caption = "Delete";
                         mDeleteMacro.IconID = "edit_delete_16x16office2013";
+                        mDeleteMacro.Confirm = true;
                     }
                 }
             }
@@ -2375,7 +2376,7 @@ namespace CodeClay
 
             switch (dPropertyName)
             {
-                case "Src":
+                case "src":
                     xPropertyName = "@Src";
                     break;
 
@@ -2436,7 +2437,7 @@ namespace CodeClay
 
             xPluginDefinition.Add(new XElement("RowKey", primaryKey));
 
-            XAttribute xSrcAttr = xPluginDefinition.Attribute("Src");
+            XAttribute xSrcAttr = xPluginDefinition.Attribute("src");
             if (xSrcAttr != null)
             {
                 xSrcAttr.Value += ".pux";
@@ -2480,13 +2481,13 @@ namespace CodeClay
                     string xPropertyName = xProperty.Name.ToString();
                     switch (xPropertyName)
                     {
-                        case "Src":
+                        case "src":
                             string filename = xProperty.Value;
                             if (!MyUtils.IsEmpty(filename) && filename.ToLower().EndsWith(".pux"))
                             {
                                 filename = filename.Substring(0, filename.Length - 4);
                             }
-                            drPluginDefinition["Src"] = filename;
+                            drPluginDefinition["src"] = filename;
                             break;
                     }
                 }
@@ -2567,10 +2568,10 @@ namespace CodeClay
         {
             if (drPluginDefinition != null)
             {
-                XAttribute xSrc = xPluginDefinition.Attribute("Src");
+                XAttribute xSrc = xPluginDefinition.Attribute("src");
                 if (xSrc == null)
                 {
-                    xSrc = new XAttribute("Src", "");
+                    xSrc = new XAttribute("src", "");
                     xPluginDefinition.Add(xSrc);
                 }
 

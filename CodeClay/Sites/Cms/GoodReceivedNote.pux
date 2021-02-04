@@ -160,7 +160,7 @@
     <Mask>Currency</Mask>
     <Editable>false</Editable>
   </CiTextField>
-  <CiTable Src="GoodReceivedNoteItem.pux" />
+  <CiTable src="GoodReceivedNoteItem.pux" />
   <CiMemoField>
     <FieldName>GRNRemarks</FieldName>
     <Caption>Remarks</Caption>

@@ -1,0 +1,185 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<CiTable>
+	<TableName>CustomerOrders</TableName>
+	<TableCaption>Customer Orders</TableCaption>
+	<RowKey>CustomerOrderNo</RowKey>
+	<DefaultView>Card</DefaultView>
+  <CiTextField>
+    <FieldName>sCustomerOrderNo</FieldName>
+    <Caption>Customer Order No</Caption>
+    <Searchable>true</Searchable>
+  </CiTextField>
+  <CiComboField>
+    <FieldName>sCustomerID</FieldName>
+    <Caption>Customer</Caption>
+    <Editable>true</Editable>
+    <Code>CustomerID</Code>
+    <Description>CustomerName</Description>
+    <DropdownSQL>select CustomerID,LastName+','+OtherNames as CustomerName from Customer</DropdownSQL>
+    <Searchable>true</Searchable>
+  </CiComboField>
+  <CiTextField>
+    <FieldName>CustomerOrderNo</FieldName>
+    <Caption>Customer Order #</Caption>
+    <Editable>false</Editable>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>Status</FieldName>
+    <Caption>Status</Caption>
+    <Editable>false</Editable>
+  </CiTextField>
+  <CiDateField>
+    <FieldName>OrderDate</FieldName>
+    <Caption>Order Date</Caption>
+    <Editable>true</Editable>
+    <ColumnFormat>dd/MM/yyyy</ColumnFormat>
+  </CiDateField>
+  <CiComboField>
+    <FieldName>CustID</FieldName>
+    <TextFieldName>CustomerName</TextFieldName>
+    <Caption>Customer</Caption>
+    <Editable>true</Editable>
+    <Code>CustomerID</Code>
+    <Description>CustomerName</Description>
+    <DropdownSQL>select CustomerID,LastName+','+OtherNames as CustomerName from Customer</DropdownSQL>
+  </CiComboField>
+  <CiMemoField>
+    <FieldName>DeliveryAddress</FieldName>
+    <Caption>Delivery Address</Caption>
+  </CiMemoField>
+  <CiComboField>
+    <FieldName>DeliveryCountry</FieldName>
+    <TextFieldName>CountryName</TextFieldName>
+    <Caption>Delivery Country</Caption>
+    <Code>Code</Code>
+    <Description>Description</Description>
+    <DropdownSQL>select  Description,Code from Dropdown where Category = 'Country' order by Code</DropdownSQL>
+  </CiComboField>
+  <CiTextField>
+    <FieldName>DeliveryPostcode</FieldName>
+    <Caption>Delivery Postcode</Caption>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>Email</FieldName>
+    <Caption>Email</Caption>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>Mobile</FieldName>
+    <Caption>Mobile</Caption>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>Shipping</FieldName>
+    <Caption>Shipping ($)</Caption>
+    <Mask>Currency</Mask>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>TotalAmount</FieldName>
+    <Caption>Total ($)</Caption>
+    <Mask>Currency</Mask>
+    <Editable>false</Editable>
+  </CiTextField>
+  <CiMemoField>
+    <FieldName>Comments</FieldName>
+    <Caption>Comments</Caption>
+  </CiMemoField>
+  <CiComboField>
+    <FieldName>Courier</FieldName>
+    <Caption>Courier</Caption>
+    <DropdownSQL>select Code as Courier from Dropdown where Category = 'Courier'</DropdownSQL>
+  </CiComboField>
+  <CiTextField>
+		<FieldName>CourierTrackingNo</FieldName>
+		<Caption>Courier Tracking #</Caption>
+	</CiTextField>
+  <CiTextField>
+    <FieldName>DispatchedInfo</FieldName>
+    <Caption>Dispatched</Caption>
+    <Editable>false</Editable>
+  </CiTextField>
+  <CiTable src="CustomerOrderItems.pux" />
+  <DefaultMacro>
+		<ActionSQL>
+      select 
+        -1 as CustomerOrderNo,
+        convert(datetime,cast(getdate() as nvarchar(12)),103) as OrderDate,
+        'Active' as Status,
+        @CustomerID as CustID
+    </ActionSQL>
+	</DefaultMacro>
+	<SelectMacro>
+		<ActionSQL>?exec spCustomerOrders_sel @sCustomerOrderNo,@sCustomerID</ActionSQL>
+	</SelectMacro>
+	<InsertMacro>
+		<ActionSQL>
+      ?exec spCustomerOrders_upd
+      -1,
+      @Status,
+      @OrderDate,
+      @CustID,
+      @DeliveryAddress,
+      @DeliveryCountry,
+      @DeliveryPostcode,
+      @Email,
+      @Mobile,
+      @Shipping,
+      @TotalAmount,
+      @Comments,
+      @Courier,
+      @CourierTrackingNo
+    </ActionSQL>
+	</InsertMacro>
+	<UpdateMacro>
+    <ActionSQL>
+        ?exec spCustomerOrders_upd
+        @CustomerOrderNo,
+        @Status,
+        @OrderDate,
+        @CustID,
+        @DeliveryAddress,
+        @DeliveryCountry,
+        @DeliveryPostcode,
+        @Email,
+        @Mobile,
+        @Shipping,
+        @TotalAmount,
+        @Comments,
+        @Courier,
+        @CourierTrackingNo
+    </ActionSQL>
+    <VisibleSQL>select 1 from CustomerOrders where CustomerOrderNo = @CustomerOrderNo and (Status != 'Dispatched' or Status is null)</VisibleSQL>
+  </UpdateMacro>
+  <DeleteMacro>
+    <ActionSQL>exec spCustomerOrders_del @CustomerOrderNo</ActionSQL>
+    <VisibleSQL>select 1 from CustomerOrders where CustomerOrderNo = @CustomerOrderNo and (Status != 'Dispatched' or Status is null)</VisibleSQL>
+  </DeleteMacro>
+  <CiMacro>
+    <MacroName>Dispatch</MacroName>
+    <ActionSQL>exec spCustomerOrders_Dispatch_upd @CustomerOrderNo,@CI_UserEmail</ActionSQL>
+    <ActionSQL>
+      select Status,
+      coalesce(DispatchedBy,'') +' On '+coalesce(convert(nvarchar(12),DispatchedDate,103),'') as DispatchedInfo
+      from CustomerOrders where CustomerOrderNo = @CustomerOrderNo
+    </ActionSQL>
+    <VisibleSQL>select 1 from CustomerOrders where CustomerOrderNo = @CustomerOrderNo and Status = 'Active'</VisibleSQL>
+  </CiMacro>
+  <CiFieldExitMacro>
+		<FieldName>Shipping</FieldName>
+		<ActionSQL>
+        select cast(@Shipping as decimal(10,2)) + coalesce(sum(Amount),0) as TotalAmount 
+        from CustomerOrderItems where CustomerOrderNo = @CustomerOrderNo
+    </ActionSQL>
+	</CiFieldExitMacro>
+  <CiFieldExitMacro>
+    <FieldName>CustID</FieldName>
+    <ActionSQL>
+      select 
+        Address as DeliveryAddress,
+        CountryCode as DeliveryCountry,
+        Postcode as DeliveryPostcode,
+        Email,
+        Mobile
+      from Customer
+      where CustomerID = @CustID
+    </ActionSQL>
+  </CiFieldExitMacro>
+</CiTable>

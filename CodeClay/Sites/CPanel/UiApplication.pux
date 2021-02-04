@@ -6,6 +6,7 @@
   <ConnectionString>Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=CPanel;Integrated Security=True;Connect Timeout=30</ConnectionString>
   <HomePluginSrc>CiApplicationList.pux</HomePluginSrc>
   <Theme>Aqua</Theme>
+  <ThemeColor>#A3C0E8</ThemeColor>
   <CiMenu>
     <MenuName>Shortcut</MenuName>
   </CiMenu>

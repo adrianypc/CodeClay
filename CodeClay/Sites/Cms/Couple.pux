@@ -142,20 +142,20 @@
       ?exec spCoupleInfo_upd @FPatientNo,@MPatientNo,@FileLocation,@Comments
     </ActionSQL>
   </UpdateMacro>
-  <CiTable Src="FProfile.pux">
+  <CiTable src="FProfile.pux">
     <BubbleUpdate>true</BubbleUpdate>
   </CiTable>
-  <CiTable Src="MProfile.pux">
+  <CiTable src="MProfile.pux">
     <BubbleUpdate>true</BubbleUpdate>
   </CiTable>
-  <CiTable Src="CoupleSummary.pux" />
-  <CiTable Src="CoupleART.pux" />
-  <CiTable Src="FHistory.pux" />
-  <CiTable Src="MHistory.pux" />
-  <CiTable Src="CoupleCaseNotes.pux" />
-  <CiTable Src="ScannedFiles.pux" />
-  <CiTable Src="FBillList.pux" />
-  <CiTable Src="MBillList.pux" />
+  <CiTable src="CoupleSummary.pux" />
+  <CiTable src="CoupleART.pux" />
+  <CiTable src="FHistory.pux" />
+  <CiTable src="MHistory.pux" />
+  <CiTable src="CoupleCaseNotes.pux" />
+  <CiTable src="ScannedFiles.pux" />
+  <CiTable src="FBillList.pux" />
+  <CiTable src="MBillList.pux" />
   <CiMacro>
 	  <MacroName>New Patient</MacroName>
     <ActionSQL>select 'New' as Command</ActionSQL>

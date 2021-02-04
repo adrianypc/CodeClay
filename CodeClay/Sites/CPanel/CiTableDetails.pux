@@ -48,8 +48,8 @@
     <Caption>Table Url</Caption>
     <Editable>false</Editable>
   </CiLinkField>
-  <CiTable Src="CiFieldList.pux?AppID=@AppID&amp;TableID=@TableID" />
-  <CiTable Src="CiSubTableList.pux?AppID=@AppID&amp;TableID=@TableID&amp;Bound=true">
+  <CiTable src="CiFieldList.pux?AppID=@AppID&amp;TableID=@TableID" />
+  <CiTable src="CiSubTableList.pux?AppID=@AppID&amp;TableID=@TableID&amp;Bound=true">
     <TableCaption>Subtable List</TableCaption>
   </CiTable>
   <SelectMacro>

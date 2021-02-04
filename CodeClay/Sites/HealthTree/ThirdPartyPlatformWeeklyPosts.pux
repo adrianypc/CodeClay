@@ -1,0 +1,91 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<CiTable>
+	<TableName>ThirdPartyPlatformWeeklyPosts</TableName>
+	<TableCaption>3rd Party Platform Weekly Posts</TableCaption>
+	<RowKey>ProductID,PlatformName</RowKey>
+	<DefaultView>Grid</DefaultView>
+	<CiTextField>
+		<FieldName>ProductID</FieldName>
+        <Hidden>true</Hidden>
+	</CiTextField>
+    <CiTextField>
+        <FieldName>PlatformName</FieldName>
+        <Hidden>true</Hidden>
+    </CiTextField>
+    <CiDateField>
+        <FieldName>WeekBeginning</FieldName>
+        <Caption>Week Beginning</Caption>
+        <Editable>false</Editable>
+        <ColumnFormat>dd/MM/yyyy</ColumnFormat>
+        <width>8</width>
+    </CiDateField>
+    <CiDateField>
+        <FieldName>DateCreated</FieldName>
+        <Caption>Date</Caption>
+        <Editable>false</Editable>
+        <ColumnFormat>dd/MM/yyyy</ColumnFormat>
+        <width>8</width>
+    </CiDateField>
+    <CiTextField>
+		<FieldName>AuthorName</FieldName>
+		<Caption>Author</Caption>
+        <Editable>false</Editable>
+        <width>20</width>
+	</CiTextField>
+    <CiTextField>
+        <FieldName>ProductName</FieldName>
+        <Caption>Product</Caption>
+        <Editable>false</Editable>
+        <width>40</width>
+    </CiTextField>
+    <CiNumericField>
+        <FieldName>QtyInStock</FieldName>
+        <Caption>Qty In Stock</Caption>
+        <Editable>false</Editable>
+        <width>4</width>
+    </CiNumericField>
+    <CiNumericField>
+        <FieldName>QtyAdvertised</FieldName>
+        <Caption>Qty Advertised</Caption>
+        <Editable>false</Editable>
+        <width>4</width>
+    </CiNumericField>
+    <CiLinkField>
+        <FieldName>PlatformURL</FieldName>
+        <Caption>3rd Party URL</Caption>
+        <Width>30</Width>
+    </CiLinkField>
+    <CiTextField>
+        <FieldName>PlatformPage</FieldName>
+        <Caption>3rd Party Page</Caption>
+        <Editable>false</Editable>
+        <width>6</width>
+    </CiTextField>
+	<SelectMacro>
+  	    <ActionSQL>
+            select
+                T.ProductID as ProductID,
+                T.PlatformName,
+                T.AuthorName,
+                P.ProductName,
+                coalesce(I.QuantityOnHand,0) as QtyInStock,
+                T.QtyAdvertised,
+                T.PlatformURL,
+                T.PlatformPage,
+                T.DateCreated,
+                case
+                    when DATEPART(WEEKDAY,convert(datetime,cast(T.DateCreated as nvarchar(12)),103)) = 1 then Dateadd(dd, -5 - DATEPART(WEEKDAY, convert(datetime,cast(T.DateCreated as nvarchar(12)),103)),convert(datetime,cast(T.DateCreated as nvarchar(12)),103))
+                    else Dateadd(dd, 2 - DATEPART(WEEKDAY, convert(datetime,cast(T.DateCreated as nvarchar(12)),103)),convert(datetime,cast(T.DateCreated as nvarchar(12)),103))
+                end as WeekBeginning
+            from ThirdPartyPlatform T
+            inner join Product P
+            on T.ProductID = P.ProductID
+            inner join Inventory I
+            on T.ProductID = I.ProductID
+            and I.Status = 'Active'
+            and I.BranchCode = 'HT-SG'
+            where T.DateCreated &gt;= dateadd(month,datediff(month,0,getdate())-12,0)
+            order by WeekBeginning desc,DateCreated desc
+        </ActionSQL>
+	</SelectMacro>
+</CiTable>

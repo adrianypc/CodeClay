@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<CiTable Src="Tasks.pux">
+<CiTable src="Tasks.pux">
   <TableName>MyTasks</TableName>
   <TableCaption>My Fabbo Tasks</TableCaption>
   <RowKey>ID</RowKey>

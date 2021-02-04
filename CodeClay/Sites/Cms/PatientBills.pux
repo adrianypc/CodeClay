@@ -28,7 +28,7 @@
     <Caption>NRIC/Passport</Caption>
     <Editable>false</Editable>
   </CiTextField>
-  <CiTable Src="PatientBillList.pux" />
+  <CiTable src="PatientBillList.pux" />
   <SelectMacro>
     <ActionSQL>
       select @PatientNo as PatientNo

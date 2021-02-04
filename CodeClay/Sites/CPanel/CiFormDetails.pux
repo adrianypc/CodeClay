@@ -81,7 +81,7 @@
     <Caption>Form Url</Caption>
     <Editable>false</Editable>
   </CiLinkField>
-  <CiTable Src="CiFieldList.pux">
+  <CiTable src="CiFieldList.pux">
     <CiCheckField>
       <FieldName>Hidden</FieldName>
       <Caption>Hidden</Caption>
@@ -113,8 +113,8 @@
       </CiSerializeMacro>
     </UpdateMacro>
   </CiTable>
-  <CiTable Src="CiMacroList.pux" />
-  <CiTable Src="CiSubTableList.pux?AppID=@AppID&amp;TableID=@TableID&amp;Bound=false">
+  <CiTable src="CiMacroList.pux" />
+  <CiTable src="CiSubTableList.pux?AppID=@AppID&amp;TableID=@TableID&amp;Bound=false">
     <TableCaption>Subtable List</TableCaption>
   </CiTable>
   <SelectMacro>

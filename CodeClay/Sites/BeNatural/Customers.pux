@@ -47,6 +47,7 @@
     <Caption>Country</Caption>
     <DropdownSQL>select Code, Description from Dropdown where Category = 'Country' order by Code</DropdownSQL>
     <TextFieldName>CountryName</TextFieldName>
+    <DropdownWidth>300</DropdownWidth>
   </CiComboField>
   <CiTextField>
     <FieldName>Postcode</FieldName>
@@ -66,7 +67,7 @@
     <Caption>Referrer</Caption>
     <DropdownSQL>select Code from Dropdown where Category = 'Referrer' order by Code</DropdownSQL>
   </CiComboField>
-  <CiTable Src="CustomerCaseNotes.pux">
+  <CiTable src="CustomerCaseNotes.pux">
     <TableName>CustomerCaseNotes</TableName>
     <TableCaption>Case Notes</TableCaption>
   </CiTable>

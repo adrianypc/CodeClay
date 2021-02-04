@@ -115,7 +115,7 @@
     <Mandatory>true</Mandatory>
     <Hidden>true</Hidden>
   </CiComboField>
-  <CiTable Src="CiFieldSQLList.pux">
+  <CiTable src="CiFieldSQLList.pux">
     <TableName>FieldSQLList</TableName>
   </CiTable>
   <SelectMacro>

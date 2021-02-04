@@ -1,0 +1,83 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<CiTable>
+    <TableName>AdjInterBranchInvoice</TableName>
+    <TableCaption>Adjustment</TableCaption>
+    <RowKey>InvoiceNo,AdjItemNo</RowKey>
+    <DefaultView>Grid</DefaultView>
+    <BubbleUpdate>true</BubbleUpdate>
+    <CiNumericField>
+        <FieldName>InvoiceNo</FieldName>
+        <Hidden>true</Hidden>
+    </CiNumericField>
+    <CiNumericField>
+        <FieldName>AdjItemNo</FieldName>
+        <Caption>Item #</Caption>
+        <Editable>false</Editable>
+        <Width>10</Width>
+    </CiNumericField>
+    <CiDateField>
+        <FieldName>AdjDate</FieldName>
+        <Caption>Date</Caption>
+        <Editable>true</Editable>
+        <ColumnFormat>dd/MM/yyyy</ColumnFormat>
+        <Mandatory>true</Mandatory>
+        <Width>15</Width>
+    </CiDateField>
+    <CiTextField>
+        <FieldName>AdjAuthor</FieldName>
+        <Caption>Author</Caption>
+        <Editable>false</Editable>
+        <Width>20</Width>
+    </CiTextField>
+    <CiCurrencyField>
+        <FieldName>AdjAmount</FieldName>
+        <Caption>Amount (S$)</Caption>
+        <Width>15</Width>
+    </CiCurrencyField>
+    <CiMemoField>
+        <FieldName>AdjComments</FieldName>
+        <Caption>Comments</Caption>
+    </CiMemoField>
+    <DefaultMacro>
+        <ActionSQL>
+            select
+                coalesce(1 + max(AdjItemNo), 1) as AdjItemNo,
+                @InvoiceNo as InvoiceNo,
+                convert(datetime,cast(getdate() as nvarchar(12)),103) as AdjDate,
+                (select coalesce(OtherNames+' '+Surname,'') from ApplicationUser where Email = @CI_UserEmail) as AdjAuthor
+            from AdjInterBranchInvoice
+            where InvoiceNo = @InvoiceNo
+        </ActionSQL>
+    </DefaultMacro>
+    <InsertMacro>
+        <ActionSQL>
+            select
+            coalesce(1 + max(AdjItemNo), 1) as AdjItemNo
+            from AdjInterBranchInvoice
+            where InvoiceNo = @InvoiceNo
+        </ActionSQL>
+        <ActionSQL>
+            ?exec spInterBranchInvoice_Adj_upd @InvoiceNo,
+                @AdjItemNo,
+                @AdjDate,
+                @AdjAuthor,
+                @AdjAmount,
+                @AdjComments
+        </ActionSQL>
+    </InsertMacro>
+    <UpdateMacro>
+        <ActionSQL>
+            ?exec spInterBranchInvoice_Adj_upd @InvoiceNo,
+            @AdjItemNo,
+            @AdjDate,
+            @AdjAuthor,
+            @AdjAmount,
+            @AdjComments
+        </ActionSQL>
+    </UpdateMacro>
+    <DeleteMacro>
+        <ActionSQL>
+            ?exec spInterBranchInvoice_Adj_del @InvoiceNo,@AdjItemNo
+        </ActionSQL>
+    </DeleteMacro>
+</CiTable>

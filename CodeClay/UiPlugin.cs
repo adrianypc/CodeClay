@@ -41,7 +41,7 @@ namespace CodeClay
         // Properties (PUX)
         // --------------------------------------------------------------------------------------------------
 
-        [XmlAttribute("Src")]
+        [XmlAttribute("src")]
         public string Src
         {
             get { return mSrc; }

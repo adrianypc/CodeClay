@@ -75,7 +75,7 @@
     <FieldName>Remarks</FieldName>
     <Caption>Remark</Caption>
   </CiTextField>
-  <CiTable Src="CreditNoteBillItemDetail.pux"></CiTable>
+  <CiTable src="CreditNoteBillItemDetail.pux"></CiTable>
   <CiTextField>
     <FieldName>DepositOrigVal</FieldName>
     <Caption>Deposit Orig Val</Caption>

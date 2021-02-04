@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<CiTable>
+  <TableName>HistoricalInterBranchInvoices</TableName>
+  <TableCaption>Historical Inter Branch Invoices</TableCaption>
+  <RowKey>InvoiceNo</RowKey>
+  <DefaultView>Grid</DefaultView>
+  <DoubleClickMacroName>InterBranchInvoice</DoubleClickMacroName>
+  <CiDateField>
+    <FieldName>InvoiceDate</FieldName>
+    <Caption>Date</Caption>
+    <Editable>false</Editable>
+    <ColumnFormat>dd/MM/yyyy</ColumnFormat>
+  </CiDateField>
+  <CiTextField>
+    <FieldName>InvoiceNo</FieldName>
+    <Caption>Invoice #</Caption>
+    <Editable>false</Editable>
+  </CiTextField>
+  <CiCurrencyField>
+     <FieldName>GrandTotal</FieldName>
+     <Caption>Grand Total ($)</Caption>
+     <Editable>false</Editable>
+  </CiCurrencyField>
+  <SelectMacro>
+    <ActionSQL>?exec spInterBranchInvoice_selbyStatus 'Paid',-1</ActionSQL>
+  </SelectMacro>
+  <CiMacro>
+    <MacroName>InterBranchInvoice</MacroName>
+    <Caption>Inter Branch Invoice</Caption>
+    <ActionSQL>select @InvoiceNo as InvoiceNo, 'Historical' as CalledFrom, 'Paid' as InvoiceStatus</ActionSQL>
+    <NavigateUrl>InterBranchInvoice.pux</NavigateUrl>
+    <NavigatePos>Popup</NavigatePos>
+  </CiMacro>
+</CiTable>

@@ -21,7 +21,7 @@
     <Description>BranchName</Description>
     <DropdownSQL>select BranchCode,BranchName from Branch </DropdownSQL>
   </CiComboField>
-  <CiTable Src="PostStockAdjustmentList.pux" />
+  <CiTable src="PostStockAdjustmentList.pux" />
   <SelectMacro>
     <ActionSQL>select BranchCode,BranchName from Branch where BranchCode = @sBranchCode</ActionSQL>
   </SelectMacro>

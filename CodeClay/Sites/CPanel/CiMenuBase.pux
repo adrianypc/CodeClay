@@ -38,7 +38,7 @@
     <Width>20</Width>
   </CiTextField>
   <CiComboField>
-    <FieldName>MenuUrl</FieldName>
+    <FieldName>MenuURL</FieldName>
     <Caption>Menu URL</Caption>
     <InsertSQL>select 'Allow whatever the user enters' from Singleton</InsertSQL>
     <DropdownSQL>select TableName + '.pux' as PuxFile from CiTable where AppID = @AppID and Bound = 0 order by TableName</DropdownSQL>
@@ -53,14 +53,14 @@
     <ActionSQL>?exec spMenu_sel @AppID, @ParentMenuID</ActionSQL>
   </SelectMacro>
   <InsertMacro>
-    <ActionSQL>exec spMenu_ins @AppID, @ParentMenuID, @MenuName, @MenuUrl</ActionSQL>
+    <ActionSQL>exec spMenu_ins @AppID, @ParentMenuID, @MenuName, @MenuURL</ActionSQL>
     <ActionSQL>select @AppID as AppID, @MenuID as MenuID</ActionSQL>
     <CiSerializeMacro>
       <Direction>Download</Direction>
     </CiSerializeMacro>
   </InsertMacro>
   <UpdateMacro>
-    <ActionSQL>exec spMenu_upd @AppID, @MenuID, @MenuIndex, @MenuName, @MenuUrl</ActionSQL>
+    <ActionSQL>exec spMenu_upd @AppID, @MenuID, @MenuIndex, @MenuName, @MenuURL</ActionSQL>
     <ActionSQL>select @AppID as AppID, @MenuID as MenuID</ActionSQL>
     <CiSerializeMacro>
       <Direction>Download</Direction>

@@ -28,7 +28,7 @@
     <Caption>Pres No</Caption>
     <Editable>false</Editable>
   </CiTextField>
-  <CiTable Src= "PaymentByInsuranceDetail.pux"/>
+  <CiTable src= "PaymentByInsuranceDetail.pux"/>
   <SelectMacro>
     <ActionSQL>
       select
