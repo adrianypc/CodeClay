@@ -34,7 +34,7 @@ namespace CodeClay
         public XmlElement Caption { get; set; } = MyWebUtils.CreateXmlElement("Caption", "");
 
         [XmlElement("Mask")]
-        public eTextMask Mask { get; set; } = eTextMask.None;
+        public string Mask { get; set; } = "";
 
         [XmlElement("ForeColor")]
         public string ForeColor { get; set; } = "";
@@ -282,8 +282,9 @@ namespace CodeClay
             {
                 string fieldName = dxColumn.FieldName;
                 string caption = EvalCaptionSQL(dr);
+                bool visible = IsVisible(dr);
 
-                dxColumn.Visible = IsVisible(dr);
+                dxColumn.Visible = visible;
                 dxColumn.Caption = caption;
                 dxColumn.Width = GetColumnWidth(dr);
 
@@ -298,8 +299,20 @@ namespace CodeClay
                     layoutProperties.Items.Add(dxLayoutItem);
                 }
 
-                dxLayoutItem.Visible = IsVisible(dr);
-                dxLayoutItem.Caption = caption; //.Replace(' ', Convert.ToChar(160));
+                if (IsEditing(dxColumn.CardView.NamingContainer as UiTable))
+                {
+                    if (!visible)
+                    {
+                        dxLayoutItem.Height = Unit.Pixel(1);
+                        caption = "";
+                    }
+                }
+                else
+                {
+                    dxLayoutItem.Visible = visible;
+                }
+
+                dxLayoutItem.Caption = caption;
                 dxLayoutItem.RowSpan = RowSpan;
                 dxLayoutItem.ColSpan = ColSpan;
                 dxLayoutItem.Width = GetColumnWidth(dr);
@@ -309,7 +322,7 @@ namespace CodeClay
                     ? DevExpress.Utils.DefaultBoolean.True
                     : DevExpress.Utils.DefaultBoolean.False;
                 dxLayoutItem.NestedControlCellStyle.CssClass =
-                    HasBorder(dxColumn.CardView.NamingContainer as UiTable)
+                    visible && HasBorder(dxColumn.CardView.NamingContainer as UiTable)
                     ? "cssFieldBorderStyle"
                     : "";
 
@@ -357,6 +370,16 @@ namespace CodeClay
             if (uiTable != null)
             {
                 return (GetType() != typeof(CiField)) && !uiTable.IsEditing && !IsSearching;
+            }
+
+            return false;
+        }
+
+        public virtual bool IsEditing(UiTable uiTable)
+        {
+            if (uiTable != null)
+            {
+                return (GetType() != typeof(CiField)) && uiTable.IsEditing;
             }
 
             return false;
@@ -593,7 +616,7 @@ namespace CodeClay
                 mEditor.CssClass = "css" + fieldName;
                 mEditor.Width = CiField.EditorWidth;
                 mEditor.Value = fieldValue;
-                mEditor.Visible = CiField.IsVisible(drParams);
+                //mEditor.Visible = CiField.IsVisible(drParams); ... to allow hidden fields to work properly???
 
                 if (!MyUtils.IsEmpty(foreColor))
                 {
@@ -608,6 +631,7 @@ namespace CodeClay
                 mEditor.JSProperties["cpAutoBlank"] = CiField.AutoBlank;
                 mEditor.JSProperties["cpTransparent"] = CiField.Transparent;
                 mEditor.JSProperties["cpVisible"] = CiField.IsVisible(drParams);
+                mEditor.JSProperties["cpValue"] = fieldValue;
 
                 ASPxCallbackPanel editorPanel = mEditor.NamingContainer as ASPxCallbackPanel;
                 if (editorPanel != null)

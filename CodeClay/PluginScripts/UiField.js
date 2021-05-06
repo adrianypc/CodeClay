@@ -155,16 +155,6 @@ function SetEditorFocus(tableName, fieldName) {
     }
 }
 
-function SetEditorEditable(tableName, fieldName, editable) {
-    var editor = editors[tableName + "." + fieldName];
-
-    if (editor) {
-        editor.cpEditable = editable;
-
-        FormatEditor(editor);
-    }
-}
-
 function FormatEditor(editor) {
     if (editor) {
         var mandatory = editor.cpMandatory;
@@ -226,11 +216,13 @@ function FormatEditor(editor) {
 function FormatField(tableName, fieldName, mandatory, editable, visible) {
     var editor = editors[tableName + "." + fieldName];
 
-    editor.cpMandatory = mandatory;
-    editor.cpEditable = editable;
-    editor.cpVisible = visible;
+    if (editor) {
+        editor.cpMandatory = mandatory;
+        editor.cpEditable = editable;
+        editor.cpVisible = visible;
 
-    FormatEditor(editor);
+        FormatEditor(editor);
+    }
 }
 
 function RunExitMacro(editor) {

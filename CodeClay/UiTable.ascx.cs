@@ -948,14 +948,19 @@ namespace CodeClay
                         CiMacro ciMacro = IsInsertSaving ? CiTable.InsertMacro : CiTable.UpdateMacro;
                         string navigateUrl = (ciMacro != null) ? MyWebUtils.Eval<string>(ciMacro.NavigateUrl, GetState()) + "|" + ciMacro.NavigatePos : "";
 
+                        string script = "";
                         if (!MyUtils.IsEmpty(navigateUrl))
                         {
-                            dxCard.JSProperties["cpScript"] = string.Format("GotoUrl(\'{0}\')", HttpUtility.JavaScriptStringEncode(navigateUrl));
+                            script = string.Format("GotoUrl(\'{0}\'); ", HttpUtility.JavaScriptStringEncode(navigateUrl));
                         }
                         else
                         {
-                            dxCard.JSProperties["cpScript"] = GetSearchFieldScript();
+                            script = GetSearchFieldScript();
                         }
+
+                        script += GetInvisibleFieldScript();
+
+                        dxCard.JSProperties["cpScript"] = script;
                         dxCard.SettingsPager.Visible = true;
                         break;
 
@@ -1665,8 +1670,11 @@ namespace CodeClay
 
         private void BuildMoreMenu(DevExpress.Web.MenuItem dxMoreMenu)
         {
+            bool isUser = MyWebUtils.IsUserAuthorised("User"); // Lowest level of access
             if (dxMoreMenu != null)
             {
+                dxMoreMenu.Visible = !isUser;
+
                 bool isDeveloper = MyWebUtils.IsUserAuthorised("Developer");
                 DevExpress.Web.MenuItem dxMenuItem = null;
 
@@ -1843,7 +1851,7 @@ namespace CodeClay
                     macros.Add("Search");
                 }
 
-                if (!isEditing && MyWebUtils.IsPopup(Page) && isTopTable)
+                if (!isEditing && MyWebUtils.IsQuitable(Page) && isTopTable)
                 {
                     macros.Add("Quit");
                 }
@@ -2370,16 +2378,12 @@ namespace CodeClay
             MyWebUtils.GetBySQL("exec spSubTable_del @AppID, @TableID", drPluginKey, true);
         }
 
-        protected override string GetXPropertyName(string dPropertyName)
+        protected override string GetXPropertyName(Type pluginType, string dPropertyName)
         {
-            string xPropertyName = dPropertyName;
+            string xPropertyName = base.GetXPropertyName(pluginType, dPropertyName);
 
             switch (dPropertyName)
             {
-                case "src":
-                    xPropertyName = "@Src";
-                    break;
-
                 case "Caption":
                     xPropertyName = "TableCaption";
                     break;

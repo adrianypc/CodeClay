@@ -1,15 +1,28 @@
 ﻿using System;
+using System.Web.UI;
+using System.Xml.Serialization;
 
 // Extra references
 using CodistriCore;
 using DevExpress.Web;
-using System.Xml.Serialization;
 
 namespace CodeClay
 {
     [XmlType("CiTimeField")]
     public class CiTimeField : CiField
     {
+        // --------------------------------------------------------------------------------------------------
+        // Constructor
+        // --------------------------------------------------------------------------------------------------
+
+        public CiTimeField()
+        {
+            if (!MyUtils.IsEmpty(Mask))
+            {
+                Mask = "h:mm tt";
+            }
+        }
+
         // --------------------------------------------------------------------------------------------------
         // Methods (Override)
         // --------------------------------------------------------------------------------------------------
@@ -21,9 +34,18 @@ namespace CodeClay
 
         public override object GetNativeValue(object fieldValue)
         {
-            return !MyUtils.IsEmpty(fieldValue)
-                ? Convert.ToDateTime(fieldValue)
-                : Convert.DBNull;
+            if (!MyUtils.IsEmpty(fieldValue))
+            {
+                DateTime dateValue = Convert.ToDateTime(fieldValue);
+                if (dateValue.Year < 1000)
+                {
+                    dateValue = dateValue.AddYears(1800);
+                }
+
+                return dateValue;
+            }
+
+            return Convert.DBNull;
         }
 
         public override string GetUiPluginName()
@@ -38,7 +60,12 @@ namespace CodeClay
 
         public override CardViewColumn CreateCardColumn(UiTable uiTable)
         {
-            CardViewDateColumn dxColumn = new CardViewDateColumn();
+            CardViewTimeEditColumn dxColumn = new CardViewTimeEditColumn();
+
+            if (!MyUtils.IsEmpty(Mask))
+            {
+                dxColumn.PropertiesTimeEdit.DisplayFormatString = Mask;
+            }
 
             if (uiTable != null)
             {
@@ -50,7 +77,12 @@ namespace CodeClay
 
         public override GridViewDataColumn CreateGridColumn(UiTable uiTable)
         {
-            GridViewDataDateColumn dxColumn = new GridViewDataDateColumn();
+            GridViewDataTimeEditColumn dxColumn = new GridViewDataTimeEditColumn();
+
+            if (!MyUtils.IsEmpty(Mask))
+            {
+                dxColumn.PropertiesTimeEdit.DisplayFormatString = Mask;
+            }
 
             if (uiTable != null)
             {
@@ -66,7 +98,7 @@ namespace CodeClay
 
             try
             {
-                formattedValue = ((DateTime)value).ToShortDateString();
+                formattedValue = ((DateTime)value).ToShortTimeString();
             }
             catch
             {
@@ -100,7 +132,13 @@ namespace CodeClay
             mEditor.Attributes.Add("onkeypress", String.Format("dxTimeBox_KeyPress({0}, event);",
                 mEditor.ClientInstanceName));
 
-            // Setup date value
+            if (CiTimeField != null)
+            {
+                dxTimeBox.DisplayFormatString = CiTimeField.Mask;
+                dxTimeBox.EditFormatString = CiTimeField.Mask;
+            }
+
+            // Setup time value
             try
             {
                 dxTimeBox.Value = null;

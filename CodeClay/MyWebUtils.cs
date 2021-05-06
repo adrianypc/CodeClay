@@ -17,6 +17,10 @@ using System.Xml.Linq;
 using System.Xml.Serialization;
 
 // Extra references
+using Azure;
+using Azure.Storage;
+using Azure.Storage.Files.Shares;
+using Azure.Storage.Sas;
 using CodistriCore;
 using DevExpress.Web;
 using DevExpress.XtraReports.Native;
@@ -47,12 +51,6 @@ namespace CodeClay
         column,
         sql,
         xml
-    }
-
-    public enum eTextMask
-    {
-        None = 0,
-        Currency
     }
 
 	public enum eTableMode
@@ -297,6 +295,21 @@ namespace CodeClay
                 if (!MyUtils.IsEmpty(isPopup))
                 {
                     return (isPopup.ToUpper() == "Y");
+                }
+            }
+
+            return false;
+        }
+
+        public static bool IsQuitable(Page webPage)
+        {
+            if (webPage != null)
+            {
+                string isQuitable = QueryString["IsQuitable"];
+
+                if (!MyUtils.IsEmpty(isQuitable))
+                {
+                    return (isQuitable.ToUpper() == "Y");
                 }
             }
 

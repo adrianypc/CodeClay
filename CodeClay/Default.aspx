@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="Default.aspx.cs" Inherits="CodeClay.Default" MasterPageFile="~/Site.Master"  %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="Default.aspx.cs" Inherits="CodeClay.Default" MasterPageFile="~/Site.Master"  Title="Codistri" %>
 <%@ Register Assembly="DevExpress.Web.v20.2, Version=20.2.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" Namespace="DevExpress.Web" TagPrefix="dx" %>
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
@@ -40,6 +40,7 @@
     	}
 
         function ShowPopup(url, width, height) {
+            url += "&IsQuitable=Y"
             dxPopup.SetContentUrl(url);
 
             if (width) {

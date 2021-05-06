@@ -28,6 +28,7 @@
     <FieldName>TextFieldName</FieldName>
     <Caption>Description Field</Caption>
     <DropdownSQL>select FieldName from CiField where AppID = @AppID and TableID = @TableID order by FieldName</DropdownSQL>
+    <InsertSQL>select 1 from Singleton</InsertSQL>
   </CiComboField>
   <CiTextField>
     <FieldName>Value</FieldName>

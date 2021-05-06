@@ -103,26 +103,15 @@ namespace CodeClay
         protected void MyRadioData_Selected(object sender, ObjectDataSourceStatusEventArgs e)
         {
             DataTable dt = e.ReturnValue as DataTable;
+            int columnCount = dt.Columns.Count;
 
-            if (dt != null && dt.Columns.Count > 0)
+            if (dt != null && columnCount > 0)
             {
-                string valueField = "";
-                string textField = "";
-                string firstColumnName = dt.Columns[0].ColumnName;
+                string valueField = dt.Columns[0].ColumnName;
+                string textField = (columnCount > 1) ? dt.Columns[1].ColumnName : valueField;
 
-                if (CiRadioField != null)
-                {
-                    valueField = CiRadioField.Code;
-                    textField = CiRadioField.Description;
-                }
-
-                dxRadioBox.ValueField = MyUtils.IsEmpty(valueField)
-                    ? firstColumnName
-                    : valueField;
-
-                dxRadioBox.TextField = MyUtils.IsEmpty(textField)
-                    ? firstColumnName
-                    : textField;
+                dxRadioBox.ValueField = valueField;
+                dxRadioBox.TextField = textField;
             }
         }
     }

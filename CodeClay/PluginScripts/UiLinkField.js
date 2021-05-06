@@ -59,7 +59,7 @@ function dxEditLink_Init(sender, event) {
 
     var tableName = dxEditLink.cpTableName;
     var fieldName = dxEditLink.cpFieldName;
-    var fieldValue = dxEditLink.cpShortNavigateUrl;
+    var fieldValue = dxEditLink.cpLinkPath;
 
     InitField(tableName, fieldName, fieldValue);
 }
@@ -73,7 +73,7 @@ function dxUpload_FileUploadComplete(sender, event) {
 
     if (callbackDataString) {
         var callbackData = callbackDataString.split(LIST_SEPARATOR);
-        var fileName = callbackData[0];
+        var filePath = callbackData[0];
         var linkUrl = callbackData[1];
 
         if (dxDelete) {
@@ -83,12 +83,12 @@ function dxUpload_FileUploadComplete(sender, event) {
         if (dxEditLink) {
             var tableName = dxEditLink.cpTableName;
             var fieldName = dxEditLink.cpFieldName;
-            var fieldValue = linkUrl;
+            var fieldValue = filePath;
 
             SetField(tableName, fieldName, fieldValue);
 
             dxEditLink.SetVisible(true);
-            dxEditLink.SetText(fileName);
+            dxEditLink.SetText(filePath);
             dxEditLink.SetNavigateUrl(linkUrl);
         }
 

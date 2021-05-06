@@ -60,14 +60,14 @@
     <Editable lang="sql">select 1 from Singleton where @Type not in ('Select', 'Insert', 'Update', 'Delete', 'Default') </Editable>
     <Width>10</Width>
   </CiComboField>
+  <CiTable src="CiMacroSQLList.pux?EntityType=CiMacro&amp;SQLType=ActionSQL">
+    <TableName>ActionSQLList</TableName>
+  </CiTable>
   <CiTable src="CiMacroSQLList.pux?EntityType=CiMacro&amp;SQLType=VisibleSQL">
     <TableName>VisibleSQLList</TableName>
   </CiTable>
   <CiTable src="CiMacroSQLList.pux?EntityType=CiMacro&amp;SQLType=ValidateSQL">
     <TableName>ValidateSQLList</TableName>
-  </CiTable>
-  <CiTable src="CiMacroSQLList.pux?EntityType=CiMacro&amp;SQLType=ActionSQL">
-    <TableName>ActionSQLList</TableName>
   </CiTable>
   <CiTable src="TriggerFieldList.pux">
     <TableName>TriggerFieldLList</TableName>

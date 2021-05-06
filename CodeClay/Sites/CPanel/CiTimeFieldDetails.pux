@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<CiTable src="CiFieldDetails.pux">
+  <CiTextField>
+    <FieldName>Mask</FieldName>
+    <Caption>Mask</Caption>
+    <Value>h:mm tt</Value>
+  </CiTextField>
+  <CiDateField>
+    <FieldName>Value</FieldName>
+    <Caption>Value</Caption>
+  </CiDateField>
+</CiTable>

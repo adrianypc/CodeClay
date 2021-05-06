@@ -1,0 +1,292 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CiTable src="Customer.pux">
+  <TableName>fCustomerDetail</TableName>
+  <TableCaption>Dosha/personal Information Form</TableCaption>
+  <DefaultView>Card</DefaultView>
+  <RowKey>ID</RowKey>
+  <CiField>
+    <FieldName>DummyForInsert</FieldName>
+    <Hidden>true</Hidden>
+  </CiField>
+  <CiTextField>
+    <FieldName>ID</FieldName>
+    <Caption>Customer ID</Caption>
+    <Hidden>true</Hidden>
+    <Editable>false</Editable>
+    <Width>10</Width>
+    <Mask>None</Mask>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>BranchCode</FieldName>
+    <Caption>Branch Code</Caption>
+    <Hidden>true</Hidden>
+    <Width>20</Width>
+    <Mask>None</Mask>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>LastName</FieldName>
+    <Caption>Last Name</Caption>
+    <Editable>false</Editable>
+    <Width>30</Width>
+    <Mask>None</Mask>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>OtherNames</FieldName>
+    <Caption>Other Names</Caption>
+    <Editable>false</Editable>
+    <Width>30</Width>
+    <Mask>None</Mask>
+  </CiTextField>
+  <CiDateField>
+    <FieldName>CreatedDate</FieldName>
+    <Caption>Date</Caption>
+    <Width>20</Width>
+    <Mask>None</Mask>
+  </CiDateField>
+  <CiDateField>
+    <FieldName>DateOfBirth</FieldName>
+    <Caption>D.O.B</Caption>
+    <Mandatory>true</Mandatory>
+    <Width>20</Width>
+    <Mask>None</Mask>
+  </CiDateField>
+  <CiMemoField>
+    <FieldName>Address</FieldName>
+    <Caption>Address</Caption>
+    <Hidden>true</Hidden>
+    <Width>50</Width>
+    <Mask>None</Mask>
+  </CiMemoField>
+  <CiTextField>
+    <FieldName>CountryCode</FieldName>
+    <Caption>Country Code</Caption>
+    <Hidden>true</Hidden>
+    <Width>10</Width>
+    <Mask>None</Mask>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>Postcode</FieldName>
+    <Caption>Postcode</Caption>
+    <Hidden>true</Hidden>
+    <Width>10</Width>
+    <Mask>None</Mask>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>Email</FieldName>
+    <Caption>Email</Caption>
+    <Width>51</Width>
+    <Mask>None</Mask>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>Referrer</FieldName>
+    <Caption>Referrer</Caption>
+    <Hidden>true</Hidden>
+    <Width>20</Width>
+    <Mask>None</Mask>
+  </CiTextField>
+  <CiCurrencyField>
+    <FieldName>Points</FieldName>
+    <Caption>Points</Caption>
+    <Hidden>true</Hidden>
+    <Width>10</Width>
+    <Mask>None</Mask>
+  </CiCurrencyField>
+  <CiComboField>
+    <FieldName>MaritalStatus</FieldName>
+    <Caption>Marital Status</Caption>
+    <Width>10</Width>
+    <DropdownSQL>select Code from Dropdown where Category = 'MaritalStatus' order by Code</DropdownSQL>
+    <Mask>None</Mask>
+  </CiComboField>
+  <CiCurrencyField>
+    <FieldName>Height</FieldName>
+    <Caption>Height</Caption>
+    <Mandatory>true</Mandatory>
+    <Width>10</Width>
+    <Mask>None</Mask>
+  </CiCurrencyField>
+  <CiCurrencyField>
+    <FieldName>Weight</FieldName>
+    <Caption>Weight</Caption>
+    <Mandatory>true</Mandatory>
+    <Width>10</Width>
+    <Mask>None</Mask>
+  </CiCurrencyField>
+  <CiComboField>
+    <FieldName>Gender</FieldName>
+    <Caption>Gender</Caption>
+    <Mandatory>true</Mandatory>
+    <Width>20</Width>
+    <DropdownSQL>select Code, Description from Dropdown where Category = 'Gender' order by Code</DropdownSQL>
+    <Mask>None</Mask>
+  </CiComboField>
+  <CiMemoField>
+    <FieldName>MedicalHistory</FieldName>
+    <Caption>MEDICAL HISTORY / MEDICAL TEST REPORTS / X-RAY ETC</Caption>
+    <Width>100</Width>
+    <Mask>None</Mask>
+  </CiMemoField>
+  <CiMemoField>
+    <FieldName>Medication</FieldName>
+    <Caption>MEDICATION / SUPPLEMENTS: </Caption>
+    <Width>100</Width>
+    <Mask>None</Mask>
+  </CiMemoField>
+  <CiRadioField>
+    <FieldName>Digestion</FieldName>
+    <Caption>1. Digestion</Caption>
+    <Width>100</Width>
+    <DropdownSQL>select Code, Description from Dropdown where Category = 'Digestion' order by Code</DropdownSQL>
+    <TextFieldName>DigestionDesc</TextFieldName>
+    <Mask>None</Mask>
+  </CiRadioField>
+  <CiRadioField>
+    <FieldName>Bowel</FieldName>
+    <Caption>2. Bowel Movements</Caption>
+    <Width>100</Width>
+    <DropdownSQL>select Code, Description from Dropdown where Category = 'Bowel' order by Code</DropdownSQL>
+    <TextFieldName>BowelDesc</TextFieldName>
+    <Mask>None</Mask>
+  </CiRadioField>
+  <CiRadioField>
+    <FieldName>Hunger</FieldName>
+    <Caption>3. Hunger and Appetite (need to differentiate hunger from greed)</Caption>
+    <Width>100</Width>
+    <DropdownSQL>select Code, Description from Dropdown where Category = 'Hunger' order by Code</DropdownSQL>
+    <TextFieldName>HungerDesc</TextFieldName>
+    <Mask>None</Mask>
+  </CiRadioField>
+  <CiRadioField>
+    <FieldName>Activity</FieldName>
+    <Caption>4. Activity</Caption>
+    <Width>100</Width>
+    <DropdownSQL>select Code, Description from Dropdown where Category = 'Activity' order by Code</DropdownSQL>
+    <TextFieldName>ActivityDesc</TextFieldName>
+    <Mask>None</Mask>
+  </CiRadioField>
+  <CiRadioField>
+    <FieldName>SleepPattern</FieldName>
+    <Caption>5. Sleep Pattern</Caption>
+    <Width>100</Width>
+    <DropdownSQL>select Code, Description from Dropdown where Category = 'SleepPattern' order by Code</DropdownSQL>
+    <TextFieldName>SleepPatternDesc</TextFieldName>
+    <Mask>None</Mask>
+  </CiRadioField>
+  <CiRadioField>
+    <FieldName>Discipline</FieldName>
+    <Caption>6. Discipline</Caption>
+    <Width>100</Width>
+    <DropdownSQL>select Code, Description from Dropdown where Category = 'Discipline' order by Code</DropdownSQL>
+    <TextFieldName>DisciplineDesc</TextFieldName>
+    <Mask>None</Mask>
+  </CiRadioField>
+  <CiRadioField>
+    <FieldName>Stress</FieldName>
+    <Caption>7. Stress and Anxiety</Caption>
+    <Width>100</Width>
+    <DropdownSQL>select Code, Description from Dropdown where Category = 'Stress' order by Code</DropdownSQL>
+    <TextFieldName>StressDesc</TextFieldName>
+    <Mask>None</Mask>
+  </CiRadioField>
+  <CiRadioField>
+    <FieldName>Motivation</FieldName>
+    <Caption>8. Motivation / Taking Responsibility</Caption>
+    <Width>100</Width>
+    <DropdownSQL>select Code, Description from Dropdown where Category = 'Motivation' order by Code</DropdownSQL>
+    <TextFieldName>MotivationDesc</TextFieldName>
+    <Mask>None</Mask>
+  </CiRadioField>
+  <CiRadioField>
+    <FieldName>Memory</FieldName>
+    <Caption>9. Memory</Caption>
+    <Width>100</Width>
+    <DropdownSQL>select Code, Description from Dropdown where Category = 'Memory' order by Code</DropdownSQL>
+    <TextFieldName>MemoryDesc</TextFieldName>
+    <Mask>None</Mask>
+  </CiRadioField>
+  <CiRadioField>
+    <FieldName>Anger</FieldName>
+    <Caption>10. Anger</Caption>
+    <Width>100</Width>
+    <DropdownSQL>select Code, Description from Dropdown where Category = 'Anger' order by Code</DropdownSQL>
+    <TextFieldName>AngerDesc</TextFieldName>
+    <Mask>None</Mask>
+  </CiRadioField>
+  <CiRadioField>
+    <FieldName>Procrastination</FieldName>
+    <Caption>11. Procrastination</Caption>
+    <Width>100</Width>
+    <DropdownSQL>select Code, Description from Dropdown where Category = 'Procrastination' order by Code</DropdownSQL>
+    <TextFieldName>ProcrastinationDesc</TextFieldName>
+    <Mask>None</Mask>
+  </CiRadioField>
+  <CiRadioField>
+    <FieldName>Speech</FieldName>
+    <Caption>12. Speech</Caption>
+    <Width>100</Width>
+    <DropdownSQL>select Code, Description from Dropdown where Category = 'Speech' order by Code</DropdownSQL>
+    <TextFieldName>SpeechDesc</TextFieldName>
+    <Mask>None</Mask>
+  </CiRadioField>
+  <CiRadioField>
+    <FieldName>SkinTone</FieldName>
+    <Caption>13. Skin Tone</Caption>
+    <Width>100</Width>
+    <DropdownSQL>select Code, Description from Dropdown where Category = 'SkinTone' order by Code</DropdownSQL>
+    <TextFieldName>SkinToneDesc</TextFieldName>
+    <Mask>None</Mask>
+  </CiRadioField>
+  <CiRadioField>
+    <FieldName>Energy</FieldName>
+    <Caption>14. Energy/Vitality</Caption>
+    <Width>100</Width>
+    <DropdownSQL>select Code, Description from Dropdown where Category = 'Energy' order by Code</DropdownSQL>
+    <TextFieldName>EnergyDesc</TextFieldName>
+    <Mask>None</Mask>
+  </CiRadioField>
+  <CiRadioField>
+    <FieldName>SenseOfHumour</FieldName>
+    <Caption>15. Sense of Humour</Caption>
+    <Width>100</Width>
+    <DropdownSQL>select Code, Description from Dropdown where Category = 'SenseOfHumour' order by Code</DropdownSQL>
+    <TextFieldName>SenseOfHumourDesc</TextFieldName>
+    <Mask>None</Mask>
+  </CiRadioField>
+  <CiRadioField>
+    <FieldName>Caring</FieldName>
+    <Caption>16. Caring / Compassion</Caption>
+    <Width>100</Width>
+    <DropdownSQL>select Code, Description from Dropdown where Category = 'Caring' order by Code</DropdownSQL>
+    <TextFieldName>CaringDesc</TextFieldName>
+    <Mask>None</Mask>
+  </CiRadioField>
+  <CiRadioField>
+    <FieldName>Ethics</FieldName>
+    <Caption>17. Ethics / Social Awareness</Caption>
+    <Width>100</Width>
+    <DropdownSQL>select Code, Description from Dropdown where Category = 'Ethics' order by Code</DropdownSQL>
+    <TextFieldName>EthicsDesc</TextFieldName>
+    <Mask>None</Mask>
+  </CiRadioField>
+  <CiLinkField>
+    <FieldName>VideoLocation</FieldName>
+    <Caption>Video Location</Caption>
+    <Width>100</Width>
+    <Mask>None</Mask>
+    <Folder lang="sql">select 'IntroVideos\C' + ltrim(str(@ID))</Folder>
+    <IsAzure>true</IsAzure>
+  </CiLinkField>
+  <SelectMacro>
+    <ActionSQL>select case when @CustomerID is not null then @CustomerID else (select ID from Customer where Email = @CI_UserEmail) end as CustomerID</ActionSQL>
+    <ActionSQL>?exec spCustomer_selByCustomerID @CustomerID</ActionSQL>
+  </SelectMacro>
+  <InsertMacro>
+    <ActionSQL>insert into Customer (Activity, Address, Anger, Bowel, BranchCode, Caring, CountryCode, CreatedDate, DateOfBirth, Digestion, Discipline, Email, Energy, Ethics, Gender, Height, Hunger, LastName, MaritalStatus, MedicalHistory, Medication, Memory, Mobile, Motivation, Occupation, OtherNames, Points, Postcode, Procrastination, Referrer, SenseOfHumour, SkinTone, SleepPattern, Speech, Stress, VideoLocation, Weight) values (@Activity, @Address, @Anger, @Bowel, @BranchCode, @Caring, @CountryCode, @CreatedDate, @DateOfBirth, @Digestion, @Discipline, @Email, @Energy, @Ethics, @Gender, @Height, @Hunger, @LastName, @MaritalStatus, @MedicalHistory, @Medication, @Memory, @Mobile, @Motivation, @Occupation, @OtherNames, @Points, @Postcode, @Procrastination, @Referrer, @SenseOfHumour, @SkinTone, @SleepPattern, @Speech, @Stress, @VideoLocation, @Weight)</ActionSQL>
+    <VisibleSQL>select 0 from Singleton</VisibleSQL>
+    <ValidateSQL></ValidateSQL>
+  </InsertMacro>
+  <DeleteMacro>
+    <ActionSQL>delete from Customer where ID = @ID</ActionSQL>
+    <VisibleSQL>select 0 from Singleton</VisibleSQL>
+  </DeleteMacro>
+</CiTable>

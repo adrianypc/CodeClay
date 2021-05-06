@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CiTable src="Sequence.pux">
+  <TableName>fSequence</TableName>
+  <TableCaption>Sequences</TableCaption>
+  <RowKey>ID</RowKey>
+  <CiField>
+    <FieldName>DummyForInsert</FieldName>
+    <Hidden>true</Hidden>
+  </CiField>
+  <CiTable>
+    <TableName>SequenceItem</TableName>
+    <Hidden>true</Hidden>
+  </CiTable>
+  <CiTextField>
+    <FieldName>ID</FieldName>
+    <Caption>Sequence ID</Caption>
+    <Hidden>true</Hidden>
+    <Editable>false</Editable>
+    <Searchable>true</Searchable>
+    <Width>10</Width>
+    <Mask>None</Mask>
+  </CiTextField>
+  <CiComboField>
+    <FieldName>Dosha</FieldName>
+    <Caption>Dosha</Caption>
+    <Width>80</Width>
+    <DropdownSQL>select Code from Dropdown where Category = 'Dosha' order by Code</DropdownSQL>
+    <Mask>None</Mask>
+  </CiComboField>
+  <CiTable src="fSequenceItem.pux?ParentID=@ID">
+    <TableName>fSequenceItem</TableName>
+    <TableCaption>Sequence Items</TableCaption>
+  </CiTable>
+</CiTable>

@@ -43,12 +43,51 @@ namespace CodeClay.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Integrated Security=SSPI;Initial Catalog=CPanel;Data Source=(localdb)\\ProjectsV13" +
-            ";AttachDBFilename=C:\\Users\\adrianypc\\AppData\\Local\\Microsoft\\VisualStudio\\SSDT\\A" +
-            "dmin.mdf")]
+        [global::System.Configuration.DefaultSettingValueAttribute("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=CPanel;Integrated Security=Tru" +
+            "e;Connect Timeout=30")]
         public string CPanelConnectionString {
             get {
                 return ((string)(this["CPanelConnectionString"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Password=Codistri123*;Persist Security Info=True;User ID=sa;Initial Catalog=CPane" +
+            "l;Data Source=Codistri")]
+        public string TestCPanelConnectionString {
+            get {
+                return ((string)(this["TestCPanelConnectionString"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("DefaultEndpointsProtocol=https;AccountName=sqlvat45kcubett4a4;AccountKey=GiWI0rwu" +
+            "2Z+uU17cGGEc8j9ctk3dk3FlfJcCgp20RS3q5hMqCsijNI/I016pg9V4NpW7tsgr1PkMC54lBycc0w==" +
+            ";EndpointSuffix=core.windows.net")]
+        public string StorageConnectionString {
+            get {
+                return ((string)(this["StorageConnectionString"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("sqlvat45kcubett4a4")]
+        public string StorageAccountName {
+            get {
+                return ((string)(this["StorageAccountName"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("GiWI0rwu2Z+uU17cGGEc8j9ctk3dk3FlfJcCgp20RS3q5hMqCsijNI/I016pg9V4NpW7tsgr1PkMC54lB" +
+            "ycc0w==")]
+        public string StorageAccountKey {
+            get {
+                return ((string)(this["StorageAccountKey"]));
             }
         }
     }

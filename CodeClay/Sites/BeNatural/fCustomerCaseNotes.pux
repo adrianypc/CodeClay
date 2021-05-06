@@ -1,0 +1,58 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CiTable>
+  <TableName>fCustomerCaseNotes</TableName>
+  <TableCaption>Case Notes</TableCaption>
+  <RowKey>CustomerID,LogID</RowKey>
+  <CiField>
+    <FieldName>DummyForInsert</FieldName>
+    <Hidden>true</Hidden>
+  </CiField>
+  <CiField>
+    <FieldName>CustomerID</FieldName>
+    <Caption>Customer ID</Caption>
+    <Hidden>true</Hidden>
+  </CiField>
+  <CiField>
+    <FieldName>LogID</FieldName>
+    <Caption>Log ID</Caption>
+    <Hidden>true</Hidden>
+  </CiField>
+  <CiDateField>
+    <FieldName>LogDate</FieldName>
+    <Caption>Log Date</Caption>
+    <Mandatory>true</Mandatory>
+    <Width>10</Width>
+  </CiDateField>
+  <CiComboField>
+    <FieldName>Staff</FieldName>
+    <Caption>Staff</Caption>
+    <Mandatory>true</Mandatory>
+    <Width>10</Width>
+    <DropdownWidth></DropdownWidth>
+    <Mask></Mask>
+  </CiComboField>
+  <CiLinkField>
+    <FieldName>NoteURL</FieldName>
+    <Caption>Scanned Note URL</Caption>
+    <Width>40</Width>
+    <Mask></Mask>
+  </CiLinkField>
+  <CiMemoField>
+    <FieldName>Comments</FieldName>
+    <Caption>Comments</Caption>
+    <Width>40</Width>
+    <Mask></Mask>
+  </CiMemoField>
+  <SelectMacro>
+    <ActionSQL></ActionSQL>
+  </SelectMacro>
+  <DefaultMacro>
+    <ActionSQL></ActionSQL>
+  </DefaultMacro>
+  <InsertMacro>
+    <ActionSQL></ActionSQL>
+  </InsertMacro>
+  <UpdateMacro>
+    <ActionSQL></ActionSQL>
+  </UpdateMacro>
+</CiTable>

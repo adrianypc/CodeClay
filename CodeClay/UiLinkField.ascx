@@ -20,7 +20,8 @@
                         <dx:ASPxHyperLink ID="dxEditLink" ClientInstanceName="dxEditLink" runat="server" Theme="" Wrap="False" Target="_blank" BackColor="Transparent">
                             <ClientSideEvents Init="dxEditLink_Init" />
                         </dx:ASPxHyperLink>
-                        <dx:ASPxUploadControl ID="dxUpload" ClientInstanceName="dxUpload" runat="server" Theme="" Width="100%" ShowUploadButton="true" OnFileUploadComplete="dxUpload_FileUploadComplete">
+                        <dx:ASPxUploadControl ID="dxUpload" ClientInstanceName="dxUpload" runat="server" Theme="" Width="100%"
+                            UploadMode="Advanced" ShowUploadButton="true" ShowProgressPanel="True" OnFileUploadComplete="dxUpload_FileUploadComplete">
                             <ClientSideEvents Init="dxUpload_Init" />
                             <ClientSideEvents FileUploadComplete="dxUpload_FileUploadComplete" />
                         </dx:ASPxUploadControl>

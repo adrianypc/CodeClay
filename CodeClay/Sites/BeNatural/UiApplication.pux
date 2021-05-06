@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <CiApplication>
   <AppName>BeNatural</AppName>
-  <HomePluginSrc>Customers.pux</HomePluginSrc>
+  <HomePluginSrc>fCustomers.pux</HomePluginSrc>
   <Theme>Office2003Olive</Theme>
   <ThemeColor>#5c898c</ThemeColor>
   <IsDesigner>true</IsDesigner>
@@ -13,23 +13,23 @@
   <CiMenu>
     <MenuName>Application</MenuName>
     <CiMenu>
-      <MenuName>Customer Information</MenuName>
-      <PluginSrc></PluginSrc>
-      <CiMenu>
-        <MenuName>Customers</MenuName>
-        <PluginSrc>Customers.pux</PluginSrc>
-      </CiMenu>
-      <CiMenu>
-        <MenuName>Notes</MenuName>
-        <PluginSrc>CustomerCaseNotes.pux&amp;CustomerID=1</PluginSrc>
-      </CiMenu>
+      <MenuName>Customers</MenuName>
+      <PluginSrc>fCustomers.pux</PluginSrc>
+    </CiMenu>
+    <CiMenu>
+      <MenuName>Postures</MenuName>
+      <PluginSrc>fPostures.pux</PluginSrc>
+    </CiMenu>
+    <CiMenu>
+      <MenuName>Sequences</MenuName>
+      <PluginSrc>fSequence.pux</PluginSrc>
     </CiMenu>
     <CiMenu>
       <MenuName>Setup</MenuName>
       <PluginSrc></PluginSrc>
       <CiMenu>
-        <MenuName>Dropdown</MenuName>
-        <PluginSrc>Dropdown.pux</PluginSrc>
+        <MenuName>Dropdowns</MenuName>
+        <PluginSrc>fDropdowns.pux</PluginSrc>
       </CiMenu>
     </CiMenu>
   </CiMenu>

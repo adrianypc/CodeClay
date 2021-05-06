@@ -1,0 +1,49 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CiTable src="SequenceItem.pux">
+  <TableName>fSequenceItem</TableName>
+  <TableCaption>Sequence Items</TableCaption>
+  <RowKey>ID</RowKey>
+  <CiField>
+    <FieldName>DummyForInsert</FieldName>
+    <Hidden>true</Hidden>
+  </CiField>
+  <CiTextField>
+    <FieldName>EditParentID</FieldName>
+    <Caption>Sequence ID</Caption>
+    <Width>10</Width>
+    <Hidden lang="sql">select 1 from Singleton where @ParentID is not null</Hidden>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>ID</FieldName>
+    <Caption>Item ID</Caption>
+    <Editable>false</Editable>
+    <Searchable>true</Searchable>
+    <Width>10</Width>
+  </CiTextField>
+  <CiComboField>
+    <FieldName>PostureID</FieldName>
+    <Caption>Posture ID</Caption>
+    <Width>10</Width>
+    <DropdownSQL>select ID, Name_EN as Name from Posture order by Name</DropdownSQL>
+    <TextFieldName>Posture</TextFieldName>
+    <DropdownWidth>200</DropdownWidth>
+  </CiComboField>
+  <CiMemoField>
+    <FieldName>Posture</FieldName>
+    <Caption>Posture</Caption>
+    <Editable>false</Editable>
+    <Width>60</Width>
+  </CiMemoField>
+  <CiLinkField>
+    <FieldName>VideoURL</FieldName>
+    <Caption>Video URL</Caption>
+    <Editable>false</Editable>
+    <Width>20</Width>
+  </CiLinkField>
+  <SelectMacro>
+    <ActionSQL>select  S.ID, S.ParentID as EditParentID, S.PostureID, P.Name_EN as Posture, P.VideoURL from SequenceItem S left outer join Posture P on P.ID = S.PostureID where (@ParentID is null or S.ParentID = @ParentID) order by S.ID</ActionSQL>
+  </SelectMacro>
+  <DefaultMacro>
+    <ActionSQL>select @ParentID as EditParentID, '- New -' as ID</ActionSQL>
+  </DefaultMacro>
+</CiTable>

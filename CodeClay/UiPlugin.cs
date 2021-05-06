@@ -214,6 +214,7 @@ namespace CodeClay
         [XmlElement("CiSerializeMacro", typeof(CiSerializeMacro))]
         [XmlElement("CiTable", typeof(CiTable))]
         [XmlElement("CiTextField", typeof(CiTextField))]
+        [XmlElement("CiTimeField", typeof(CiTimeField))]
         public CiPlugin[] CiPlugins
         {
             get
@@ -1179,7 +1180,7 @@ namespace CodeClay
                         foreach (DataColumn dcPluginProperty in drPluginDefinition.Table.Columns)
                         {
                             string dPropertyName = dcPluginProperty.ColumnName;
-                            string xPropertyName = GetXPropertyName(dPropertyName);
+                            string xPropertyName = GetXPropertyName(pluginType, dPropertyName);
 
                             if (!MyUtils.IsEmpty(xPropertyName))
                             {
@@ -1189,20 +1190,17 @@ namespace CodeClay
                                     xPropertyName = xPropertyName.Substring(1);
                                 }
 
-                                if (IsConfigurableProperty(pluginType, xPropertyName))
-                                {
-                                    object dPropertyValue = drPluginDefinition[dPropertyName];
+                                object dPropertyValue = drPluginDefinition[dPropertyName];
 
-                                    if (!IsEqualToDefaultValue(pluginType, xPropertyName, dPropertyValue))
+                                if (!IsEqualToDefaultValue(pluginType, dPropertyName, dPropertyValue))
+                                {
+                                    if (isAttribute)
                                     {
-                                        if (isAttribute)
-                                        {
-                                            xPluginDefinition.Add(new XAttribute(xPropertyName, dPropertyValue));
-                                        }
-                                        else
-                                        {
-                                            xPluginDefinition.Add(CreateXElement(xPropertyName, dPropertyValue));
-                                        }
+                                        xPluginDefinition.Add(new XAttribute(xPropertyName, dPropertyValue));
+                                    }
+                                    else
+                                    {
+                                        xPluginDefinition.Add(CreateXElement(xPropertyName, dPropertyValue));
                                     }
                                 }
                             }
@@ -1343,9 +1341,24 @@ namespace CodeClay
         {
         }
 
-        protected virtual string GetXPropertyName(string dPropertyName)
+        protected virtual string GetXPropertyName(Type pluginType, string dPropertyName)
         {
-            return dPropertyName;
+            if (pluginType != null)
+            {
+                PropertyInfo pi = pluginType.GetProperty(dPropertyName);
+                if (pi != null)
+                {
+                    XmlAttributeAttribute a = pi.GetCustomAttribute(typeof(XmlAttributeAttribute)) as XmlAttributeAttribute;
+                    if (a != null)
+                    {
+                        return "@" + a.AttributeName;
+                    }
+
+                    return dPropertyName;
+                }
+            }
+
+            return null;
         }
 
         protected virtual string GetDPropertyName(string xPropertyName)
@@ -1370,38 +1383,30 @@ namespace CodeClay
         // Helpers
         // --------------------------------------------------------------------------------------------------
 
-        private bool IsConfigurableProperty(Type pluginType, string propertyName)
-        {
-            if (pluginType != null)
-            {
-                return pluginType.GetProperty(propertyName) != null;
-            }
-
-            return false;
-        }
-
-        private bool IsEqualToDefaultValue(Type pluginType, string xPropertyName, object dPropertyValue)
+        private bool IsEqualToDefaultValue(Type pluginType, string dPropertyName, object dPropertyValue)
         {
             if (pluginType != null)
             {
                 CiPlugin ciPlugin = Activator.CreateInstance(pluginType) as CiPlugin;
 
-                PropertyInfo p = pluginType.GetProperty(xPropertyName);
-                string dPropertyName = GetDPropertyName(xPropertyName);
+                PropertyInfo p = pluginType.GetProperty(dPropertyName);
 
-                object defaultPropertyValue = p.GetValue(ciPlugin);
-                XmlElement xDefaultPropertyValue = defaultPropertyValue as XmlElement;
-                if (xDefaultPropertyValue != null)
+                if (p != null)
                 {
-                    defaultPropertyValue = xDefaultPropertyValue.InnerText;
-                }
+                    object defaultPropertyValue = p.GetValue(ciPlugin);
+                    XmlElement xDefaultPropertyValue = defaultPropertyValue as XmlElement;
+                    if (xDefaultPropertyValue != null)
+                    {
+                        defaultPropertyValue = xDefaultPropertyValue.InnerText;
+                    }
 
-                string dPropertyValueString = MyUtils.Coalesce(dPropertyValue, "").ToString();
-                string defaultPropertyValueString = MyUtils.Coalesce(defaultPropertyValue, "").ToString();
+                    string dPropertyValueString = MyUtils.Coalesce(dPropertyValue, "").ToString();
+                    string defaultPropertyValueString = MyUtils.Coalesce(defaultPropertyValue, "").ToString();
 
-                if (dPropertyValueString == defaultPropertyValueString)
-                {
-                    return true;
+                    if (dPropertyValueString == defaultPropertyValueString)
+                    {
+                        return true;
+                    }
                 }
             }
 
