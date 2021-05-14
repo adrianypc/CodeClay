@@ -90,5 +90,14 @@ namespace CodeClay.Properties {
                 return ((string)(this["StorageAccountKey"]));
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool IsLinkAzure {
+            get {
+                return ((bool)(this["IsLinkAzure"]));
+            }
+        }
     }
 }

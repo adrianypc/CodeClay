@@ -4,8 +4,8 @@
   <Theme>Youthful</Theme>
   <IsDesigner>true</IsDesigner>
   <ProviderName>System.Data.SqlClient</ProviderName>
-  <ConnectionString>Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=HealthTree;Integrated Security=True;Connect Timeout=30</ConnectionString>
-  <ConnectionStringLIVE>Data Source=tcp:uitf9udwm5.database.windows.net,1433;Initial Catalog=HealthTree;User ID=cus_sa@uitf9udwm5;Password=Cms123!@#</ConnectionStringLIVE>
+  <ConnectionStringDEV>Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=HealthTree;Integrated Security=True;Connect Timeout=30</ConnectionStringDEV>
+  <ConnectionString>Data Source=tcp:uitf9udwm5.database.windows.net,1433;Initial Catalog=HealthTree;User ID=cus_sa@uitf9udwm5;Password=Cms123!@#</ConnectionString>
   <HomePluginSrc>CurrentCustomerOrders.pux</HomePluginSrc>
   <Theme>Youthful</Theme>
   <ThemeColor>#efb01d</ThemeColor>

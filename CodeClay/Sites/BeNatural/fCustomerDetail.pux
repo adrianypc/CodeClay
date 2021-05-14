@@ -3,7 +3,6 @@
   <TableName>fCustomerDetail</TableName>
   <TableCaption>Dosha/personal Information Form</TableCaption>
   <DefaultView>Card</DefaultView>
-  <ColCount>2</ColCount>
   <RowKey>ID</RowKey>
   <CiField>
     <FieldName>DummyForInsert</FieldName>
@@ -274,8 +273,7 @@
     <Caption>Video Location</Caption>
     <Width>100</Width>
     <Mask>None</Mask>
-    <Folder lang="sql">select 'IntroVideos\C' + ltrim(str(@ID))</Folder>
-    <IsAzure>true</IsAzure>
+    <Folder lang="sql">select 'SavedFiles\IntroVideos\C' + ltrim(str(@ID))</Folder>
   </CiLinkField>
   <SelectMacro>
     <ActionSQL>select case when @CustomerID is not null then @CustomerID else (select ID from Customer where Email = @CI_UserEmail) end as CustomerID</ActionSQL>

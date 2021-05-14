@@ -28,7 +28,7 @@ namespace CodeClay
         public XmlElement Folder { get; set; } = null;
 
         [XmlElement("IsAzure")]
-        public bool IsAzure { get; set; } = false;
+        public bool IsAzure { get; set; } = UiApplication.Me.CiApplication.IsLinkAzure;
 
         // --------------------------------------------------------------------------------------------------
         // Methods (Override)
