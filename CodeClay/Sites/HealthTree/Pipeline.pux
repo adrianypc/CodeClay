@@ -1,0 +1,86 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<CiPivotTable>
+	<TableName>Pipeline</TableName>
+	<TableCaption>Pipeline</TableCaption>
+  <CiPivotField>
+		<FieldName>OrderType</FieldName>
+    <Caption>Type</Caption>
+    <Area>ColumnArea</Area>
+    <AreaIndex>0</AreaIndex>
+  </CiPivotField>
+	<CiPivotField>
+		<FieldName>OrderNoUrl</FieldName>
+    <Caption>Order #</Caption>
+    <Area>ColumnArea</Area>
+    <AreaIndex>1</AreaIndex>
+    <Mask>Link</Mask>
+    <Computed>true</Computed>
+    <Value>OrderNo + ',' + Link</Value>
+  </CiPivotField>
+	<CiPivotField>
+		<FieldName>OrderDate</FieldName>
+    <Caption>Date</Caption>
+    <Area>ColumnArea</Area>
+    <AreaIndex>2</AreaIndex>
+    <Format>DateTime</Format>
+  </CiPivotField>
+	<CiPivotField>
+		<FieldName>CourierTracking</FieldName>
+    <Caption>Tracking #</Caption>
+    <Area>ColumnArea</Area>
+    <AreaIndex>3</AreaIndex>
+  </CiPivotField>
+	<CiPivotField>
+		<FieldName>CompletionDate</FieldName>
+    <Caption>Completion Date</Caption>
+    <Area>ColumnArea</Area>
+    <AreaIndex>4</AreaIndex>
+  </CiPivotField>
+	<CiPivotField>
+		<FieldName>Comments</FieldName>
+    <Caption>Comments</Caption>
+    <Area>ColumnArea</Area>
+    <AreaIndex>5</AreaIndex>
+    <Wrap>true</Wrap>
+  </CiPivotField>
+	<CiPivotField>
+		<FieldName>Name</FieldName>
+    <Caption>Name</Caption>
+    <Area>ColumnArea</Area>
+    <AreaIndex>6</AreaIndex>
+    <Wrap>true</Wrap>
+  </CiPivotField>
+	<CiPivotField>
+		<FieldName>ProductId</FieldName>
+    <Area>DataArea</Area>
+    <Hidden>true</Hidden>
+  </CiPivotField>
+	<CiPivotField>
+		<FieldName>Quantity</FieldName>
+    <Caption>Quantity</Caption>
+    <Area>DataArea</Area>
+    <AreaIndex>0</AreaIndex>
+  </CiPivotField>
+	<CiPivotField>
+		<FieldName>ProductName</FieldName>
+    <Caption>Product</Caption>
+    <Area>RowArea</Area>
+    <AreaIndex>0</AreaIndex>
+    <GroupIndex>1</GroupIndex>
+    <InnerGroupIndex>0</InnerGroupIndex>
+    <Wrap>true</Wrap>
+  </CiPivotField>
+	<CiPivotField>
+		<FieldName>Inventory_QOH</FieldName>
+    <Caption>Supply</Caption>
+    <Area>RowArea</Area>
+    <AreaIndex>1</AreaIndex>
+    <GroupIndex>1</GroupIndex>
+    <InnerGroupIndex>1</InnerGroupIndex>
+    <SummaryType>Min</SummaryType>
+    <Format>Numeric</Format>
+  </CiPivotField>
+	<SelectMacro>
+  	<ActionSQL>?exec spPipelineRpt_sel @Hostsite, @BranchCode</ActionSQL>
+	</SelectMacro>
+</CiPivotTable>

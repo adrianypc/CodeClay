@@ -213,6 +213,8 @@ namespace CodeClay
         [XmlElement("CiReport", typeof(CiReport))]
         [XmlElement("CiSerializeMacro", typeof(CiSerializeMacro))]
         [XmlElement("CiTable", typeof(CiTable))]
+        [XmlElement("CiPivotTable", typeof(CiPivotTable))]
+        [XmlElement("CiPivotField", typeof(CiPivotField))]
         [XmlElement("CiTextField", typeof(CiTextField))]
         [XmlElement("CiTimeField", typeof(CiTimeField))]
         public CiPlugin[] CiPlugins

@@ -223,10 +223,16 @@ namespace CodeClay
                 }
                 else if (CiTable.DefaultView == "Card")
                 {
-                    if (Width == 0 && ColSpan == 1)
+                    if (ColSpan == 1)
                     {
                         int colCount = IsVisible(drParams) ? CiTable.ColCount : 1;
-                        columnWidth = Unit.Percentage(100 / colCount);
+                        int sectionWidth = 100 / colCount;
+                        if (Width == 0)
+                        {
+                            Width = 100;
+                        }
+
+                        columnWidth = Unit.Percentage((sectionWidth * Width) / 100);
                     }
                 }
                 else if (CiTable.DefaultView == "Grid")
@@ -283,10 +289,11 @@ namespace CodeClay
                 string fieldName = dxColumn.FieldName;
                 string caption = EvalCaptionSQL(dr);
                 bool visible = IsVisible(dr);
+                Unit width = visible ? GetColumnWidth(dr) : Unit.Percentage(0);
 
                 dxColumn.Visible = visible;
                 dxColumn.Caption = caption;
-                dxColumn.Width = GetColumnWidth(dr);
+                dxColumn.Width = width;
 
                 CardViewFormLayoutProperties layoutProperties = dxColumn.CardView.CardLayoutProperties;
                 CardViewColumnLayoutItem dxLayoutItem = layoutProperties.FindColumnItem(fieldName) as CardViewColumnLayoutItem;
@@ -315,7 +322,7 @@ namespace CodeClay
                 dxLayoutItem.Caption = caption;
                 dxLayoutItem.RowSpan = RowSpan;
                 dxLayoutItem.ColSpan = ColSpan;
-                dxLayoutItem.Width = GetColumnWidth(dr);
+                dxLayoutItem.Width = width;
                 dxLayoutItem.HorizontalAlign = HorizontalAlign;
                 dxLayoutItem.VerticalAlign = VerticalAlign;
                 dxLayoutItem.ShowCaption = !MyUtils.IsEmpty(caption)

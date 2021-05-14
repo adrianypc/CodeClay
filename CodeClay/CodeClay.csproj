@@ -423,6 +423,7 @@
     <Content Include="Scripts\umd\popper.js" />
     <Content Include="Scripts\umd\popper.min.js" />
     <Content Include="UiImageField.ascx" />
+    <Content Include="UiPivotTable.ascx" />
     <Content Include="UiSerializeMacro.ascx" />
     <Content Include="UiLinkField.ascx" />
     <Content Include="UiFieldExitMacro.ascx" />
@@ -660,6 +661,12 @@
     </Compile>
     <Compile Include="UiImageField.ascx.designer.cs">
       <DependentUpon>UiImageField.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UiPivotTable.ascx.cs">
+      <DependentUpon>UiPivotTable.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UiPivotTable.ascx.designer.cs">
+      <DependentUpon>UiPivotTable.ascx</DependentUpon>
     </Compile>
     <Compile Include="UiSerializeMacro.ascx.cs">
       <DependentUpon>UiSerializeMacro.ascx</DependentUpon>

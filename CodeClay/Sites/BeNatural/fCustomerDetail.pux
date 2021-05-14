@@ -3,6 +3,7 @@
   <TableName>fCustomerDetail</TableName>
   <TableCaption>Dosha/personal Information Form</TableCaption>
   <DefaultView>Card</DefaultView>
+  <ColCount>2</ColCount>
   <RowKey>ID</RowKey>
   <CiField>
     <FieldName>DummyForInsert</FieldName>
@@ -27,7 +28,7 @@
     <FieldName>LastName</FieldName>
     <Caption>Last Name</Caption>
     <Editable>false</Editable>
-    <Width>30</Width>
+    <Width>50</Width>
     <Mask>None</Mask>
   </CiTextField>
   <CiTextField>
@@ -40,14 +41,14 @@
   <CiDateField>
     <FieldName>CreatedDate</FieldName>
     <Caption>Date</Caption>
-    <Width>20</Width>
+    <Width>50</Width>
     <Mask>None</Mask>
   </CiDateField>
   <CiDateField>
     <FieldName>DateOfBirth</FieldName>
     <Caption>D.O.B</Caption>
     <Mandatory>true</Mandatory>
-    <Width>20</Width>
+    <Width>50</Width>
     <Mask>None</Mask>
   </CiDateField>
   <CiMemoField>
