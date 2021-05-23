@@ -2,15 +2,11 @@
 using System.Data;
 using System.Drawing;
 using System.IO;
-using System.Threading.Tasks;
 using System.Web.UI;
 using System.Xml;
 using System.Xml.Serialization;
 
 // Extra references
-using Azure;
-using Azure.Storage;
-using Azure.Storage.Files.Shares;
 using Azure.Storage.Sas;
 using CodistriCore;
 using DevExpress.Web;
@@ -27,8 +23,8 @@ namespace CodeClay
         [XmlSqlElement("Folder", typeof(string))]
         public XmlElement Folder { get; set; } = null;
 
-        [XmlElement("IsAzure")]
-        public bool IsAzure { get; set; } = UiApplication.Me.CiApplication.IsLinkAzure;
+        [XmlElement("IsLinkAzure")]
+        public bool IsLinkAzure { get; set; } = UiApplication.Me.CiApplication.IsLinkAzure;
 
         // --------------------------------------------------------------------------------------------------
         // Methods (Override)
@@ -138,32 +134,20 @@ namespace CodeClay
             UploadedFile uploadedFile = e.UploadedFile;
             if (uploadedFile != null)
             {
-                string currentFolder = GetSaveLocation();
+                string saveFolder = GetSaveLocation();
 
-                if (!MyUtils.IsEmpty(currentFolder))
+                if (!MyUtils.IsEmpty(saveFolder))
                 {
-                    string fileName = CleanFileName(uploadedFile.FileName);
-                    string filePath = currentFolder + @"\" + fileName;
-                    string linkURL = filePath;
+                    string filePath = MyWebUtils.GetFilePath(saveFolder, uploadedFile);
+                    string linkURL = "";
 
-                    if (CiLinkField.IsAzure)
+                    if (CiLinkField.IsLinkAzure)
                     {
-                        ShareFileClient azureFile = GetAzureFile(currentFolder, fileName);
-                        linkURL = GetFileSasUri(azureFile.Path, DateTime.Now.AddDays(1), ShareFileSasPermissions.Read);
-                        
-                        Task task = new Task(() => { AppendToAzureFile(azureFile, uploadedFile.FileBytes); });
-                        task.Start();
+                        linkURL = MyWebUtils.UploadToAzureFileStorage(saveFolder, uploadedFile);
                     }
                     else
                     {
-                        string currentFolderPath = MapPath(currentFolder);
-
-                        if (!Directory.Exists(currentFolderPath))
-                        {
-                            Directory.CreateDirectory(currentFolderPath);
-                        }
-
-                        uploadedFile.SaveAs(MapPath(filePath));
+                        linkURL = MyWebUtils.UploadToWebServer(saveFolder, uploadedFile);
                     }
 
                     e.CallbackData = filePath + LIST_SEPARATOR + linkURL;
@@ -194,9 +178,9 @@ namespace CodeClay
                         {
                             string filePath = dxCard.GetCardValues(ItemIndex, fieldName).ToString();
 
-                            if (CiLinkField.IsAzure)
+                            if (CiLinkField.IsLinkAzure)
                             {
-                                LinkUrl = GetFileSasUri(filePath, DateTime.Now.AddDays(1), ShareFileSasPermissions.Read);
+                                LinkUrl = MyWebUtils.GetFileSasUri(filePath, DateTime.Now.AddDays(1), ShareFileSasPermissions.Read);
                             }
                             else
                             {
@@ -222,7 +206,16 @@ namespace CodeClay
                         ASPxGridView dxGrid = gridContainer.Grid;
                         if (dxGrid != null)
                         {
-                            LinkUrl = dxGrid.GetRowValues(ItemIndex, fieldName).ToString();
+                            string filePath = dxGrid.GetRowValues(ItemIndex, fieldName).ToString();
+
+                            if (CiLinkField.IsLinkAzure)
+                            {
+                                LinkUrl = MyWebUtils.GetFileSasUri(filePath, DateTime.Now.AddDays(1), ShareFileSasPermissions.Read);
+                            }
+                            else
+                            {
+                                LinkUrl = filePath;
+                            }
 
                             if (!MyUtils.IsEmpty(textFieldName))
                             {
@@ -262,95 +255,6 @@ namespace CodeClay
             }
 
             return currentFolder;
-        }
-
-        private string CleanFileName(string filename)
-        {
-            if (!MyUtils.IsEmpty(filename))
-            {
-                return filename.Replace(" ", "_");
-            }
-
-            return "";
-        }
-
-        private ShareFileClient GetAzureFile(string folderName, string fileName)
-        {
-            string shareName = MyWebUtils.Application.ToLower();
-
-            string connectionString = Properties.Settings.Default.StorageConnectionString;
-
-            ShareClient share = new ShareClient(connectionString, shareName);
-
-            // Create the share if it doesn't already exist
-            share.CreateIfNotExists();
-
-            if (share.Exists())
-            {
-                ShareDirectoryClient subFolder = share.GetRootDirectoryClient();
-
-                foreach (string subFolderName in folderName.Split('\\'))
-                {
-                    subFolder = subFolder.GetSubdirectoryClient(subFolderName);
-                    subFolder.CreateIfNotExists();
-                }
-
-                return subFolder.GetFileClient(fileName);
-            }
-
-            return null;
-        }
-
-        private void AppendToAzureFile(ShareFileClient azureFile, byte[] buffer)
-        {
-            int bufferLength = buffer.Length;
-            azureFile.Create(bufferLength);
-
-            int maxChunkSize = 4 * 1024;
-            for (int offset = 0; offset < bufferLength; offset += maxChunkSize)
-            {
-                int chunkSize = Math.Min(maxChunkSize, bufferLength - offset);
-                MemoryStream chunk = new MemoryStream();
-                chunk.Write(buffer, offset, chunkSize);
-                chunk.Position = 0;
-
-                HttpRange httpRange = new HttpRange(offset, chunkSize);
-                var resp = azureFile.UploadRange(httpRange, chunk);
-            }
-        }
-
-        private string GetFileSasUri(string filePath, DateTime expiration, ShareFileSasPermissions permissions)
-        {
-            string shareName = MyWebUtils.Application.ToLower();
-
-            // Get the account details from app settings
-            string accountName = Properties.Settings.Default.StorageAccountName;
-            string accountKey = Properties.Settings.Default.StorageAccountKey;
-
-            ShareSasBuilder fileSAS = new ShareSasBuilder()
-            {
-                ShareName = shareName,
-                FilePath = filePath,
-
-                // Specify an Azure file resource
-                Resource = "f",
-
-                // Expires in 24 hours
-                ExpiresOn = expiration
-            };
-
-            // Set the permissions for the SAS
-            fileSAS.SetPermissions(permissions);
-
-            // Create a SharedKeyCredential that we can use to sign the SAS token
-            StorageSharedKeyCredential credential = new StorageSharedKeyCredential(accountName, accountKey);
-
-            // Build a SAS URI
-            UriBuilder fileSasUri = new UriBuilder($"https://{accountName}.file.core.windows.net/{fileSAS.ShareName}/{fileSAS.FilePath}");
-            fileSasUri.Query = fileSAS.ToSasQueryParameters(credential).ToString();
-
-            // Return the URI
-            return fileSasUri.Uri.ToString();
         }
     }
 }

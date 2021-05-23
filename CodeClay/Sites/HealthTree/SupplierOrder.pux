@@ -70,6 +70,7 @@
     <Caption>Order File</Caption>
     <Folder lang="sql">select 'SavedFiles\SupplierOrders\' + ltrim(str(@SupplierID)) + '\F' + ltrim(str(@SupplierOrderNo))</Folder>
     <Width>50</Width>
+    <IsLinkAzure>true</IsLinkAzure>
   </CiLinkField>
   <CiCurrencyField>
     <FieldName>Shipping</FieldName>

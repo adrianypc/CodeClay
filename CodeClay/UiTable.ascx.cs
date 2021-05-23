@@ -1670,10 +1670,10 @@ namespace CodeClay
 
         private void BuildMoreMenu(DevExpress.Web.MenuItem dxMoreMenu)
         {
-            bool isUser = MyWebUtils.IsUserAuthorised("User"); // Lowest level of access
+            bool isUser = MyWebUtils.IsUserAuthorised("User");
             if (dxMoreMenu != null)
             {
-                dxMoreMenu.Visible = !isUser;
+                dxMoreMenu.Visible = isUser;
 
                 bool isDeveloper = MyWebUtils.IsUserAuthorised("Developer");
                 DevExpress.Web.MenuItem dxMenuItem = null;

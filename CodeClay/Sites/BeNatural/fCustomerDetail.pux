@@ -274,6 +274,7 @@
     <Width>100</Width>
     <Mask>None</Mask>
     <Folder lang="sql">select 'SavedFiles\IntroVideos\C' + ltrim(str(@ID))</Folder>
+    <IsLinkAzure>true</IsLinkAzure>
   </CiLinkField>
   <SelectMacro>
     <ActionSQL>select case when @CustomerID is not null then @CustomerID else (select ID from Customer where Email = @CI_UserEmail) end as CustomerID</ActionSQL>

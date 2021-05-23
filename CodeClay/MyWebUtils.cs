@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Security.Principal;
 using System.Text;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Security;
 using System.Web.SessionState;
@@ -664,6 +665,133 @@ namespace CodeClay
             byte b = (byte)(Convert.ToUInt32(color.Substring(5, 2), 16));
 
             return Color.FromArgb(a, r, g, b);
+        }
+
+        public static string GetFilePath(string folderName, UploadedFile uploadedFile)
+        {
+            string fileName = CleanFileName(uploadedFile.FileName);
+            string filePath = folderName + @"\" + fileName;
+
+            return filePath;
+        }
+
+        public static string UploadToAzureFileStorage(string folderName, UploadedFile uploadedFile)
+        {
+            string fileName = CleanFileName(uploadedFile.FileName);
+            ShareFileClient azureFile = GetAzureFile(folderName, fileName);
+            string linkURL = GetFileSasUri(azureFile.Path, DateTime.Now.AddDays(1), ShareFileSasPermissions.Read);
+
+            Task task = new Task(() => { AppendToAzureFile(azureFile, uploadedFile.FileBytes); });
+            task.Start();
+
+            return linkURL;
+        }
+
+        public static string UploadToWebServer(string folderName, UploadedFile uploadedFile)
+        {
+            string fileName = CleanFileName(uploadedFile.FileName);
+            string filePath = folderName + @"\" + fileName;
+            string linkURL = filePath;
+
+            string folderPath = MapPath(folderName);
+
+            if (!Directory.Exists(folderPath))
+            {
+                Directory.CreateDirectory(folderPath);
+            }
+
+            uploadedFile.SaveAs(MapPath(filePath));
+
+            return linkURL;
+        }
+
+        public static string CleanFileName(string filename)
+        {
+            if (!MyUtils.IsEmpty(filename))
+            {
+                return filename.Replace(" ", "_");
+            }
+
+            return "";
+        }
+
+        public static ShareFileClient GetAzureFile(string folderName, string fileName)
+        {
+            string shareName = MyWebUtils.Application.ToLower();
+
+            string connectionString = Properties.Settings.Default.StorageConnectionString;
+
+            ShareClient share = new ShareClient(connectionString, shareName);
+
+            // Create the share if it doesn't already exist
+            share.CreateIfNotExists();
+
+            if (share.Exists())
+            {
+                ShareDirectoryClient subFolder = share.GetRootDirectoryClient();
+
+                foreach (string subFolderName in folderName.Split('\\'))
+                {
+                    subFolder = subFolder.GetSubdirectoryClient(subFolderName);
+                    subFolder.CreateIfNotExists();
+                }
+
+                return subFolder.GetFileClient(fileName);
+            }
+
+            return null;
+        }
+
+        public static void AppendToAzureFile(ShareFileClient azureFile, byte[] buffer)
+        {
+            int bufferLength = buffer.Length;
+            azureFile.Create(bufferLength);
+
+            int maxChunkSize = 4 * 1024;
+            for (int offset = 0; offset < bufferLength; offset += maxChunkSize)
+            {
+                int chunkSize = Math.Min(maxChunkSize, bufferLength - offset);
+                MemoryStream chunk = new MemoryStream();
+                chunk.Write(buffer, offset, chunkSize);
+                chunk.Position = 0;
+
+                HttpRange httpRange = new HttpRange(offset, chunkSize);
+                var resp = azureFile.UploadRange(httpRange, chunk);
+            }
+        }
+
+        public static string GetFileSasUri(string filePath, DateTime expiration, ShareFileSasPermissions permissions)
+        {
+            string shareName = MyWebUtils.Application.ToLower();
+
+            // Get the account details from app settings
+            string accountName = Properties.Settings.Default.StorageAccountName;
+            string accountKey = Properties.Settings.Default.StorageAccountKey;
+
+            ShareSasBuilder fileSAS = new ShareSasBuilder()
+            {
+                ShareName = shareName,
+                FilePath = filePath,
+
+                // Specify an Azure file resource
+                Resource = "f",
+
+                // Expires in 24 hours
+                ExpiresOn = expiration
+            };
+
+            // Set the permissions for the SAS
+            fileSAS.SetPermissions(permissions);
+
+            // Create a SharedKeyCredential that we can use to sign the SAS token
+            StorageSharedKeyCredential credential = new StorageSharedKeyCredential(accountName, accountKey);
+
+            // Build a SAS URI
+            UriBuilder fileSasUri = new UriBuilder($"https://{accountName}.file.core.windows.net/{fileSAS.ShareName}/{fileSAS.FilePath}");
+            fileSasUri.Query = fileSAS.ToSasQueryParameters(credential).ToString();
+
+            // Return the URI
+            return fileSasUri.Uri.ToString();
         }
     }
 

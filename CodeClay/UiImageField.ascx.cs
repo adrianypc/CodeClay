@@ -1,12 +1,17 @@
 ﻿using System;
 using System.Drawing;
 using System.IO;
+using System.Net;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Xml;
 using System.Xml.Serialization;
 
 // Extra references
+using Azure;
+using Azure.Storage;
+using Azure.Storage.Files.Shares;
+using Azure.Storage.Sas;
 using CodistriCore;
 using DevExpress.Web;
 
@@ -21,6 +26,9 @@ namespace CodeClay
 
         [XmlSqlElement("Folder", typeof(string))]
         public XmlElement Folder { get; set; } = null;
+
+        [XmlElement("IsLinkAzure")]
+        public bool IsLinkAzure { get; set; } = UiApplication.Me.CiApplication.IsLinkAzure;
 
         [XmlElement("ImageWidth")]
         public int ImageWidth { get; set; } = 0;
@@ -103,7 +111,7 @@ namespace CodeClay
                 string imageUrl = MyUtils.Coalesce(ImageUrl, defaultImageUrl);
                 bool emptyUrl = MyUtils.IsEmpty(imageUrl);
                 bool isInserting = (UiParentPlugin != null && UiParentPlugin.IsInserting);
-                bool fileExists = IsEditing || !emptyUrl && File.Exists(Server.MapPath(imageUrl));
+                bool fileExists = IsEditing || !emptyUrl && DoesImageExist(imageUrl);
                 int imageWidth = fileExists ? CiImageField.ImageWidth : 1;
                 int imageHeight = fileExists ? CiImageField.ImageHeight : 1;
                 
@@ -153,32 +161,25 @@ namespace CodeClay
             UploadedFile uploadedFile = e.UploadedFile;
             if (uploadedFile != null)
             {
-                string currentFolder = GetSaveLocation();
+                string saveFolder = GetSaveLocation();
 
-                if (!MyUtils.IsEmpty(currentFolder))
+                if (!MyUtils.IsEmpty(saveFolder))
                 {
-                    string currentFolderPath = MapPath(currentFolder);
+                    string filePath = MyWebUtils.GetFilePath(saveFolder, uploadedFile);
+                    string linkURL = "";
 
-                    if (!Directory.Exists(currentFolderPath))
+                    if (CiImageField.IsLinkAzure)
                     {
-                        Directory.CreateDirectory(currentFolderPath);
+                        linkURL = MyWebUtils.UploadToAzureFileStorage(saveFolder, uploadedFile);
                     }
                     else
                     {
-                        DirectoryInfo di = new DirectoryInfo(currentFolderPath);
-
-                        foreach (FileInfo fi in di.EnumerateFiles())
-                        {
-                            fi.Delete();
-                        }
+                        linkURL = MyWebUtils.UploadToWebServer(saveFolder, uploadedFile);
                     }
 
-                    string fileName = CleanFileName(uploadedFile.FileName);
-                    string savedFileURL = currentFolder + @"\" + fileName;
+                    string fileName = MyWebUtils.CleanFileName(uploadedFile.FileName);
 
-                    uploadedFile.SaveAs(MapPath(savedFileURL));
-
-                    e.CallbackData = fileName + LIST_SEPARATOR + savedFileURL;
+                    e.CallbackData = fileName + LIST_SEPARATOR + filePath;
                 }
             }
         }
@@ -203,7 +204,16 @@ namespace CodeClay
                         ASPxCardView dxCard = cardContainer.CardView;
                         if (dxCard != null)
                         {
-                            ImageUrl = dxCard.GetCardValues(ItemIndex, fieldName).ToString();
+                            string filePath = dxCard.GetCardValues(ItemIndex, fieldName).ToString();
+
+                            if (CiImageField.IsLinkAzure)
+                            {
+                                ImageUrl = MyWebUtils.GetFileSasUri(filePath, DateTime.Now.AddDays(1), ShareFileSasPermissions.Read);
+                            }
+                            else
+                            {
+                                ImageUrl = filePath;
+                            }
                         }
                     }
                 }
@@ -215,7 +225,16 @@ namespace CodeClay
                         ASPxGridView dxGrid = gridContainer.Grid;
                         if (dxGrid != null)
                         {
-                            ImageUrl = dxGrid.GetRowValues(ItemIndex, fieldName).ToString();
+                            string filePath = dxGrid.GetRowValues(ItemIndex, fieldName).ToString();
+
+                            if (CiImageField.IsLinkAzure)
+                            {
+                                ImageUrl = MyWebUtils.GetFileSasUri(filePath, DateTime.Now.AddDays(1), ShareFileSasPermissions.Read);
+                            }
+                            else
+                            {
+                                ImageUrl = filePath;
+                            }
                         }
                     }
                 }
@@ -256,6 +275,30 @@ namespace CodeClay
             }
 
             return "";
+        }
+
+        private bool DoesImageExist(string imageUrl)
+        {
+            if (CiImageField.IsLinkAzure)
+            {
+                try
+                {
+                    var request = WebRequest.Create(imageUrl) as HttpWebRequest;
+                    request.Method = "HEAD";
+                    using (var response = (HttpWebResponse)request.GetResponse())
+                    {
+                        return response.StatusCode == HttpStatusCode.OK;
+                    }
+                }
+                catch
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                return File.Exists(Server.MapPath(imageUrl));
+            }
         }
     }
 }
