@@ -9,6 +9,7 @@
         <FieldName>SupplierOrderNo</FieldName>
         <Caption>Supplier Order #</Caption>
         <Editable>false</Editable>
+        <Width>10</Width>
     </CiTextField>
     <CiTextField>
         <FieldName>Status</FieldName>
@@ -26,16 +27,23 @@
         <Editable>false</Editable>
         <Width>50</Width>
     </CiComboField>
+    <CiTextField>
+        <FieldName>BranchCode</FieldName>
+        <Caption>Branch</Caption>
+        <Editable>false</Editable>
+    </CiTextField>
     <CiDateField>
         <FieldName>SupplierOrderDate</FieldName>
         <Caption>Order Date</Caption>
         <Editable>false</Editable>
         <ColumnFormat>dd/MM/yyyy</ColumnFormat>
+        <Width>8</Width>
     </CiDateField>
     <CiCheckField>
         <FieldName>IsTransferred</FieldName>
         <Caption>Transfer Order</Caption>
         <Editable>false</Editable>
+        <Hidden>true</Hidden>
         <width>6</width>
     </CiCheckField>
     <CiCheckField>

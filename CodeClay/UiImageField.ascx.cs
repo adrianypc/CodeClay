@@ -27,14 +27,20 @@ namespace CodeClay
         [XmlSqlElement("Folder", typeof(string))]
         public XmlElement Folder { get; set; } = null;
 
-        [XmlElement("IsLinkAzure")]
-        public bool IsLinkAzure { get; set; } = UiApplication.Me.CiApplication.IsLinkAzure;
-
         [XmlElement("ImageWidth")]
         public int ImageWidth { get; set; } = 0;
 
         [XmlElement("ImageHeight")]
         public int ImageHeight { get; set; } = 0;
+
+        [XmlIgnore]
+        public bool IsAzureFolder
+        {
+            get
+            {
+                return UiApplication.Me.CiApplication.IsAzureFolder && !MyUtils.IsEmpty(Folder);
+            }
+        }
 
         // --------------------------------------------------------------------------------------------------
         // Methods (Override)
@@ -168,7 +174,7 @@ namespace CodeClay
                     string filePath = MyWebUtils.GetFilePath(saveFolder, uploadedFile);
                     string linkURL = "";
 
-                    if (CiImageField.IsLinkAzure)
+                    if (CiImageField.IsAzureFolder)
                     {
                         linkURL = MyWebUtils.UploadToAzureFileStorage(saveFolder, uploadedFile);
                     }
@@ -206,7 +212,7 @@ namespace CodeClay
                         {
                             string filePath = dxCard.GetCardValues(ItemIndex, fieldName).ToString();
 
-                            if (CiImageField.IsLinkAzure)
+                            if (CiImageField.IsAzureFolder)
                             {
                                 ImageUrl = MyWebUtils.GetFileSasUri(filePath, DateTime.Now.AddDays(1), ShareFileSasPermissions.Read);
                             }
@@ -227,7 +233,7 @@ namespace CodeClay
                         {
                             string filePath = dxGrid.GetRowValues(ItemIndex, fieldName).ToString();
 
-                            if (CiImageField.IsLinkAzure)
+                            if (CiImageField.IsAzureFolder)
                             {
                                 ImageUrl = MyWebUtils.GetFileSasUri(filePath, DateTime.Now.AddDays(1), ShareFileSasPermissions.Read);
                             }
@@ -279,7 +285,7 @@ namespace CodeClay
 
         private bool DoesImageExist(string imageUrl)
         {
-            if (CiImageField.IsLinkAzure)
+            if (CiImageField.IsAzureFolder)
             {
                 try
                 {

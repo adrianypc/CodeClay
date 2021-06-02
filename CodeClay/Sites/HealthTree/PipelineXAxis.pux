@@ -49,6 +49,6 @@
         <Editable>false</Editable>
     </CiLinkField>
     <SelectMacro>
-	    <ActionSQL>?exec spPipeline_XAxis_sel 'localhost/TestCodeClay','HT-SG'</ActionSQL>
+	    <ActionSQL>?exec spPipeline_XAxis_sel 'codeclay.azurewebsites.net','HT-SG'</ActionSQL>
     </SelectMacro>
 </CiTable>

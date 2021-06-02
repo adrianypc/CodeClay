@@ -9,9 +9,8 @@
   </CiField>
   <CiTextField>
     <FieldName>ID</FieldName>
-    <Caption>ID</Caption>
+    <Caption>Sequence ID</Caption>
     <Editable>false</Editable>
-    <Searchable>true</Searchable>
     <Width>10</Width>
   </CiTextField>
   <CiNumericField>
@@ -23,26 +22,26 @@
   <CiTextField>
     <FieldName>Dosha</FieldName>
     <Caption>Dosha</Caption>
-    <Width>70</Width>
+    <Width>50</Width>
   </CiTextField>
-  <CiTimeField>
-    <FieldName>Duration</FieldName>
-    <Caption>Duration</Caption>
-    <Width>10</Width>
-  </CiTimeField>
+  <CiTextField>
+    <FieldName>VideoURL</FieldName>
+    <Caption>Video URL</Caption>
+    <Width>30</Width>
+  </CiTextField>
   <CiTable src="SequenceItem.pux?ParentID=@ID">
     <TableName>SequenceItem</TableName>
     <TableCaption>SequenceItem</TableCaption>
   </CiTable>
   <SelectMacro>
-    <ActionSQL>select  DayNo, Dosha, Duration, ID from Sequence where (@ID is null or ID = @ID) order by ID</ActionSQL>
+    <ActionSQL>select  ID, DayNo, Dosha, VideoURL from Sequence order by ID</ActionSQL>
   </SelectMacro>
   <InsertMacro>
-    <ActionSQL>insert into Sequence (DayNo, Dosha, Duration) values (@DayNo, @Dosha, @Duration)</ActionSQL>
+    <ActionSQL>insert into Sequence (DayNo, Dosha, VideoURL) values (@DayNo, @Dosha, @VideoURL)</ActionSQL>
     <ValidateSQL></ValidateSQL>
   </InsertMacro>
   <UpdateMacro>
-    <ActionSQL>update Sequence set DayNo = @DayNo, Dosha = @Dosha, Duration = @Duration where ID = @ID</ActionSQL>
+    <ActionSQL>update Sequence set DayNo = @DayNo, Dosha = @Dosha, VideoURL = @VideoURL where ID = @ID</ActionSQL>
     <ValidateSQL></ValidateSQL>
   </UpdateMacro>
   <DeleteMacro>

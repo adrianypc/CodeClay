@@ -24,6 +24,16 @@
     <Width>4</Width>
   </CiTextField>
   <CiTextField>
+    <FieldName>StartDirection</FieldName>
+    <Caption>Start Direction</Caption>
+    <Width>10</Width>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>EndDirection</FieldName>
+    <Caption>End Direction</Caption>
+    <Width>10</Width>
+  </CiTextField>
+  <CiTextField>
     <FieldName>Name_EN</FieldName>
     <Caption>Name (English)</Caption>
     <Width>12</Width>
@@ -70,14 +80,14 @@
     <MaxValue>1000</MaxValue>
   </CiNumericField>
   <SelectMacro>
-    <ActionSQL>select  Adjunct, Approval, Contraindications, Dosha, Duration, ID, Name_EN, Name_SK, Precautions, Type, VideoURL, Warmup from Posture order by ID</ActionSQL>
+    <ActionSQL>select  ID, Type, Dosha, StartDirection, EndDirection, Name_EN, Name_SK, Adjunct, Warmup, Precautions, Contraindications, Approval, VideoURL, Duration from Posture order by ID</ActionSQL>
   </SelectMacro>
   <InsertMacro>
-    <ActionSQL>insert into Posture (Adjunct, Approval, Contraindications, Dosha, Duration, Name_EN, Name_SK, Precautions, Type, VideoURL, Warmup) values (@Adjunct, @Approval, @Contraindications, @Dosha, @Duration, @Name_EN, @Name_SK, @Precautions, @Type, @VideoURL, @Warmup)</ActionSQL>
+    <ActionSQL>insert into Posture (Type, Dosha, StartDirection, EndDirection, Name_EN, Name_SK, Adjunct, Warmup, Precautions, Contraindications, Approval, VideoURL, Duration) values (@Type, @Dosha, @StartDirection, @EndDirection, @Name_EN, @Name_SK, @Adjunct, @Warmup, @Precautions, @Contraindications, @Approval, @VideoURL, @Duration)</ActionSQL>
     <ValidateSQL></ValidateSQL>
   </InsertMacro>
   <UpdateMacro>
-    <ActionSQL>update Posture set Adjunct = @Adjunct, Approval = @Approval, Contraindications = @Contraindications, Dosha = @Dosha, Duration = @Duration, Name_EN = @Name_EN, Name_SK = @Name_SK, Precautions = @Precautions, Type = @Type, VideoURL = @VideoURL, Warmup = @Warmup where ID = @ID</ActionSQL>
+    <ActionSQL>update Posture set Type = @Type, Dosha = @Dosha, StartDirection = @StartDirection, EndDirection = @EndDirection, Name_EN = @Name_EN, Name_SK = @Name_SK, Adjunct = @Adjunct, Warmup = @Warmup, Precautions = @Precautions, Contraindications = @Contraindications, Approval = @Approval, VideoURL = @VideoURL, Duration = @Duration where ID = @ID</ActionSQL>
     <ValidateSQL></ValidateSQL>
   </UpdateMacro>
   <DeleteMacro>

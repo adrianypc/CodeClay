@@ -93,10 +93,10 @@ namespace CodeClay.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool IsLinkAzure {
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool IsAzureFolder {
             get {
-                return ((bool)(this["IsLinkAzure"]));
+                return ((bool)(this["IsAzureFolder"]));
             }
         }
     }

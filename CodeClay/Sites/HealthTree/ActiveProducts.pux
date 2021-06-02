@@ -41,6 +41,18 @@
         <Width>10</Width>
         <Editable>false</Editable>
     </CiCheckField>
+    <CiCheckField>
+        <FieldName>IsFoodPanda</FieldName>
+        <Caption>FoodPanda</Caption>
+        <Width>10</Width>
+        <Editable>false</Editable>
+    </CiCheckField>
+    <CiCheckField>
+        <FieldName>IsNTUC</FieldName>
+        <Caption>NTUC</Caption>
+        <Width>10</Width>
+        <Editable>false</Editable>
+    </CiCheckField>
     <SelectMacro>
         <ActionSQL>?exec spProduct_selbyActivation 'Y'</ActionSQL>
     </SelectMacro>

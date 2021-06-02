@@ -16,7 +16,7 @@
     <CiTextField>
         <FieldName>PlatformOrderNo</FieldName>
         <Caption>Platform Order#</Caption>
-        <Editable lang="sql">select  1 from tblSingleton where @Platform in ('LZ','PP','QT','SP','FP')</Editable>
+        <Editable lang="sql">select  1 from tblSingleton where @Platform in ('LZ','PP','QT','SP','FP','AM')</Editable>
     </CiTextField>
     <CiTextField>
         <FieldName>OrderID</FieldName>
@@ -318,7 +318,7 @@
     <CiFieldExitMacro>
         <FieldName>PlatformOrderNo</FieldName>
         <ActionSQL>
-            select case when @Platform not in ('PP','LZ','QT','SP','FP')  then  @Platform + cast(@CustomerOrderNo as varchar)
+            select case when @Platform not in ('PP','LZ','QT','SP','FP','AM')  then  @Platform + cast(@CustomerOrderNo as varchar)
             else case when substring(@PlatformOrderNo,1,2) in (select code from Dropdown where Category = 'Platform') then @Platform + substring(@PlatformOrderNo,3,LEN(@PlatformOrderNo))
             else @Platform + cast(@PlatformOrderNo as varchar) end
             end as OrderID
@@ -329,12 +329,12 @@
         <FieldName>Platform</FieldName>
         <ActionSQL>
             select
-                case when @Platform not in ('PP','LZ','QT','SP','FP') then @Platform + cast(@CustomerOrderNo as nvarchar)
+                case when @Platform not in ('PP','LZ','QT','SP','FP','AM') then @Platform + cast(@CustomerOrderNo as nvarchar)
                 else case
                 when substring(@PlatformOrderNo,1,2) in (select code from Dropdown where Category = 'Platform') then @Platform + substring(@PlatformOrderNo,3,LEN(@PlatformOrderNo))
                 else @Platform + cast(@PlatformOrderNo as varchar) end
                 end as PlatformOrderNo,
-                case when @Platform not in ('PP','LZ','QT','SP','FP') then @Platform + cast(@CustomerOrderNo as nvarchar)
+                case when @Platform not in ('PP','LZ','QT','SP','FP','AM') then @Platform + cast(@CustomerOrderNo as nvarchar)
                 else case
                 when substring(@PlatformOrderNo,1,2) in (select code from Dropdown where Category = 'Platform') then @Platform + substring(@PlatformOrderNo,3,LEN(@PlatformOrderNo))
                 else @Platform + cast(@PlatformOrderNo as varchar) end

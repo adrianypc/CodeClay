@@ -1,0 +1,69 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CiTable>
+  <TableName>TaskList</TableName>
+  <TableCaption>My Task List</TableCaption>
+  <ColCount>3</ColCount>
+  <QuickInsert>true</QuickInsert>
+  <RowKey>TaskID</RowKey>
+  <CiField>
+    <FieldName>TaskID</FieldName>
+    <Caption>Task ID</Caption>
+    <Editable>true</Editable>
+    <Width>10</Width>
+  </CiField>
+  <CiTextField>
+    <FieldName>TaskDescription</FieldName>
+    <Caption>Task Description</Caption>
+    <Editable>true</Editable>
+    <Mandatory>true</Mandatory>
+    <Width>65</Width>
+    <Value>Create ...</Value>
+  </CiTextField>
+  <CiComboField>
+    <FieldName>TaskType</FieldName>
+    <Caption>Task Type</Caption>
+    <Editable>true</Editable>
+    <Mandatory>true</Mandatory>
+    <RowSpan>2</RowSpan>
+    <Width>15</Width>
+    <Value>DEV</Value>
+    <DropdownSQL>select Description from Dropdown where Category = 'TaskType' order by Code</DropdownSQL>
+    <InsertSQL>insert into Dropdown (Code, Description, Category) values (@TaskType, @TaskType, 'TaskType')</InsertSQL>
+    <DropdownWidth>150</DropdownWidth>
+  </CiComboField>
+  <CiComboField>
+    <FieldName>Status</FieldName>
+    <Caption>Status</Caption>
+    <Editable>true</Editable>
+    <RowSpan>2</RowSpan>
+    <Width>10</Width>
+    <DropdownSQL>select Description from Dropdown where Category = 'TaskStatus' order by Code</DropdownSQL>
+    <DropdownWidth>100</DropdownWidth>
+  </CiComboField>
+  <CiDateField>
+    <FieldName>EndDate</FieldName>
+    <Caption>End Date</Caption>
+    <Editable>true</Editable>
+    <Width>10</Width>
+  </CiDateField>
+  <SelectMacro>
+    <ActionSQL>select TaskID, TaskDescription, TaskType, Status, Project, EndDate, Billable, Hours from Tasks order by TaskID</ActionSQL>
+  </SelectMacro>
+  <UpdateMacro>
+    <ActionSQL>update Tasks set TaskDescription = @TaskDescription, TaskType = @TaskType, Status = @Status, Project = @Project, EndDate = @EndDate, Billable = @Billable, Hours = @Hours where TaskID = @TaskID</ActionSQL>
+  </UpdateMacro>
+  <DeleteMacro>
+    <ActionSQL>delete from Tasks where TaskID = @TaskID</ActionSQL>
+  </DeleteMacro>
+  <InsertMacro>
+    <ActionSQL>select isnull(max(TaskID), 0) + 1 as TaskID from Tasks</ActionSQL>
+    <ActionSQL>insert into Tasks (TaskID, TaskDescription, TaskType, Status, Project, EndDate, Billable, Hours) values (@TaskID, @TaskDescription, @TaskType, @Status, @Project, @EndDate, @Billable, @Hours)</ActionSQL>
+  </InsertMacro>
+  <CiMacro>
+    <MacroName>Complete</MacroName>
+    <Caption>Complete Task</Caption>
+    <Confirm>true</Confirm>
+    <Toolbar>true</Toolbar>
+    <ActionSQL>update Tasks set Status = 'Complete' where TaskID = @TaskID</ActionSQL>
+  </CiMacro>
+</CiTable>

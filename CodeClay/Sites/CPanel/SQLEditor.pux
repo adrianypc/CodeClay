@@ -1,0 +1,79 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<CiTable>
+  <TableName>SQLEditor</TableName>
+  <TableCaption lang="sql">select @SQLType</TableCaption>
+  <DefaultView>Card</DefaultView>
+  <RowKey>EntityType,SQLType,AppID,TableID,EntityID,LineNum</RowKey>
+  <CiField>
+    <FieldName>EntityType</FieldName>
+    <Hidden>true</Hidden>
+  </CiField>
+  <CiField>
+    <FieldName>SQLType</FieldName>
+    <Hidden>true</Hidden>
+  </CiField>
+  <CiField>
+    <FieldName>AppID</FieldName>
+    <Caption>App ID</Caption>
+    <Hidden>true</Hidden>
+  </CiField>
+  <CiField>
+    <FieldName>TableID</FieldName>
+    <Caption>Table ID</Caption>
+    <Hidden>true</Hidden>
+  </CiField>
+  <CiField>
+    <FieldName>EntityID</FieldName>
+    <Caption>Entity ID</Caption>
+    <Hidden>true</Hidden>
+  </CiField>
+  <CiField>
+    <FieldName>LineNum</FieldName>
+    <Hidden>true</Hidden>
+  </CiField>
+  <CiMemoField>
+    <FieldName>SQL</FieldName>
+    <Caption>Edit the SQL</Caption>
+    <Editable lang="sql">
+      select 1 from Singleton where (@PropertyValue is null)
+      or exists (select 1
+      from  CiSQL
+      where	AppID = @AppID
+      and		EntityType = @EntityType
+      and		SQLType = @SQLType
+      and		TableID = @TableID
+      and		EntityID = @EntityID
+      and		LineNum = @LineNum)
+    </Editable>
+  </CiMemoField>
+  <CiTextField>
+    <FieldName>PropertyValue</FieldName>
+    <Caption>or set a value</Caption>
+    <Editable lang="sql">
+      select 1 from Singleton where (@SQL is null)
+      or not exists (select 1
+        from  CiSQL
+        where	AppID = @AppID
+        and		EntityType = @EntityType
+        and		SQLType = @SQLType
+        and		TableID = @TableID
+        and		EntityID = @EntityID
+        and		LineNum = @LineNum)
+    </Editable>
+  </CiTextField>
+  <SelectMacro>
+    <ActionSQL>?exec spSQLEditor_sel @EntityType, @SQLType, @AppID, @TableID, @EntityID, @LineNum</ActionSQL>
+  </SelectMacro>
+  <UpdateMacro>
+    <ActionSQL>exec spSQLEditor_upd @EntityType, @SQLType, @AppID, @TableID, @EntityID, @LineNum, @SQL, @PropertyValue</ActionSQL>
+    <ActionSQL>select @AppID as AppID, @TableID as TableID</ActionSQL>
+    <CiSerializeMacro>
+      <Direction>Download</Direction>
+    </CiSerializeMacro>
+    <NavigatePos>Parent</NavigatePos>
+  </UpdateMacro>
+  <CiFieldExitMacro>
+    <FieldName>SQL</FieldName>
+    <ActionSQL>select '' as PropertyValue from Singleton where @SQL is null</ActionSQL>
+  </CiFieldExitMacro>
+</CiTable>

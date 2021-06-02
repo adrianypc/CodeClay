@@ -1,0 +1,85 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<CiTable>
+	<TableName>MacroList</TableName>
+	<TableCaption>Macro List</TableCaption>
+	<DefaultView>Grid</DefaultView>
+  <RowKey>AppID,TableID,MacroID</RowKey>
+  <DoubleClickMacroName>Details</DoubleClickMacroName>
+  <CiField>
+    <FieldName>AppID</FieldName>
+    <Caption>App ID</Caption>
+    <Hidden>true</Hidden>
+  </CiField>
+  <CiField>
+    <FieldName>TableID</FieldName>
+    <Caption>Table ID</Caption>
+    <Hidden>true</Hidden>
+  </CiField>
+  <CiTextField>
+    <FieldName>MacroID</FieldName>
+    <Caption>Macro ID</Caption>
+    <Editable>false</Editable>
+    <Width>6</Width>
+  </CiTextField>
+  <CiComboField>
+    <FieldName>Type</FieldName>
+    <Caption>Type</Caption>
+    <DropdownSQL>select Code from Dropdown where Category = 'MacroType' order by Description</DropdownSQL>
+    <Width>10</Width>
+  </CiComboField>
+  <CiTextField>
+    <FieldName>MacroName</FieldName>
+    <Caption>Macro Name</Caption>
+    <Width>20</Width>
+    <Editable lang="sql">select 1 from Singleton where @Type not in ('Select', 'Insert', 'Update', 'Delete') </Editable>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>Caption</FieldName>
+    <Caption>Caption</Caption>
+    <Editable lang="sql">select 1 from Singleton where @Type not in ('Select', 'Insert', 'Update', 'Delete') </Editable>
+  </CiTextField>
+  <DefaultMacro>
+    <ActionSQL>
+      select  '- New -' as MacroID
+    </ActionSQL>
+  </DefaultMacro>
+  <SelectMacro>
+    <ActionSQL>?exec spMacro_sel @AppID, @TableID, null</ActionSQL>
+  </SelectMacro>
+  <InsertMacro>
+    <ActionSQL>exec spMacro_ins @AppID, @TableID, @MacroName, @Caption, @Type</ActionSQL>
+    <ActionSQL>select @AppID as AppID, @TableID as TableID</ActionSQL>
+    <CiSerializeMacro>
+      <Direction>Download</Direction>
+    </CiSerializeMacro>
+  </InsertMacro>
+  <UpdateMacro>
+    <ActionSQL>exec spMacro_updShort @AppID, @TableID, @MacroID, @MacroName, @Caption, @Type</ActionSQL>
+    <ActionSQL>select @AppID as AppID, @TableID as TableID</ActionSQL>
+    <CiSerializeMacro>
+      <Direction>Download</Direction>
+    </CiSerializeMacro>
+  </UpdateMacro>
+  <DeleteMacro>
+    <ActionSQL>exec spMacro_del  @AppID, @TableID, @MacroID</ActionSQL>
+    <ActionSQL>select @AppID as AppID, @TableID as TableID</ActionSQL>
+    <CiSerializeMacro>
+      <Direction>Download</Direction>
+    </CiSerializeMacro>
+  </DeleteMacro>
+  <CiFieldExitMacro>
+    <FieldName>Type</FieldName>
+    <ActionSQL>select @Type as MacroName, '-' as Caption from Singleton where @Type in ('Select', 'Insert', 'Update', 'Delete')</ActionSQL>
+  </CiFieldExitMacro>
+  <CiMacro>
+    <MacroName>Details</MacroName>
+    <Caption>Details</Caption>
+    <ActionSQL>
+      select  @AppID as AppID,
+              @TableID as TableID,
+              @MacroID as MacroID,
+              'MacroDetails.pux' as NavigateUrl
+    </ActionSQL>
+    <NavigatePos>NewTab</NavigatePos>
+  </CiMacro>
+</CiTable>

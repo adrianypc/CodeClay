@@ -9,8 +9,9 @@
   </CiField>
   <CiTextField>
     <FieldName>EditParentID</FieldName>
-    <Caption>ID</Caption>
+    <Caption>Sequence ID</Caption>
     <Width>10</Width>
+    <Mask>None</Mask>
     <Hidden lang="sql">select 1 from Singleton where @ParentID is not null</Hidden>
   </CiTextField>
   <CiTextField>
@@ -19,12 +20,14 @@
     <Editable>false</Editable>
     <Searchable>true</Searchable>
     <Width>10</Width>
+    <Mask>None</Mask>
   </CiTextField>
   <CiNumericField>
     <FieldName>PostureID</FieldName>
-    <Caption>Posture ID</Caption>
+    <Caption>Posture</Caption>
     <Width>10</Width>
     <MaxValue>1000</MaxValue>
+    <Mask>None</Mask>
   </CiNumericField>
   <SelectMacro>
     <ActionSQL>select  ID, ParentID as EditParentID, PostureID from SequenceItem where (@ParentID is null or ParentID = @ParentID) order by ID</ActionSQL>

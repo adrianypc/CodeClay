@@ -1,0 +1,88 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<CiTable>
+	<TableName>TableList</TableName>
+	<TableCaption>Table List</TableCaption>
+	<DefaultView>Grid</DefaultView>
+  <RowKey>AppID,TableID</RowKey>
+  <DoubleClickMacroName>Details</DoubleClickMacroName>
+  <CiField>
+    <FieldName>AppID</FieldName>
+    <Caption>App ID</Caption>
+    <Hidden>true</Hidden>
+  </CiField>
+  <CiField>
+    <FieldName>AppName</FieldName>
+    <Caption>App Name</Caption>
+    <Hidden>true</Hidden>
+  </CiField>
+  <CiTextField>
+    <FieldName>TableID</FieldName>
+    <Caption>Table ID</Caption>
+    <Editable>false</Editable>
+    <Width>5</Width>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>TableName</FieldName>
+    <Caption>Table Name</Caption>
+    <Width>10</Width>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>Caption</FieldName>
+    <Caption>Caption</Caption>
+  </CiTextField>
+  <CiComboField>
+    <FieldName>DefaultView</FieldName>
+    <Caption>Default View</Caption>
+    <DropdownSQL>select Code from Dropdown where Category = 'View'</DropdownSQL>
+    <Width>10</Width>
+  </CiComboField>
+  <CiLinkField>
+    <FieldName>TableUrl</FieldName>
+    <Caption>Table Url</Caption>
+    <Editable>false</Editable>
+    <Width>40</Width>
+  </CiLinkField>
+  <CiFieldExitMacro>
+    <FieldName>TableName</FieldName>
+    <ActionSQL>select 'Default.aspx?Application=' + @AppName + '&amp;PluginSrc=' + @TableName + '.pux' as TableUrl</ActionSQL>
+  </CiFieldExitMacro>
+  <DefaultMacro>
+    <ActionSQL>
+      select  '- New -' as TableID
+    </ActionSQL>
+  </DefaultMacro>
+  <SelectMacro>
+    <ActionSQL>?exec spTable_sel @AppID, null</ActionSQL>
+  </SelectMacro>
+  <InsertMacro>
+    <ActionSQL>?exec spTable_ins @AppID, @TableName, @Caption, @DefaultView</ActionSQL>
+    <ActionSQL>select @AppID as AppID, @TableID as TableID, 'Serialize' as Direction</ActionSQL>
+    <CiSerializeMacro1 />
+  </InsertMacro>
+  <UpdateMacro>
+    <ActionSQL>exec spTable_updShort @AppID, @TableID, @TableName, @Caption, @DefaultView</ActionSQL>
+    <ActionSQL>select @AppID as AppID, @TableID as TableID, 'Serialize' as Direction</ActionSQL>
+    <CiSerializeMacro />
+  </UpdateMacro>
+  <CiMacro>
+    <MacroName>Details</MacroName>
+    <Caption>Table Details</Caption>
+    <ActionSQL>
+      select  @AppID as AppID,
+              @TableID as TableID
+    </ActionSQL>
+    <NavigateUrl>TableDetails.pux</NavigateUrl>
+    <NavigatePos>NewTab</NavigatePos>
+  </CiMacro>
+  <CiMacro>
+    <MacroName>Import PUX file</MacroName>
+    <Toolbar>true</Toolbar>
+    <ActionSQL>
+      select  @AppID as AppID,
+      @TableID as TableID,
+      'Deserialize' as Direction
+    </ActionSQL>
+    <NavigateUrl>SerializeMacro.pux</NavigateUrl>
+    <NavigatePos>Popup</NavigatePos>
+  </CiMacro>
+</CiTable>
