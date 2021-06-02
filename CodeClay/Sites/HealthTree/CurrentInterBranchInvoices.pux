@@ -22,6 +22,7 @@
     <Folder lang="sql">select 'SavedFiles\InterBranchInvoices' +'\F' + ltrim(str(@InvoiceNo))</Folder>
     <Width>50</Width>
     <Editable>false</Editable>
+    <IsAzure>true</IsAzure>
   </CiLinkField>
   <CiButtonField>
     <FieldName>GeneratePDF</FieldName>

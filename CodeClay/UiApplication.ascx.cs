@@ -52,8 +52,8 @@ namespace CodeClay
         [XmlElement("ThemeColor")]
         public string ThemeColor { get; set; } = ASPxWebControl.GlobalThemeBaseColor;
 
-        [XmlElement("IsLinkAzure")]
-        public bool IsLinkAzure { get; set; } = Properties.Settings.Default.IsLinkAzure;
+        [XmlElement("IsAzureFolder")]
+        public bool IsAzureFolder { get; set; } = Properties.Settings.Default.IsAzureFolder;
     }
 
     public partial class UiApplication : UiPlugin

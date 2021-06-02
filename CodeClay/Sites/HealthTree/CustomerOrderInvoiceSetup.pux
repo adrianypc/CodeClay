@@ -33,7 +33,7 @@
             select
                 CO.CustomerOrderNo,
                 case
-                    when C.BranchCode = 'HT-SG' then coalesce(CO.InvoiceCurrencyFormat,'SGD')
+                    when C.BranchCode != 'HT-AU' then coalesce(CO.InvoiceCurrencyFormat,'SGD')
                     when C.BranchCode = 'HT-AU' then coalesce(CO.InvoiceCurrencyFormat,'AUD')
                 end as Currency,
                 coalesce(CO.InvoiceDiscountFormat,'$') as DiscountType

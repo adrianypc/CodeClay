@@ -66,6 +66,7 @@
         <Width>50</Width>
         <Editable lang="sql">select 1 from tblSingleton where isnumeric(@InvoiceNo) =  1</Editable>
         <Hidden>true</Hidden>
+        <IsAzure>true</IsAzure>
     </CiLinkField>
     <CiTextField>
         <FieldName>InvoiceStatus</FieldName>

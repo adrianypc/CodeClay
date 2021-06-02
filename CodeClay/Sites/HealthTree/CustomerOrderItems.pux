@@ -32,6 +32,13 @@
 		<Caption>Quantity Ordered</Caption>
 		<Width>20</Width>
   </CiNumericField>
+    <CiCurrencyField>
+        <FieldName>UnitPrice</FieldName>
+        <Caption>Unit Price ($)</Caption>
+        <Width>20</Width>
+        <Editable>true</Editable>
+        <Mandatory>true</Mandatory>
+    </CiCurrencyField>
   <CiCurrencyField>
     <FieldName>Amount</FieldName>
     <Caption>Price ($)</Caption>
@@ -68,7 +75,8 @@
               @ProductID,
               @Quantity,
               @Amount,
-              @DropShipping
+              @DropShipping,
+              @UnitPrice
         </ActionSQL>
         <VisibleSQL>select 1 from CustomerOrders where CustomerOrderNo = @CustomerOrderNo and Status not in ('Dispatched','Cancelled')</VisibleSQL>
 	</InsertMacro>
@@ -81,7 +89,8 @@
               @ProductID,
               @Quantity,
               @Amount,
-              @DropShipping
+              @DropShipping,
+              @UnitPrice
         </ActionSQL>
         <VisibleSQL>
             select 1 from CustomerOrderItems COI
@@ -106,18 +115,30 @@
   <CiFieldExitMacro>
       <FieldName>Quantity</FieldName>
       <FieldName>ProductID</FieldName>
+      <FieldName>UnitPrice</FieldName>
       <ActionSQL>
           select Platform from CustomerOrders where CustomerOrderNo = @CustomerOrderNo
       </ActionSQL>
       <ActionSQL>
           select
-              case
-                  when @Platform = 'BB' then @Quantity * (coalesce(UnitSellingPrice,0.0) - (coalesce(UnitSellingPrice,0.0) * 0.3))
-                  else @Quantity * coalesce(UnitSellingPrice,0) 
-              end as Amount,
-              case when IsDropShipping = 'Y' then CAST(1 AS bit) else CAST(0 as bit) end as DropShipping
+          case
+          when @Platform = 'BB' then @Quantity * (coalesce(@UnitPrice,UnitSellingPrice) - (coalesce(@UnitPrice,UnitSellingPrice) * 0.3))
+          else @Quantity * coalesce(@UnitPrice,UnitSellingPrice)
+          end as Amount,
+          case when IsDropShipping = 'Y' then CAST(1 AS bit) else CAST(0 as bit) end as DropShipping,
+          coalesce(@UnitPrice,UnitSellingPrice) as UnitPrice
           from Product
           where	ProductID = @ProductID
       </ActionSQL>
 	</CiFieldExitMacro>
+    <CiFieldExitMacro>
+        <FieldName>Amount</FieldName>
+        <ActionSQL>
+            select
+                case when IsDropShipping = 'Y' then CAST(1 AS bit) else CAST(0 as bit) end as DropShipping,
+                cast((@Amount / @Quantity) * 1.00 as money) as UnitPrice
+            from Product
+            where	ProductID = @ProductID
+        </ActionSQL>
+    </CiFieldExitMacro>
 </CiTable>

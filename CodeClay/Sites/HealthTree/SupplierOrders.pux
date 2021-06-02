@@ -53,6 +53,7 @@
     <FieldName>OrderFileURL</FieldName>
     <Caption>Order File</Caption>
     <Folder lang="sql">select 'SavedFiles\SupplierOrders\' + ltrim(str(@SupplierID)) + '\F' + ltrim(str(@SupplierOrderNo))</Folder>
+    <IsAzure>true</IsAzure>
     <Width>50</Width>
   </CiLinkField>
   <CiTextField>

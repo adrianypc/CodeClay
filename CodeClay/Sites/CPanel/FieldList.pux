@@ -1,0 +1,91 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<CiTable>
+	<TableName>FieldList</TableName>
+	<TableCaption>Field List</TableCaption>
+	<DefaultView>Grid</DefaultView>
+  <RowKey>AppID,TableID,FieldID</RowKey>
+  <DoubleClickMacroName>Details</DoubleClickMacroName>
+  <CiField>
+    <FieldName>AppID</FieldName>
+    <Caption>App ID</Caption>
+    <Hidden>true</Hidden>
+  </CiField>
+  <CiField>
+    <FieldName>TableID</FieldName>
+    <Caption>Table ID</Caption>
+    <Hidden>true</Hidden>
+  </CiField>
+  <CiTextField>
+    <FieldName>FieldID</FieldName>
+    <Caption>Field ID</Caption>
+    <Editable>false</Editable>
+    <Width>5</Width>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>FieldName</FieldName>
+    <Caption>Field Name</Caption>
+    <Width>20</Width>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>Caption</FieldName>
+    <Caption>Caption</Caption>
+  </CiTextField>
+  <CiComboField>
+    <FieldName>Type</FieldName>
+    <Caption>Type</Caption>
+    <DropdownSQL>select Code from Dropdown where Category = 'FieldType'</DropdownSQL>
+    <Width>10</Width>
+  </CiComboField>
+  <CiNumericField>
+    <FieldName>Width</FieldName>
+    <Caption>Width</Caption>
+    <Value>10</Value>
+    <Width>10</Width>
+  </CiNumericField>
+  <CiCheckField>
+    <FieldName>InRowKey</FieldName>
+    <Caption>Primary Key</Caption>
+    <Width>10</Width>
+  </CiCheckField>
+  <DefaultMacro>
+    <ActionSQL>
+      select  '- New -' as FieldID
+    </ActionSQL>
+  </DefaultMacro>
+  <SelectMacro>
+    <ActionSQL>?exec spField_sel @AppID, @TableID, null</ActionSQL>
+  </SelectMacro>
+  <InsertMacro>
+    <ActionSQL>exec spField_ins @AppID, @TableID, @FieldName, @Caption, @Type, @Width, @InRowKey</ActionSQL>
+    <ActionSQL>select @AppID as AppID, @TableID as TableID</ActionSQL>
+    <CiSerializeMacro>
+      <Direction>Download</Direction>
+    </CiSerializeMacro>
+  </InsertMacro>
+  <UpdateMacro>
+    <ActionSQL>exec spField_updShort @AppID, @TableID, @FieldID, @FieldName, @Caption, @Type, @Width, @InRowKey</ActionSQL>
+    <ActionSQL>select @AppID as AppID, @TableID as TableID</ActionSQL>
+    <CiSerializeMacro>
+      <Direction>Download</Direction>
+    </CiSerializeMacro>
+  </UpdateMacro>
+  <DeleteMacro>
+    <ActionSQL>exec spField_del  @AppID, @TableID, @FieldID</ActionSQL>
+    <ActionSQL>select @AppID as AppID, @TableID as TableID</ActionSQL>
+    <CiSerializeMacro>
+      <Direction>Download</Direction>
+    </CiSerializeMacro>
+  </DeleteMacro>
+  <CiMacro>
+    <MacroName>Details</MacroName>
+    <Caption>Details</Caption>
+    <ActionSQL>
+      select  @AppID as AppID,
+              @TableID as TableID,
+              @FieldID as FieldID,
+              'Edit' as Command,
+              coalesce(@Type, 'CiField') + 'Details.pux' as NavigateUrl
+    </ActionSQL>
+    <NavigatePos>NewTab</NavigatePos>
+  </CiMacro>
+</CiTable>

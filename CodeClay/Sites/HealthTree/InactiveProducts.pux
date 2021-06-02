@@ -14,7 +14,7 @@
 	    <FieldName>ProductName</FieldName>
 	    <Caption>Product Name</Caption>
         <Editable>false</Editable>
-        <width>20</width>
+        <width>40</width>
     </CiTextField>
     <CiLinkField>
         <FieldName>HealthTreeURL</FieldName>
@@ -38,6 +38,18 @@
         <Caption>DropShipping</Caption>
         <Editable>false</Editable>
         <width>15</width>
+    </CiCheckField>
+    <CiCheckField>
+        <FieldName>IsFoodPanda</FieldName>
+        <Caption>FoodPanda</Caption>
+        <Width>10</Width>
+        <Editable>false</Editable>
+    </CiCheckField>
+    <CiCheckField>
+        <FieldName>IsNTUC</FieldName>
+        <Caption>NTUC</Caption>
+        <Width>10</Width>
+        <Editable>false</Editable>
     </CiCheckField>
     <SelectMacro>
         <ActionSQL>?exec spProduct_selbyActivation 'N'</ActionSQL>

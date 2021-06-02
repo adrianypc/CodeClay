@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<CiTable>
+  <TableName>Appointment Detail</TableName>
+  <TableCaption>Appointment Detail</TableCaption>
+  <RowKey>AppointmentNo</RowKey>
+  <DefaultView>Card</DefaultView>
+  <ColCount>2</ColCount>
+  <CiTextField>
+    <FieldName>AppointmentNo</FieldName>
+    <Caption>Appt No</Caption>
+    <Editable>false</Editable>
+  </CiTextField>
+  <CiCheckField>
+    <FieldName>IsNewPatient</FieldName>
+    <Caption>New Patient</Caption>
+    <EditableSQL>select 1 from Client where @ClientNo is null </EditableSQL>
+  </CiCheckField>
+  <CiTextField>
+    <FieldName>ClientNo</FieldName>
+    <Caption>Patient No</Caption>
+    <EditableSQL>select 1 from Client where @IsNewPatient='false' and @ClientNo is null</EditableSQL>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>IdentityNo</FieldName>
+    <Caption>NRIC/Passport</Caption>
+    <EditableSQL>select 1 from Client where @ClientNo is null</EditableSQL>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>ClientSurname</FieldName>
+    <Caption>Last Name</Caption>
+    <EditableSQL>select 1 from Client where @ClientNo is null</EditableSQL>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>ClientOtherNames</FieldName>
+    <Caption>First Name</Caption>
+    <EditableSQL>select 1 from Client where @ClientNo is null and @IsNewPatient = 'True'</EditableSQL>
+  </CiTextField>
+  <CiComboField>
+    <FieldName>Sex</FieldName>
+    <Caption>Sex</Caption>
+    <EditableSQL>select 1 from Client where @ClientNo is null and @IsNewPatient = 'True'</EditableSQL>
+    <Code>Gender</Code>
+    <Description>Description</Description>
+    <DataSource>
+      <DataItem Description="Male" Gender="M"  />
+      <DataItem Description="Female" Gender="F"   />
+    </DataSource>
+  </CiComboField>
+  <CiTextField>
+    <FieldName>AddressLine1</FieldName>
+    <Caption>Address</Caption>
+    <EditableSQL>select 1 from Client where @ClientNo is null and @IsNewPatient = 'True'</EditableSQL>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>AddressLine2</FieldName>
+    <Caption>Address 2</Caption>
+    <EditableSQL>select 1 from Client where @ClientNo is null and @IsNewPatient = 'True'</EditableSQL>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>AddressLine3</FieldName>
+    <Caption>Address 3</Caption>
+    <EditableSQL>select 1 from Client where @ClientNo is null and @IsNewPatient = 'True'</EditableSQL>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>PhoneHome</FieldName>
+    <Caption>Phone (H)</Caption>
+    <Editable>true</Editable>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>Mobile</FieldName>
+    <Caption>Mobile</Caption>
+    <Editable>true</Editable>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>Pager</FieldName>
+    <Caption>Pager</Caption>
+    <Editable>true</Editable>
+  </CiTextField>
+  <CiComboField>
+    <FieldName>BranchCode</FieldName>
+    <Caption>Branch</Caption>
+    <Editable>true</Editable>
+    <Code>BranchCode</Code>
+    <Description>BranchName</Description>
+    <DropdownSQL>select BranchName,BranchCode from Branch</DropdownSQL>
+  </CiComboField>
+  <CiComboField>
+    <FieldName>ConsultantId</FieldName>
+    <TextFieldName>ConsultantName</TextFieldName>
+    <Caption>Doctor</Caption>
+    <Editable>true</Editable>
+    <Code>ConsultantId</Code>
+    <Description>ConsultantName</Description>
+    <DropdownSQL>select ConsultantOtherNames+' '+ConsultantSurname as ConsultantName,ConsultantId from Consultant where ConsultantEnabled = 'Y' </DropdownSQL>
+  </CiComboField>
+  <CiDateField>
+    <FieldName>AppointmentDate</FieldName>
+    <Caption>Appt Date</Caption>
+    <Editable>true</Editable>
+    <ColumnFormat>dd/MM/yyyy</ColumnFormat>
+  </CiDateField>
+  <CiComboField>
+    <FieldName>AppointmentDuration</FieldName>
+    <Caption>Duration</Caption>
+    <Editable>true</Editable>
+    <Value>10</Value>
+    <DataSource>
+      <DataItem DurationValue="10"  />
+      <DataItem DurationValue="20"  />
+      <DataItem DurationValue="30"  />
+      <DataItem DurationValue="40"  />
+    </DataSource>
+  </CiComboField>   
+  <CiComboField>
+    <FieldName>ApptTime</FieldName>
+    <Caption>Appt Time</Caption>
+    <Editable>true</Editable>
+    <DropdownSQL>?exec spAppointment_selTime @ConsultantId,@AppointmentDate,@AppointmentDuration,@AppointmentNo</DropdownSQL>
+  </CiComboField>
+  <CiTextField>
+    <FieldName>Officer</FieldName>
+    <Caption>Officer</Caption>
+    <Editable>true</Editable>
+  </CiTextField>
+  <CiMemoField>
+    <FieldName>AppointmentRemarks</FieldName>
+    <Caption>Remarks</Caption>
+    <ColSpan>2</ColSpan>
+    <Editable>true</Editable>
+  </CiMemoField>
+  <CiTextField>
+    <FieldName>TimeStart</FieldName>
+    <Hidden>true</Hidden>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>TimeEnd</FieldName>
+    <Hidden>true</Hidden>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>DayOfWeek</FieldName>
+    <Hidden>true</Hidden>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>Referrer</FieldName>
+    <Hidden>true</Hidden>
+  </CiTextField>
+  <DefaultMacro>
+    <ActionSQL>
+      select
+      coalesce(@ClientNo,'') as ClientNo,
+      coalesce(@IdentityNo,'') as IdentityNo,
+      coalesce(@ClientSurname,'') as ClientSurname,
+      coalesce(@ClientOtherNames,'') as ClientOtherNames,
+      coalesce(@Sex,'') as Sex,
+      coalesce(@AddressLine1,'') as AddressLine1,
+      coalesce(@AddressLine2,'') as AddressLine2,
+      coalesce(@AddressLine3,'') as AddressLine3,
+      coalesce(@PhoneHome,'') as PhoneHome,
+      coalesce(@Mobile,'') as Mobile,
+      coalesce(@Pager,'') as Pager,
+      'HQU' as BranchCode,
+      getdate() as AppointmentDate,
+      30 as ConsultantId,
+      coalesce(@IsNewPatient,cast(1 as bit)) as IsNewPatient
+    </ActionSQL>
+  </DefaultMacro>
+  <SelectMacro>
+    <ActionSQL>
+      ?exec spAppointmentSearch '','','',@AppointmentNo,'',0
+    </ActionSQL>
+  </SelectMacro>
+  <UpdateMacro>
+    <ActionSQL>select *, DATEPART(dw,@AppointmentDate) - 1 as DayOfWeek from dbo.FnTimeSlotInNumber(@ApptTime)</ActionSQL>
+    <ActionSQL>
+      ?exec spAppointmentUpdate 
+        @ConsultantId,
+        @DayOfWeek,
+        @AppointmentNo,
+        @AppointmentDuration,
+        @ClientNo,
+        @BranchCode,
+        2,
+        @AppointmentDate,
+        @TimeStart,
+        @Referrer,
+        @Officer,
+        @ClientSurname,
+        @ClientOtherNames,
+        @IdentityNo,
+        @PhoneHome,
+        @Mobile,
+        @Pager,
+        @AddressLine1,
+        @AddressLine2,
+        @AddressLine3,
+        @AppointmentRemarks,
+        @TimeEnd,
+        @Sex
+    </ActionSQL>
+  </UpdateMacro>
+  <InsertMacro>
+    <VisibleSQL>select 1 from Appointment where not exists (select 1 from Appointment where AppointmentNo = @AppointmentNo)</VisibleSQL>
+    <ActionSQL>select *,DATEPART(dw,@AppointmentDate) - 1 as DayOfWeek from dbo.FnTimeSlotInNumber(@ApptTime)</ActionSQL>
+    <ActionSQL>
+      ?exec spAppointment
+      @ConsultantId,
+      @DayOfWeek,
+      @AppointmentDuration,
+      @ClientNo,
+      @BranchCode,
+      2,
+      @AppointmentDate,
+      @TimeStart,
+      @Referrer,
+      @Officer,
+      @ClientSurname,
+      @ClientOtherNames,
+      @IdentityNo,
+      @PhoneHome,
+      @Mobile,
+      @Pager,
+      @AddressLine1,
+      @AddressLine2,
+      @AddressLine3,
+      @AppointmentRemarks,
+      @TimeEnd,
+      @Sex,
+      -1
+    </ActionSQL>
+  </InsertMacro>
+  <DeleteMacro>
+    ?exec spAppointmentDelete @AppointmentNo
+  </DeleteMacro>
+</CiTable>

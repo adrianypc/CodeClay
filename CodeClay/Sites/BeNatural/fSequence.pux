@@ -18,17 +18,31 @@
     <Editable>false</Editable>
     <Searchable>true</Searchable>
     <Width>10</Width>
-    <Mask>None</Mask>
   </CiTextField>
   <CiComboField>
     <FieldName>Dosha</FieldName>
     <Caption>Dosha</Caption>
-    <Width>80</Width>
+    <Width>40</Width>
     <DropdownSQL>select Code from Dropdown where Category = 'Dosha' order by Code</DropdownSQL>
-    <Mask>None</Mask>
   </CiComboField>
+  <CiLinkField>
+    <FieldName>VideoURL</FieldName>
+    <Caption>Video URL</Caption>
+    <Width>30</Width>
+  </CiLinkField>
+  <CiNumericField>
+    <FieldName>Duration</FieldName>
+    <Caption>Duration (min)</Caption>
+    <Editable>false</Editable>
+    <Width>10</Width>
+    <MaxValue>1000</MaxValue>
+  </CiNumericField>
   <CiTable src="fSequenceItem.pux?ParentID=@ID">
     <TableName>fSequenceItem</TableName>
-    <TableCaption>Sequence Items</TableCaption>
+    <TableCaption>Sequence of Postures</TableCaption>
+    <QuickInsert>true</QuickInsert>
   </CiTable>
+  <SelectMacro>
+    <ActionSQL>select  DayNo, Dosha, ID, (select sum(Duration) from Posture P join SequenceItem I on P.ID = I.PostureID where I.ParentID = S.ID)/60 as Duration, VideoURL from Sequence S where (@ID is null or ID = @ID) order by ID</ActionSQL>
+  </SelectMacro>
 </CiTable>

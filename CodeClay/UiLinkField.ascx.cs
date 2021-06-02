@@ -23,8 +23,14 @@ namespace CodeClay
         [XmlSqlElement("Folder", typeof(string))]
         public XmlElement Folder { get; set; } = null;
 
-        [XmlElement("IsLinkAzure")]
-        public bool IsLinkAzure { get; set; } = UiApplication.Me.CiApplication.IsLinkAzure;
+        [XmlIgnore]
+        public bool IsAzureFolder
+        {
+            get
+            {
+                return UiApplication.Me.CiApplication.IsAzureFolder && !MyUtils.IsEmpty(Folder);
+            }
+        }
 
         // --------------------------------------------------------------------------------------------------
         // Methods (Override)
@@ -141,7 +147,7 @@ namespace CodeClay
                     string filePath = MyWebUtils.GetFilePath(saveFolder, uploadedFile);
                     string linkURL = "";
 
-                    if (CiLinkField.IsLinkAzure)
+                    if (CiLinkField.IsAzureFolder)
                     {
                         linkURL = MyWebUtils.UploadToAzureFileStorage(saveFolder, uploadedFile);
                     }
@@ -178,7 +184,7 @@ namespace CodeClay
                         {
                             string filePath = dxCard.GetCardValues(ItemIndex, fieldName).ToString();
 
-                            if (CiLinkField.IsLinkAzure)
+                            if (CiLinkField.IsAzureFolder)
                             {
                                 LinkUrl = MyWebUtils.GetFileSasUri(filePath, DateTime.Now.AddDays(1), ShareFileSasPermissions.Read);
                             }
@@ -208,7 +214,7 @@ namespace CodeClay
                         {
                             string filePath = dxGrid.GetRowValues(ItemIndex, fieldName).ToString();
 
-                            if (CiLinkField.IsLinkAzure)
+                            if (CiLinkField.IsAzureFolder)
                             {
                                 LinkUrl = MyWebUtils.GetFileSasUri(filePath, DateTime.Now.AddDays(1), ShareFileSasPermissions.Read);
                             }

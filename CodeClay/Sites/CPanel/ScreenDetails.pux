@@ -1,0 +1,65 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<CiTable>
+	<TableName>ScreenList</TableName>
+	<TableCaption>Screen List</TableCaption>
+	<DefaultView>Card</DefaultView>
+  <RowKey>AppID,ScreenID</RowKey>
+  <CiField>
+    <FieldName>AppID</FieldName>
+    <Caption>App ID</Caption>
+    <Hidden>true</Hidden>
+  </CiField>
+  <CiTextField>
+    <FieldName>ScreenID</FieldName>
+    <Caption>Screen ID</Caption>
+    <Editable>false</Editable>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>ScreenName</FieldName>
+    <Caption>Screen Name</Caption>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>Caption</FieldName>
+    <Caption>Caption</Caption>
+  </CiTextField>
+  <CiComboField>
+    <FieldName>DefaultView</FieldName>
+    <Caption>Default View</Caption>
+    <DropdownSQL>select Code from Dropdown where Category = 'View'</DropdownSQL>
+  </CiComboField>
+  <CiNumericField>
+    <FieldName>PageSize</FieldName>
+    <Caption>Page Size</Caption>
+    <Value>0</Value>
+  </CiNumericField>
+  <CiNumericField>
+    <FieldName>ColCount</FieldName>
+    <Caption>Column Count</Caption>
+    <Value>1</Value>
+  </CiNumericField>
+  <CiCheckField>
+    <FieldName>BubbleUpdate</FieldName>
+    <Caption>Bubble Update</Caption>
+  </CiCheckField>
+  <CiCheckField>
+    <FieldName>QuickInsert</FieldName>
+    <Caption>Quick Insert</Caption>
+  </CiCheckField>
+  <CiCheckField>
+    <FieldName>InsertRowAtBottom</FieldName>
+    <Caption>Insert Row At Bottom</Caption>
+  </CiCheckField>
+  <CiLinkField>
+    <FieldName>ScreenUrl</FieldName>
+    <Caption>Screen Url</Caption>
+  </CiLinkField>
+  <SelectMacro>
+    <ActionSQL>?exec spScreen_sel @AppID, @ScreenID</ActionSQL>
+  </SelectMacro>
+  <UpdateMacro>
+    <ActionSQL>
+      exec spScreen_updLong @AppID, @ScreenID, @ScreenName, @Caption, @DefaultView,
+        @LayoutUrl, @PageSize, @ColCount, @BubbleUpdate, @QuickInsert, @InsertRowAtBottom
+    </ActionSQL>
+  </UpdateMacro>
+</CiTable>

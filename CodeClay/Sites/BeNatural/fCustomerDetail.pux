@@ -11,8 +11,8 @@
   <CiTextField>
     <FieldName>ID</FieldName>
     <Caption>Customer ID</Caption>
-    <Hidden>true</Hidden>
     <Editable>false</Editable>
+    <Searchable>true</Searchable>
     <Width>10</Width>
     <Mask>None</Mask>
   </CiTextField>
@@ -27,7 +27,7 @@
     <FieldName>LastName</FieldName>
     <Caption>Last Name</Caption>
     <Editable>false</Editable>
-    <Width>50</Width>
+    <Width>30</Width>
     <Mask>None</Mask>
   </CiTextField>
   <CiTextField>
@@ -40,14 +40,14 @@
   <CiDateField>
     <FieldName>CreatedDate</FieldName>
     <Caption>Date</Caption>
-    <Width>50</Width>
+    <Width>20</Width>
     <Mask>None</Mask>
   </CiDateField>
   <CiDateField>
     <FieldName>DateOfBirth</FieldName>
-    <Caption>D.O.B</Caption>
+    <Caption>Date of Birth</Caption>
     <Mandatory>true</Mandatory>
-    <Width>50</Width>
+    <Width>20</Width>
     <Mask>None</Mask>
   </CiDateField>
   <CiMemoField>
@@ -100,14 +100,14 @@
   </CiComboField>
   <CiCurrencyField>
     <FieldName>Height</FieldName>
-    <Caption>Height</Caption>
+    <Caption>Height (cm)</Caption>
     <Mandatory>true</Mandatory>
     <Width>10</Width>
     <Mask>None</Mask>
   </CiCurrencyField>
   <CiCurrencyField>
     <FieldName>Weight</FieldName>
-    <Caption>Weight</Caption>
+    <Caption>Weight (kg)</Caption>
     <Mandatory>true</Mandatory>
     <Width>10</Width>
     <Mask>None</Mask>
@@ -270,11 +270,11 @@
   </CiRadioField>
   <CiLinkField>
     <FieldName>VideoLocation</FieldName>
-    <Caption>Video Location</Caption>
+    <Caption>Please upload video introduction of yourself</Caption>
+    <Hidden>true</Hidden>
     <Width>100</Width>
     <Mask>None</Mask>
-    <Folder lang="sql">select 'SavedFiles\IntroVideos\C' + ltrim(str(@ID))</Folder>
-    <IsLinkAzure>true</IsLinkAzure>
+    <Folder lang="sql">select 'SavedFiles\IntroVideos\C' + @CustomerID</Folder>
   </CiLinkField>
   <SelectMacro>
     <ActionSQL>select case when @CustomerID is not null then @CustomerID else (select ID from Customer where Email = @CI_UserEmail) end as CustomerID</ActionSQL>

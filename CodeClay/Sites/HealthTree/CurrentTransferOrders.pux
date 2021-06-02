@@ -1,0 +1,96 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<CiTable>
+    <TableName>CurrentTransferOrders</TableName>
+    <TableCaption>Current Transfer Orders</TableCaption>
+    <RowKey>SupplierOrderNo</RowKey>
+    <DefaultView>Grid</DefaultView>
+    <DoubleClickMacroName>SupplierOrderDetail</DoubleClickMacroName>
+    <CiTextField>
+        <FieldName>SupplierOrderNo</FieldName>
+        <Caption>Supplier Order #</Caption>
+        <Editable>false</Editable>
+        <Width>10</Width>
+    </CiTextField>
+    <CiTextField>
+        <FieldName>Status</FieldName>
+        <Caption>Status</Caption>
+        <Editable>false</Editable>
+    </CiTextField>
+    <CiComboField>
+        <FieldName>SupplierID</FieldName>
+        <TextFieldName>SupplierName</TextFieldName>
+        <Caption>Supplier</Caption>
+        <Editable>true</Editable>
+        <Code>SupplierID</Code>
+        <Description>SupplierName</Description>
+        <DropdownSQL>select SupplierID,SupplierName from Supplier</DropdownSQL>
+        <Editable>false</Editable>
+        <Width>30</Width>
+    </CiComboField>
+    <CiTextField>
+        <FieldName>FromBranchCode</FieldName>
+        <Caption>From Branch</Caption>
+        <Editable>false</Editable>
+    </CiTextField>
+    <CiTextField>
+        <FieldName>BranchCode</FieldName>
+        <Caption>Branch</Caption>
+        <Editable>false</Editable>
+    </CiTextField>
+    <CiDateField>
+        <FieldName>SupplierOrderDate</FieldName>
+        <Caption>Order Date</Caption>
+        <Editable>false</Editable>
+        <ColumnFormat>dd/MM/yyyy</ColumnFormat>
+        <Width>8</Width>
+    </CiDateField>
+    <CiCheckField>
+        <FieldName>IsTransferred</FieldName>
+        <Caption>Transfer Order</Caption>
+        <Editable>false</Editable>
+        <Hidden>true</Hidden>
+        <width>6</width>
+    </CiCheckField>
+    <CiCheckField>
+        <FieldName>Reimbursed</FieldName>
+        <Caption>Paid</Caption>
+        <Editable>false</Editable>
+        <width>6</width>
+    </CiCheckField>
+    <CiTextField>
+        <FieldName>TotalSales</FieldName>
+        <Caption>Sales S$</Caption>
+        <Mask>Currency</Mask>
+        <Editable>false</Editable>
+    </CiTextField>
+    <CiTextField>
+        <FieldName>Shipping</FieldName>
+        <Caption>Shipping S$</Caption>
+        <Mask>Currency</Mask>
+        <Editable>false</Editable>
+    </CiTextField>
+    <CiTextField>
+        <FieldName>TotalAmountInSGD</FieldName>
+        <Caption>Total S$</Caption>
+        <Mask>Currency</Mask>
+        <Editable>false</Editable>
+    </CiTextField>
+    <SelectMacro>
+		<ActionSQL>?exec spSupplierOrders_selbyStatus 'Active',0,'Y'</ActionSQL>
+	</SelectMacro>
+    <CiMacro>
+        <MacroName>NewTransferOrder</MacroName>
+        <Caption>New Order</Caption>
+        <ActionSQL>select 'New' as Command,cast(1 as bit) as IsTransferred</ActionSQL>
+        <NavigateUrl>SupplierOrder.pux</NavigateUrl>
+        <NavigatePos>Popup</NavigatePos>
+        <Toolbar>true</Toolbar>
+    </CiMacro>
+    <CiMacro>
+        <MacroName>SupplierOrderDetail</MacroName>
+        <Caption>Supplier Order Detail</Caption>
+        <ActionSQL>select @SupplierOrderNo as SupplierOrderNo, @SupplierID as SupplierID, 'Current' as CalledFrom,@IsTransferred as IsTransferred</ActionSQL>
+        <NavigateUrl>SupplierOrder.pux</NavigateUrl>
+        <NavigatePos>Popup</NavigatePos>
+    </CiMacro>
+</CiTable>

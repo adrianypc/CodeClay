@@ -19,6 +19,7 @@
         <Caption>Drop Shipping File</Caption>
         <Folder lang="sql">select 'SavedFiles\CustomerOrderDrops\' + ltrim(str(@CustomerOrderNo)) + '\F' + ltrim(str(@ItemLineNo))</Folder>
         <Width>50</Width>
+      <IsAzure>true</IsAzure>
     </CiLinkField>
     <DefaultMacro>
         <ActionSQL>

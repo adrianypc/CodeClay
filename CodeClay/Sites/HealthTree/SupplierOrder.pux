@@ -69,8 +69,8 @@
     <FieldName>OrderFileURL</FieldName>
     <Caption>Order File</Caption>
     <Folder lang="sql">select 'SavedFiles\SupplierOrders\' + ltrim(str(@SupplierID)) + '\F' + ltrim(str(@SupplierOrderNo))</Folder>
+    <IsAzure>true</IsAzure>
     <Width>50</Width>
-    <IsLinkAzure>true</IsLinkAzure>
   </CiLinkField>
   <CiCurrencyField>
     <FieldName>Shipping</FieldName>
@@ -225,6 +225,14 @@
   </CiMacro>
   <CiMacro>
     <MacroName>Received</MacroName>
+    <ValidateSQL>
+        select 'Please ensure all items have quantity received > 0'
+        from SupplierOrders SO
+        inner join SupplierOrderItems SOI
+        on SO.SupplierOrderNo = SOI.SupplierOrderNo
+        where SOI.QuantityReceived is null
+        and SOI.SupplierOrderNo = @SupplierOrderNo
+    </ValidateSQL>
     <ActionSQL>exec spSupplierOrders_Status_upd @SupplierOrderNo,'Received',@CI_UserEmail</ActionSQL>
     <ActionSQL>
       select Status,

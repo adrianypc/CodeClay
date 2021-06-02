@@ -31,7 +31,7 @@
 	<FieldName>Quantity</FieldName>
 	<Caption>Quantity Ordered</Caption>
 	<Width>20</Width>
-    <Editable lang="sql">select 1 from SupplierOrders where SupplierOrderNo = @SupplierOrderNo and status = 'Open'</Editable>
+    <Editable lang="sql">select 1 from SupplierOrders where SupplierOrderNo = @SupplierOrderNo and status in ('Open','Active')</Editable>
   </CiNumericField>
   <CiNumericField>
     <FieldName>QuantityReceived</FieldName>
@@ -79,7 +79,7 @@
       @Price,
       @ExpiryDate
     </ActionSQL>
-    <VisibleSQL>select 1 from SupplierOrders where SupplierOrderNo = @SupplierOrderNo and Status not in ('Received','Cancelled','Active')</VisibleSQL>
+    <VisibleSQL>select 1 from SupplierOrders where SupplierOrderNo = @SupplierOrderNo and Status not in ('Received','Cancelled')</VisibleSQL>
 	</InsertMacro>
 	<UpdateMacro>
     <ActionSQL>

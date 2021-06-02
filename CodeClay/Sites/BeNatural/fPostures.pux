@@ -12,19 +12,32 @@
     <Caption>Posture ID</Caption>
     <Editable>false</Editable>
     <Searchable>true</Searchable>
-    <Width>2</Width>
+    <Width>7</Width>
   </CiTextField>
   <CiComboField>
     <FieldName>Type</FieldName>
     <Caption>Type</Caption>
-    <Width>4</Width>
+    <Width>5</Width>
     <DropdownSQL>select Code from Dropdown where Category = 'PostureType' order by Code</DropdownSQL>
   </CiComboField>
   <CiComboField>
     <FieldName>Dosha</FieldName>
     <Caption>Dosha</Caption>
-    <Width>4</Width>
+    <Width>5</Width>
     <DropdownSQL>select Code from Dropdown where Category = 'Dosha' order by Code</DropdownSQL>
+  </CiComboField>
+  <CiComboField>
+    <FieldName>StartDirection</FieldName>
+    <Caption>Start Direction</Caption>
+    <Width>10</Width>
+    <DropdownSQL>select Code, Description from Dropdown where Category = 'Direction' order by Code</DropdownSQL>
+    <DropdownWidth>300</DropdownWidth>
+  </CiComboField>
+  <CiComboField>
+    <FieldName>EndDirection</FieldName>
+    <Caption>End Direction</Caption>
+    <Width>10</Width>
+    <DropdownSQL>select Code, Description from Dropdown where Category = 'Direction' order by Code</DropdownSQL>
   </CiComboField>
   <CiTextField>
     <FieldName>Name_EN</FieldName>
@@ -38,12 +51,18 @@
   </CiTextField>
   <CiTextField>
     <FieldName>Adjunct</FieldName>
-    <Caption>Breathing/Meditation</Caption>
+    <Caption>Breathe/Meditate</Caption>
     <Width>10</Width>
   </CiTextField>
   <CiLinkField>
     <FieldName>VideoURL</FieldName>
     <Caption>Video URL</Caption>
-    <Width>20</Width>
+    <Width>16</Width>
   </CiLinkField>
+  <CiNumericField>
+    <FieldName>Duration</FieldName>
+    <Caption>Duration (s)</Caption>
+    <Width>7</Width>
+    <MaxValue>1000</MaxValue>
+  </CiNumericField>
 </CiTable>

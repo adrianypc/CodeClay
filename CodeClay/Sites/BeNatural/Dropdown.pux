@@ -13,20 +13,24 @@
     <FieldName>ExistingDropdown</FieldName>
     <Hidden>true</Hidden>
     <Value>true</Value>
+    <Mask>None</Mask>
   </CiField>
   <CiTextField>
     <FieldName>Category</FieldName>
     <Caption>Category</Caption>
     <Width>10</Width>
+    <Mask>None</Mask>
   </CiTextField>
   <CiTextField>
     <FieldName>Code</FieldName>
     <Caption>Code</Caption>
     <Width>20</Width>
+    <Mask>None</Mask>
   </CiTextField>
   <CiTextField>
     <FieldName>Description</FieldName>
     <Caption>Description</Caption>
+    <Mask>None</Mask>
   </CiTextField>
   <SelectMacro>
     <ActionSQL>select * from Dropdown where Category != 'Branch' order by Category, Code</ActionSQL>

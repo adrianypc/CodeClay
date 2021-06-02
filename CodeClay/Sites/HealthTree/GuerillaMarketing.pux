@@ -34,7 +34,7 @@
         <Folder lang="sql">select 'SavedFiles\GMarketing\' + ltrim(str(@ProductID)) + '\F' + ltrim(str(@GMarketingNo))</Folder>
         <Width>70</Width>
         <ImageWidth>264</ImageWidth>
-      <IsLinkAzure>true</IsLinkAzure>
+        <IsAzure>true</IsAzure>
     </CiImageField>
     <CiTextField>
         <FieldName>CalledFrom</FieldName>

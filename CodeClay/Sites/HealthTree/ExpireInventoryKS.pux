@@ -44,6 +44,10 @@
         <DropdownSQL>select Code from Dropdown where Category = 'Location' and CHARINDEX('KS',Tags) > 0</DropdownSQL>
     </CiComboField>
     <CiNumericField>
+        <FieldName>MinStockLevel</FieldName>
+        <Caption>Minimum Stock</Caption>
+    </CiNumericField>
+    <CiNumericField>
 	    <FieldName>QuantityOnHand</FieldName>
 	    <Caption>Quantity on Hand</Caption>
     </CiNumericField>
@@ -66,11 +70,13 @@
         <FieldName>QtyUnderReceived</FieldName>
         <Caption>Qty Under Received</Caption>
         <Editable>false</Editable>
+        <Hidden>true</Hidden>
     </CiNumericField>
     <CiNumericField>
         <FieldName>QtyOverReceived</FieldName>
         <Caption>Qty Over Received</Caption>
         <Editable>false</Editable>
+        <Hidden>true</Hidden>
     </CiNumericField>
     <CiTable src="HistoricalInventory.pux">
         <SelectMacro>
@@ -87,7 +93,8 @@
             0 as QuantityAllocated,
             0 as QuantityAvailable,
             0 as QtyUnderReceived,
-            0 as QtyOverReceived
+            0 as QtyOverReceived,
+            0 as MinStockLevel
         </ActionSQL>
     </DefaultMacro>
         <SelectMacro>
@@ -108,7 +115,8 @@
             @QtyOverReceived,
             @ExpiryDate,
             @CI_UserEmail,
-            @Location
+            @Location,
+            @MinStockLevel
         </ActionSQL>
     </InsertMacro>
     <UpdateMacro>
@@ -126,7 +134,8 @@
             @QtyOverReceived,
             @ExpiryDate,
             @CI_UserEmail,
-            @Location
+            @Location,
+            @MinStockLevel
         </ActionSQL>
         <VisibleSQL>select 1 from Inventory where InventoryItemNo = @InventoryItemNo</VisibleSQL>
     </UpdateMacro>

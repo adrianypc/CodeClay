@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<CiTable>
+    <TableName>CaseNotes</TableName>
+    <TableCaption>Case Notes</TableCaption>
+    <DefaultView>Grid</DefaultView>
+    <RowKey>CustomerID,LogID</RowKey>
+    <CiField>
+      <FieldName>CustomerID</FieldName>
+      <Caption>Customer ID</Caption>
+      <Hidden>true</Hidden>
+    </CiField>
+    <CiField>
+      <FieldName>LogID</FieldName>
+      <Caption>Log ID</Caption>
+      <Hidden>true</Hidden>
+    </CiField>
+    <CiDateField>
+      <FieldName>LogDate</FieldName>
+      <Caption>Log Date</Caption>
+      <Width>10</Width>
+      <Mandatory>true</Mandatory>
+    </CiDateField>
+    <CiComboField>
+      <FieldName>Staff</FieldName>
+      <Caption>Staff</Caption>
+      <DropdownSQL>
+        select OtherNames from ApplicationUser where Enabled = cast(1 as bit) order by OtherNames
+      </DropdownSQL>
+      <Width>10</Width>
+      <Mandatory>true</Mandatory>
+    </CiComboField>
+    <CiLinkField>
+        <FieldName>NoteURL</FieldName>
+        <Caption>Scanned Note URL</Caption>
+        <Folder lang="sql">select 'SavedFiles\BNCustomerCaseNotes\' + ltrim(str(@CustomerID)) + '\F' + ltrim(str(@LogID))</Folder>
+        <Width>40</Width>
+    </CiLinkField>
+    <CiMemoField>
+      <FieldName>Comments</FieldName>
+      <Caption>Comments</Caption>
+      <Width>40</Width>
+    </CiMemoField>
+    <DefaultMacro>
+      <ActionSQL>
+          select  @CustomerID as CustomerID,
+                  coalesce(1 + max(LogID), 1) as LogID,
+                  getdate() as LogDate,
+                  (select OtherNames from ApplicationUser where Email = @CI_UserEmail) as Staff
+          from    CustomerCaseNotes
+          where   CustomerID = @CustomerID
+      </ActionSQL>
+    </DefaultMacro>
+    <SelectMacro>
+      <ActionSQL>
+        select * from CustomerCaseNotes where CustomerID = @CustomerID
+        order by LogID
+      </ActionSQL>
+    </SelectMacro>
+    <InsertMacro>
+      <ActionSQL>
+      </ActionSQL>
+      <ActionSQL>
+        insert into CustomerCaseNotes
+        ( CustomerID,
+          LogID,
+          LastChangedDate,
+          LastChangedBy,
+          LogDate,
+          Staff,
+          Comments,
+          NoteURL)
+          values
+          ( @CustomerID,
+          @LogID,
+          getdate(),
+          dbo.FnGetUserId(@CI_UserEmail),
+          convert(datetime,@LogDate,103),
+          @Staff,
+          @Comments,
+          @NoteURL)
+      </ActionSQL>
+    </InsertMacro>
+    <UpdateMacro>
+      <ActionSQL>
+        update  CustomerCaseNotes
+        set     LogDate = convert(datetime,@LogDate,103),
+                LastChangedDate = getdate(),
+                LastChangedBy = dbo.FnGetUserId(@CI_UserEmail),
+                Staff = @Staff,
+                Comments = @Comments,
+                NoteURL = @NoteURL
+        where   CustomerID = @CustomerID
+        and     LogID = @LogID
+      </ActionSQL>
+    </UpdateMacro>
+</CiTable>
