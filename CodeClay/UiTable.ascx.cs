@@ -1100,11 +1100,27 @@ namespace CodeClay
         {
             RunDefaultMacro(dxGrid, e);
             ProcessGridCommand();
+            AddAcceptCancelColumn();
+
+            int scrollableHeight = Convert.ToInt32(MyUtils.Coalesce(GetClientValue("ScrollableHeight"), 0));
+            if (scrollableHeight > 0)
+            {
+                dxGrid.Settings.VerticalScrollableHeight = scrollableHeight;
+                dxGrid.Settings.VerticalScrollBarMode = ScrollBarMode.Visible;
+            }
         }
 
         protected void dxGrid_StartRowEditing(object sender, ASPxStartRowEditingEventArgs e)
         {
             ProcessGridCommand();
+            AddAcceptCancelColumn();
+
+            int scrollableHeight = Convert.ToInt32(MyUtils.Coalesce(GetClientValue("ScrollableHeight"), 0));
+            if (scrollableHeight > 0)
+            {
+                dxGrid.Settings.VerticalScrollableHeight = scrollableHeight;
+                dxGrid.Settings.VerticalScrollBarMode = ScrollBarMode.Visible;
+            }
         }
 
         protected void dxGrid_ToolbarItemClick(object source, DevExpress.Web.Data.ASPxGridViewToolbarItemClickEventArgs e)
@@ -1263,6 +1279,19 @@ namespace CodeClay
                     {
                         dxGrid.JSProperties["cpScript"] = script;
                     }
+                }
+            }
+
+            DataTable dt = e.ReturnValue as DataTable;
+            if (dt != null && IsGridView)
+            {
+                int rowCount = dt.Rows.Count;
+                if (rowCount > 10)
+                {
+                    int scrollableHeight = (rowCount < 20) ? 250 : 500;
+                    dxGrid.Settings.VerticalScrollBarMode = ScrollBarMode.Visible;
+                    dxGrid.Settings.VerticalScrollableHeight = scrollableHeight;
+                    SetClientValue("ScrollableHeight", scrollableHeight);
                 }
             }
         }
@@ -2002,6 +2031,7 @@ namespace CodeClay
 
                 CiMacro[] ciMacros = { CiTable.UpdateMacro, CiTable.DeleteMacro };
                 ciMacros = ciMacros.Concat(CiTable.GetMenuMacros()).ToArray();
+                //CiMacro[] ciMacros = CiTable.GetMenuMacros();
                 ArrayList ciDisabledMacros = GetDisabledMacroList();
 
                 foreach (CiMacro ciMacro in ciMacros)
@@ -2321,6 +2351,18 @@ namespace CodeClay
                         break;
                 }
             }
+        }
+
+        private void AddAcceptCancelColumn()
+        {
+            GridViewCommandColumn dxColumn = new GridViewCommandColumn();
+            dxColumn.Visible = true;
+            dxColumn.Caption = "* Actions *";
+            dxColumn.Width = Unit.Pixel(100);
+            dxColumn.ShowUpdateButton = true;
+            dxColumn.ShowCancelButton = true;
+            dxGrid.SettingsCommandButton.UpdateButton.Text = "Accept";
+            dxGrid.Columns.Add(dxColumn);
         }
     }
 

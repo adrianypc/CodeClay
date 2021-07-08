@@ -307,9 +307,11 @@ namespace CodeClay
             {
                 string sql = sqlList[i].ToString().Trim();
                 bool isSelectSQL = sql.ToUpper().StartsWith("SELECT");
+                string databaseConnectionKeyword = "use ";
+
                 if (sql.StartsWith("?"))
                 {
-                    // Stored procedure which fetches data will begin with '?'
+                    // SQL which fetches data will begin with '?'
                     isSelectSQL = true;
                     sql = sql.Substring(1);
                 }
@@ -318,6 +320,11 @@ namespace CodeClay
                     // Shorthand for singleton select
                     isSelectSQL = true;
                     sql = string.Format("select {0} from tblSingleton", sql.Substring(1));
+                }
+                else if (sql.ToLower().StartsWith(databaseConnectionKeyword))
+                {
+                    string sqlFragment = sql.Substring(databaseConnectionKeyword.Length);
+                    string databaseName = sqlFragment.Substring(0, sqlFragment.IndexOf(";"));
                 }
 
                 // Stored procedure can be specified at runtime with '@'

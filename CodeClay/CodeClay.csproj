@@ -307,7 +307,6 @@
     <Content Include="Content\bootstrap-grid.min.css" />
     <Content Include="Content\bootstrap-reboot.css" />
     <Content Include="Content\bootstrap-reboot.min.css" />
-    <Content Include="Pipeline.aspx" />
     <Content Include="PluginScripts\UiTimeField.js" />
     <Content Include="PluginScripts\UiImageField.js" />
     <Content Include="PluginScripts\UiSerializeMacro.js" />
@@ -642,13 +641,6 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="CiDataSource.cs" />
-    <Compile Include="Pipeline.aspx.cs">
-      <DependentUpon>Pipeline.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Pipeline.aspx.designer.cs">
-      <DependentUpon>Pipeline.aspx</DependentUpon>
-    </Compile>
     <Compile Include="Site.Popup.Master.cs">
       <DependentUpon>Site.Popup.Master</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>

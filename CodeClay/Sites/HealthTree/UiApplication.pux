@@ -107,6 +107,10 @@
         <MenuName>Foodpanda</MenuName>
         <PluginSrc>ActiveInventoryFP.pux</PluginSrc>
       </CiMenu>
+      <CiMenu>
+        <MenuName>Pipeline</MenuName>
+        <PluginSrc>Pipeline.pux&amp;HostSite=localhost&amp;BranchCode=HT-SG</PluginSrc>
+      </CiMenu>
     </CiMenu>
     <CiMenu>
       <MenuName>Inventory AU</MenuName>
@@ -121,6 +125,10 @@
       <CiMenu>
         <MenuName>6 month expiry report</MenuName>
         <PluginSrc>ExpireInventoryAU.pux</PluginSrc>
+      </CiMenu>
+      <CiMenu>
+        <MenuName>Pipeline</MenuName>
+        <PluginSrc>Pipeline.pux&amp;HostSite=localhost&amp;BranchCode=HT-AU</PluginSrc>
       </CiMenu>
     </CiMenu>
     <CiMenu>
@@ -190,21 +198,6 @@
     <CiMenu>
       <MenuName>Inventory Movement</MenuName>
       <PluginSrc>InventoryMovementReport.pux</PluginSrc>
-    </CiMenu>
-    <CiMenu>
-      <MenuName>Pipeline</MenuName>
-      <CiMenu>
-        <MenuName>X-axis</MenuName>
-        <PluginSrc>PipelineXAxis.pux</PluginSrc>
-      </CiMenu>
-      <CiMenu>
-        <MenuName>Y-axis</MenuName>
-        <PluginSrc>PipelineYAxis.pux</PluginSrc>
-      </CiMenu>
-      <CiMenu>
-        <MenuName>Pipeline Report</MenuName>
-        <PluginSrc>PipelineRpt.pux</PluginSrc>
-      </CiMenu>
     </CiMenu>
     <CiMenu>
       <MenuName>Setup</MenuName>

@@ -102,10 +102,10 @@
                 </dx:CardViewToolbarItem>
                 <dx:CardViewToolbarItem Name="Search" Text="Search" Image-IconID="actions_search_16x16devav" />
                 <dx:CardViewToolbarItem Name="Quit" Text="Quit" Image-IconID="actions_cancel_16x16" Target="_top" />
+                <dx:CardViewToolbarItem Name="Divider" Text="" Enabled="false" ItemStyle-Width="100%" />
                 <dx:CardViewToolbarItem Name="New" Command="New"/>
                 <dx:CardViewToolbarItem Name="Edit" Command="Edit"/>
                 <dx:CardViewToolbarItem Name="Delete" Command="Delete"/>
-                <dx:CardViewToolbarItem Name="Divider" Text="" Enabled="false" ItemStyle-Width="100%" />
                 <dx:CardViewToolbarItem Name="Update" Command="Update" Text="Accept" Image-IconID="actions_apply_16x16" />
                 <dx:CardViewToolbarItem Name="Cancel" Command="Cancel" Image-IconID="actions_cancel_16x16" />
             </Items>
@@ -170,10 +170,8 @@
                 </dx:GridViewToolbarItem>
                 <dx:GridViewToolbarItem Name="Search" Text="Search" Image-IconID="actions_search_16x16devav"  />
                 <dx:GridViewToolbarItem Name="Quit" Text="Quit" Image-IconID="actions_cancel_16x16" />
-                <dx:GridViewToolbarItem Name="New" Command="New" />
                 <dx:GridViewToolbarItem Name="Divider" Text="" Enabled="false"  ItemStyle-Width="100%" />
-                <dx:GridViewToolbarItem Name="Update" Command="Update" Text="Accept" Image-IconID="actions_apply_16x16" />
-                <dx:GridViewToolbarItem Name="Cancel" Command="Cancel" Image-IconID="actions_cancel_16x16" />
+                <dx:GridViewToolbarItem Name="New" Command="New" />
             </Items>
         </dx:GridViewToolbar>
     </Toolbars>
@@ -182,7 +180,7 @@
             <dx:ASPxPageControl ID="pgGridTabs" ClientInstanceName="pgGridTabs" Theme="" runat="server" Width="100%" OnInit="pgGridTabs_Init">
             </dx:ASPxPageControl>
         </DetailRow>
-    </Templates>
+    </Templates>    
 </dx:ASPxGridView>
 
 <asp:ObjectDataSource ID="MyTableData" runat="server" TypeName="CodeClay.CiDataSource"
