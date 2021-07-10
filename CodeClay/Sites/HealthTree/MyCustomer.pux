@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<CiTable Src="Customers.pux">
+    <TableName>MyCustomer</TableName>
+    <TableCaption>My Customer</TableCaption>
+    <DefaultView>Card</DefaultView>
+</CiTable>
