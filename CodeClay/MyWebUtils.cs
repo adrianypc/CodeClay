@@ -317,11 +317,11 @@ namespace CodeClay
             return false;
         }
 
-        public static bool IsTrueSQL(string SQL, DataRow drParams, bool isCPanel = false)
+        public static bool IsTrueSQL(string SQL, DataRow drParams, int? appID = null)
         {
             if (!MyUtils.IsEmpty(SQL))
             {
-                DataTable dt = GetBySQL(SQL, drParams, isCPanel);
+                DataTable dt = GetBySQL(SQL, drParams, appID);
 
                 if (MyWebUtils.GetNumberOfRows(dt) > 0 && MyWebUtils.GetNumberOfColumns(dt) > 0)
                 {
@@ -334,16 +334,16 @@ namespace CodeClay
             return true;
         }
 
-        public static DataTable GetBySQL(string SQL, DataRow drParams, bool isCPanel = false)
+        public static DataTable GetBySQL(string SQL, DataRow drParams, int? appID = null)
         {
-            return UiApplication.Me.GetBySQL(SQL, drParams, isCPanel);
+            return UiApplication.Me.GetBySQL(SQL, drParams, appID);
         }
 
-        public static object EvalSQL(string SQL, DataRow drParams, bool isCPanel = false)
+        public static object EvalSQL(string SQL, DataRow drParams, int? appID = null)
         {
             if (!MyUtils.IsEmpty(SQL))
             {
-                DataTable dt = GetBySQL(SQL, drParams, isCPanel);
+                DataTable dt = GetBySQL(SQL, drParams, appID);
 
                 if (MyWebUtils.GetNumberOfRows(dt) > 0 && MyWebUtils.GetNumberOfColumns(dt) > 0)
                 {
@@ -450,7 +450,7 @@ namespace CodeClay
                 }
             }
 
-            if (result == null)
+            if (MyUtils.IsEmpty(result))
             {
                 if (type == typeof(bool))
                 {
@@ -548,7 +548,7 @@ namespace CodeClay
             DataRow dr = dt.NewRow();
             dt.Rows.Add(dr);
 
-            return MyWebUtils.IsTrueSQL("select dbo.fnIsAppOk(@CI_UserEmail, @Application, @Role)", dr, true);
+            return MyWebUtils.IsTrueSQL("select dbo.fnIsAppOk(@CI_UserEmail, @Application, @Role)", dr, 0);
         }
 
         public static DataRow GetTableDetails(string tableName)
@@ -560,7 +560,7 @@ namespace CodeClay
             DataRow dr = dt.NewRow();
             dt.Rows.Add(dr);
 
-            DataTable dtResults = MyWebUtils.GetBySQL("?exec spTable_selByName @Application, @Table", dr, true);
+            DataTable dtResults = MyWebUtils.GetBySQL("?exec spTable_selByName @Application, @Table", dr, 0);
             if (MyWebUtils.GetNumberOfRows(dtResults) > 0)
             {
                 return dtResults.Rows[0];
@@ -577,7 +577,7 @@ namespace CodeClay
             DataRow dr = dt.NewRow();
             dt.Rows.Add(dr);
 
-            object sqlResult = MyWebUtils.EvalSQL("select dbo.fnGetAuthorisedApp(@CI_UserEmail, @Application)", dr, true);
+            object sqlResult = MyWebUtils.EvalSQL("select dbo.fnGetAuthorisedApp(@CI_UserEmail, @Application)", dr, 0);
 
             return MyUtils.Coalesce(sqlResult, "").ToString();
         }
@@ -641,11 +641,28 @@ namespace CodeClay
 
         public static string GetApplicationName(DataRow drAppKey)
         {
-            DataTable dt = MyWebUtils.GetBySQL("?exec spApplication_sel @AppID", drAppKey, true);
+            DataTable dt = MyWebUtils.GetBySQL("?exec spApplication_sel @AppID", drAppKey, 0);
 
             if (dt != null && dt.Columns.Contains("AppName") && MyWebUtils.GetNumberOfRows(dt) > 0)
             {
                 object objAppName = dt.Rows[0]["AppName"];
+
+                if (objAppName != null)
+                {
+                    return objAppName.ToString();
+                }
+            }
+
+            return null;
+        }
+
+        public static string GetDatabaseName(DataRow drAppKey)
+        {
+            DataTable dt = MyWebUtils.GetBySQL("?exec spApplication_sel @AppID", drAppKey, 0);
+
+            if (dt != null && dt.Columns.Contains("SQLDatabaseName") && MyWebUtils.GetNumberOfRows(dt) > 0)
+            {
+                object objAppName = dt.Rows[0]["SQLDatabaseName"];
 
                 if (objAppName != null)
                 {

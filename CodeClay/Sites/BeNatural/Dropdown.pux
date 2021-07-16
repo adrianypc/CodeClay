@@ -1,47 +1,49 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <CiTable>
   <TableName>Dropdown</TableName>
-  <TableCaption>Dropdowns</TableCaption>
-  <QuickInsert>true</QuickInsert>
-  <InsertRowAtBottom>false</InsertRowAtBottom>
-  <RowKey>Category,Code</RowKey>
+  <TableCaption>Dropdown</TableCaption>
+  <RowKey>ID</RowKey>
+  <DefaultMacro>
+    <ActionSQL>select '- New -' as ID</ActionSQL>
+  </DefaultMacro>
   <CiField>
     <FieldName>DummyForInsert</FieldName>
     <Hidden>true</Hidden>
   </CiField>
-  <CiField>
-    <FieldName>ExistingDropdown</FieldName>
+  <CiTextField>
+    <FieldName>ID</FieldName>
+    <Caption>ID</Caption>
+    <Editable>false</Editable>
+    <Width>10</Width>
     <Hidden>true</Hidden>
-    <Value>true</Value>
-    <Mask>None</Mask>
-  </CiField>
+  </CiTextField>
   <CiTextField>
     <FieldName>Category</FieldName>
     <Caption>Category</Caption>
     <Width>10</Width>
-    <Mask>None</Mask>
   </CiTextField>
   <CiTextField>
     <FieldName>Code</FieldName>
     <Caption>Code</Caption>
-    <Width>20</Width>
-    <Mask>None</Mask>
+    <Width>10</Width>
   </CiTextField>
   <CiTextField>
     <FieldName>Description</FieldName>
     <Caption>Description</Caption>
-    <Mask>None</Mask>
+    <Width>80</Width>
   </CiTextField>
   <SelectMacro>
-    <ActionSQL>select * from Dropdown where Category != 'Branch' order by Category, Code</ActionSQL>
+    <ActionSQL>select ID, Category, Code, Description from Dropdown order by Category, Code</ActionSQL>
   </SelectMacro>
   <InsertMacro>
     <ActionSQL>insert into Dropdown (Category, Code, Description) values (@Category, @Code, @Description)</ActionSQL>
+    <ValidateSQL>select 'Cannot create duplicate record' from Dropdown where Category = @Category and Code = @Code</ValidateSQL>
   </InsertMacro>
   <UpdateMacro>
-    <ActionSQL>update Dropdown set Description = @Description where Category = @Category and Code = @Code</ActionSQL>
+    <ActionSQL>update Dropdown set Category = @Category, Code = @Code, Description = @Description where ID = @ID</ActionSQL>
+    <ValidateSQL>select 'Cannot create duplicate record' from Dropdown where Category = @Category and Code = @Code and ID != @ID</ValidateSQL>
   </UpdateMacro>
   <DeleteMacro>
-    <ActionSQL>delete from Dropdown where Category = @Category and Code = @Code</ActionSQL>
+    <ActionSQL>delete from Dropdown where ID = @ID</ActionSQL>
   </DeleteMacro>
 </CiTable>

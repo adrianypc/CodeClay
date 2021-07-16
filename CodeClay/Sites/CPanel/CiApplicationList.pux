@@ -82,7 +82,7 @@
     </CiSerializeMacro>
   </UpdateMacro>
   <DeleteMacro>
-    <ActionSQL>exec spApplication_del @AppID</ActionSQL>
+    <ActionSQL>exec spApplication_del @AppID, 1</ActionSQL>
     <ActionSQL>select @AppID as AppID, @OldAppName as OldAppName</ActionSQL>
     <CiSerializeMacro>
       <Direction>Download</Direction>

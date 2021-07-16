@@ -269,12 +269,12 @@ namespace CodeClay
             dxClientCommand[tableName] = command;
         }
 
-        public DataTable GetBySQL(string sql, DataRow drParams, bool isCPanel = false)
+        public DataTable GetBySQL(string sql, DataRow drParams, int? appID = null)
         {
-            return GetBySQL(new string[] { sql }, drParams, isCPanel);
+            return GetBySQL(new string[] { sql }, drParams, appID);
         }
 
-        public DataTable GetBySQL(string[] sqlList, DataRow drParams, bool isCPanel = false)
+        public DataTable GetBySQL(string[] sqlList, DataRow drParams, int? appID = null)
         {
             DataTable dt = (new DataSet()).Tables.Add();
 
@@ -371,13 +371,13 @@ namespace CodeClay
                                 dtResultTable = (new DataSet()).Tables.Add();
                             }
 
-                            rowsFetched += Fill(sql, drInput, dt, isCPanel);
+                            rowsFetched += Fill(sql, drInput, dt, appID);
                         }
                         else
                         {
                             lastRowAdded = 0;
                             dtResultTable = (new DataSet()).Tables.Add();
-                            Fill(sql, drInput, dtResultTable, isCPanel);
+                            Fill(sql, drInput, dtResultTable, appID);
                         }
 
                         if (i < sqlList.Length - 1)
@@ -391,7 +391,7 @@ namespace CodeClay
                     else
                     {
                         dt = (new DataSet()).Tables.Add();
-                        Fill(sql, drInput, null, isCPanel);
+                        Fill(sql, drInput, null, appID);
                     }
                 }
 
@@ -413,12 +413,12 @@ namespace CodeClay
         // Helpers
         // --------------------------------------------------------------------------------------------------
 
-        private int Fill(string SQL, DataRow drParams, DataTable dt, bool isCPanel = false)
+        private int Fill(string SQL, DataRow drParams, DataTable dt, int? appID = null)
         {
             lock (mDbLock)
             {
                 int rowsAdded = 0;
-                DbCommand command = CreateCommand(SQL, drParams, isCPanel);
+                DbCommand command = CreateCommand(SQL, drParams, appID);
 
                 if (command != null)
                 {
@@ -450,14 +450,15 @@ namespace CodeClay
             }
         }
 
-        private DbCommand CreateCommand(string SQL, DataRow drParams, bool isCPanel = false)
+        private DbCommand CreateCommand(string SQL, DataRow drParams, int? appID = null)
         {
             if (DbProvider != null && !MyUtils.IsEmpty(SQL))
             {
                 DbCommand command = DbProvider.CreateCommand();
                 if (command != null)
                 {
-                    command.Connection = CreateConnection(isCPanel);
+                    command.Connection = CreateConnection(appID);
+                    command.CommandTimeout = 300;
 
                     string[] SQLSplit = SQL.Trim().Split(new char[] { ' ', '\t', '\n', '\r' });
 
@@ -488,7 +489,37 @@ namespace CodeClay
             return null;
         }
 
-        private DbConnection CreateConnection(bool isCPanel = false)
+        private string GetConnectionString(int? appID = null)
+        {
+            string connectionString = "";
+
+            switch (appID)
+            {
+                case null:
+                    connectionString = CiApplication.ConnectionString;
+                    break;
+
+                case 0:
+                    connectionString = Properties.Settings.Default.CPanelConnectionString;
+                    break;
+
+                default:
+                    DataRow drKey = MyWebUtils.CreateDataRow();
+                    drKey.Table.Columns.Add("AppID");
+                    drKey["AppID"] = appID;
+                    string databaseName = MyWebUtils.GetDatabaseName(drKey);
+                    if (!MyUtils.IsEmpty(databaseName))
+                    {
+                        connectionString = Properties.Settings.Default.CPanelConnectionString;
+                        connectionString = connectionString.Replace("=CPanel;", string.Format("={0};", databaseName));
+                    }
+                    break;
+            }
+
+            return connectionString;
+        }
+
+        private DbConnection CreateConnection(int? appID = null)
         {
             DbConnection connection = null;
 
@@ -510,9 +541,7 @@ namespace CodeClay
 
             if (connection != null)
             {
-                string connectionString = isCPanel
-                    ? Properties.Settings.Default.CPanelConnectionString
-                    : CiApplication.ConnectionString;
+                string connectionString = GetConnectionString(appID);
 
                 connection.ConnectionString = connectionString;
 
@@ -747,7 +776,7 @@ namespace CodeClay
         {
             return MyWebUtils.GetBySQL("select * from Application where AppID = @AppID",
                 drPluginKey,
-                true);
+                0);
         }
 
         protected override List<XElement> GetPluginDefinitions(List<XElement> xElements)
@@ -797,7 +826,7 @@ namespace CodeClay
         private bool IsUserDefinedApplication(DataRow drAppKey)
         {
             bool? userDefined = false;
-            DataTable dt = MyWebUtils.GetBySQL("?exec spApplication_sel @AppID", drAppKey, true);
+            DataTable dt = MyWebUtils.GetBySQL("?exec spApplication_sel @AppID", drAppKey, 0);
 
             if (dt != null && MyWebUtils.GetNumberOfRows(dt) > 0)
             {

@@ -3,8 +3,8 @@
   <AppName>CPanel</AppName>
   <IsDesigner>true</IsDesigner>
   <ProviderName>System.Data.SqlClient</ProviderName>
-  <ConnectionString>Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=CPanel;Integrated Security=True;Connect Timeout=300</ConnectionString>
-  <LiveConnectionString>Data Source=tcp:uitf9udwm5.database.windows.net,1433;Initial Catalog=CPanel;User ID=cus_sa@uitf9udwm5;Password=Cms123!@#;Connect Timeout=300</LiveConnectionString>
+  <DevConnectionString>Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=CPanel;Integrated Security=True;Connect Timeout=300</DevConnectionString>
+  <ConnectionString>Data Source=tcp:uitf9udwm5.database.windows.net,1433;Initial Catalog=CPanel;User ID=cus_sa@uitf9udwm5;Password=Cms123!@#;Connect Timeout=300</ConnectionString>
   <HomePluginSrc>CiApplicationList.pux</HomePluginSrc>
   <Theme>Aqua</Theme>
   <ThemeColor>#A3C0E8</ThemeColor>

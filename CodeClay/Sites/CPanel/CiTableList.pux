@@ -19,7 +19,6 @@
     <FieldName>TableID</FieldName>
     <Caption>Table ID</Caption>
     <Editable>false</Editable>
-    <Width>5</Width>
     <Hidden>true</Hidden>
   </CiTextField>
   <CiTextField>
@@ -38,7 +37,7 @@
     <FieldName>TableUrl</FieldName>
     <Caption>Table Url</Caption>
     <Editable>false</Editable>
-    <Width>40</Width>
+    <Width>90</Width>
   </CiLinkField>
   <CiFieldExitMacro>
     <FieldName>TableName</FieldName>
@@ -54,22 +53,22 @@
   </SelectMacro>
   <InsertMacro>
     <ActionSQL>?exec spTable_ins @AppID, @TableName, @TableName, 'Grid', true</ActionSQL>
-    <ActionSQL>select @AppID as AppID, @TableID as TableID</ActionSQL>
+    <ActionSQL>select @AppID as AppID, @TableID as TableID, @DBChangeSQL as DBChangeSQL</ActionSQL>
     <CiSerializeMacro>
       <Direction>Download</Direction>
     </CiSerializeMacro>
   </InsertMacro>
   <UpdateMacro>
-    <ActionSQL>exec spTable_updShort @AppID, @TableID, @TableName, @TableName, 'Grid', true</ActionSQL>
-    <ActionSQL>select @AppID as AppID, @TableID as TableID, @OldTableName as OldTableName</ActionSQL>
+    <ActionSQL>?exec spTable_updShort @AppID, @TableID, @TableName, @TableName, 'Grid', true</ActionSQL>
+    <ActionSQL>select @AppID as AppID, @TableID as TableID, @OldTableName as OldTableName, @DBChangeSQL as DBChangeSQL</ActionSQL>
     <CiSerializeMacro>
       <Direction>Download</Direction>
     </CiSerializeMacro>
     <VisibleSQL>select 1 from Singleton where @TableName != 'Dropdown'</VisibleSQL>
   </UpdateMacro>
   <DeleteMacro>
-    <ActionSQL>exec spTable_del @AppID, @TableID</ActionSQL>
-    <ActionSQL>select @AppID as AppID, @TableID as TableID, @OldTableName as OldTableName</ActionSQL>
+    <ActionSQL>?exec spTable_del @AppID, @TableID</ActionSQL>
+    <ActionSQL>select @AppID as AppID, @TableID as TableID, @OldTableName as OldTableName, @DBChangeSQL as DBChangeSQL</ActionSQL>
     <CiSerializeMacro>
       <Direction>Download</Direction>
     </CiSerializeMacro>

@@ -795,7 +795,7 @@ namespace CodeClay
 
         protected override DataTable GetPluginDefinitions(DataRow drPluginKey)
         {
-            DataTable dt = MyWebUtils.GetBySQL("?exec spField_sel @AppID, @TableID, null, '!Button,Stub'", drPluginKey, true);
+            DataTable dt = MyWebUtils.GetBySQL("?exec spField_sel @AppID, @TableID, null, '!Button,Stub'", drPluginKey, 0);
 
             return dt;
         }
@@ -824,7 +824,7 @@ namespace CodeClay
                 string insertColumnNames = "@AppID, @TableID, @FieldName, @Caption, @Type, @Width, @InRowKey";
                 string insertSQL = string.Format("?exec spField_ins {0}", insertColumnNames);
 
-                drPluginDefinition["FieldID"] = MyWebUtils.EvalSQL(insertSQL, drPluginDefinition, true);
+                drPluginDefinition["FieldID"] = MyWebUtils.EvalSQL(insertSQL, drPluginDefinition, 0);
             }
 
             string updateColumnNames = "@AppID, @TableID, @FieldID, @FieldName, @Caption, @Type, @Editable, @AutoBlank, @Mandatory" +
@@ -833,7 +833,7 @@ namespace CodeClay
                 ", @DropdownWidth, @Folder, @MinValue, @MaxValue, @Columns, @Mask, @NestedMacroID";
             string updateSQL = string.Format("exec spField_updLong {0}", updateColumnNames);
 
-            MyWebUtils.GetBySQL(updateSQL, drPluginDefinition, true);
+            MyWebUtils.GetBySQL(updateSQL, drPluginDefinition, 0);
 
             DataColumnCollection dcPluginDefinition = drPluginDefinition.Table.Columns;
 
@@ -847,12 +847,12 @@ namespace CodeClay
                 dcPluginDefinition.Add("SQL");
             }
 
-            MyWebUtils.GetBySQL("exec spFieldSQL_del @AppID, @TableID, @FieldID", drPluginDefinition, true);
+            MyWebUtils.GetBySQL("exec spFieldSQL_del @AppID, @TableID, @FieldID", drPluginDefinition, 0);
             foreach (string sqlType in mPropertySQL.Keys)
             {
                 drPluginDefinition["SQLType"] = sqlType;
                 drPluginDefinition["SQL"] = mPropertySQL[sqlType];
-                MyWebUtils.GetBySQL("exec spFieldSQL_upd @AppID, @TableID, @FieldID, @SQLType, @SQL", drPluginDefinition, true);
+                MyWebUtils.GetBySQL("exec spFieldSQL_upd @AppID, @TableID, @FieldID, @SQLType, @SQL", drPluginDefinition, 0);
             }
         }
 
@@ -872,7 +872,7 @@ namespace CodeClay
                     xFieldName.Value = "EditParentID";
                 }
 
-                DataTable dtFieldSQL = MyWebUtils.GetBySQL("?exec spFieldSQL_sel @AppID, @TableID, @FieldID", drPluginDefinition, true);
+                DataTable dtFieldSQL = MyWebUtils.GetBySQL("?exec spFieldSQL_sel @AppID, @TableID, @FieldID", drPluginDefinition, 0);
                 foreach (DataRow drFieldSQL in dtFieldSQL.Rows)
                 {
                     string sqlType = MyWebUtils.GetStringField(drFieldSQL, "SQLType");
@@ -1041,7 +1041,7 @@ namespace CodeClay
 
         protected override DataTable GetPluginDefinitions(DataRow drPluginKey)
         {
-            return MyWebUtils.GetBySQL("?exec spField_sel @AppID, @TableID, null, 'Button'", drPluginKey, true);
+            return MyWebUtils.GetBySQL("?exec spField_sel @AppID, @TableID, null, 'Button'", drPluginKey, 0);
         }
 
         protected override void WriteToDB(DataRow drPluginDefinition)

@@ -56,6 +56,8 @@ namespace CodeClay
 
             int? appID = MyWebUtils.GetField<int>(drParams, "AppID");
             int? tableID = MyWebUtils.GetField<int>(drParams, "TableID");
+            string dbChangeSQL = MyWebUtils.GetStringField(drParams, "DBChangeSQL");
+            string oldTableName = MyWebUtils.GetStringField(drParams, "OldTableName");
 
             XiPlugin xiPlugin = null;
             if (tableID != null)
@@ -84,6 +86,13 @@ namespace CodeClay
             }
 
             ResultScript = string.Format("alert('{0}')", message);
+
+            if (!MyUtils.IsEmpty(dbChangeSQL))
+            {
+                dbChangeSQL = dbChangeSQL.Replace("'", "''");
+                dbChangeSQL = string.Format("exec ('{0}')", dbChangeSQL);
+                UiApplication.Me.GetBySQL(dbChangeSQL, drParams, appID);
+            }
 
             return dt;
         }

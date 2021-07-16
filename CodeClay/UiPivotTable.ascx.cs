@@ -257,7 +257,7 @@ namespace CodeClay
 
         protected override DataTable GetPluginDefinitions(DataRow drPluginKey)
         {
-            return MyWebUtils.GetBySQL("?exec spTable_sel @AppID, @TableID", drPluginKey, true);
+            return MyWebUtils.GetBySQL("?exec spTable_sel @AppID, @TableID", drPluginKey, 0);
         }
 
         protected override List<XElement> GetPluginDefinitions(List<XElement> xElements)
@@ -272,9 +272,9 @@ namespace CodeClay
 
         protected override void DeletePluginDefinitions(DataRow drPluginKey)
         {
-            MyWebUtils.GetBySQL("exec spField_del @AppID, @TableID", drPluginKey, true);
-            MyWebUtils.GetBySQL("exec spMacro_del @AppID, @TableID", drPluginKey, true);
-            MyWebUtils.GetBySQL("exec spSubTable_del @AppID, @TableID", drPluginKey, true);
+            MyWebUtils.GetBySQL("exec spField_del @AppID, @TableID", drPluginKey, 0);
+            MyWebUtils.GetBySQL("exec spMacro_del @AppID, @TableID", drPluginKey, 0);
+            MyWebUtils.GetBySQL("exec spSubTable_del @AppID, @TableID", drPluginKey, 0);
         }
 
         protected override string GetXPropertyName(Type pluginType, string dPropertyName)
@@ -316,7 +316,7 @@ namespace CodeClay
                 "@LayoutUrl, @ColCount, @BubbleUpdate, @QuickInsert, @InsertRowAtBottom, " +
                 "@DoubleClickMacroName,	null",
                 drPluginDefinition,
-                true);
+                0);
         }
 
         protected override void DownloadDerivedValues(DataRow drPluginDefinition, XElement xPluginDefinition)
@@ -351,7 +351,7 @@ namespace CodeClay
             xDummyField.Add(new XElement("Hidden", true));
             xPluginDefinition.Add(xDummyField);
 
-            DataTable dtSubTable = MyWebUtils.GetBySQL("select * from dbo.fnGetSubTablesFromSrc(@AppID, @TableID)", drPluginDefinition, true);
+            DataTable dtSubTable = MyWebUtils.GetBySQL("select * from dbo.fnGetSubTablesFromSrc(@AppID, @TableID)", drPluginDefinition, 0);
             if (dtSubTable != null)
             {
                 foreach (DataRow drSubTable in dtSubTable.Rows)

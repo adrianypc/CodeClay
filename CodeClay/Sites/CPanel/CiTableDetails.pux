@@ -56,8 +56,8 @@
     <ActionSQL>?exec spTable_sel @AppID, @TableID, true</ActionSQL>
   </SelectMacro>
   <UpdateMacro>
-    <ActionSQL>exec spTable_updShort @AppID, @TableID, @TableName, @TableName, 'Grid', true, null, @ParentTableID</ActionSQL>
-    <ActionSQL>select AppID, TableID from CiTable where AppID = @AppID and TableID in (dbo.fnGetInt(@TableID), dbo.fnGetInt(@ParentTableID), dbo.fnGetInt(@SavedParentTableID))</ActionSQL>
+    <ActionSQL>?exec spTable_updShort @AppID, @TableID, @TableName, @TableName, 'Grid', true, null, @ParentTableID</ActionSQL>
+    <ActionSQL>select AppID, TableID, @DBChangeSQL as DBChangeSQL from CiTable where AppID = @AppID and TableID in (dbo.fnGetInt(@TableID), dbo.fnGetInt(@ParentTableID), dbo.fnGetInt(@SavedParentTableID))</ActionSQL>
     <CiSerializeMacro>
       <Direction>Download</Direction>
     </CiSerializeMacro>

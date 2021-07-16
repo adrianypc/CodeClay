@@ -1,35 +1,22 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <CiApplication>
   <AppName>BeNatural</AppName>
-  <HomePluginSrc>fCustomers.pux</HomePluginSrc>
-  <Theme>Office2003Olive</Theme>
-  <ThemeColor>#5c898c</ThemeColor>
+  <Theme>MetropolisBlue</Theme>
+  <ThemeColor></ThemeColor>
   <IsDesigner>true</IsDesigner>
   <ProviderName>System.Data.SqlClient</ProviderName>
-  <ConnectionString>Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=BeNatural;Integrated Security=True;Connect Timeout=30</ConnectionString>
+  <ConnectionString>Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=U_BeNatural;Integrated Security=True;Connect Timeout=300</ConnectionString>
   <CiMenu>
     <MenuName>Shortcut</MenuName>
   </CiMenu>
   <CiMenu>
     <MenuName>Application</MenuName>
     <CiMenu>
-      <MenuName>Customers</MenuName>
-      <PluginSrc>fCustomers.pux</PluginSrc>
-    </CiMenu>
-    <CiMenu>
-      <MenuName>Postures</MenuName>
-      <PluginSrc>fPostures.pux</PluginSrc>
-    </CiMenu>
-    <CiMenu>
-      <MenuName>Sequences</MenuName>
-      <PluginSrc>fSequence.pux</PluginSrc>
-    </CiMenu>
-    <CiMenu>
       <MenuName>Setup</MenuName>
       <PluginSrc></PluginSrc>
       <CiMenu>
-        <MenuName>Dropdowns</MenuName>
-        <PluginSrc>fDropdowns.pux</PluginSrc>
+        <MenuName>Dropdown</MenuName>
+        <PluginSrc>Dropdown.pux</PluginSrc>
       </CiMenu>
     </CiMenu>
   </CiMenu>

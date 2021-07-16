@@ -75,23 +75,23 @@
     <ActionSQL>?exec spField_sel @AppID, @TableID</ActionSQL>
   </SelectMacro>
   <InsertMacro>
-    <ActionSQL>exec spField_ins @AppID, @TableID, @FieldName, @Caption, @Type, @Width, @InRowKey, false</ActionSQL>
-    <ActionSQL>select AppID, TableID from fnGetInheritedTables(@AppID, @TableID, 1)</ActionSQL>
+    <ActionSQL>?exec spField_ins @AppID, @TableID, @FieldName, @Caption, @Type, @Width, @InRowKey, false</ActionSQL>
+    <ActionSQL>select AppID, TableID, @DBChangeSQL as DBChangeSQL from fnGetInheritedTables(@AppID, @TableID, 1)</ActionSQL>
     <CiSerializeMacro>
       <Direction>Download</Direction>
     </CiSerializeMacro>
   </InsertMacro>
   <UpdateMacro>
-    <ActionSQL>exec spField_updShort @AppID, @TableID, @FieldID, @OldFieldID, @FieldName, @Caption, @Type, @Width, @InRowKey, @Editable, false, false, false</ActionSQL>
-    <ActionSQL>select AppID, TableID from fnGetInheritedTables(@AppID, @TableID, 1)</ActionSQL>
+    <ActionSQL>?exec spField_updShort @AppID, @TableID, @FieldID, @OldFieldID, @FieldName, @Caption, @Type, @Width, @InRowKey, @Editable, false, false, false</ActionSQL>
+    <ActionSQL>select AppID, TableID, @DBChangeSQL as DBChangeSQL from fnGetInheritedTables(@AppID, @TableID, 1)</ActionSQL>
     <CiSerializeMacro>
       <Direction>Download</Direction>
     </CiSerializeMacro>
     <VisibleSQL>select 1 from Singleton where @FieldName != 'ParentID'</VisibleSQL>
   </UpdateMacro>
   <DeleteMacro>
-    <ActionSQL>exec spField_del  @AppID, @TableID, @FieldID</ActionSQL>
-    <ActionSQL>select AppID, TableID from fnGetInheritedTables(@AppID, @SavedTableID, 1)</ActionSQL>
+    <ActionSQL>?exec spField_del  @AppID, @TableID, @FieldID</ActionSQL>
+    <ActionSQL>select AppID, TableID, @DBChangeSQL as DBChangeSQL from fnGetInheritedTables(@AppID, @TableID, 1)</ActionSQL>
     <CiSerializeMacro>
       <Direction>Download</Direction>
     </CiSerializeMacro>

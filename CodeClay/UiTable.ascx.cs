@@ -1288,7 +1288,7 @@ namespace CodeClay
                 int rowCount = dt.Rows.Count;
                 if (rowCount > 10)
                 {
-                    int scrollableHeight = (rowCount < 20) ? 250 : 500;
+                    int scrollableHeight = (rowCount < 20) ? 250 : 700;
                     dxGrid.Settings.VerticalScrollBarMode = ScrollBarMode.Visible;
                     dxGrid.Settings.VerticalScrollableHeight = scrollableHeight;
                     SetClientValue("ScrollableHeight", scrollableHeight);
@@ -2400,7 +2400,7 @@ namespace CodeClay
 
         protected override DataTable GetPluginDefinitions(DataRow drPluginKey)
         {
-            return MyWebUtils.GetBySQL("?exec spTable_sel @AppID, @TableID", drPluginKey, true);
+            return MyWebUtils.GetBySQL("?exec spTable_sel @AppID, @TableID", drPluginKey, 0);
         }
 
         protected override List<XElement> GetPluginDefinitions(List<XElement> xElements)
@@ -2415,9 +2415,9 @@ namespace CodeClay
 
         protected override void DeletePluginDefinitions(DataRow drPluginKey)
         {
-            MyWebUtils.GetBySQL("exec spField_del @AppID, @TableID", drPluginKey, true);
-            MyWebUtils.GetBySQL("exec spMacro_del @AppID, @TableID", drPluginKey, true);
-            MyWebUtils.GetBySQL("exec spSubTable_del @AppID, @TableID", drPluginKey, true);
+            MyWebUtils.GetBySQL("exec spField_del @AppID, @TableID", drPluginKey, 0);
+            MyWebUtils.GetBySQL("exec spMacro_del @AppID, @TableID", drPluginKey, 0);
+            MyWebUtils.GetBySQL("exec spSubTable_del @AppID, @TableID", drPluginKey, 0);
         }
 
         protected override string GetXPropertyName(Type pluginType, string dPropertyName)
@@ -2459,7 +2459,7 @@ namespace CodeClay
                 "@LayoutUrl, @ColCount, @BubbleUpdate, @QuickInsert, @InsertRowAtBottom, " +
                 "@DoubleClickMacroName,	null",
                 drPluginDefinition,
-                true);
+                0);
         }
 
         protected override void DownloadDerivedValues(DataRow drPluginDefinition, XElement xPluginDefinition)
@@ -2494,7 +2494,7 @@ namespace CodeClay
             xDummyField.Add(new XElement("Hidden", true));
             xPluginDefinition.Add(xDummyField);
 
-            DataTable dtSubTable = MyWebUtils.GetBySQL("select * from dbo.fnGetSubTablesFromSrc(@AppID, @TableID)", drPluginDefinition, true);
+            DataTable dtSubTable = MyWebUtils.GetBySQL("select * from dbo.fnGetSubTablesFromSrc(@AppID, @TableID)", drPluginDefinition, 0);
             if (dtSubTable != null)
             {
                 foreach (DataRow drSubTable in dtSubTable.Rows)
@@ -2567,7 +2567,7 @@ namespace CodeClay
         {
             return MyWebUtils.GetBySQL("select * from CiTable where AppID = @AppID and ParentTableID = @TableID",
                 drPluginKey,
-                true);
+                0);
         }
 
         protected override void DeletePluginDefinitions(DataRow drPluginKey)

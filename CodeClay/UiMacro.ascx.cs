@@ -491,7 +491,7 @@ namespace CodeClay
 
         protected override DataTable GetPluginDefinitions(DataRow drPluginKey)
         {
-            return MyWebUtils.GetBySQL("?exec spMacro_sel @AppID, @TableID, null, '!Stub'", drPluginKey, true);
+            return MyWebUtils.GetBySQL("?exec spMacro_sel @AppID, @TableID, null, '!Stub'", drPluginKey, 0);
         }
 
         protected override List<XElement> GetPluginDefinitions(List<XElement> xElements)
@@ -518,14 +518,14 @@ namespace CodeClay
                 string insertColumnNames = "@AppID, @TableID, @MacroName, @Caption, @Type";
                 string insertSQL = string.Format("?exec spMacro_ins {0}", insertColumnNames);
 
-                drPluginDefinition["MacroID"] = MyWebUtils.EvalSQL(insertSQL, drPluginDefinition, true);
+                drPluginDefinition["MacroID"] = MyWebUtils.EvalSQL(insertSQL, drPluginDefinition, 0);
             }
 
             string updateColumnNames = "@AppID, @TableID, @MacroID, @MacroName, @NavigateUrl" +
                 ", @NavigatePos, @Confirm, @Type";
             string updateSQL = string.Format("exec spMacro_upd {0}", updateColumnNames);
 
-            MyWebUtils.GetBySQL(updateSQL, drPluginDefinition, true);
+            MyWebUtils.GetBySQL(updateSQL, drPluginDefinition, 0);
 
             if (drPluginDefinition["Type"].ToString() == "Field Exit")
             {
@@ -578,7 +578,7 @@ namespace CodeClay
                     }
                 }
 
-                DataTable dtTriggerField = MyWebUtils.GetBySQL("?exec spTriggerField_sel @AppID, @TableID, @MacroID", drPluginDefinition, true);
+                DataTable dtTriggerField = MyWebUtils.GetBySQL("?exec spTriggerField_sel @AppID, @TableID, @MacroID", drPluginDefinition, 0);
                 if (dtTriggerField != null)
                 {
                     foreach (DataRow drTriggerField in dtTriggerField.Rows)
@@ -589,7 +589,7 @@ namespace CodeClay
                     }
                 }
 
-                DataTable dtActionSQL = MyWebUtils.GetBySQL("?exec spMacroSQL_sel @AppID, @TableID, @MacroID, 'ActionSQL'", drPluginDefinition, true);
+                DataTable dtActionSQL = MyWebUtils.GetBySQL("?exec spMacroSQL_sel @AppID, @TableID, @MacroID, 'ActionSQL'", drPluginDefinition, 0);
                 if (dtActionSQL != null)
                 {
                     foreach (DataRow drActionSQL in dtActionSQL.Rows)
@@ -600,7 +600,7 @@ namespace CodeClay
                     }
                 }
 
-                DataTable dtVisibleSQL = MyWebUtils.GetBySQL("?exec spMacroSQL_sel @AppID, @TableID, @MacroID, 'VisibleSQL'", drPluginDefinition, true);
+                DataTable dtVisibleSQL = MyWebUtils.GetBySQL("?exec spMacroSQL_sel @AppID, @TableID, @MacroID, 'VisibleSQL'", drPluginDefinition, 0);
                 if (dtVisibleSQL != null)
                 {
                     foreach (DataRow drVisibleSQL in dtVisibleSQL.Rows)
@@ -611,7 +611,7 @@ namespace CodeClay
                     }
                 }
 
-                DataTable dtValidateSQL = MyWebUtils.GetBySQL("?exec spMacroSQL_sel @AppID, @TableID, @MacroID, 'ValidateSQL'", drPluginDefinition, true);
+                DataTable dtValidateSQL = MyWebUtils.GetBySQL("?exec spMacroSQL_sel @AppID, @TableID, @MacroID, 'ValidateSQL'", drPluginDefinition, 0);
                 if (dtValidateSQL != null)
                 {
                     foreach (DataRow drValidateSQL in dtValidateSQL.Rows)
@@ -706,7 +706,7 @@ namespace CodeClay
                 }
 
                 string deleteSQL = string.Format("exec spTriggerField_del @AppID, @TableID, @MacroID");
-                MyWebUtils.GetBySQL(deleteSQL, drPluginDefinition, true);
+                MyWebUtils.GetBySQL(deleteSQL, drPluginDefinition, 0);
 
                 foreach (string fieldName in mTriggerFieldNames)
                 {
@@ -715,7 +715,7 @@ namespace CodeClay
                         "where AppID = @AppID and TableID = @TableID and FieldName = @FieldName", drPluginDefinition);
 
                     string insertSQL = string.Format("exec spTriggerField_ins @AppID, @TableID, @MacroID, @FieldID");
-                    MyWebUtils.GetBySQL(insertSQL, drPluginDefinition, true);
+                    MyWebUtils.GetBySQL(insertSQL, drPluginDefinition, 0);
                 }
 
             }
@@ -733,14 +733,14 @@ namespace CodeClay
                 }
 
                 string deleteSQL = string.Format("exec spMacroSQL_del @AppID, @TableID, @MacroID, '{0}'", sqlType);
-                MyWebUtils.GetBySQL(deleteSQL, drPluginDefinition, true);
+                MyWebUtils.GetBySQL(deleteSQL, drPluginDefinition, 0);
 
                 foreach (string sql in sqlList)
                 {
                     drPluginDefinition["SQL"] = sql;
 
                     string insertSQL = string.Format("exec spMacroSQL_ins @AppID, @TableID, @MacroID, '{0}', @SQL", sqlType);
-                    MyWebUtils.GetBySQL(insertSQL, drPluginDefinition, true);
+                    MyWebUtils.GetBySQL(insertSQL, drPluginDefinition, 0);
                 }
             }
         }
@@ -760,7 +760,7 @@ namespace CodeClay
 
         protected override DataTable GetPluginDefinitions(DataRow drPluginKey)
         {
-            return MyWebUtils.GetBySQL("?exec spButtonMacro_sel @AppID, @TableID, @FieldID", drPluginKey, true);
+            return MyWebUtils.GetBySQL("?exec spButtonMacro_sel @AppID, @TableID, @FieldID", drPluginKey, 0);
         }
 
         protected override void DeletePluginDefinitions(DataRow drPluginKey)
