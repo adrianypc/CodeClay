@@ -24,4 +24,5 @@
 <dx:ASPxCallbackPanel ID="dxFieldExitPanel" ClientInstanceName="dxFieldExitPanel" runat="server" OnCallback="dxFieldExitPanel_Callback">
     <ClientSideEvents Init="dxFieldExitPanel_Init" />
     <ClientSideEvents EndCallback="dxFieldExitPanel_EndCallback" />
+    <SettingsLoadingPanel Enabled="false"  />
 </dx:ASPxCallbackPanel>

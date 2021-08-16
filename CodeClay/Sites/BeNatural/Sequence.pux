@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <CiTable>
-  <TableName>Postures</TableName>
-  <TableCaption>Postures</TableCaption>
+  <TableName>Sequence</TableName>
+  <TableCaption>Sequence</TableCaption>
   <RowKey>ID</RowKey>
   <CiField>
     <FieldName>DummyForInsert</FieldName>
@@ -17,29 +17,29 @@
   </CiTextField>
   <CiTextField>
     <FieldName>Name</FieldName>
-    <Caption>Name of Postures</Caption>
-    <Width>20</Width>
+    <Caption>Name</Caption>
+    <Width>10</Width>
     <Mask>None</Mask>
   </CiTextField>
-  <CiTextField>
+  <CiMemoField>
     <FieldName>Description</FieldName>
     <Caption>Description</Caption>
-    <Width>70</Width>
+    <Width>50</Width>
     <Mask>None</Mask>
-  </CiTextField>
+  </CiMemoField>
   <SelectMacro>
-    <ActionSQL>select  Description, ID, Name from Postures where (@ID is null or ID = @ID) order by ID</ActionSQL>
+    <ActionSQL>select  Description, ID, Name from Sequence where (@ID is null or ID = @ID) order by ID</ActionSQL>
   </SelectMacro>
   <InsertMacro>
-    <ActionSQL>insert into Postures (Description, Name) values (@Description, @Name)</ActionSQL>
+    <ActionSQL>insert into Sequence (Description, Name) values (@Description, @Name)</ActionSQL>
     <ValidateSQL></ValidateSQL>
   </InsertMacro>
   <UpdateMacro>
-    <ActionSQL>update Postures set Description = @Description, Name = @Name where ID = @ID</ActionSQL>
+    <ActionSQL>update Sequence set Description = @Description, Name = @Name where ID = @ID</ActionSQL>
     <ValidateSQL></ValidateSQL>
   </UpdateMacro>
   <DeleteMacro>
-    <ActionSQL>delete from Postures where ID = @ID</ActionSQL>
+    <ActionSQL>delete from Sequence where ID = @ID</ActionSQL>
   </DeleteMacro>
   <DefaultMacro>
     <ActionSQL>select '- New -' as ID</ActionSQL>

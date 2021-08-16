@@ -298,14 +298,14 @@ function dxGrid_ContextMenu(sender, event) {
 		var dxOpenMenuPanel = openMenuPanels[tableName];
 		var dxLoadingPanel = loadingPanels[tableName];
 
-		if (dxOpenMenuPanel) {
-			dxOpenMenuPanel.Grid = dxGrid;
-			dxOpenMenuPanel.PerformCallback(xPos + LIST_SEPARATOR + yPos);
-		}
-
-		if (dxLoadingPanel) {
+        if (dxLoadingPanel && !dxLoadingPanel.GetVisible()) {
 			dxLoadingPanel.ShowAtPos(xPos, yPos);
 		}
+
+        if (dxOpenMenuPanel) {
+            dxOpenMenuPanel.Grid = dxGrid;
+            dxOpenMenuPanel.PerformCallback(xPos + LIST_SEPARATOR + yPos);
+        }
 	}
 }
 
@@ -319,13 +319,13 @@ function dxGrid_RowDblClick(sender, event) {
 		var dxOpenMenuPanel = openMenuPanels[tableName];
 		var dxLoadingPanel = loadingPanels[tableName];
 
+        if (dxLoadingPanel && !dxLoadingPanel.GetVisible()) {
+            dxLoadingPanel.ShowAtPos(xPos, yPos);
+
 		if (dxOpenMenuPanel) {
 			dxOpenMenuPanel.Grid = dxGrid;
 			dxOpenMenuPanel.PerformCallback("");
 		}
-
-		if (dxLoadingPanel) {
-			dxLoadingPanel.ShowAtPos(xPos, yPos);
 		}
 	}
 }
@@ -559,7 +559,7 @@ function dxPopupMenu_ItemClick(sender, event) {
                             dxClickMenuPanel.PerformCallback(command);
                         }
 
-                        if (dxLoadingPanel) {
+                        if (dxLoadingPanel && !dxLoadingPanel.GetVisible()) {
                             dxLoadingPanel.Show();
                         }
                     }

@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CiApplication>
+  <AppName>Tasks</AppName>
+  <Theme></Theme>
+  <ThemeColor></ThemeColor>
+  <IsDesigner>true</IsDesigner>
+  <ProviderName>System.Data.SqlClient</ProviderName>
+  <ConnectionString>Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=U_Tasks;Integrated Security=True;Connect Timeout=300</ConnectionString>
+  <CiMenu>
+    <MenuName>Shortcut</MenuName>
+  </CiMenu>
+  <CiMenu>
+    <MenuName>Application</MenuName>
+    <CiMenu>
+      <MenuName>Setup</MenuName>
+      <PluginSrc></PluginSrc>
+      <CiMenu>
+        <MenuName>Dropdown</MenuName>
+        <PluginSrc>Dropdown.pux</PluginSrc>
+      </CiMenu>
+    </CiMenu>
+  </CiMenu>
+</CiApplication>

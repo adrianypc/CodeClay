@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CiTable src="Postures.pux">
+  <TableName>fPostures</TableName>
+  <TableCaption>All Postures</TableCaption>
+  <DefaultView>Card</DefaultView>
+  <RowKey>ID</RowKey>
+  <CiField>
+    <FieldName>DummyForInsert</FieldName>
+    <Hidden>true</Hidden>
+  </CiField>
+  <CiTextField>
+    <FieldName>ID</FieldName>
+    <Caption>ID</Caption>
+    <Editable>false</Editable>
+    <Searchable>true</Searchable>
+    <Width>10</Width>
+    <Mask>None</Mask>
+  </CiTextField>
+</CiTable>

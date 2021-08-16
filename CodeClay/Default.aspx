@@ -87,7 +87,7 @@
         </dx:ASPxCallbackPanel>
     </asp:Panel>
 
-    <dx:ASPxLoadingPanel ID="dxLoadingPanel" runat="server" ClientInstanceName="dxLoadingPanel" Theme="" />
+    <dx:ASPxLoadingPanel ID="dxLoadingPanel" runat="server" ClientInstanceName="dxLoadingPanel" Theme=""/>
 
     <dx:ASPxPopupControl ID="dxPopup" ClientInstanceName="dxPopup" runat="server" ContentUrl="javascript:void(0);" CloseAction="CloseButton" CloseOnEscape="true" Modal="True" Theme="" AllowResize="true"
         PopupHorizontalAlign="WindowCenter" PopupVerticalAlign="WindowCenter" HeaderText="Popup" AllowDragging="True" PopupAnimationType="None" EnableViewState="False"

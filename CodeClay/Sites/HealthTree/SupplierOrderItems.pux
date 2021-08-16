@@ -50,6 +50,7 @@
     <Caption>Expiry Date</Caption>
     <Editable lang="sql">select 1 from SupplierOrders where SupplierOrderNo = @SupplierOrderNo and status = 'Active'</Editable>
     <ColumnFormat>dd/MM/yyyy</ColumnFormat>
+    <Hidden lang="sql">select 1 where @SupplierOrderNo = 132</Hidden>
   </CiDateField>
   <DefaultMacro>
     <ActionSQL>
