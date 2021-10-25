@@ -372,24 +372,38 @@ namespace CodeClay
         {
             if (isFile)
             {
-                string puxPath = MyWebUtils.MapPath(MyWebUtils.ApplicationFolder + @"\" + pux);
+                string puxContents = "";
 
-                if (File.Exists(puxPath))
+                if (pux.ToLower().EndsWith(".pux"))
                 {
-                    string puxContents = File.ReadAllText(puxPath);
+                    string puxPath = MyWebUtils.MapPath(MyWebUtils.ApplicationFolder + @"\" + pux);
 
-                    CiPlugin ciPlugin = CreateCiPlugin(puxContents, false);
-                    if (ciPlugin != null)
+                    if (File.Exists(puxPath))
                     {
-                        ciPlugin.PuxFile = pux;
+                        puxContents = File.ReadAllText(puxPath);
                     }
-
-                    return ciPlugin;
                 }
+                else
+                {
+                    puxContents = pux;
+                }
+
+                CiPlugin ciPlugin = CreateCiPlugin(puxContents, false);
+                if (ciPlugin != null)
+                {
+                    ciPlugin.PuxFile = pux;
+                }
+
+                return ciPlugin;
             }
             else
             {
                 string puxContents = pux;
+
+                if (!puxContents.StartsWith("<"))
+                {
+                    puxContents = string.Format("<{0} />", puxContents);
+                }
 
                 XElement pluginXML = XElement.Parse(puxContents);
                 string ciPluginName = pluginXML.Name.ToString();
@@ -1194,7 +1208,8 @@ namespace CodeClay
 
                                 object dPropertyValue = drPluginDefinition[dPropertyName];
 
-                                if (!IsEqualToDefaultValue(pluginType, dPropertyName, dPropertyValue))
+                                if (!IsEqualToDefaultValue(pluginType, xPropertyName, dPropertyValue) &&
+                                    !IsEqualToDefaultValue(pluginType, dPropertyName, dPropertyValue))
                                 {
                                     if (isAttribute)
                                     {
@@ -1381,6 +1396,28 @@ namespace CodeClay
             return new List<XiPlugin>();
         }
 
+        protected virtual DataRow GetRowKeyValues(DataRow drPluginDefinition, XElement xPluginDefinition)
+        {
+            XElement xRowKey = xPluginDefinition.Element("RowKey");
+
+            string rowKeyFromXml = (xRowKey != null) ? xRowKey.Value : "";
+
+            DataRow drKey = MyUtils.CloneDataRow(drPluginDefinition);
+            DataColumnCollection dcKeyColumns = drKey.Table.Columns;
+            string[] rowKeyNames = ("AppID,TableID,FieldID,MacroID," + rowKeyFromXml).Split(',');
+
+            foreach (DataColumn dcKeyColumn in drPluginDefinition.Table.Columns)
+            {
+                string columnName = dcKeyColumn.ColumnName;
+                if (!rowKeyNames.Contains(columnName))
+                {
+                    dcKeyColumns.Remove(columnName);
+                }
+            }
+
+            return drKey;
+        }
+
         // --------------------------------------------------------------------------------------------------
         // Helpers
         // --------------------------------------------------------------------------------------------------
@@ -1413,28 +1450,6 @@ namespace CodeClay
             }
 
             return false;
-        }
-
-        private DataRow GetRowKeyValues(DataRow drPluginDefinition, XElement xPluginDefinition)
-        {
-            XElement xRowKey = xPluginDefinition.Element("RowKey");
-
-            string rowKeyFromXml = (xRowKey != null) ? xRowKey.Value : "";
-
-            DataRow drKey = MyUtils.CloneDataRow(drPluginDefinition);
-            DataColumnCollection dcKeyColumns = drKey.Table.Columns;
-            string[] rowKeyNames = ("AppID,TableID,FieldID,MacroID," + rowKeyFromXml).Split(',');
-
-            foreach (DataColumn dcKeyColumn in drPluginDefinition.Table.Columns)
-            {
-                string columnName = dcKeyColumn.ColumnName;
-                if (!rowKeyNames.Contains(columnName))
-                {
-                    dcKeyColumns.Remove(columnName);
-                }
-            }
-
-            return drKey;
         }
 
         private void SetupDefaultValues(DataRow drPluginDefinition, XElement xPluginDefinition)

@@ -26,13 +26,6 @@
     <Caption>Table Name</Caption>
     <Width>10</Width>
   </CiTextField>
-  <CiTextField>
-    <FieldName>OldTableName</FieldName>
-    <Caption>Table Name</Caption>
-    <Computed>true</Computed>
-    <Value>TableName</Value>
-    <Hidden>true</Hidden>
-  </CiTextField>
   <CiLinkField>
     <FieldName>TableUrl</FieldName>
     <Caption>Table Url</Caption>
@@ -60,7 +53,7 @@
   </InsertMacro>
   <UpdateMacro>
     <ActionSQL>?exec spTable_updShort @AppID, @TableID, @TableName, @TableName, 'Grid', true</ActionSQL>
-    <ActionSQL>select @AppID as AppID, @TableID as TableID, @OldTableName as OldTableName, @DBChangeSQL as DBChangeSQL</ActionSQL>
+    <ActionSQL>select AppID, TableID, @DBChangeSQL as DBChangeSQL from CiTable where AppID = @AppID and TableID in (dbo.fnGetInt(@TableID), dbo.fnGetInt(@ParentTableID))</ActionSQL>
     <CiSerializeMacro>
       <Direction>Download</Direction>
     </CiSerializeMacro>
@@ -68,7 +61,7 @@
   </UpdateMacro>
   <DeleteMacro>
     <ActionSQL>?exec spTable_del @AppID, @TableID</ActionSQL>
-    <ActionSQL>select @AppID as AppID, @TableID as TableID, @OldTableName as OldTableName, @DBChangeSQL as DBChangeSQL</ActionSQL>
+    <ActionSQL>select AppID, TableID, @DBChangeSQL as DBChangeSQL from CiTable where AppID = @AppID and TableID in (dbo.fnGetInt(@TableID), dbo.fnGetInt(@ParentTableID))</ActionSQL>
     <CiSerializeMacro>
       <Direction>Download</Direction>
     </CiSerializeMacro>

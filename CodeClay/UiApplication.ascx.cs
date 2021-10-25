@@ -717,43 +717,75 @@ namespace CodeClay
 
         public override void DownloadFile(DataRow drKey, string puxUrl)
         {
-            object oldAppName = MyWebUtils.GetField(drKey, "OldAppName");
-            if (!MyUtils.IsEmpty(oldAppName))
+            bool? recompileApp = MyWebUtils.GetField<bool>(drKey, "RecompileApp");
+            if (recompileApp.HasValue && recompileApp.Value)
             {
-                string oldAppDir = MyWebUtils.MapPath(string.Format("Sites/{0}", oldAppName));
-                if (!MyUtils.IsEmpty(puxUrl))
-                {
-                    string newAppName = MyWebUtils.GetApplicationName(drKey);
+                object appName = MyWebUtils.EvalSQL(
+                    "select AppName from Application where AppID = @AppID",
+                    drKey);
 
-                    if (newAppName != oldAppName.ToString())
-                    {
-                        string newAppDir = MyWebUtils.MapPath(string.Format("Sites/{0}", newAppName));
-                        if (Directory.Exists(oldAppDir))
-                        {
-                            Directory.Move(oldAppDir, newAppDir);
-                        }
-                    }
-                }
-                else
+                if (!MyUtils.IsEmpty(appName))
                 {
-                    Directory.Delete(oldAppDir, true);
+                    string appDir = MyWebUtils.MapPath(string.Format("Sites/{0}", appName));
+
+                    foreach (string filePath in Directory.EnumerateFiles(appDir))
+                    {
+                        File.Delete(filePath);
+                    }
+
+                    DataTable dtTables = MyWebUtils.GetBySQL(
+                        "select AppID, TableID from CiTable where AppID = @AppID order by TableName",
+                        drKey);
+
+                    foreach (DataRow dr in dtTables.Rows)
+                    {
+                        XiTable xiTable = new XiTable();
+                        string tableUrl = xiTable.GetPuxUrl(dr);
+                        xiTable.DownloadFile(dr, tableUrl);
+                    }
                 }
             }
-            else if (IsUserDefinedApplication(drKey))
+            else
             {
-                FileInfo fi = new FileInfo(puxUrl);
-                string destinationFolder = MyWebUtils.MapPath(string.Format("Sites/{0}", fi.Directory.Name));
-                string sourceDropdownPUX = MyWebUtils.MapPath(string.Format("Sites/{0}/Dropdown.pux", "Template"));
-                string destinationDropdownPUX = string.Format("{0}/Dropdown.pux", destinationFolder);
+                object oldAppName = MyWebUtils.GetField(drKey, "OldAppName");
 
-                if (!File.Exists(destinationDropdownPUX))
+                if (!MyUtils.IsEmpty(oldAppName))
                 {
-                    if (!Directory.Exists(destinationFolder))
+                    string oldAppDir = MyWebUtils.MapPath(string.Format("Sites/{0}", oldAppName));
+                    if (!MyUtils.IsEmpty(puxUrl))
                     {
-                        Directory.CreateDirectory(destinationFolder);
-                    }
+                        string newAppName = MyWebUtils.GetApplicationName(drKey);
 
-                    File.Copy(sourceDropdownPUX, destinationDropdownPUX);
+                        if (newAppName != oldAppName.ToString())
+                        {
+                            string newAppDir = MyWebUtils.MapPath(string.Format("Sites/{0}", newAppName));
+                            if (Directory.Exists(oldAppDir))
+                            {
+                                Directory.Move(oldAppDir, newAppDir);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        Directory.Delete(oldAppDir, true);
+                    }
+                }
+                else if (IsUserDefinedApplication(drKey))
+                {
+                    FileInfo fi = new FileInfo(puxUrl);
+                    string destinationFolder = MyWebUtils.MapPath(string.Format("Sites/{0}", fi.Directory.Name));
+                    string sourceDropdownPUX = MyWebUtils.MapPath(string.Format("Sites/{0}/Dropdown.pux", "Template"));
+                    string destinationDropdownPUX = string.Format("{0}/Dropdown.pux", destinationFolder);
+
+                    if (!File.Exists(destinationDropdownPUX))
+                    {
+                        if (!Directory.Exists(destinationFolder))
+                        {
+                            Directory.CreateDirectory(destinationFolder);
+                        }
+
+                        File.Copy(sourceDropdownPUX, destinationDropdownPUX);
+                    }
                 }
             }
 

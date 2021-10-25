@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<CiSerializeMacro>
+  <Direction>Upload</Direction>
+  <ActionSQL>select @AppID as AppID, 1 as RecompileApp</ActionSQL>
+  <CiSerializeMacro>
+    <Direction>Download</Direction>
+  </CiSerializeMacro>
+</CiSerializeMacro>

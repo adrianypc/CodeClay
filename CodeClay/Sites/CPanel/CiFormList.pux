@@ -22,17 +22,14 @@
     <Width>5</Width>
     <Hidden>true</Hidden>
   </CiTextField>
+  <CiField>
+    <FieldName>ParentTableID</FieldName>
+    <Hidden>true</Hidden>
+  </CiField>
   <CiTextField>
     <FieldName>TableName</FieldName>
     <Caption>Form Name</Caption>
     <Width>10</Width>
-  </CiTextField>
-  <CiTextField>
-    <FieldName>OldTableName</FieldName>
-    <Caption>Form Name</Caption>
-    <Computed>true</Computed>
-    <Value>TableName</Value>
-    <Hidden>true</Hidden>
   </CiTextField>
   <CiTextField>
     <FieldName>Caption</FieldName>
@@ -81,14 +78,14 @@
   </InsertMacro>
   <UpdateMacro>
     <ActionSQL>exec spTable_updShort @AppID, @TableID, @TableName, @Caption, @DefaultView, false, @Src</ActionSQL>
-    <ActionSQL>select @AppID as AppID, @TableID as TableID, @OldTableName as OldTableName</ActionSQL>
+    <ActionSQL>select @AppID as AppID, 1 as RecompileApp</ActionSQL>
     <CiSerializeMacro>
       <Direction>Download</Direction>
     </CiSerializeMacro>
   </UpdateMacro>
   <DeleteMacro>
     <ActionSQL>exec spTable_del @AppID, @TableID</ActionSQL>
-    <ActionSQL>select @AppID as AppID, @TableID as TableID, @OldTableName as OldTableName</ActionSQL>
+    <ActionSQL>select @AppID as AppID, 1 as RecompileApp</ActionSQL>
     <CiSerializeMacro>
       <Direction>Download</Direction>
     </CiSerializeMacro>

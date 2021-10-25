@@ -1,0 +1,418 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CiTable>
+  <TableName>fCustomerOrder</TableName>
+  <TableCaption>Customer Order</TableCaption>
+  <DefaultView>Card</DefaultView>
+  <RowKey>CustomerOrderNo</RowKey>
+  <CiField>
+    <FieldName>DummyForInsert</FieldName>
+    <Hidden>true</Hidden>
+  </CiField>
+  <CiComboField>
+    <FieldName>Platform</FieldName>
+    <Caption>Platform</Caption>
+    <Mandatory>true</Mandatory>
+    <DropdownSQL>select Code,Description as PlatformName from Dropdown where Category = 'Platform' order by Description</DropdownSQL>
+    <TextFieldName>PlatformName</TextFieldName>
+    <Mask>None</Mask>
+  </CiComboField>
+  <CiTextField>
+    <FieldName>PlatformOrderNo</FieldName>
+    <Caption>Platform Order#</Caption>
+    <Mask>None</Mask>
+    <Editable lang="sql">select  1 from tblSingleton where @Platform in ('LZ','PP','QT','SP','FP','AM')</Editable>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>OrderID</FieldName>
+    <Caption>Order ID</Caption>
+    <Editable>false</Editable>
+    <Mask>None</Mask>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>CustomerOrderNo</FieldName>
+    <Caption>Customer Order #</Caption>
+    <Hidden>true</Hidden>
+    <Editable>false</Editable>
+    <Mask>None</Mask>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>Status</FieldName>
+    <Caption>Status</Caption>
+    <Editable>false</Editable>
+    <Mask>None</Mask>
+  </CiTextField>
+  <CiDateField>
+    <FieldName>OrderDate</FieldName>
+    <Caption>Order Date</Caption>
+    <Mandatory>true</Mandatory>
+    <Mask>None</Mask>
+  </CiDateField>
+  <CiDateField>
+    <FieldName>InvoiceDate</FieldName>
+    <Caption>Invoice Date</Caption>
+    <Mask>None</Mask>
+  </CiDateField>
+  <CiDateField>
+    <FieldName>PaymentDueDate</FieldName>
+    <Caption>Payment Due Date</Caption>
+    <Mask>None</Mask>
+  </CiDateField>
+  <CiComboField>
+    <FieldName>CustomerID</FieldName>
+    <Caption>Customer</Caption>
+    <DropdownSQL>select CustomerID,LastName+','+OtherNames as CustomerName from Customer order by CustomerName</DropdownSQL>
+    <TextFieldName>CustomerName</TextFieldName>
+    <DropdownWidth>600</DropdownWidth>
+    <Mask>None</Mask>
+  </CiComboField>
+  <CiTextField>
+    <FieldName>LastName</FieldName>
+    <Caption>Last Name</Caption>
+    <Mandatory>true</Mandatory>
+    <Mask>None</Mask>
+    <Editable lang="sql">select distinct 1 from Customer where @CustomerID is null</Editable>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>OtherNames</FieldName>
+    <Caption>Other Names</Caption>
+    <Mandatory>true</Mandatory>
+    <Mask>None</Mask>
+    <Editable lang="sql">select distinct 1 from Customer where @CustomerID is null</Editable>
+  </CiTextField>
+  <CiComboField>
+    <FieldName>BranchCode</FieldName>
+    <Caption>Branch</Caption>
+    <Mandatory>true</Mandatory>
+    <DropdownSQL>select Code from Dropdown where Category = 'Branch' order by Code</DropdownSQL>
+    <Mask>None</Mask>
+    <Editable lang="sql">select distinct 1 from Customer where @CustomerID is null</Editable>
+  </CiComboField>
+  <CiMemoField>
+    <FieldName>DeliveryAddress</FieldName>
+    <Caption>Delivery Address</Caption>
+    <Mandatory>true</Mandatory>
+    <Mask>None</Mask>
+  </CiMemoField>
+  <CiComboField>
+    <FieldName>DeliveryCountry</FieldName>
+    <Caption>Delivery Country</Caption>
+    <Mandatory>true</Mandatory>
+    <DropdownSQL>select  Code,Description from Dropdown where Category = 'Country' order by Code</DropdownSQL>
+    <TextFieldName>CountryName</TextFieldName>
+    <Mask>None</Mask>
+  </CiComboField>
+  <CiTextField>
+    <FieldName>DeliveryPostcode</FieldName>
+    <Caption>Delivery Postcode</Caption>
+    <Mandatory>true</Mandatory>
+    <Mask>None</Mask>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>Email</FieldName>
+    <Caption>Email</Caption>
+    <Mandatory>true</Mandatory>
+    <Mask>None</Mask>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>Mobile</FieldName>
+    <Caption>Mobile</Caption>
+    <Mask>None</Mask>
+  </CiTextField>
+  <CiCurrencyField>
+    <FieldName>Shipping</FieldName>
+    <Caption>Shipping ($)</Caption>
+    <Mask>None</Mask>
+  </CiCurrencyField>
+  <CiCurrencyField>
+    <FieldName>Discount</FieldName>
+    <Caption>Discount ($)</Caption>
+    <Mask>None</Mask>
+  </CiCurrencyField>
+  <CiCurrencyField>
+    <FieldName>TotalAmount</FieldName>
+    <Caption>Total ($)</Caption>
+    <Editable>false</Editable>
+    <Mask>None</Mask>
+  </CiCurrencyField>
+  <CiMemoField>
+    <FieldName>Comments</FieldName>
+    <Caption>Comments</Caption>
+    <Mask>None</Mask>
+  </CiMemoField>
+  <CiComboField>
+    <FieldName>Courier</FieldName>
+    <Caption>Courier</Caption>
+    <DropdownSQL>select Code as Courier from Dropdown where Category = 'Courier'</DropdownSQL>
+    <Mask>None</Mask>
+  </CiComboField>
+  <CiTextField>
+    <FieldName>CourierTrackingNo</FieldName>
+    <Caption>Courier Tracking #</Caption>
+    <Mask>None</Mask>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>DispatchedInfo</FieldName>
+    <Caption>Dispatched</Caption>
+    <Editable>false</Editable>
+    <Mask>None</Mask>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>CalledFrom</FieldName>
+    <Hidden>true</Hidden>
+    <Mask>None</Mask>
+  </CiTextField>
+  <CiTable src="CustomerOrder.B15.pux?ParentID=@ID">
+    <TableName>CustomerOrder.B15</TableName>
+    <CiTextField>
+      <FieldName>EditParentID</FieldName>
+      <Caption>Parent ID</Caption>
+      <Hidden>true</Hidden>
+      <Width>10</Width>
+      <Mask>None</Mask>
+      <Hidden lang="sql">select 1 from Singleton where @ParentID is not null</Hidden>
+    </CiTextField>
+    <CiTextField>
+      <FieldName>ID</FieldName>
+      <Caption>ID</Caption>
+      <Hidden>true</Hidden>
+      <Editable>false</Editable>
+      <Searchable>true</Searchable>
+      <Width>10</Width>
+      <Mask>None</Mask>
+    </CiTextField>
+  </CiTable>
+  <CiTable src="CustomerOrder.F79.pux?ParentID=@ID">
+    <TableName>CustomerOrder.F79</TableName>
+    <CiTextField>
+      <FieldName>EditParentID</FieldName>
+      <Caption>Parent ID</Caption>
+      <Hidden>true</Hidden>
+      <Width>10</Width>
+      <Mask>None</Mask>
+      <Hidden lang="sql">select 1 from Singleton where @ParentID is not null</Hidden>
+    </CiTextField>
+    <CiTextField>
+      <FieldName>ID</FieldName>
+      <Caption>ID</Caption>
+      <Hidden>true</Hidden>
+      <Editable>false</Editable>
+      <Searchable>true</Searchable>
+      <Width>10</Width>
+      <Mask>None</Mask>
+    </CiTextField>
+  </CiTable>
+  <CiTable src="CustomerOrder.236.pux?ParentID=@ID">
+    <TableName>CustomerOrder.236</TableName>
+    <CiTextField>
+      <FieldName>EditParentID</FieldName>
+      <Caption>Parent ID</Caption>
+      <Hidden>true</Hidden>
+      <Width>10</Width>
+      <Mask>None</Mask>
+      <Hidden lang="sql">select 1 from Singleton where @ParentID is not null</Hidden>
+    </CiTextField>
+    <CiTextField>
+      <FieldName>ID</FieldName>
+      <Caption>ID</Caption>
+      <Hidden>true</Hidden>
+      <Editable>false</Editable>
+      <Searchable>true</Searchable>
+      <Width>10</Width>
+      <Mask>None</Mask>
+    </CiTextField>
+  </CiTable>
+  <DefaultMacro>
+    <ActionSQL>
+            select t1.*,
+            coalesce(LastName,'') as LastName,
+            coalesce(OtherNames,'') as OtherNames,
+            coalesce(BranchCode,'') as BranchCode,
+            coalesce(Address,'') as DeliveryAddress,
+            coalesce(CountryCode,'') as DeliveryCountry,
+            coalesce(Postcode,'') as DeliveryPostcode,
+            coalesce(Email,'') as Email,
+            coalesce(Mobile,'') as Mobile
+            from
+                (select '-New-' as CustomerOrderNo,
+                convert(datetime,cast(getdate() as nvarchar(12)),103) as OrderDate,
+                convert(datetime,cast(getdate() as nvarchar(12)),103) as InvoiceDate,
+                dateadd(day,7,convert(datetime,cast(getdate() as nvarchar(12)),103)) as PaymentDueDate,
+                'Active' as Status,
+                @CustomerID as CustomerID)  t1
+            left outer join Customer C
+            on t1.CustomerID = C.CustomerID
+        </ActionSQL>
+  </DefaultMacro>
+  <SelectMacro>
+    <ActionSQL>?exec spCustomerOrders_sel @CustomerOrderNo,@CustomerID</ActionSQL>
+  </SelectMacro>
+  <InsertMacro>
+    <ActionSQL>
+            ?exec spCustomerOrders_upd
+            -1,
+            @Status,
+            @OrderDate,
+            @CustomerID,
+            @LastName,
+            @OtherNames,
+            @BranchCode,
+            @DeliveryAddress,
+            @DeliveryCountry,
+            @DeliveryPostcode,
+            @Email,
+            @Mobile,
+            @Shipping,
+            @TotalAmount,
+            @Comments,
+            @Courier,
+            @CourierTrackingNo,
+            @PlatformOrderNo,
+            @Discount,
+            @OrderID,
+            @Platform,
+            @InvoiceDate,
+            @PaymentDueDate
+        </ActionSQL>
+    <VisibleSQL>select distinct 1 from CustomerOrders where @CalledFrom is null</VisibleSQL>
+  </InsertMacro>
+  <UpdateMacro>
+    <ActionSQL>
+            ?exec spCustomerOrders_upd
+            @CustomerOrderNo,
+            @Status,
+            @OrderDate,
+            @CustomerID,
+            @LastName,
+            @OtherNames,
+            @BranchCode,
+            @DeliveryAddress,
+            @DeliveryCountry,
+            @DeliveryPostcode,
+            @Email,
+            @Mobile,
+            @Shipping,
+            @TotalAmount,
+            @Comments,
+            @Courier,
+            @CourierTrackingNo,
+            @PlatformOrderNo,
+            @Discount,
+            @OrderID,
+            @Platform,
+            @InvoiceDate,
+            @PaymentDueDate
+        </ActionSQL>
+    <VisibleSQL>
+            select 1 from CustomerOrders
+            where CustomerOrderNo = case when isnumeric(@CustomerOrderNo) = 1 then @CustomerOrderNo else -1 end
+            and Status = 'Active'
+        </VisibleSQL>
+  </UpdateMacro>
+  <DeleteMacro>
+    <ActionSQL>exec spCustomerOrders_del @CustomerOrderNo</ActionSQL>
+    <VisibleSQL>
+            select 1 from CustomerOrders
+            where CustomerOrderNo = case when isnumeric(@CustomerOrderNo) = 1 then @CustomerOrderNo else -1 end
+            and Status = 'Active'
+        </VisibleSQL>
+  </DeleteMacro>
+  <CiMacro>
+    <MacroName>Dispatch</MacroName>
+    <ActionSQL>exec spCustomerOrders_Dispatch_upd @CustomerOrderNo,@CI_UserEmail</ActionSQL>
+    <ActionSQL>
+            select Status,
+            coalesce(DispatchedBy,'') +' On '+coalesce(convert(nvarchar(12),DispatchedDate,103),'') as DispatchedInfo
+            from CustomerOrders where CustomerOrderNo = @CustomerOrderNo
+        </ActionSQL>
+    <VisibleSQL>
+            select 1 from CustomerOrders
+            where CustomerOrderNo = case when isnumeric(@CustomerOrderNo) = 1 then @CustomerOrderNo else -1 end
+            and Status = 'Active'
+        </VisibleSQL>
+  </CiMacro>
+  <CiMacro>
+    <MacroName>Cancel Order</MacroName>
+    <ActionSQL>exec spCustomerOrders_cancellation @CustomerOrderNo</ActionSQL>
+    <ActionSQL>
+            select Status from CustomerOrders where CustomerOrderNo = @CustomerOrderNo
+        </ActionSQL>
+    <VisibleSQL>
+            select 1 from CustomerOrders
+            where CustomerOrderNo = case when isnumeric(@CustomerOrderNo) = 1 then @CustomerOrderNo else -1 end
+            and @Status = 'Active'
+        </VisibleSQL>
+  </CiMacro>
+  <CiMacro>
+    <MacroName>CreateInvoice</MacroName>
+    <Caption>Create Invoice</Caption>
+    <NavigateUrl>CustomerOrderInvoiceSetup.pux</NavigateUrl>
+    <NavigatePos>Popup</NavigatePos>
+    <Toolbar>true</Toolbar>
+    <ActionSQL>select 'Edit' as Command,@CustomerOrderNo as CustomerOrderNo</ActionSQL>
+  </CiMacro>
+  <CiFieldExitMacro>
+    <FieldName>Discount</FieldName>
+    <FieldName>Shipping</FieldName>
+    <ActionSQL>
+        select (cast(@Shipping as decimal(10,2)) + coalesce(sum(Amount),0)) - cast(@Discount as decimal(10,2)) as TotalAmount 
+        from CustomerOrderItems where CustomerOrderNo = @CustomerOrderNo
+    </ActionSQL>
+  </CiFieldExitMacro>
+  <CiFieldExitMacro>
+    <FieldName>CustomerID</FieldName>
+    <ActionSQL>
+            select 
+            LastName as LastName,
+            OtherNames as OtherNames,
+            BranchCode as BranchCode,
+            Address as DeliveryAddress,
+            CountryCode as DeliveryCountry,
+            Postcode as DeliveryPostcode,
+            Email,
+            Mobile
+            from Customer
+            where CustomerID = @CustomerID
+        </ActionSQL>
+  </CiFieldExitMacro>
+  <CiFieldExitMacro>
+    <FieldName>OrderDate</FieldName>
+    <ActionSQL>
+            select
+                convert(datetime,cast(@OrderDate as nvarchar(12)),103) as InvoiceDate,
+                dateadd(day,7,convert(datetime,cast(@OrderDate as nvarchar(12)),103)) as PaymentDueDate
+        </ActionSQL>
+  </CiFieldExitMacro>
+  <CiFieldExitMacro>
+    <FieldName>InvoiceDate</FieldName>
+    <ActionSQL>
+            select dateadd(day,7,convert(datetime,cast(@InvoiceDate as nvarchar(12)),103)) as PaymentDueDate
+        </ActionSQL>
+  </CiFieldExitMacro>
+  <CiFieldExitMacro>
+    <FieldName>PlatformOrderNo</FieldName>
+    <ActionSQL>
+            select case when @Platform not in ('PP','LZ','QT','SP','FP','AM')  then  @Platform + cast(@CustomerOrderNo as varchar)
+            else case when substring(@PlatformOrderNo,1,2) in (select code from Dropdown where Category = 'Platform') then @Platform + substring(@PlatformOrderNo,3,LEN(@PlatformOrderNo))
+            else @Platform + cast(@PlatformOrderNo as varchar) end
+            end as OrderID
+            from tblSingleton
+        </ActionSQL>
+  </CiFieldExitMacro>
+  <CiFieldExitMacro>
+    <FieldName>Platform</FieldName>
+    <ActionSQL>
+            select
+                case when @Platform not in ('PP','LZ','QT','SP','FP','AM') then @Platform + cast(@CustomerOrderNo as nvarchar)
+                else case
+                when substring(@PlatformOrderNo,1,2) in (select code from Dropdown where Category = 'Platform') then @Platform + substring(@PlatformOrderNo,3,LEN(@PlatformOrderNo))
+                else @Platform + cast(@PlatformOrderNo as varchar) end
+                end as PlatformOrderNo,
+                case when @Platform not in ('PP','LZ','QT','SP','FP','AM') then @Platform + cast(@CustomerOrderNo as nvarchar)
+                else case
+                when substring(@PlatformOrderNo,1,2) in (select code from Dropdown where Category = 'Platform') then @Platform + substring(@PlatformOrderNo,3,LEN(@PlatformOrderNo))
+                else @Platform + cast(@PlatformOrderNo as varchar) end
+                end as OrderID
+            from tblSingleton
+        </ActionSQL>
+  </CiFieldExitMacro>
+</CiTable>

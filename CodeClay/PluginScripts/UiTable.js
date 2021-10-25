@@ -464,7 +464,6 @@ function UserProceeds(dxTable, command) {
     return true;
 }
 
-
 // --------------------------------------------------------------------------------------------------
 // Popup menu functions
 // --------------------------------------------------------------------------------------------------
@@ -616,4 +615,30 @@ function dxLoadingPanel_Init(sender, event) {
 			loadingPanels[tableName] = dxLoadingPanel;
 		}
 	}
+}
+
+// --------------------------------------------------------------------------------------------------
+// Import functions
+// --------------------------------------------------------------------------------------------------
+
+function dxImportCSV_FileUploadComplete(sender, event) {
+    var errorText = event.errorText;
+
+    if (errorText) {
+        alert(errorText);
+    }
+    else {
+        var tableName = event.callbackData;
+        var table = tables[tableName];
+
+        if (table) {
+            table.Refresh();
+        }
+
+        alert("Import complete, now refreshing the grid");
+    }
+}
+
+function setElementVisible(elementId, visible) {
+    document.getElementById(elementId).className = visible ? "" : "hidden";
 }

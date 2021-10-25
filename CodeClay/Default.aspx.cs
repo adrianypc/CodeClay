@@ -64,13 +64,13 @@ namespace CodeClay
                 }
 
                 string puxFile = MyWebUtils.QueryString[PLUGIN_SRC_KEY];
+                if (MyUtils.IsEmpty(puxFile))
+                {
+                    puxFile = ciApplication.HomePluginSrc;
+                }
+
                 if (puxFile != APPLICATION_PUX_FILE)
                 {
-                    if (MyUtils.IsEmpty(puxFile))
-                    {
-                        puxFile = ciApplication.HomePluginSrc;
-                    }
-
                     LoadUiPlugin(puxFile);
                 }
             }

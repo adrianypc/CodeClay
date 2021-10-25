@@ -852,7 +852,7 @@ namespace CodeClay
             {
                 drPluginDefinition["SQLType"] = sqlType;
                 drPluginDefinition["SQL"] = mPropertySQL[sqlType];
-                MyWebUtils.GetBySQL("exec spFieldSQL_upd @AppID, @TableID, @FieldID, @SQLType, @SQL", drPluginDefinition, 0);
+                MyWebUtils.GetBySQL("exec spFieldSQL_ins @AppID, @TableID, @FieldID, @SQLType, @SQL", drPluginDefinition, 0);
             }
         }
 

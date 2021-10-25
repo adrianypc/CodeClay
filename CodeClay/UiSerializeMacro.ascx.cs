@@ -57,7 +57,6 @@ namespace CodeClay
             int? appID = MyWebUtils.GetField<int>(drParams, "AppID");
             int? tableID = MyWebUtils.GetField<int>(drParams, "TableID");
             string dbChangeSQL = MyWebUtils.GetStringField(drParams, "DBChangeSQL");
-            string oldTableName = MyWebUtils.GetStringField(drParams, "OldTableName");
 
             XiPlugin xiPlugin = null;
             if (tableID != null)
@@ -148,7 +147,7 @@ namespace CodeClay
                 XiTable xiTable = new XiTable();
 
                 string puxUrl = xiTable.GetPuxUrl(drParams);
-                uploadedFile.SaveAs(puxUrl);
+                uploadedFile.SaveAs(puxUrl);                
 
                 if (CiSerializeMacro != null)
                 {

@@ -7,20 +7,77 @@
     {
         text-align: left;
     }
+
     .cssLoadingPanel
     {
         z-index: 1000 !important;
     }
+
     .cssSmallFont *
     {
         font-size:small !important;
     }
+
     .cssFieldBorderStyle
     {
         border: solid;
         border-color: lightgray;
         border-width: 1px;
         padding: 4px;
+    }
+
+    .dropZoneExternal > div,
+    .dropZoneExternal > img {
+        position: absolute;
+    }
+
+    .dropZoneExternal {
+        position: relative;
+        cursor: pointer;
+        width: 100%;
+    }
+
+    #uploadedImage {
+        width: 100%;
+    }
+
+    .dropZoneText {
+        color: #808080;
+        display: table-cell;
+        vertical-align: middle;
+        text-align: center;
+        font-size: 20pt;
+        width: 1200px;
+        height: 100px;
+    }
+
+    #dropZone {
+        top: 0;
+        width: 100%;
+        height: 100%;
+        padding: 100px 25px;
+        border: 1px dashed #f17f21 !important;
+    }
+
+    .uploadControlDropZone,
+    .hidden {
+        display: none;
+    }
+
+    .dxucInlineDropZoneSys span {
+        color: #fff !important;
+        font-size: 10pt;
+        font-weight: normal !important;
+    }
+
+    .validationMessage {
+        padding: 0 20px;
+        text-align: center;
+    }
+
+    .uploadContainer {
+        width: 100%;
+        margin-top: 10px;
     }
 </style>
 
@@ -129,59 +186,64 @@
     </Templates>
 </dx:ASPxCardView>
 
-<dx:ASPxGridView ID="dxGrid" ClientInstanceName="dxGrid" runat="server" Theme="" DataSourceID="MyTableData" AutoGenerateColumns="false" Width="100%" KeyFieldName="RowKey" CssClass="cssSmallFont"
-    OnInit="dxGrid_Init" OnLoad="dxGrid_Load" OnCustomJSProperties="dxGrid_CustomJSProperties" OnCustomCallback="dxGrid_CustomCallback" OnSummaryDisplayText="dxGrid_SummaryDisplayText" OnCustomColumnDisplayText="dxGrid_CustomColumnDisplayText"
-    OnBeforeColumnSortingGrouping="dxGrid_BeforeColumnSortingGrouping" OnInitNewRow="dxGrid_InitNewRow" OnToolbarItemClick="dxGrid_ToolbarItemClick"
-    OnRowValidating="dxGrid_RowValidating" OnRowUpdating="dxGrid_RowUpdating" OnRowInserting="dxGrid_RowInserting" OnStartRowEditing="dxGrid_StartRowEditing">
-    <ClientSideEvents Init="dxGrid_Init" />
-    <ClientSideEvents BeginCallback="dxGrid_BeginCallback" />
-    <ClientSideEvents EndCallback="dxGrid_EndCallback" />
-    <ClientSideEvents DetailRowExpanding="dxGrid_DetailRowExpanding" />
-    <ClientSideEvents DetailRowCollapsing="dxGrid_DetailRowCollapsing" />
-    <ClientSideEvents FocusedRowChanged="dxGrid_FocusedRowChanged" />
-    <ClientSideEvents ToolbarItemClick="dxGrid_ToolbarItemClick" />
-    <ClientSideEvents RowDblClick="dxGrid_RowDblClick" />
-    <ClientSideEvents ContextMenu="dxGrid_ContextMenu" />
-    <Settings ShowGroupPanel="true" ShowGroupedColumns="true" ShowTitlePanel="true" ShowFooter="true" />
-    <SettingsBehavior ColumnResizeMode="Control" AllowSelectSingleRowOnly="true" AllowFocusedRow="true" AllowSelectByRowClick="true" ConfirmDelete="true" />
-    <SettingsDetail AllowOnlyOneMasterRowExpanded="true" />
-    <SettingsEditing Mode="Inline" NewItemRowPosition="Bottom" />
-    <SettingsLoadingPanel Mode="ShowAsPopup" />
-    <SettingsPager Mode="ShowAllRecords" />
-    <SettingsText Title="Loading screen ..." />
-    <SettingsExport EnableClientSideExportAPI="true" ExcelExportMode="WYSIWYG" />
-    <Styles>
-        <LoadingPanel CssClass="cssLoadingPanel" HorizontalAlign="Center" VerticalAlign="Middle" />
-        <TitlePanel Font-Bold="true" />
-    </Styles>
-    <Columns>
-        <dx:GridViewDataColumn Name="RowKey" FieldName="RowKey" Visible="false" />
-    </Columns>
-    <Toolbars>
-        <dx:GridViewToolbar ItemAlign="Right">
-            <Items>
-                <dx:GridViewToolbarItem Name="More" Text="More">
-                    <Items>
-                        <dx:GridViewToolbarItem Name="Inspect" Text="Inspect" />
-                        <dx:GridViewToolbarItem Name="Designer" Text="Designer" Command="Custom" Target="_blank" />
-                        <dx:GridViewToolbarItem Name="ExportToPdf" Command="ExportToPdf" />
-                        <dx:GridViewToolbarItem Name="ExportToXlsx" Command="ExportToXlsx" />
-                    </Items>
-                </dx:GridViewToolbarItem>
-                <dx:GridViewToolbarItem Name="Search" Text="Search" Image-IconID="actions_search_16x16devav"  />
-                <dx:GridViewToolbarItem Name="Quit" Text="Quit" Image-IconID="actions_cancel_16x16" />
-                <dx:GridViewToolbarItem Name="Divider" Text="" Enabled="false"  ItemStyle-Width="100%" />
-                <dx:GridViewToolbarItem Name="New" Command="New" />
-            </Items>
-        </dx:GridViewToolbar>
-    </Toolbars>
-    <Templates>
-        <DetailRow>
-            <dx:ASPxPageControl ID="pgGridTabs" ClientInstanceName="pgGridTabs" Theme="" runat="server" Width="100%" OnInit="pgGridTabs_Init">
-            </dx:ASPxPageControl>
-        </DetailRow>
-    </Templates>    
-</dx:ASPxGridView>
+<div id="externalDropZone" class="dropZoneExternal">
+    <div id="dropZone" class="hidden">
+        <span class="dropZoneText">Drop a CSV file here to import</span>
+    </div>
+    <dx:ASPxGridView ID="dxGrid" ClientInstanceName="dxGrid" runat="server" Theme="" DataSourceID="MyTableData" AutoGenerateColumns="false" Width="100%" KeyFieldName="RowKey" CssClass="cssSmallFont"
+        OnInit="dxGrid_Init" OnLoad="dxGrid_Load" OnCustomJSProperties="dxGrid_CustomJSProperties" OnCustomCallback="dxGrid_CustomCallback" OnSummaryDisplayText="dxGrid_SummaryDisplayText" OnCustomColumnDisplayText="dxGrid_CustomColumnDisplayText"
+        OnBeforeColumnSortingGrouping="dxGrid_BeforeColumnSortingGrouping" OnInitNewRow="dxGrid_InitNewRow" OnToolbarItemClick="dxGrid_ToolbarItemClick"
+        OnRowValidating="dxGrid_RowValidating" OnRowUpdating="dxGrid_RowUpdating" OnRowInserting="dxGrid_RowInserting" OnStartRowEditing="dxGrid_StartRowEditing">
+        <ClientSideEvents Init="dxGrid_Init" />
+        <ClientSideEvents BeginCallback="dxGrid_BeginCallback" />
+        <ClientSideEvents EndCallback="dxGrid_EndCallback" />
+        <ClientSideEvents DetailRowExpanding="dxGrid_DetailRowExpanding" />
+        <ClientSideEvents DetailRowCollapsing="dxGrid_DetailRowCollapsing" />
+        <ClientSideEvents FocusedRowChanged="dxGrid_FocusedRowChanged" />
+        <ClientSideEvents ToolbarItemClick="dxGrid_ToolbarItemClick" />
+        <ClientSideEvents RowDblClick="dxGrid_RowDblClick" />
+        <ClientSideEvents ContextMenu="dxGrid_ContextMenu" />
+        <Settings ShowGroupPanel="true" ShowGroupedColumns="true" ShowTitlePanel="true" ShowFooter="true" />
+        <SettingsBehavior ColumnResizeMode="Control" AllowSelectSingleRowOnly="true" AllowFocusedRow="true" AllowSelectByRowClick="true" ConfirmDelete="true" />
+        <SettingsDetail AllowOnlyOneMasterRowExpanded="true" />
+        <SettingsEditing Mode="Inline" NewItemRowPosition="Bottom" />
+        <SettingsLoadingPanel Mode="ShowAsPopup" />
+        <SettingsPager Mode="ShowAllRecords" />
+        <SettingsText Title="Loading screen ..." />
+        <SettingsExport EnableClientSideExportAPI="true" ExcelExportMode="WYSIWYG" />
+        <Styles>
+            <LoadingPanel CssClass="cssLoadingPanel" HorizontalAlign="Center" VerticalAlign="Middle" />
+            <TitlePanel Font-Bold="true" />
+        </Styles>
+        <Columns>
+            <dx:GridViewDataColumn Name="RowKey" FieldName="RowKey" Visible="false" />
+        </Columns>
+        <Toolbars>
+            <dx:GridViewToolbar ItemAlign="Right">
+                <Items>
+                    <dx:GridViewToolbarItem Name="More" Text="More">
+                        <Items>
+                            <dx:GridViewToolbarItem Name="Inspect" Text="Inspect" />
+                            <dx:GridViewToolbarItem Name="Designer" Text="Designer" Command="Custom" Target="_blank" />
+                            <dx:GridViewToolbarItem Name="ExportToPdf" Command="ExportToPdf" />
+                            <dx:GridViewToolbarItem Name="ExportToXlsx" Command="ExportToXlsx" />
+                        </Items>
+                    </dx:GridViewToolbarItem>
+                    <dx:GridViewToolbarItem Name="Search" Text="Search" Image-IconID="actions_search_16x16devav"  />
+                    <dx:GridViewToolbarItem Name="Quit" Text="Quit" Image-IconID="actions_cancel_16x16" />
+                    <dx:GridViewToolbarItem Name="Divider" Text="" Enabled="false"  ItemStyle-Width="100%" />
+                    <dx:GridViewToolbarItem Name="New" Command="New" />
+                </Items>
+            </dx:GridViewToolbar>
+        </Toolbars>
+        <Templates>
+            <DetailRow>
+                <dx:ASPxPageControl ID="pgGridTabs" ClientInstanceName="pgGridTabs" Theme="" runat="server" Width="100%" OnInit="pgGridTabs_Init">
+                </dx:ASPxPageControl>
+            </DetailRow>
+        </Templates>    
+    </dx:ASPxGridView>
+</div>
 
 <asp:ObjectDataSource ID="MyTableData" runat="server" TypeName="CodeClay.CiDataSource"
     SelectMethod="SelectTable" UpdateMethod="UpdateTable" InsertMethod="InsertTable" DeleteMethod="DeleteTable"
@@ -241,3 +303,16 @@
 <dx:ASPxLoadingPanel ID="dxLoadingPanel" ClientInstanceName="dxLoadingPanel" runat="server">
     <ClientSideEvents Init="dxLoadingPanel_Init" />
 </dx:ASPxLoadingPanel>
+
+<dx:ASPxUploadControl ID="dxImportCSV" ClientInstanceName="dxImportCSV" runat="server" Theme="" Width="100%"
+    OnFileUploadComplete="dxImportCSV_FileUploadComplete" AutoStartUpload="true" CssClass="hidden">
+    <AdvancedModeSettings EnableDragAndDrop="True" EnableFileList="False" EnableMultiSelect="False" ExternalDropZoneID="externalDropZone" DropZoneText="" />
+    <ValidationSettings AllowedFileExtensions=".csv" ErrorStyle-CssClass="validationMessage" />
+    <BrowseButton Text="Select a file for upload..." />
+    <DropZoneStyle CssClass="uploadControlDropZone" />
+    <ClientSideEvents
+        DropZoneEnter="function(s, e) { if(e.dropZone.id == 'externalDropZone') setElementVisible('dropZone', true); }"
+        DropZoneLeave="function(s, e) { if(e.dropZone.id == 'externalDropZone') setElementVisible('dropZone', false); }"
+        FileUploadComplete="dxImportCSV_FileUploadComplete">
+    </ClientSideEvents>
+</dx:ASPxUploadControl>

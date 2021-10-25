@@ -1,6 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
-<CiReport>
-  <Url>CustomerOrderInvoicePDF.xml</Url>
-  <Designer>false</Designer>
-  <ReportSQL>?exec spCustomerOrders_Invoice_sel @CustomerOrderNo,@Currency,@DiscountType</ReportSQL>
-</CiReport>

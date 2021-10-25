@@ -1,0 +1,153 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CiTable>
+  <TableName>fCustomerDetail</TableName>
+  <TableCaption>Customer Detail</TableCaption>
+  <DefaultView>Card</DefaultView>
+  <RowKey>CustomerID</RowKey>
+  <CiField>
+    <FieldName>DummyForInsert</FieldName>
+    <Hidden>true</Hidden>
+  </CiField>
+  <CiTextField>
+    <FieldName>CustomerID</FieldName>
+    <Caption>Customer ID</Caption>
+    <Editable>false</Editable>
+    <Mask>None</Mask>
+  </CiTextField>
+  <CiComboField>
+    <FieldName>BranchCode</FieldName>
+    <Caption>Branch</Caption>
+    <Editable>false</Editable>
+    <DropdownSQL>select Code from Dropdown where Category = 'Branch' order by Code</DropdownSQL>
+    <Mask>None</Mask>
+  </CiComboField>
+  <CiTextField>
+    <FieldName>LastName</FieldName>
+    <Caption>Last Name</Caption>
+    <Mask>None</Mask>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>OtherNames</FieldName>
+    <Caption>Other Names</Caption>
+    <Mask>None</Mask>
+  </CiTextField>
+  <CiDateField>
+    <FieldName>DateOfBirth</FieldName>
+    <Caption>Date of birth</Caption>
+    <Mask>None</Mask>
+  </CiDateField>
+  <CiTextField>
+    <FieldName>Age</FieldName>
+    <Caption>Age</Caption>
+    <Editable>false</Editable>
+    <Mask>None</Mask>
+  </CiTextField>
+  <CiMemoField>
+    <FieldName>Address</FieldName>
+    <Caption>Address</Caption>
+    <Mask>None</Mask>
+  </CiMemoField>
+  <CiComboField>
+    <FieldName>CountryCode</FieldName>
+    <Caption>Country</Caption>
+    <DropdownSQL>select Code, Description from Dropdown where Category = 'Country' order by Code</DropdownSQL>
+    <TextFieldName>CountryName</TextFieldName>
+    <Mask>None</Mask>
+  </CiComboField>
+  <CiTextField>
+    <FieldName>Postcode</FieldName>
+    <Caption>Postcode</Caption>
+    <Mask>None</Mask>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>Email</FieldName>
+    <Caption>Email</Caption>
+    <Mask>None</Mask>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>Mobile</FieldName>
+    <Caption>Mobile</Caption>
+    <Mask>None</Mask>
+  </CiTextField>
+  <CiComboField>
+    <FieldName>Referrer</FieldName>
+    <Caption>Referrer</Caption>
+    <DropdownSQL>select Code from Dropdown where Category = 'Referrer' order by Code</DropdownSQL>
+    <Mask>None</Mask>
+  </CiComboField>
+  <CiCurrencyField>
+    <FieldName>Points</FieldName>
+    <Caption>Points</Caption>
+    <Editable>false</Editable>
+    <Summary>Sum</Summary>
+    <Mask>None</Mask>
+  </CiCurrencyField>
+  <CiTable src="fCustomerDetail.886.pux?ParentID=@ID">
+    <TableName>fCustomerDetail.886</TableName>
+    <CiTextField>
+      <FieldName>EditParentID</FieldName>
+      <Caption>Parent ID</Caption>
+      <Hidden>true</Hidden>
+      <Width>10</Width>
+      <Mask>None</Mask>
+      <Hidden lang="sql">select 1 from Singleton where @ParentID is not null</Hidden>
+    </CiTextField>
+    <CiTextField>
+      <FieldName>ID</FieldName>
+      <Caption>ID</Caption>
+      <Hidden>true</Hidden>
+      <Editable>false</Editable>
+      <Searchable>true</Searchable>
+      <Width>10</Width>
+      <Mask>None</Mask>
+    </CiTextField>
+    <SelectMacro>
+      <ActionSQL>?exec spCustomerOrders_selbyCustomerID @CustomerID</ActionSQL>
+    </SelectMacro>
+  </CiTable>
+  <CiTable src="fCustomerDetail.FC2.pux?ParentID=@ID">
+    <TableName>fCustomerDetail.FC2</TableName>
+    <CiTextField>
+      <FieldName>EditParentID</FieldName>
+      <Caption>Parent ID</Caption>
+      <Hidden>true</Hidden>
+      <Width>10</Width>
+      <Mask>None</Mask>
+      <Hidden lang="sql">select 1 from Singleton where @ParentID is not null</Hidden>
+    </CiTextField>
+    <CiTextField>
+      <FieldName>ID</FieldName>
+      <Caption>ID</Caption>
+      <Hidden>true</Hidden>
+      <Editable>false</Editable>
+      <Searchable>true</Searchable>
+      <Width>10</Width>
+      <Mask>None</Mask>
+    </CiTextField>
+    <SelectMacro>
+      <ActionSQL>
+                select
+                CP.CustomerID,
+                CP.ProductID,
+                CP.ProductID as OriginalProductID,
+                P.ProductName,
+                coalesce(P.UnitSellingPrice,0.00) as RetailPrice,
+                coalesce(CP.DiscountedSellPrice,0.00) as DiscountedPrice
+                from CustomerPriceList CP
+                inner join Product P
+                on CP.ProductID = P.ProductID
+                where CP.CustomerID = @CustomerID
+                order by P.ProductName
+            </ActionSQL>
+    </SelectMacro>
+  </CiTable>
+  <SelectMacro>
+    <ActionSQL>?exec spCustomer_sel @CustomerID</ActionSQL>
+  </SelectMacro>
+  <UpdateMacro>
+    <ActionSQL>
+		    ?exec spCustomer_upd @CustomerID, @BranchCode, @LastName, @OtherNames, @DateOfBirth, @Address, @CountryCode,
+		    @Postcode, @Email, @Mobile, @Referrer
+	    </ActionSQL>
+  </UpdateMacro>
+</CiTable>

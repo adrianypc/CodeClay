@@ -14,6 +14,10 @@
     <Caption>App Name</Caption>
     <Hidden>true</Hidden>
   </CiField>
+  <CiField>
+    <FieldName>ParentTableID</FieldName>
+    <Hidden>true</Hidden>
+  </CiField>
   <CiTextField>
     <FieldName>TableID</FieldName>
     <Caption>Form ID</Caption>
@@ -22,13 +26,6 @@
   <CiTextField>
     <FieldName>TableName</FieldName>
     <Caption>Form Name</Caption>
-  </CiTextField>
-  <CiTextField>
-    <FieldName>OldTableName</FieldName>
-    <Caption>Form Name</Caption>
-    <Computed>true</Computed>
-    <Value>TableName</Value>
-    <Hidden>true</Hidden>
   </CiTextField>
   <CiTextField>
     <FieldName>Caption</FieldName>
@@ -114,19 +111,16 @@
     </UpdateMacro>
   </CiTable>
   <CiTable src="CiMacroList.pux" />
-  <CiTable src="CiSubTableList.pux?AppID=@AppID&amp;TableID=@TableID&amp;Bound=false">
-    <TableCaption>Subtable List</TableCaption>
-  </CiTable>
+  <CiTable src="CiSubFormList.pux?AppID=@AppID&amp;TableID=@TableID" />
   <SelectMacro>
     <ActionSQL>?exec spTable_sel @AppID, @TableID, false</ActionSQL>
   </SelectMacro>
   <UpdateMacro>
     <ActionSQL>
       exec spTable_updLong @AppID, @TableID, @TableName, @Src, @Caption, @DefaultView,
-        @LayoutUrl, @ColCount, @BubbleUpdate, @QuickInsert, @InsertRowAtBottom,
-        @DoubleClickMacroName
+        @LayoutUrl, @ColCount, @BubbleUpdate, @QuickInsert, @InsertRowAtBottom, @DoubleClickMacroName
     </ActionSQL>
-    <ActionSQL>select @AppID as AppID, @TableID as TableID, @OldTableName as OldTableName</ActionSQL>
+    <ActionSQL>select @AppID as AppID, 1 as RecompileApp</ActionSQL>
     <CiSerializeMacro>
       <Direction>Download</Direction>
     </CiSerializeMacro>

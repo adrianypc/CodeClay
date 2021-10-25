@@ -314,7 +314,7 @@ namespace CodeClay
             MyWebUtils.GetBySQL("exec spTable_updLong " +
                 "@AppID, @TableID, @TableName, @Src, @Caption, @DefaultView, " +
                 "@LayoutUrl, @ColCount, @BubbleUpdate, @QuickInsert, @InsertRowAtBottom, " +
-                "@DoubleClickMacroName,	null",
+                "@DoubleClickMacroName",
                 drPluginDefinition,
                 0);
         }

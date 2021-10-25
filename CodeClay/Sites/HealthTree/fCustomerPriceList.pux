@@ -1,0 +1,69 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CiTable>
+  <TableName>fCustomerPriceList</TableName>
+  <TableCaption>Customer Price List</TableCaption>
+  <InsertRowAtBottom>false</InsertRowAtBottom>
+  <RowKey>CustomerID,ProductID</RowKey>
+  <CiField>
+    <FieldName>DummyForInsert</FieldName>
+    <Hidden>true</Hidden>
+  </CiField>
+  <CiTextField>
+    <FieldName>CustomerID</FieldName>
+    <Caption>Customer ID</Caption>
+    <Hidden>true</Hidden>
+    <Editable>false</Editable>
+    <Mask>None</Mask>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>OriginalProductID</FieldName>
+    <Hidden>true</Hidden>
+    <Mask>None</Mask>
+  </CiTextField>
+  <CiComboField>
+    <FieldName>ProductID</FieldName>
+    <Caption>Product</Caption>
+    <DropdownSQL>select ProductID,ProductName from Product order by ProductName</DropdownSQL>
+    <TextFieldName>ProductName</TextFieldName>
+    <DropdownWidth>800</DropdownWidth>
+    <Mask>None</Mask>
+  </CiComboField>
+  <CiCurrencyField>
+    <FieldName>RetailPrice</FieldName>
+    <Caption>Unit Selling Price (Retail)</Caption>
+    <Editable>false</Editable>
+    <Mask>None</Mask>
+  </CiCurrencyField>
+  <CiCurrencyField>
+    <FieldName>DiscountedPrice</FieldName>
+    <Caption>Unit Selling Price (Discounted)</Caption>
+    <Mask>None</Mask>
+  </CiCurrencyField>
+  <DefaultMacro>
+    <ActionSQL>select @CustomerID as CustomerID</ActionSQL>
+  </DefaultMacro>
+  <InsertMacro>
+    <ActionSQL>
+		    insert into CustomerPriceList (CustomerID,ProductID,DiscountedSellPrice) values 
+            (@CustomerID,@ProductID,@DiscountedPrice)
+	    </ActionSQL>
+  </InsertMacro>
+  <UpdateMacro>
+    <ActionSQL>
+		    update CustomerPriceList set
+                ProductID = @ProductID,
+                DiscountedSellPrice = @DiscountedPrice
+            where CustomerID = @CustomerID 
+            and ProductID = @OriginalProductID
+	    </ActionSQL>
+  </UpdateMacro>
+  <DeleteMacro>
+    <ActionSQL>delete from CustomerPriceList where CustomerID = @CustomerID and ProductID = @ProductID</ActionSQL>
+  </DeleteMacro>
+  <CiFieldExitMacro>
+    <FieldName>ProductID</FieldName>
+    <ActionSQL>
+            select UnitSellingPrice as RetailPrice from Product where ProductID = @ProductID
+        </ActionSQL>
+  </CiFieldExitMacro>
+</CiTable>

@@ -18,6 +18,7 @@ using System.Xml.Serialization;
 using CodistriCore;
 using DevExpress.Web;
 using DevExpress.XtraPrinting;
+using LumenWorks.Framework.IO.Csv;
 
 namespace CodeClay
 {
@@ -1105,8 +1106,8 @@ namespace CodeClay
             int scrollableHeight = Convert.ToInt32(MyUtils.Coalesce(GetClientValue("ScrollableHeight"), 0));
             if (scrollableHeight > 0)
             {
-                dxGrid.Settings.VerticalScrollableHeight = scrollableHeight;
-                dxGrid.Settings.VerticalScrollBarMode = ScrollBarMode.Visible;
+                //dxGrid.Settings.VerticalScrollableHeight = scrollableHeight;
+                //dxGrid.Settings.VerticalScrollBarMode = ScrollBarMode.Visible;
             }
         }
 
@@ -1118,8 +1119,8 @@ namespace CodeClay
             int scrollableHeight = Convert.ToInt32(MyUtils.Coalesce(GetClientValue("ScrollableHeight"), 0));
             if (scrollableHeight > 0)
             {
-                dxGrid.Settings.VerticalScrollableHeight = scrollableHeight;
-                dxGrid.Settings.VerticalScrollBarMode = ScrollBarMode.Visible;
+                //dxGrid.Settings.VerticalScrollableHeight = scrollableHeight;
+                //dxGrid.Settings.VerticalScrollBarMode = ScrollBarMode.Visible;
             }
         }
 
@@ -1230,6 +1231,44 @@ namespace CodeClay
 		}
 
         // --------------------------------------------------------------------------------------------------
+        // Event Handlers (UploadControl)
+        // --------------------------------------------------------------------------------------------------
+
+        protected void dxImportCSV_FileUploadComplete(object sender, FileUploadCompleteEventArgs e)
+        {
+            UploadedFile uploadedFile = e.UploadedFile;
+            if (uploadedFile != null)
+            {
+                DataRow drParams = GetState();
+                DataTable dtCSV = new DataTable();
+                using (CsvReader csvReader = new CsvReader(new StreamReader(uploadedFile.FileContent), true))
+                {
+                    dtCSV.Load(csvReader);
+                }
+
+                if (CiTable != null)
+                {
+                    CiMacro ciInsertMacro = CiTable.InsertMacro;
+                    if (ciInsertMacro != null)
+                    {
+                        foreach (DataRow drCSV in dtCSV.Rows)
+                        {
+                            ciInsertMacro.Run(drCSV);
+                            string errorText = ciInsertMacro.ErrorMessage;
+                            if (!MyUtils.IsEmpty(errorText))
+                            {
+                                e.ErrorText = errorText;
+                                break;
+                            }
+                        }
+
+                        e.CallbackData = CiTable.TableName;
+                    }
+                }
+            }
+        }
+
+        // --------------------------------------------------------------------------------------------------
         // Event Handlers (ObjectDataSource)
         // --------------------------------------------------------------------------------------------------
 
@@ -1266,7 +1305,7 @@ namespace CodeClay
 
         protected void MyTableData_Selected(object sender, ObjectDataSourceStatusEventArgs e)
         {
-            if (e.OutputParameters.Count > 0 && CiTable != null)
+            if (e.OutputParameters.Count > 0)
             {
                 string script = MyUtils.Coalesce(e.OutputParameters["Script"], "").ToString();
                 if (!MyUtils.IsEmpty(script))
@@ -1289,8 +1328,8 @@ namespace CodeClay
                 if (rowCount > 10)
                 {
                     int scrollableHeight = (rowCount < 20) ? 250 : 700;
-                    dxGrid.Settings.VerticalScrollBarMode = ScrollBarMode.Visible;
-                    dxGrid.Settings.VerticalScrollableHeight = scrollableHeight;
+                    //dxGrid.Settings.VerticalScrollBarMode = ScrollBarMode.Visible;
+                    //dxGrid.Settings.VerticalScrollableHeight = scrollableHeight;
                     SetClientValue("ScrollableHeight", scrollableHeight);
                 }
             }
@@ -2457,7 +2496,7 @@ namespace CodeClay
             MyWebUtils.GetBySQL("exec spTable_updLong " +
                 "@AppID, @TableID, @TableName, @Src, @Caption, @DefaultView, " +
                 "@LayoutUrl, @ColCount, @BubbleUpdate, @QuickInsert, @InsertRowAtBottom, " +
-                "@DoubleClickMacroName,	null",
+                "@DoubleClickMacroName",
                 drPluginDefinition,
                 0);
         }
@@ -2494,26 +2533,25 @@ namespace CodeClay
             xDummyField.Add(new XElement("Hidden", true));
             xPluginDefinition.Add(xDummyField);
 
-            DataTable dtSubTable = MyWebUtils.GetBySQL("select * from dbo.fnGetSubTablesFromSrc(@AppID, @TableID)", drPluginDefinition, 0);
-            if (dtSubTable != null)
-            {
-                foreach (DataRow drSubTable in dtSubTable.Rows)
-                {
-                    string tableName = MyWebUtils.GetStringField(drSubTable, "TableName");
-                    if (!MyUtils.IsEmpty(tableName))
-                    {
-                        XElement xTable = new XElement("CiTable");
-                        xPluginDefinition.Add(xTable);
+            //DataTable dtSubTable = MyWebUtils.GetBySQL("select * from dbo.fnGetSubTablesFromSrc(@AppID, @TableID)", drPluginDefinition, 0);
+            //if (dtSubTable != null)
+            //{
+            //    foreach (DataRow drSubTable in dtSubTable.Rows)
+            //    {
+            //        string tableName = MyWebUtils.GetStringField(drSubTable, "TableName");
+            //        if (!MyUtils.IsEmpty(tableName))
+            //        {
+            //            XElement xTable = new XElement("CiTable");
+            //            xPluginDefinition.Add(xTable);
 
-                        XElement xTableName = new XElement("TableName", tableName);
-                        xTable.Add(xTableName);
+            //            XElement xTableName = new XElement("TableName", tableName);
+            //            xTable.Add(xTableName);
 
-                        XElement xHidden = new XElement("Hidden", true);
-                        xTable.Add(xHidden);
-                    }
-                }
-            }
-
+            //            XElement xHidden = new XElement("Hidden", true);
+            //            xTable.Add(xHidden);
+            //        }
+            //    }
+            //}
         }
 
         protected override void UploadDerivedValues(DataRow drPluginDefinition, XElement xPluginDefinition)
@@ -2522,6 +2560,8 @@ namespace CodeClay
 
             if (drPluginDefinition != null && xPluginDefinition != null)
             {
+                drPluginDefinition["TableName"] = Convert.DBNull;
+
                 foreach (XAttribute xProperty in xPluginDefinition.Attributes())
                 {
                     string xPropertyName = xProperty.Name.ToString();
@@ -2575,45 +2615,57 @@ namespace CodeClay
             // Do nothing
         }
 
-        protected override List<XiPlugin> GetXiChildPlugins()
-        {
-            return new List<XiPlugin>() {};
-        }
-
         protected override void WriteToDB(DataRow drPluginDefinition)
         {
-            object objSubTableID = null;
             DataTable dtPluginDefinition = drPluginDefinition.Table;
+            DataTable dtSrcTable = null;
+            object objSrcTableID = null;
 
             if (dtPluginDefinition != null)
             {
                 DataColumnCollection dcPluginDefinition = dtPluginDefinition.Columns;
-
                 if (!dcPluginDefinition.Contains("SubTableID"))
                 {
                     dcPluginDefinition.Add("SubTableID");
                 }
 
-                DataTable dtSubTable = MyWebUtils.GetBySQL("select TableID from CiTable where AppID = @AppID and TableName = @Src", drPluginDefinition);
+                dtSrcTable = MyWebUtils.GetBySQL("select TableID from CiTable where AppID = @AppID and TableName = @Src", drPluginDefinition);
 
-                if (MyWebUtils.GetNumberOfRows(dtSubTable) == 0)
+                if (MyWebUtils.GetNumberOfRows(dtSrcTable) == 0)
                 {
-                    objSubTableID = MyWebUtils.EvalSQL("?exec spTable_ins @AppID, @TableName, @Caption", drPluginDefinition);
+                    objSrcTableID = MyWebUtils.EvalSQL("?exec spTable_ins @AppID, @Src, @Caption", drPluginDefinition);
                 }
                 else
                 {
-                    objSubTableID = MyWebUtils.GetField(dtSubTable.Rows[0], "TableID");
+                    objSrcTableID = MyWebUtils.GetField(dtSrcTable.Rows[0], "TableID");
                 }
 
-                drPluginDefinition["SubTableID"] = objSubTableID;
-                MyWebUtils.GetBySQL("exec spSubTable_upd @AppID, @TableID, @SubTableID", drPluginDefinition);
+                bool? bound = MyWebUtils.GetField<bool>(drPluginDefinition, "Bound");
+                if (bound.HasValue && bound.Value)
+                {
+                    drPluginDefinition["SubTableID"] = objSrcTableID;
+                    MyWebUtils.GetBySQL("exec spSubTable_upd @AppID, @TableID, @SubTableID", drPluginDefinition);
+                }
+                else
+                {
+                    drPluginDefinition["SubTableID"] = MyWebUtils.EvalSQL("?exec spSubTable_ins @AppID, @TableID, @Src", drPluginDefinition);
+                }
             }
+        }
+
+        protected override DataRow GetRowKeyValues(DataRow drPluginDefinition, XElement xPluginDefinition)
+        {
+            DataRow drKey =  base.GetRowKeyValues(drPluginDefinition, xPluginDefinition);
+            drKey["TableID"] = drPluginDefinition["SubTableID"];
+
+            return drKey;
         }
 
         protected override void DownloadDerivedValues(DataRow drPluginDefinition, XElement xPluginDefinition)
         {
             if (drPluginDefinition != null)
             {
+                // Download Src attribute
                 XAttribute xSrc = xPluginDefinition.Attribute("src");
                 if (xSrc == null)
                 {

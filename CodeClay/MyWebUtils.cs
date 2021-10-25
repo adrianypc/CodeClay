@@ -111,6 +111,10 @@ namespace CodeClay
                     if (dc != null && dc.Contains(fieldName))
                     {
                         object value = dr[fieldName];
+                        if (Convert.IsDBNull(value))
+                        {
+                            value = null;
+                        }
 
                         if (value != null)
                         {

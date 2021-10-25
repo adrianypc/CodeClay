@@ -1,0 +1,85 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CiTable>
+  <TableName>fCustomerOrderPayment</TableName>
+  <TableCaption>Manual Payment</TableCaption>
+  <RowKey>CustomerOrderNo,PaymentNo</RowKey>
+  <CiField>
+    <FieldName>DummyForInsert</FieldName>
+    <Hidden>true</Hidden>
+  </CiField>
+  <CiField>
+    <FieldName>CustomerOrderNo</FieldName>
+    <Hidden>true</Hidden>
+    <Mask>None</Mask>
+  </CiField>
+  <CiField>
+    <FieldName>PaymentNo</FieldName>
+    <Hidden>true</Hidden>
+    <Mask>None</Mask>
+  </CiField>
+  <CiDateField>
+    <FieldName>PaymentDate</FieldName>
+    <Caption>Date</Caption>
+    <Mandatory>true</Mandatory>
+    <Mask>None</Mask>
+  </CiDateField>
+  <CiTextField>
+    <FieldName>PaymentBy</FieldName>
+    <Caption>Author</Caption>
+    <Width>20</Width>
+    <Mask>None</Mask>
+  </CiTextField>
+  <CiCurrencyField>
+    <FieldName>PaymentAmount</FieldName>
+    <Caption>Payment ($)</Caption>
+    <Mandatory>true</Mandatory>
+    <Width>20</Width>
+    <Mask>None</Mask>
+  </CiCurrencyField>
+  <DefaultMacro>
+    <ActionSQL>
+            select
+                @CustomerOrderNo as CustomerOrderNo,
+                current_timestamp as PaymentDate,
+                (select coalesce(OtherNames+' '+Surname,'') from ApplicationUser where Email = @CI_UserEmail) as PaymentBy,
+                coalesce(CO.TotalAmount,0) -  coalesce(sum(coalesce(PaymentAmount,0)),0) as PaymentAmount
+            from CustomerOrders CO
+            left outer join CustomerOrderPayment P
+            on CO.CustomerOrderNo = P.CustomerOrderNo
+            where CO.CustomerOrderNo = @CustomerOrderNo
+            group by CO.TotalAmount
+        </ActionSQL>
+  </DefaultMacro>
+  <SelectMacro>
+    <ActionSQL>
+            select  CustomerOrderNo,
+                    PaymentNo,
+                    PaymentDate,
+                    PaymentBy,
+                    cast(PaymentAmount as decimal(10,2)) as PaymentAmount
+            from CustomerOrderPayment
+            where CustomerOrderNo = @CustomerOrderNo
+        </ActionSQL>
+  </SelectMacro>
+  <InsertMacro>
+    <ActionSQL>
+            select isnull(1 + max(PaymentNo), 1) as PaymentNo 
+            from CustomerOrderPayment 
+            where CustomerOrderNo = @CustomerOrderNo
+        </ActionSQL>
+    <ActionSQL>
+            insert into CustomerOrderPayment (CustomerOrderNo,PaymentNo,PaymentDate,PaymentBy,PaymentAmount) values
+            (@CustomerOrderNo,@PaymentNo,@PaymentDate,@PaymentBy,@PaymentAmount)
+        </ActionSQL>
+  </InsertMacro>
+  <UpdateMacro>
+    <ActionSQL>
+            update CustomerOrderPayment set
+                PaymentDate = @PaymentDate,
+                PaymentBy = @PaymentBy,
+                PaymentAmount = @PaymentAmount
+            where CustomerOrderNo = @CustomerOrderNo
+            and PaymentNo = @PaymentNo
+        </ActionSQL>
+  </UpdateMacro>
+</CiTable>

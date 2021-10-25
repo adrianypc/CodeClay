@@ -1,0 +1,58 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CiTable>
+  <TableName>fDropShipping</TableName>
+  <TableCaption>Drop Shipping</TableCaption>
+  <RowKey>CustomerOrderNo,ItemLineNo</RowKey>
+  <CiField>
+    <FieldName>DummyForInsert</FieldName>
+    <Hidden>true</Hidden>
+  </CiField>
+  <CiTextField>
+    <FieldName>CustomerOrderNo</FieldName>
+    <Hidden>true</Hidden>
+    <Mask>None</Mask>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>ItemLineNo</FieldName>
+    <Caption>Line#</Caption>
+    <Editable>false</Editable>
+    <Width>20</Width>
+    <Mask>None</Mask>
+  </CiTextField>
+  <CiLinkField>
+    <FieldName>DropFileURL</FieldName>
+    <Caption>Drop Shipping File</Caption>
+    <Width>50</Width>
+    <Mask>None</Mask>
+    <Folder lang="sql">select 'SavedFiles\CustomerOrderDrops\' + ltrim(str(@CustomerOrderNo)) + '\F' + ltrim(str(@ItemLineNo))</Folder>
+  </CiLinkField>
+  <DefaultMacro>
+    <ActionSQL>
+            select  isnull(1 + max(ItemLineNo), 1) as ItemLineNo,
+            @CustomerOrderNo as CustomerOrderNo
+            from    DropShipping where CustomerOrderNo = @CustomerOrderNo
+        </ActionSQL>
+  </DefaultMacro>
+  <SelectMacro>
+    <ActionSQL>
+            select CustomerOrderNo,ItemLineNo,DropFileURL from DropShipping where CustomerOrderNo = @CustomerOrderNo order by ItemLineNo 
+        </ActionSQL>
+  </SelectMacro>
+  <InsertMacro>
+    <ActionSQL>
+			insert into DropShipping (CustomerOrderNo,ItemLineNo,DropFileURL) values (@CustomerOrderNo,@ItemLineNo,@DropFileURL)
+		</ActionSQL>
+  </InsertMacro>
+  <UpdateMacro>
+    <ActionSQL>
+			update	DropShipping
+			set		DropFileURL = @DropFileURL
+			where	CustomerOrderNo = @CustomerOrderNo and ItemLineNo = @ItemLineNo
+		</ActionSQL>
+  </UpdateMacro>
+  <DeleteMacro>
+    <ActionSQL>
+            delete from DropShipping where	CustomerOrderNo = @CustomerOrderNo and ItemLineNo = @ItemLineNo
+        </ActionSQL>
+  </DeleteMacro>
+</CiTable>
