@@ -257,11 +257,11 @@ function RunKeyPress(sender, key) {
     if (dxTable && dxTable.IsEditing()) {
         switch (key) {
             case 13:
-                dxTable.Command = "Update";
+                dxTable.cpCommand = "Update";
                 dxTable.UpdateEdit();
                 break;
             case 27:
-                dxTable.Command = "Cancel";
+                dxTable.cpCommand = "Cancel";
                 dxTable.CancelEdit();
                 break;
         }

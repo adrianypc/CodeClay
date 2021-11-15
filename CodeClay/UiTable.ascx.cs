@@ -898,28 +898,46 @@ namespace CodeClay
 
         protected void dxCard_CardInserting(object sender, DevExpress.Web.Data.ASPxDataInsertingEventArgs e)
         {
-            dxCard.SettingsPager.SettingsTableLayout.RowsPerPage = 1;
+            this.dxCard.SettingsPager.SettingsTableLayout.RowsPerPage = 1;
             e.Cancel = !ValidationOK("New");
             UiApplication.Me.SetCommandFired(CiTable.TableName, "UpdateNew");
+
+            ASPxCardView dxCard = sender as ASPxCardView;
+            if (dxCard != null)
+            {
+                dxCard.JSProperties["cpCommand"] = "UpdateNew";
+            }
         }
 
         protected void dxCard_CardUpdating(object sender, DevExpress.Web.Data.ASPxDataUpdatingEventArgs e)
         {
             e.Cancel = !ValidationOK("Edit");
             UiApplication.Me.SetCommandFired(CiTable.TableName, "Update");
+
+            ASPxCardView dxCard = sender as ASPxCardView;
+            if (dxCard != null)
+            {
+                dxCard.JSProperties["cpCommand"] = "Update";
+            }
         }
 
         protected void dxCard_CancelCardEditing(object sender, ASPxStartCardEditingEventArgs e)
         {
-            dxCard.SettingsPager.SettingsTableLayout.RowsPerPage = 1;
-            dxCard.DataBind(); // Allows label text to be displayed
+            ASPxCardView dxCard = sender as ASPxCardView;
+            if (dxCard != null)
+            { 
+                dxCard.SettingsPager.SettingsTableLayout.RowsPerPage = 1;
+                dxCard.DataBind(); // Allows label text to be displayed
 
-            if (dxCard.IsNewCardEditing && CiTable != null)
-            {
-                foreach (string key in CiTable.RowKeyNames)
+                if (dxCard.IsNewCardEditing && CiTable != null)
                 {
-                    SetClientValue(key, this[key]);
+                    foreach (string key in CiTable.RowKeyNames)
+                    {
+                        SetClientValue(key, this[key]);
+                    }
                 }
+
+                dxCard.JSProperties["cpCommand"] = "Cancel";
             }
         }
 
@@ -1080,12 +1098,41 @@ namespace CodeClay
         {
             e.Cancel = !ValidationOK("New");
             UiApplication.Me.SetCommandFired(CiTable.TableName, "UpdateNew");
+
+            ASPxGridView dxGrid = sender as ASPxGridView;
+            if (dxGrid != null)
+            {
+                dxGrid.JSProperties["cpCommand"] = "UpdateNew";
+            }
         }
 
         protected void dxGrid_RowUpdating(object sender, DevExpress.Web.Data.ASPxDataUpdatingEventArgs e)
         {
             e.Cancel = !ValidationOK("Edit");
             UiApplication.Me.SetCommandFired(CiTable.TableName, "Update");
+
+            ASPxGridView dxGrid = sender as ASPxGridView;
+            if (dxGrid != null)
+            {
+                dxGrid.JSProperties["cpCommand"] = "Update";
+            }
+        }
+
+        protected void dxGrid_CancelRowEditing(object sender, ASPxStartRowEditingEventArgs e)
+        {
+            ASPxGridView dxGrid = sender as ASPxGridView;
+            if (dxGrid != null)
+            {
+                if (dxGrid.IsNewRowEditing && CiTable != null)
+                {
+                    foreach (string key in CiTable.RowKeyNames)
+                    {
+                        SetClientValue(key, this[key]);
+                    }
+                }
+
+                dxGrid.JSProperties["cpCommand"] = "Cancel";
+            }
         }
 
         protected void dxGrid_BeforeColumnSortingGrouping(object sender, ASPxGridViewBeforeColumnGroupingSortingEventArgs e)
@@ -1102,26 +1149,12 @@ namespace CodeClay
             RunDefaultMacro(dxGrid, e);
             ProcessGridCommand();
             AddAcceptCancelColumn();
-
-            int scrollableHeight = Convert.ToInt32(MyUtils.Coalesce(GetClientValue("ScrollableHeight"), 0));
-            if (scrollableHeight > 0)
-            {
-                //dxGrid.Settings.VerticalScrollableHeight = scrollableHeight;
-                //dxGrid.Settings.VerticalScrollBarMode = ScrollBarMode.Visible;
-            }
         }
 
         protected void dxGrid_StartRowEditing(object sender, ASPxStartRowEditingEventArgs e)
         {
             ProcessGridCommand();
             AddAcceptCancelColumn();
-
-            int scrollableHeight = Convert.ToInt32(MyUtils.Coalesce(GetClientValue("ScrollableHeight"), 0));
-            if (scrollableHeight > 0)
-            {
-                //dxGrid.Settings.VerticalScrollableHeight = scrollableHeight;
-                //dxGrid.Settings.VerticalScrollBarMode = ScrollBarMode.Visible;
-            }
         }
 
         protected void dxGrid_ToolbarItemClick(object source, DevExpress.Web.Data.ASPxGridViewToolbarItemClickEventArgs e)
@@ -1773,6 +1806,17 @@ namespace CodeClay
                     {
                         dxMenuItem.Visible = false;
                     }
+                }
+
+                dxMenuItem = dxMoreMenu.Items.FindByName("ShareURL");
+                if (dxMenuItem != null)
+                {
+                    dxMenuItem.Visible = (CiTable.CiParentTable == null);
+                    string shareURL = HttpContext.Current.Request.Url.GetLeftPart(UriPartial.Authority);
+                    shareURL += ResolveUrl("~/");
+                    shareURL += string.Format("Default.aspx?{0}", MyWebUtils.QueryString);
+
+                    dxMenuItem.NavigateUrl = string.Format("javascript:copyToClipboard('{0}')", shareURL);
                 }
             }
         }

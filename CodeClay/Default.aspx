@@ -75,6 +75,8 @@
         }
     </script>
 
+    <textarea id="myClipboard" style="display:none"></textarea>
+
     <asp:Panel ID ="myOuterPanel" runat="server">
         <dx:ASPxCallbackPanel ID="myCallbackPanel" ClientInstanceName="myCallbackPanel" runat="server" OnCallback="myCallbackPanel_Callback">
             <ClientSideEvents EndCallback="myCallbackPanel_EndCallback" />

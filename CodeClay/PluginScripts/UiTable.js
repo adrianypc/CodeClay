@@ -23,7 +23,7 @@ function dxSearch_Init(sender, event) {
 
 function dxSearch_EndCallback(sender, event) {
     var dxSearch = sender;
-    var command = dxSearch.Command;
+    var command = dxSearch.cpCommand;
     var tableName = dxSearch.cpTableName;
 
     switch (command) {
@@ -69,24 +69,20 @@ function dxCard_FocusedCardChanged(sender, event) {
 function dxCard_BeginCallback(sender, event) {
 	var dxCard = sender;
     var tableName = dxCard.cpTableName;
-    var command = dxCard.Command;
+    var command = dxCard.cpCommand;
 
     if (typeof command == 'undefined') {
         command = event.command;
     }
 
     SetCommand(tableName, command);
-
-    if (command == "Update" && dxCard.IsNewCardEditing()) {
-        dxCard.Command = "UpdateNew";
-    }
 }
 
 function dxCard_EndCallback(sender, event) {
     var dxCard = sender;
     var tableName = dxCard.cpTableName;
     var quickInsert = dxCard.cpQuickInsert;
-    var command = dxCard.Command;
+    var command = dxCard.cpCommand;
     var script = dxCard.cpScript;
     var isInvalid = dxCard.cpIsInvalid;
 
@@ -100,7 +96,7 @@ function dxCard_EndCallback(sender, event) {
         case "UpdateNew":
             if (quickInsert && !isInvalid) {
                 if (confirm("Do you wish to add another record?")) {
-                    dxCard.Command = "New";
+                    dxCard.cpCommand = "New";
                     dxCard.AddNewCard();
                 }
             }
@@ -123,7 +119,7 @@ function dxCard_EndCallback(sender, event) {
 
     	default:
     		if (command) {
-    			dxCard.Command = null;
+                dxCard.cpCommand = null;
     			dxCard.Refresh();
     		}
     		break;
@@ -182,29 +178,25 @@ function dxGrid_DetailRowCollapsing(sender, event) {
 function dxGrid_BeginCallback(sender, event) {
 	var dxGrid = sender;
     var tableName = dxGrid.cpTableName;
-    var command = dxGrid.Command;
+    var command = dxGrid.cpCommand;
 
     if (typeof command == 'undefined') {
         command = event.command;
     }
 
 	SetCommand(tableName, command);
-
-    if (command == "Update" && dxGrid.IsNewRowEditing()) {
-        dxGrid.Command = "UpdateNew";
-    }
 }
 
 function dxGrid_EndCallback(sender, event) {
 	var dxGrid = sender;
     var tableName = dxGrid.cpTableName;
     var quickInsert = dxGrid.cpQuickInsert;
-    var command = dxGrid.Command;
+    var command = dxGrid.cpCommand;
     var script = dxGrid.cpScript;
     var expandedRowIndex = dxGrid.ExpandedRowIndex;
     var isInvalid = dxGrid.cpIsInvalid;
 
-    dxGrid.Command = null;
+    dxGrid.cpCommand = null;
 
     switch (command) {
         case "New":
@@ -223,7 +215,7 @@ function dxGrid_EndCallback(sender, event) {
         case "UpdateNew":
             if (quickInsert && !isInvalid) {
                 if (confirm("Do you wish to add another record?")) {
-                    dxGrid.Command = "New";
+                    dxGrid.cpCommand = "New";
                     dxGrid.AddNewRow();
                 }
             }
@@ -252,7 +244,7 @@ function dxGrid_EndCallback(sender, event) {
 
     InitAllToolbars(dxGrid);
 
-    SetCommand(tableName, dxGrid.Command);
+    SetCommand(tableName, dxGrid.cpCommand);
 
     if (script) {
         dxGrid.cpScript = null;
@@ -267,12 +259,12 @@ function dxGrid_FocusedRowChanged(sender, event) {
 
     if (checkFocusedRow && (dxGrid.IsEditing() || dxGrid.IsNewRowEditing())) {
         if (dxGrid.ExpandedRowIndex < 0) {
-        	dxGrid.Command = "Update";
+            dxGrid.cpCommand = "Update";
         	alert("Saving changes on the last edited record");
             dxGrid.UpdateEdit();
 		}
         else {
-        	dxGrid.Command = "Cancel";
+            dxGrid.cpCommand = "Cancel";
         	alert("Discarding changes on the last edited record");
             dxGrid.CancelEdit();
             dxGrid.ExpandDetailRow(dxGrid.ExpandedRowIndex);
@@ -381,7 +373,7 @@ function ClickToolbar(table, event, isSearching) {
     var command = event.item.name;
 
     if (command != "Inspect") {
-        table.Command = command;
+        table.cpCommand = command;
         SetCommand(tableName, command);
     }
 
@@ -532,7 +524,7 @@ function dxPopupMenu_ItemClick(sender, event) {
         var isCrudMacro = true;
 
         if (dxTable) {
-            dxTable.Command = command;
+            dxTable.cpCommand = command;
             var rowIndex = dxTable.GetFocusedRowIndex();
 
             switch (command) {
@@ -639,6 +631,20 @@ function dxImportCSV_FileUploadComplete(sender, event) {
     }
 }
 
+// --------------------------------------------------------------------------------------------------
+// Other functions
+// --------------------------------------------------------------------------------------------------
+
 function setElementVisible(elementId, visible) {
     document.getElementById(elementId).className = visible ? "" : "hidden";
+}
+
+function copyToClipboard(text) {
+    var content = document.getElementById('myClipboard');
+
+    content.style.display = "block";
+    content.value = text;
+    content.select();
+    document.execCommand('copy');
+    content.style.display = "none";
 }

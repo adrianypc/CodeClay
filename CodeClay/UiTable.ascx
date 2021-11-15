@@ -155,6 +155,7 @@
                         <dx:CardViewToolbarItem Name="Inspect" Text="Inspect" />
                         <dx:CardViewToolbarItem Name="Designer" Text="Designer" Command="Custom" Target="_blank" />
                         <dx:CardViewToolbarItem Name="ExportToPdf" Command="ExportToPdf" />
+                        <dx:CardViewToolbarItem Name="ShareURL" Text="Share URL" Command="Custom" />
                     </Items>
                 </dx:CardViewToolbarItem>
                 <dx:CardViewToolbarItem Name="Search" Text="Search" Image-IconID="actions_search_16x16devav" />
@@ -193,7 +194,7 @@
     <dx:ASPxGridView ID="dxGrid" ClientInstanceName="dxGrid" runat="server" Theme="" DataSourceID="MyTableData" AutoGenerateColumns="false" Width="100%" KeyFieldName="RowKey" CssClass="cssSmallFont"
         OnInit="dxGrid_Init" OnLoad="dxGrid_Load" OnCustomJSProperties="dxGrid_CustomJSProperties" OnCustomCallback="dxGrid_CustomCallback" OnSummaryDisplayText="dxGrid_SummaryDisplayText" OnCustomColumnDisplayText="dxGrid_CustomColumnDisplayText"
         OnBeforeColumnSortingGrouping="dxGrid_BeforeColumnSortingGrouping" OnInitNewRow="dxGrid_InitNewRow" OnToolbarItemClick="dxGrid_ToolbarItemClick"
-        OnRowValidating="dxGrid_RowValidating" OnRowUpdating="dxGrid_RowUpdating" OnRowInserting="dxGrid_RowInserting" OnStartRowEditing="dxGrid_StartRowEditing">
+        OnRowValidating="dxGrid_RowValidating" OnRowUpdating="dxGrid_RowUpdating" OnRowInserting="dxGrid_RowInserting" OnCancelRowEditing="dxGrid_CancelRowEditing" OnStartRowEditing="dxGrid_StartRowEditing">
         <ClientSideEvents Init="dxGrid_Init" />
         <ClientSideEvents BeginCallback="dxGrid_BeginCallback" />
         <ClientSideEvents EndCallback="dxGrid_EndCallback" />
@@ -227,6 +228,7 @@
                             <dx:GridViewToolbarItem Name="Designer" Text="Designer" Command="Custom" Target="_blank" />
                             <dx:GridViewToolbarItem Name="ExportToPdf" Command="ExportToPdf" />
                             <dx:GridViewToolbarItem Name="ExportToXlsx" Command="ExportToXlsx" />
+                            <dx:GridViewToolbarItem Name="ShareURL" Text="Share URL" Command="Custom" />
                         </Items>
                     </dx:GridViewToolbarItem>
                     <dx:GridViewToolbarItem Name="Search" Text="Search" Image-IconID="actions_search_16x16devav"  />

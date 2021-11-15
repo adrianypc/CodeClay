@@ -1,8 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <CiApplication>
   <AppName>HealthTree</AppName>
-  <Theme>RedWine</Theme>
-  <ThemeColor></ThemeColor>
+  <HomePluginSrc>fCustomers.pux</HomePluginSrc>
+  <Theme>Youthful</Theme>
+  <ThemeColor>#efb01d</ThemeColor>
   <IsDesigner>true</IsDesigner>
   <ProviderName>System.Data.SqlClient</ProviderName>
   <ConnectionString>Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=HealthTree;Integrated Security=True;Connect Timeout=300</ConnectionString>
