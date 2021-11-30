@@ -1,0 +1,204 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CiTable>
+  <TableName>fSupplierOrderItems</TableName>
+  <BubbleUpdate>true</BubbleUpdate>
+  <RowKey>IsTransferred,ProductID,SupplierOrderNo</RowKey>
+  <CiField>
+    <FieldName>DummyForInsert</FieldName>
+    <Hidden>true</Hidden>
+  </CiField>
+  <TableCaption lang="sql">
+        select
+            case when @IsTransferred = cast(1 as bit) then 'Transfer Order Items'
+            else 'Supplier Order Items'
+        end
+    </TableCaption>
+  <CiField>
+    <FieldName>SupplierOrderNo</FieldName>
+    <Hidden>true</Hidden>
+    <Mask>None</Mask>
+  </CiField>
+  <CiField>
+    <FieldName>IsTransferred</FieldName>
+    <Hidden>true</Hidden>
+    <Mask>None</Mask>
+  </CiField>
+  <CiField>
+    <FieldName>CurrentProductID</FieldName>
+    <Hidden>true</Hidden>
+    <Mask>None</Mask>
+  </CiField>
+  <CiField>
+    <FieldName>SupplierOrderItemNo</FieldName>
+    <Caption>Line#</Caption>
+    <Width>5</Width>
+    <Mask>None</Mask>
+  </CiField>
+  <CiComboField>
+    <FieldName>ProductID</FieldName>
+    <Caption>Product</Caption>
+    <Width>20</Width>
+    <DropdownSQL>select ProductID,ProductName from Product order by ProductName</DropdownSQL>
+    <TextFieldName>ProductName</TextFieldName>
+    <DropdownWidth>800</DropdownWidth>
+    <Mask>None</Mask>
+  </CiComboField>
+  <CiNumericField>
+    <FieldName>Quantity</FieldName>
+    <Caption>Qty Ordered</Caption>
+    <Width>8</Width>
+    <Mask>None</Mask>
+    <Editable lang="sql">select 1 from SupplierOrders where SupplierOrderNo = @SupplierOrderNo and status in ('Open','Active')</Editable>
+  </CiNumericField>
+  <CiNumericField>
+    <FieldName>QuantityReceived</FieldName>
+    <Caption>Qty Received</Caption>
+    <Width>8</Width>
+    <Mask>None</Mask>
+    <Editable lang="sql">select 1 from SupplierOrders where SupplierOrderNo = @SupplierOrderNo and status = 'Active'</Editable>
+  </CiNumericField>
+  <CiCurrencyField>
+    <FieldName>Price</FieldName>
+    <Caption>Price ($)</Caption>
+    <Width>6</Width>
+    <Mask>None</Mask>
+  </CiCurrencyField>
+  <CiDateField>
+    <FieldName>ExpiryDate</FieldName>
+    <Caption>Expiry Date</Caption>
+    <Width>8</Width>
+    <Mask>None</Mask>
+    <Editable lang="sql">select 1 from SupplierOrders where SupplierOrderNo = @SupplierOrderNo and status = 'Active'</Editable>
+  </CiDateField>
+  <CiNumericField>
+    <FieldName>UnitWeight</FieldName>
+    <Caption>Unit Weight (g)</Caption>
+    <Editable>false</Editable>
+    <Width>10</Width>
+    <Mask>None</Mask>
+    <Hidden lang="sql">select 1 from tblSingleton where @IsTransferred = cast(0 as bit)</Hidden>
+  </CiNumericField>
+  <CiCurrencyField>
+    <FieldName>UnitCost</FieldName>
+    <Caption>Unit Cost ($)</Caption>
+    <Editable>false</Editable>
+    <Width>8</Width>
+    <Mask>None</Mask>
+    <Hidden lang="sql">select 1 from tblSingleton where @IsTransferred = cast(0 as bit)</Hidden>
+  </CiCurrencyField>
+  <CiTextField>
+    <FieldName>ManufactureCountry</FieldName>
+    <Caption>Manufacture Country</Caption>
+    <Editable>false</Editable>
+    <Width>10</Width>
+    <Mask>None</Mask>
+    <Hidden lang="sql">select 1 from tblSingleton where @IsTransferred = cast(0 as bit)</Hidden>
+  </CiTextField>
+  <CiNumericField>
+    <FieldName>ExtendedWeight</FieldName>
+    <Caption>Ext. Weight</Caption>
+    <Editable>false</Editable>
+    <Width>8</Width>
+    <Mask>None</Mask>
+    <Hidden lang="sql">select 1 from tblSingleton where @IsTransferred = cast(0 as bit)</Hidden>
+  </CiNumericField>
+  <CiCurrencyField>
+    <FieldName>ExtendedCost</FieldName>
+    <Caption>Ext. Cost ($)</Caption>
+    <Editable>false</Editable>
+    <Width>8</Width>
+    <Mask>None</Mask>
+    <Hidden lang="sql">select 1 from tblSingleton where @IsTransferred = cast(0 as bit)</Hidden>
+  </CiCurrencyField>
+  <CiTextField>
+    <FieldName>Location</FieldName>
+    <Caption>Location</Caption>
+    <Editable>false</Editable>
+    <Width>8</Width>
+    <Mask>None</Mask>
+    <Hidden lang="sql">select 1 from tblSingleton where @IsTransferred = cast(0 as bit)</Hidden>
+  </CiTextField>
+  <DefaultMacro>
+    <ActionSQL>
+            select coalesce(1 + max(SupplierOrderItemNo), 1) as SupplierOrderItemNo,
+                    @SupplierOrderNo as SupplierOrderNo
+            from SupplierOrderItems
+            where SupplierOrderNo = @SupplierOrderNo
+        </ActionSQL>
+  </DefaultMacro>
+  <SelectMacro>
+    <ActionSQL>?exec spSupplierOrderItems_selbySupplierOrderNo @SupplierOrderNo</ActionSQL>
+  </SelectMacro>
+  <InsertMacro>
+    <ActionSQL>
+            select coalesce(1 + max(SupplierOrderItemNo), 1) as SupplierOrderItemNo
+            from SupplierOrderItems
+            where SupplierOrderNo = @SupplierOrderNo
+        </ActionSQL>
+    <ActionSQL>
+            ?exec spSupplierOrderItems_upd
+            @SupplierOrderItemNo,
+            @SupplierOrderNo,
+            @CurrentProductID,
+            @ProductID,
+            @Quantity,
+            @QuantityReceived,
+            @Price,
+            @ExpiryDate
+        </ActionSQL>
+    <VisibleSQL>select 1 from SupplierOrders where SupplierOrderNo = @SupplierOrderNo and Status not in ('Received','Cancelled')</VisibleSQL>
+  </InsertMacro>
+  <UpdateMacro>
+    <ActionSQL>
+            ?exec spSupplierOrderItems_upd
+            @SupplierOrderItemNo,
+            @SupplierOrderNo,
+            @CurrentProductID,
+            @ProductID,
+            @Quantity,
+            @QuantityReceived,
+            @Price,
+            @ExpiryDate
+        </ActionSQL>
+    <VisibleSQL>
+            select 1 from SupplierOrderItems SOI
+            inner join SupplierOrders SO
+            on SOI.SupplierOrderNo = SO.SupplierOrderNo
+            where SOI.SupplierOrderNo = @SupplierOrderNo
+            and SOI.SupplierOrderItemNo = @SupplierOrderItemNo
+            and SO.Status not in ('Received','Cancelled')
+        </VisibleSQL>
+  </UpdateMacro>
+  <DeleteMacro>
+    <ActionSQL>exec spSupplierOrderItems_del @SupplierOrderItemNo,@SupplierOrderNo</ActionSQL>
+    <VisibleSQL>
+            select 1 from SupplierOrderItems SOI
+            inner join SupplierOrders SO
+            on SOI.SupplierOrderNo = SO.SupplierOrderNo
+            where SOI.SupplierOrderNo = @SupplierOrderNo
+            and SOI.SupplierOrderItemNo = @SupplierOrderItemNo
+            and SO.Status not in ('Received','Cancelled')
+        </VisibleSQL>
+  </DeleteMacro>
+  <CiFieldExitMacro>
+    <FieldName>ProductID</FieldName>
+    <FieldName>Quantity</FieldName>
+    <ActionSQL>select FromBranchCode as BranchCode from SupplierOrders where SupplierOrderNo = @SupplierOrderNo</ActionSQL>
+    <ActionSQL>
+            select
+                coalesce(P.Weight,0.0) as UnitWeight,
+                coalesce(P.UnitCostPrice,0.00) as UnitCost,
+                coalesce(P.ManufactureCountry,'') as ManufactureCountry,
+                @Quantity * coalesce(P.Weight,0.0) as ExtendedWeight,
+                @Quantity * coalesce(P.UnitCostPrice,0.00) as ExtendedCost,
+                coalesce(I.Location,'') as Location,
+                case when @Price &gt; 0 then coalesce(@Price,0) else  @Quantity * coalesce(P.UnitCostPrice,0) end as Price
+            from Product P
+            inner join Inventory I
+            on P.ProductID = I.ProductID
+            and I.BranchCode = @BranchCode
+            and I.Status = 'Active'
+            where	P.ProductID = @ProductID
+        </ActionSQL>
+  </CiFieldExitMacro>
+</CiTable>

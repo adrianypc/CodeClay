@@ -2461,6 +2461,12 @@ namespace CodeClay
         }
 
         // --------------------------------------------------------------------------------------------------
+        // Properties
+        // --------------------------------------------------------------------------------------------------
+
+        private Hashtable mPropertySQL = new Hashtable();
+
+        // --------------------------------------------------------------------------------------------------
         // Methods (Override)
         // --------------------------------------------------------------------------------------------------
 
@@ -2543,6 +2549,25 @@ namespace CodeClay
                 "@DoubleClickMacroName",
                 drPluginDefinition,
                 0);
+
+            DataColumnCollection dcPluginDefinition = drPluginDefinition.Table.Columns;
+
+            if (!dcPluginDefinition.Contains("SQLType"))
+            {
+                dcPluginDefinition.Add("SQLType");
+            }
+
+            if (!dcPluginDefinition.Contains("SQL"))
+            {
+                dcPluginDefinition.Add("SQL");
+            }
+
+            foreach (string sqlType in mPropertySQL.Keys)
+            {
+                drPluginDefinition["SQLType"] = sqlType;
+                drPluginDefinition["SQL"] = mPropertySQL[sqlType];
+                MyWebUtils.GetBySQL("exec spAttributeSQL_upd @AppID, @TableID, @SQLType, @SQL", drPluginDefinition, 0);
+            }
         }
 
         protected override void DownloadDerivedValues(DataRow drPluginDefinition, XElement xPluginDefinition)
@@ -2577,25 +2602,30 @@ namespace CodeClay
             xDummyField.Add(new XElement("Hidden", true));
             xPluginDefinition.Add(xDummyField);
 
-            //DataTable dtSubTable = MyWebUtils.GetBySQL("select * from dbo.fnGetSubTablesFromSrc(@AppID, @TableID)", drPluginDefinition, 0);
-            //if (dtSubTable != null)
-            //{
-            //    foreach (DataRow drSubTable in dtSubTable.Rows)
-            //    {
-            //        string tableName = MyWebUtils.GetStringField(drSubTable, "TableName");
-            //        if (!MyUtils.IsEmpty(tableName))
-            //        {
-            //            XElement xTable = new XElement("CiTable");
-            //            xPluginDefinition.Add(xTable);
+            DataTable dtAttributeSQL = MyWebUtils.GetBySQL("?exec spAttributeSQL_sel @AppID, @TableID", drPluginDefinition, 0);
+            foreach (DataRow drAttributeSQL in dtAttributeSQL.Rows)
+            {
+                string sqlType = MyWebUtils.GetStringField(drAttributeSQL, "SQLType");
+                string SQL = MyWebUtils.GetStringField(drAttributeSQL, "SQL");
+                string xPropertyName = GetXPropertyName(typeof(CiTable), sqlType);
 
-            //            XElement xTableName = new XElement("TableName", tableName);
-            //            xTable.Add(xTableName);
+                XElement xSQLType = xPluginDefinition.Element(xPropertyName);
+                if (xSQLType == null)
+                {
+                    xSQLType = new XElement(xPropertyName);
+                    xPluginDefinition.Add(xSQLType);
+                }
 
-            //            XElement xHidden = new XElement("Hidden", true);
-            //            xTable.Add(xHidden);
-            //        }
-            //    }
-            //}
+                XAttribute xLang = xSQLType.Attribute("lang");
+                if (xLang == null)
+                {
+                    xLang = new XAttribute("lang", "");
+                    xSQLType.Add(xLang);
+                }
+
+                xLang.Value = "sql";
+                xSQLType.Value = SQL;
+            }
         }
 
         protected override void UploadDerivedValues(DataRow drPluginDefinition, XElement xPluginDefinition)
@@ -2630,6 +2660,15 @@ namespace CodeClay
                         case "TableCaption":
                             drPluginDefinition["Caption"] = xProperty.Value;
                             break;
+                    }
+                }
+
+                mPropertySQL.Clear();
+                foreach (XElement xProperty in xPluginDefinition.Elements())
+                {
+                    if (xProperty.Attributes("lang").Count() > 0)
+                    {
+                        mPropertySQL[xProperty.Name.ToString()] = xProperty.Value;
                     }
                 }
             }

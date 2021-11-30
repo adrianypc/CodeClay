@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <CiTable>
-  <TableName>fCustomerDetail</TableName>
-  <TableCaption>Customer Detail</TableCaption>
+  <TableName>fCustomerDetails</TableName>
+  <TableCaption>Customer Details</TableCaption>
   <DefaultView>Card</DefaultView>
   <RowKey>CustomerID</RowKey>
   <CiField>

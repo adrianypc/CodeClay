@@ -1,0 +1,51 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<CiTable>
+  <TableName>CiAttributeSQL</TableName>
+  <TableCaption>Attribute SQL</TableCaption>
+  <DefaultView>Grid</DefaultView>
+  <RowKey>SQLType</RowKey>
+  <CiField>
+    <FieldName>AppID</FieldName>
+    <Hidden>true</Hidden>
+  </CiField>
+  <CiField>
+    <FieldName>TableID</FieldName>
+    <Hidden>true</Hidden>
+  </CiField>
+  <CiComboField>
+    <FieldName>SQLType</FieldName>
+    <Width>20</Width>
+    <DropdownSQL>select Code from Dropdown where Category = 'AttributeSQLType' order by Code</DropdownSQL>
+    <Editable lang="sql">select 1 from Singleton where @SQLType is null</Editable>
+  </CiComboField>
+  <CiMemoField>
+    <FieldName>SQL</FieldName>
+  </CiMemoField>
+  <SelectMacro>
+    <ActionSQL>?exec spAttributeSQL_sel @AppID, @TableID</ActionSQL>
+  </SelectMacro>
+  <InsertMacro>
+    <ActionSQL>exec spAttributeSQL_upd @AppID, @TableID, @SQLType, @SQL</ActionSQL>
+    <ActionSQL>select @AppID as AppID, @TableID as TableID</ActionSQL>
+    <NavigatePos>Parent</NavigatePos>
+    <CiSerializeMacro>
+      <Direction>Download</Direction>
+    </CiSerializeMacro>
+  </InsertMacro>
+  <UpdateMacro>
+    <ActionSQL>exec spAttributeSQL_upd @AppID, @TableID, @SQLType, @SQL</ActionSQL>
+    <ActionSQL>select @AppID as AppID, @TableID as TableID</ActionSQL>
+    <NavigatePos>Parent</NavigatePos>
+    <CiSerializeMacro>
+      <Direction>Download</Direction>
+    </CiSerializeMacro>
+  </UpdateMacro>
+  <DeleteMacro>
+    <ActionSQL>exec spAttributeSQL_del @AppID, @TableID, @SQLType</ActionSQL>
+    <ActionSQL>select @AppID as AppID, @TableID as TableID</ActionSQL>
+    <NavigatePos>Parent</NavigatePos>
+    <CiSerializeMacro>
+      <Direction>Download</Direction>
+    </CiSerializeMacro>
+  </DeleteMacro>
+</CiTable>

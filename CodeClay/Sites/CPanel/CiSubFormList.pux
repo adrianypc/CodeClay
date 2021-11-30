@@ -11,12 +11,6 @@
     <Hidden>true</Hidden>
   </CiField>
   <CiField>
-    <FieldName>SavedTableID</FieldName>
-    <Hidden>true</Hidden>
-    <Computed>true</Computed>
-    <Value>TableID</Value>
-  </CiField>
-  <CiField>
     <FieldName>TableID</FieldName>
     <Caption>Table ID</Caption>
     <Hidden>true</Hidden>
@@ -42,23 +36,23 @@
     <ActionSQL>?exec spSubTable_sel @AppID, @TableID</ActionSQL>
   </SelectMacro>
   <InsertMacro>
-    <ActionSQL>exec spSubTable_ins  @AppID, @TableID, @SubTableSrc</ActionSQL>
+    <ActionSQL>?exec spSubTable_ins  @AppID, @TableID, @SubTableSrc</ActionSQL>
+    <ActionSQL>select @AppID as AppID, 1 as RecompileApp</ActionSQL>
     <CiSerializeMacro>
-      <ActionSQL>select @AppID as AppID, @SavedTableID as TableID</ActionSQL>
       <Direction>Download</Direction>
     </CiSerializeMacro>
   </InsertMacro>
   <UpdateMacro>
     <ActionSQL>exec spSubTable_upd  @AppID, @TableID, @SubTableID, @SubTableSrc</ActionSQL>
+    <ActionSQL>select @AppID as AppID, 1 as RecompileApp</ActionSQL>
     <CiSerializeMacro>
-      <ActionSQL>select @AppID as AppID, @SavedTableID as TableID</ActionSQL>
       <Direction>Download</Direction>
     </CiSerializeMacro>
   </UpdateMacro>
   <DeleteMacro>
     <ActionSQL>exec spTable_del  @AppID, @SubTableID</ActionSQL>
+    <ActionSQL>select @AppID as AppID, 1 as RecompileApp</ActionSQL>
     <CiSerializeMacro>
-      <ActionSQL>select @AppID as AppID, @SavedTableID as TableID</ActionSQL>
       <Direction>Download</Direction>
     </CiSerializeMacro>
   </DeleteMacro>

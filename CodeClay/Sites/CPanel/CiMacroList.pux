@@ -48,7 +48,7 @@
   <CiComboField>
     <FieldName>NavigateUrl</FieldName>
     <Caption>Navigate URL</Caption>
-    <DropdownSQL>select TableName + '.pux' as PuxFile from CiTable where AppID = @AppID and TableID != @TableID and Bound = 0 order by TableName</DropdownSQL>
+    <DropdownSQL>select TableName + '.pux' as PuxFile from CiTable where AppID = @AppID and Bound = 0 and ParentTableID is null order by TableName</DropdownSQL>
     <InsertSQL>select 1 from Singleton</InsertSQL>
     <Editable lang="sql">select 1 from Singleton where @Type not in ('Select', 'Insert', 'Update', 'Delete', 'Default') </Editable>
     <DropdownWidth>200</DropdownWidth>

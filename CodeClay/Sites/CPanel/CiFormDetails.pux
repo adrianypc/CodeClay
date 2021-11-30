@@ -78,6 +78,9 @@
     <Caption>Form Url</Caption>
     <Editable>false</Editable>
   </CiLinkField>
+  <CiTable src="CiAttributeSQLList.pux">
+    <TableName>AttributeSQLList</TableName>
+  </CiTable>
   <CiTable src="CiFieldList.pux">
     <CiCheckField>
       <FieldName>Hidden</FieldName>

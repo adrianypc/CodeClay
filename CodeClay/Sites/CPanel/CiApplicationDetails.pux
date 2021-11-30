@@ -39,7 +39,7 @@
   <CiComboField>
     <FieldName>HomePluginSrc</FieldName>
     <Caption>Home Form</Caption>
-    <DropdownSQL>select TableName as 'Form Name' from CiTable where AppID = @AppID and Bound = 0 order by TableName</DropdownSQL>
+    <DropdownSQL>select TableName as 'Form Name' from CiTable where AppID = @AppID and Bound = 0 and ParentTableID is null order by TableName</DropdownSQL>
   </CiComboField>
   <CiLinkField>
     <FieldName>AppUrl</FieldName>

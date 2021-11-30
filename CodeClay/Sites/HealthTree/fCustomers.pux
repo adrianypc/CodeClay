@@ -108,7 +108,7 @@
   <CiMacro>
     <MacroName>CustomerDetail</MacroName>
     <Caption>Customer Detail</Caption>
-    <NavigateUrl>fCustomerDetail.pux</NavigateUrl>
+    <NavigateUrl>fCustomerDetails.pux</NavigateUrl>
     <NavigatePos>Popup</NavigatePos>
     <ActionSQL>select @CustomerID as CustomerID</ActionSQL>
   </CiMacro>
