@@ -1,0 +1,49 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CiTable>
+  <TableName>fCustomerOrderInvoicePDF</TableName>
+  <TableCaption>Customer Order Invoice</TableCaption>
+  <DefaultView>Card</DefaultView>
+  <RowKey>CustomerOrderNo</RowKey>
+  <CiField>
+    <FieldName>DummyForInsert</FieldName>
+    <Hidden>true</Hidden>
+  </CiField>
+  <CiTextField>
+    <FieldName>CustomerOrderNo</FieldName>
+    <Caption>Customer Order #</Caption>
+    <Editable>false</Editable>
+    <Mask>None</Mask>
+  </CiTextField>
+  <CiComboField>
+    <FieldName>Currency</FieldName>
+    <Caption>Show Currency</Caption>
+    <Mask>None</Mask>
+  </CiComboField>
+  <CiComboField>
+    <FieldName>DiscountType</FieldName>
+    <Caption>Show Discount</Caption>
+    <Mask>None</Mask>
+  </CiComboField>
+  <SelectMacro>
+    <ActionSQL>
+			select
+				CO.CustomerOrderNo,
+				case
+					when C.BranchCode != 'HT-AU' then coalesce(CO.InvoiceCurrencyFormat,'SGD')
+					when C.BranchCode = 'HT-AU' then coalesce(CO.InvoiceCurrencyFormat,'AUD')
+				end as Currency,
+				coalesce(CO.InvoiceDiscountFormat,'$') as DiscountType
+			from CustomerOrders CO
+			inner join Customer C
+			on CO.CustomerID = C.CustomerID
+			where CO.CustomerOrderNo = @CustomerOrderNo
+		</ActionSQL>
+  </SelectMacro>
+  <UpdateMacro>
+    <NavigateUrl>CustomerOrderInvoicePDF.xml</NavigateUrl>
+    <NavigatePos>Report</NavigatePos>
+    <ActionSQL>
+      ?exec spCustomerOrders_Invoice_sel @CustomerOrderNo,@Currency,@DiscountType
+    </ActionSQL>
+  </UpdateMacro>
+</CiTable>

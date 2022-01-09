@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <CiTable src="fDropShipping.pux">
-  <TableName>CustomerOrder.F79</TableName>
+  <TableName>fCustomerOrder.15D</TableName>
   <RowKey>CustomerOrderNo,ID,ItemLineNo</RowKey>
   <CiField>
     <FieldName>DummyForInsert</FieldName>

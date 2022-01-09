@@ -328,7 +328,7 @@ namespace CodeClay
         {
             get
             {
-                return Get<CiMacro>().Where(c => c.GetType() == typeof(CiMacro)).ToArray();
+                return Get<CiMacro>().Where(c => (IsListableMacro(c))).ToArray();
             }
         }
 
@@ -502,6 +502,22 @@ namespace CodeClay
         {
             return MyWebUtils.Eval<string>(TableCaption, dr);
         }
+
+        // --------------------------------------------------------------------------------------------------
+        // Helpers
+        // --------------------------------------------------------------------------------------------------
+
+        private bool IsListableMacro(object objMacro)
+        {
+            CiMacro ciMacro = objMacro as CiMacro;
+
+            if (ciMacro != null)
+            {
+                return ciMacro.IsListable;
+            }
+
+            return false;
+        }
     }
 
     public partial class UiTable : UiPlugin, IUiColumn
@@ -520,7 +536,7 @@ namespace CodeClay
                     dxCard.IsNewCardEditing ||
                     dxGrid.IsNewRowEditing;
 
-                bool isFinishEditing = (command == "Update") || (command == "Cancel");
+                bool isFinishEditing = (command == "UpdateNew") || (command == "Cancel");
 
                 return isStartEditing && !isFinishEditing;
             }
@@ -534,7 +550,7 @@ namespace CodeClay
 
                 bool isStartEditing = true;
 
-                bool isFinishEditing = (command == "Update");
+                bool isFinishEditing = (command == "UpdateNew");
 
                 return isStartEditing && isFinishEditing;
             }
@@ -638,7 +654,7 @@ namespace CodeClay
 
                         bool isStartEditing = (command == "Edit") || (command == "New");
 
-                        bool isFinishEditing = (command == "Update") || (command == "Cancel");
+                        bool isFinishEditing = (command == "UpdateNew") || (command == "Update") || (command == "Cancel");
 
                         if (isStartEditing && !isFinishEditing)
                         {
@@ -943,51 +959,7 @@ namespace CodeClay
 
         protected void dxCard_ToolbarItemClick(object source, ASPxCardViewToolbarItemClickEventArgs e)
         {
-            if (CiTable != null && !MyWebUtils.IsTimeOutReached(Page))
-            {
-                string macroName = UiApplication.Me.GetCommandFired(CiTable.TableName);
-
-                switch (macroName)
-                {
-                    case "New":
-                        dxCard.SettingsPager.Visible = false;
-                        break;
-
-                    case "Edit":
-                        dxCard.SettingsPager.Visible = false;
-                        dxCard.JSProperties["cpScript"] = GetInvisibleFieldScript();
-                        break;
-
-                    case "Delete":
-                        dxCard.SettingsPager.Visible = true;
-                        break;
-
-                    case "Update":
-                    case "Cancel":
-                        CiMacro ciMacro = IsInsertSaving ? CiTable.InsertMacro : CiTable.UpdateMacro;
-                        string navigateUrl = (ciMacro != null) ? MyWebUtils.Eval<string>(ciMacro.NavigateUrl, GetState()) + "|" + ciMacro.NavigatePos : "";
-
-                        string script = "";
-                        if (!MyUtils.IsEmpty(navigateUrl))
-                        {
-                            script = string.Format("GotoUrl(\'{0}\'); ", HttpUtility.JavaScriptStringEncode(navigateUrl));
-                        }
-                        else
-                        {
-                            script = GetSearchFieldScript();
-                        }
-
-                        script += GetInvisibleFieldScript();
-
-                        dxCard.JSProperties["cpScript"] = script;
-                        dxCard.SettingsPager.Visible = true;
-                        break;
-
-                    default:
-						dxCard.JSProperties["cpScript"] = RunMacro(macroName);
-                        break;
-                }
-            }
+            ProcessCardCommand();
         }
 
         protected void dxCard_CustomCallback(object sender, ASPxCardViewCustomCallbackEventArgs e)
@@ -2403,6 +2375,58 @@ namespace CodeClay
             return script;
         }
 
+        private void ProcessCardCommand()
+        {
+            if (CiTable != null && !MyWebUtils.IsTimeOutReached(Page))
+            {
+                string macroName = UiApplication.Me.GetCommandFired(CiTable.TableName);
+
+                switch (macroName)
+                {
+                    case "New":
+                        dxCard.SettingsPager.Visible = false;
+                        break;
+
+                    case "Edit":
+                        dxCard.SettingsPager.Visible = false;
+                        dxCard.JSProperties["cpScript"] = GetInvisibleFieldScript();
+                        break;
+
+                    case "Delete":
+                        dxCard.SettingsPager.Visible = true;
+                        break;
+
+                    case "UpdateNew":
+                    case "Update":
+                    case "Cancel":
+                        string script = "";
+
+                        CiMacro ciMacro = IsInsertSaving ? CiTable.InsertMacro : CiTable.UpdateMacro;
+                        string navigatePos = ciMacro.NavigatePos;
+                        string navigateUrl = MyWebUtils.Eval<string>(ciMacro.NavigateUrl, GetState()) + "|" + navigatePos;
+
+                        if (!MyUtils.IsEmpty(navigateUrl))
+                        {
+                            script = string.Format("GotoUrl(\'{0}\'); ", HttpUtility.JavaScriptStringEncode(navigateUrl));
+                        }
+                        else
+                        {
+                            script = GetSearchFieldScript();
+                        }
+
+                        script += GetInvisibleFieldScript();
+
+                        dxCard.JSProperties["cpScript"] = script;
+                        dxCard.SettingsPager.Visible = true;
+                        break;
+
+                    default:
+                        dxCard.JSProperties["cpScript"] = RunMacro(macroName);
+                        break;
+                }
+            }
+        }
+
         private void ProcessGridCommand()
         {
             if (!MyWebUtils.IsTimeOutReached(Page) && CiTable != null)
@@ -2425,6 +2449,7 @@ namespace CodeClay
                         break;
 
                     case "Update":
+                    case "UpdateNew":
                     case "Cancel":
                         dxGrid.JSProperties["cpScript"] = GetSearchFieldScript();
                         break;
@@ -2507,6 +2532,7 @@ namespace CodeClay
             MyWebUtils.GetBySQL("exec spField_del @AppID, @TableID", drPluginKey, 0);
             MyWebUtils.GetBySQL("exec spMacro_del @AppID, @TableID", drPluginKey, 0);
             MyWebUtils.GetBySQL("exec spSubTable_del @AppID, @TableID", drPluginKey, 0);
+            MyWebUtils.GetBySQL("exec spTriggerField_del @AppID, @TableID", drPluginKey, 0);
         }
 
         protected override string GetXPropertyName(Type pluginType, string dPropertyName)
@@ -2643,9 +2669,13 @@ namespace CodeClay
                     {
                         case "src":
                             string filename = xProperty.Value;
-                            if (!MyUtils.IsEmpty(filename) && filename.ToLower().EndsWith(".pux"))
+                            if (MyWebUtils.IsPuxFile(filename))
                             {
-                                filename = filename.Substring(0, filename.Length - 4);
+                                filename = MyWebUtils.GetPuxFileName(filename);
+                                if (!MyUtils.IsEmpty(filename))
+                                {
+                                    filename = filename.Substring(0, filename.Length - 4);
+                                }
                             }
                             drPluginDefinition["src"] = filename;
                             break;

@@ -121,6 +121,9 @@ namespace CodeClay
         }
 
         [XmlIgnore]
+        public DataRow InputParams { get; set; } = null;
+
+        [XmlIgnore]
         public string ErrorMessage { get; set; } = null;
 
         [XmlIgnore]
@@ -145,12 +148,17 @@ namespace CodeClay
             }
         }
 
+        [XmlIgnore]
+        public virtual bool IsListable { get; }  = true;
+
         // --------------------------------------------------------------------------------------------------
         // Methods (Virtual)
         // --------------------------------------------------------------------------------------------------
 
         public virtual void Run(DataRow drParams, bool ignoreErrorMessage = false)
         {
+            InputParams = MyUtils.CloneDataRow(drParams);
+
             if (IsVisible(drParams))
             {
                 ErrorMessage = RunValidateSQL(drParams);
@@ -252,7 +260,19 @@ namespace CodeClay
                 return drParams.Table;
             }
 
-            return UiApplication.Me.GetBySQL(ActionSQL, drParams);
+            string[] actionSQL = ActionSQL;
+            if (NavigatePos == "Report")
+            {
+                ArrayList actionSQLList = new ArrayList(ActionSQL);
+                int length = actionSQLList.Count;
+                if (length > 0)
+                {
+                    actionSQLList.RemoveAt(length - 1);
+                    actionSQL = actionSQLList.ToArray(typeof(string)) as string[];
+                }
+            }
+
+            return UiApplication.Me.GetBySQL(actionSQL, drParams);
         }
 
         protected virtual DataTable RunChildMacros(DataTable dtInput)
@@ -305,25 +325,66 @@ namespace CodeClay
 
         protected virtual string GetResultScript(DataTable dt)
         {
-            DataRow drParams = (MyWebUtils.GetNumberOfRows(dt) > 0)
+            DataRow drParams = null;
+            string navigateUrl = null;
+            string navigatePos = NavigatePos;
+            bool isQueryStringStarted = false;
+            string parameterQueryString = "";
+
+            if (navigatePos == "Report")
+            {
+                drParams = InputParams;
+                dt = InputParams.Table;
+
+                navigateUrl = string.Format("Default.aspx?Application={0}&PluginSrc=CiReport&ReportUrl={1}",
+                    MyWebUtils.Application,
+                    MyWebUtils.Eval<string>(NavigateUrl, drParams));
+
+                int numberOfActionSQL = ActionSQL.Length;
+                if (numberOfActionSQL > 0)
+                {
+                    string reportSQL = ActionSQL[numberOfActionSQL - 1];
+                    ArrayList parameterList = MyUtils.GetParameters(reportSQL);
+
+                    ArrayList columnsToRemove = new ArrayList();
+                    foreach (DataColumn dc in dt.Columns)
+                    {
+                        if (!parameterList.Contains(dc.ColumnName))
+                        {
+                            columnsToRemove.Add(dc);
+                        }
+                    }
+
+                    foreach (DataColumn dc in columnsToRemove)
+                    {
+                        dt.Columns.Remove(dc);
+                    }
+
+                    navigateUrl += string.Format("&ReportSQL={0}", reportSQL);
+                }
+
+                navigatePos = "NewTab";
+                isQueryStringStarted = true;
+            }
+            else
+            {
+                drParams = (MyWebUtils.GetNumberOfRows(dt) > 0)
                 ? dt.Rows[0]
                 : null;
 
-            string navigateUrl = MyWebUtils.Eval<string>(NavigateUrl, drParams);
-            bool isPuxUrl = false;
+                navigateUrl = MyWebUtils.Eval<string>(NavigateUrl, drParams);
 
-            // Reformat URL if navigateUrl refers to a PUX file
-            string[] navigateUrlTokens = navigateUrl.Split('&');
-            if (!MyUtils.IsEmpty(navigateUrl) && !navigateUrl.Contains(@"\") && navigateUrlTokens[0].EndsWith(".pux"))
-            {
-                bool isPopup = !MyUtils.IsEmpty(NavigatePos) && NavigatePos.StartsWith("Popup");
+                // Reformat URL if navigateUrl refers to a PUX file
+                if (MyWebUtils.IsPuxFile(navigateUrl))
+                {
+                    bool isPopup = !MyUtils.IsEmpty(navigatePos) && navigatePos.StartsWith("Popup");
 
-                string popupQueryParameter = isPopup ? "IsPopup=Y&" : "";
-                navigateUrl = string.Format("Default.aspx?Application={0}&{1}PluginSrc={2}", MyWebUtils.Application, popupQueryParameter, navigateUrl);
-                isPuxUrl = true;
+                    string popupQueryParameter = isPopup ? "IsPopup=Y&" : "";
+                    navigateUrl = string.Format("Default.aspx?Application={0}&{1}PluginSrc={2}", MyWebUtils.Application, popupQueryParameter, navigateUrl);
+                    isQueryStringStarted = true;
+                }
             }
 
-            string parameterQueryString = "";
             if (drParams != null)
             {
                 foreach (DataColumn dc in dt.Columns)
@@ -333,7 +394,7 @@ namespace CodeClay
                     {
                         object columnValue = MyUtils.Coalesce(drParams[dc], "");
 
-                        if (!isPuxUrl)
+                        if (!isQueryStringStarted)
                         {
                             parameterQueryString += "?";
                         }
@@ -347,23 +408,13 @@ namespace CodeClay
                 }
             }
 
-            if (NavigatePos == "Previous")
-            {
-                navigateUrl = "..";
-            }
-            else if (NavigatePos == "Download")
-            {
-                navigateUrl = "";
-                return "Download('Adrian.txt', 'Something goes here')";
-            }
-
             if (!MyUtils.IsEmpty(navigateUrl))
             {
                 navigateUrl += parameterQueryString;
 
-                if (!MyUtils.IsEmpty(NavigatePos))
+                if (!MyUtils.IsEmpty(navigatePos))
                 {
-                    navigateUrl += LIST_SEPARATOR + NavigatePos;
+                    navigateUrl += LIST_SEPARATOR + navigatePos;
                 }
             }
 
@@ -405,15 +456,7 @@ namespace CodeClay
 
         protected override void Page_Load(object sender, EventArgs e)
         {
-            string script = "";
-
-            if (CiMacro != null)
-            {
-                CiMacro.Run(GetState());
-                script = CiMacro.ResultScript;
-            }
-
-            dxMacroLabel.JSProperties["cpScript"] = script;
+            Run();
         }
 
         // --------------------------------------------------------------------------------------------------
@@ -428,6 +471,19 @@ namespace CodeClay
             }
 
             return base.GetState();
+        }
+
+        public virtual void Run()
+        {
+            string script = "";
+
+            if (CiMacro != null)
+            {
+                CiMacro.Run(GetState());
+                script = CiMacro.ResultScript;
+            }
+
+            dxMacroLabel.JSProperties["cpScript"] = script;
         }
     }
 
@@ -472,6 +528,10 @@ namespace CodeClay
                     case "DELETE":
                     case "DEFAULT":
                         pluginTypeName = drPluginDefinition["MacroName"].ToString() + "Macro";
+                        break;
+
+                    case "REPORT":
+                        pluginTypeName = "CiReportMacro";
                         break;
 
                     default:
@@ -639,6 +699,12 @@ namespace CodeClay
                         drPluginDefinition["MacroName"] = macroName;
                         drPluginDefinition["Caption"] = "-";
                         drPluginDefinition["Type"] = macroName;
+                        break;
+
+                    case "CiReportMacro":
+                        drPluginDefinition["MacroName"] = MyWebUtils.GetXmlChildValue(xPluginDefinition, "MacroName");
+                        drPluginDefinition["Caption"] = MyWebUtils.GetXmlChildValue(xPluginDefinition, "Caption");
+                        drPluginDefinition["Type"] = "Report";
                         break;
 
                     case "CiFieldExitMacro":

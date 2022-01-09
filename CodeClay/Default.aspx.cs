@@ -104,7 +104,7 @@ namespace CodeClay
         {
             try
             {
-                LoadUiPlugin(CiPlugin.CreateCiPlugin(puxFile));
+                LoadUiPlugin(CiPlugin.CreateCiPluginFromFile(puxFile));
             }
             catch (Exception ex)
             {
@@ -136,7 +136,7 @@ namespace CodeClay
         {
             if (!MyUtils.IsEmpty(puxFile))
             {
-                return CreateUiPlugin(CiPlugin.CreateCiPlugin(puxFile));
+                return CreateUiPlugin(CiPlugin.CreateCiPluginFromFile(puxFile));
             }
 
             return null;

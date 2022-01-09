@@ -57,17 +57,11 @@ namespace CodeClay
 		}
 
         [XmlIgnore]
-        protected DataRow InputParams { get; set; } = null;
+        public override bool IsListable { get; } = false;
 
         // --------------------------------------------------------------------------------------------------
         // Methods (Override)
         // --------------------------------------------------------------------------------------------------
-
-        public override void Run(DataRow drParams, bool ignoreErrorMessage = false)
-        {
-            InputParams = drParams;
-            base.Run(drParams, ignoreErrorMessage);
-        }
 
         protected override string GetResultScript(DataTable dt)
         {

@@ -50,14 +50,15 @@
     <Caption>Navigate URL</Caption>
     <DropdownSQL>select TableName + '.pux' as PuxFile from CiTable where AppID = @AppID and Bound = 0 and ParentTableID is null order by TableName</DropdownSQL>
     <InsertSQL>select 1 from Singleton</InsertSQL>
-    <Editable lang="sql">select 1 from Singleton where @Type not in ('Select', 'Insert', 'Update', 'Delete', 'Default') </Editable>
+    <Editable lang="sql">select 1 from Singleton where @Type not in ('Select', 'Default') </Editable>
+    <Mandatory lang="sql">select 1 from Singleton where @Type = 'Report'</Mandatory>
     <DropdownWidth>200</DropdownWidth>
   </CiComboField>
   <CiComboField>
     <FieldName>NavigatePos</FieldName>
     <Caption>Navigate Position</Caption>
     <DropdownSQL>select Code from Dropdown where Category = 'NavigatePos' order by Code</DropdownSQL>
-    <Editable lang="sql">select 1 from Singleton where @Type not in ('Select', 'Insert', 'Update', 'Delete', 'Default') </Editable>
+    <Editable lang="sql">select 1 from Singleton where @Type not in ('Select', 'Default') </Editable>
     <Width>10</Width>
   </CiComboField>
   <CiTable src="CiMacroSQLList.pux?EntityType=CiMacro&amp;SQLType=ActionSQL">
@@ -102,6 +103,14 @@
       <Direction>Download</Direction>
     </CiSerializeMacro>
   </DeleteMacro>
+  <CiMacro>
+    <MacroName>Details</MacroName>
+    <Caption>Report Design</Caption>
+    <VisibleSQL>select 1 from Singleton where @Type is not null and @NavigateUrl is not null and @NavigatePos = 'Report'</VisibleSQL>
+    <ActionSQL>select ('Default?Application=' + AppName + '&amp;PluginSrc=CiReport&amp;ReportUrl=' + coalesce(@NavigateUrl, '') + '&amp;Designer=true') as NavigateUrl from Application where AppID = @AppID</ActionSQL>
+    <NavigateUrl lang="sql">select @NavigateUrl</NavigateUrl>
+    <NavigatePos>NewTab</NavigatePos>
+  </CiMacro>
   <CiFieldExitMacro>
     <FieldName>Type</FieldName>
     <ActionSQL>select @Type as MacroName, '-' as Caption from Singleton where @Type in ('Select', 'Insert', 'Update', 'Delete', 'Default', 'Field Exit')</ActionSQL>

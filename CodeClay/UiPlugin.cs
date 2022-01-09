@@ -69,7 +69,7 @@ namespace CodeClay
                     }
                 }
 
-                CiPlugin ciSrcPlugin = CiPlugin.CreateCiPlugin(mSrc);
+                CiPlugin ciSrcPlugin = CiPlugin.CreateCiPluginFromFile(mSrc);
                 this.Inherits(ciSrcPlugin);
 
                 foreach (string parameterName in SrcParams.Keys)
@@ -322,6 +322,81 @@ namespace CodeClay
         public XiPlugin XiPlugin { get; set; }
 
         // --------------------------------------------------------------------------------------------------
+        // Methods (Static)
+        // --------------------------------------------------------------------------------------------------
+
+        public static CiPlugin CreateCiPluginFromFile(string puxFile)
+        {
+            string pux = "";
+
+            if (MyWebUtils.IsPuxFile(puxFile))
+            {
+                string puxPath = MyWebUtils.MapPath(MyWebUtils.ApplicationFolder + @"\" + puxFile);
+
+                if (File.Exists(puxPath))
+                {
+                    pux = File.ReadAllText(puxPath);
+                }
+            }
+            else if (puxFile.StartsWith("<"))
+            {
+                pux = puxFile;
+                puxFile = null;
+            }
+            else
+            {
+                pux = string.Format("<{0} />", puxFile);
+                puxFile = null;
+            }
+
+            CiPlugin ciPlugin = CreateCiPluginFromXml(pux);
+            if (ciPlugin != null)
+            {
+                ciPlugin.PuxFile = puxFile;
+            }
+
+            return ciPlugin;
+        }
+
+        public static CiPlugin CreateCiPluginFromXml(string pux)
+        {
+            if (!pux.StartsWith("<"))
+            {
+                pux = string.Format("<{0} />", pux);
+            }
+
+            XElement pluginXML = XElement.Parse(pux);
+            string ciPluginName = pluginXML.Name.ToString();
+            Type pluginType = Type.GetType("CodeClay." + ciPluginName);
+
+            TextReader reader = new StringReader(pux);
+            if (reader != null && pluginType != null)
+            {
+                XmlSerializer serializer = new XmlSerializer(pluginType);
+                if (serializer != null)
+                {
+                    try
+                    {
+                        CiPlugin ciPlugin = serializer.Deserialize(reader) as CiPlugin;
+
+                        if (ciPlugin.GetType() != typeof(CiApplication))
+                        {
+                            ciPlugin.LoadProperties();
+                        }
+
+                        return ciPlugin;
+                    }
+                    finally
+                    {
+                        reader.Close();
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        // --------------------------------------------------------------------------------------------------
         // Methods (Virtual)
         // --------------------------------------------------------------------------------------------------
 
@@ -366,70 +441,6 @@ namespace CodeClay
                 PuxFile = ciSrcPlugin.PuxFile;
                 CiPlugins = ciSrcPlugin.CiPlugins;
             }
-        }
-
-        public static CiPlugin CreateCiPlugin(string pux, bool isFile = true)
-        {
-            if (isFile)
-            {
-                string puxContents = "";
-
-                if (pux.ToLower().EndsWith(".pux"))
-                {
-                    string puxPath = MyWebUtils.MapPath(MyWebUtils.ApplicationFolder + @"\" + pux);
-
-                    if (File.Exists(puxPath))
-                    {
-                        puxContents = File.ReadAllText(puxPath);
-                    }
-                }
-                else
-                {
-                    puxContents = pux;
-                }
-
-                CiPlugin ciPlugin = CreateCiPlugin(puxContents, false);
-                if (ciPlugin != null)
-                {
-                    ciPlugin.PuxFile = pux;
-                }
-
-                return ciPlugin;
-            }
-            else
-            {
-                string puxContents = pux;
-
-                if (!puxContents.StartsWith("<"))
-                {
-                    puxContents = string.Format("<{0} />", puxContents);
-                }
-
-                XElement pluginXML = XElement.Parse(puxContents);
-                string ciPluginName = pluginXML.Name.ToString();
-                Type pluginType = Type.GetType("CodeClay." + ciPluginName);
-
-                TextReader reader = new StringReader(puxContents);
-                if (reader != null && pluginType != null)
-                {
-                    XmlSerializer serializer = new XmlSerializer(pluginType);
-                    if (serializer != null)
-                    {
-                        try
-                        {
-                            CiPlugin ciPlugin = serializer.Deserialize(reader) as CiPlugin;
-
-                            return ciPlugin;
-                        }
-                        finally
-                        {
-                            reader.Close();
-                        }
-                    }
-                }
-            }
-
-            return null;
         }
 
         public virtual UiPlugin CreateUiPlugin(Page webPage)
@@ -503,6 +514,32 @@ namespace CodeClay
         public virtual object GetNativeValue(object pluginValue)
         {
             return !MyUtils.IsEmpty(pluginValue) ? pluginValue : Convert.DBNull;
+        }
+
+
+        public virtual void LoadProperties()
+        {
+            foreach (PropertyInfo p in GetType().GetProperties())
+            {
+                string key = p.Name;
+                object propertyValue = p.GetValue(this);
+                object queryStringValue = MyWebUtils.QueryString[key];
+                if (!MyUtils.IsEmpty(key) && !MyUtils.IsEmpty(queryStringValue))
+                {
+                    if (MyUtils.IsEmpty(propertyValue))
+                    {
+                        p.SetValue(this, queryStringValue);
+                    }
+                    else if (propertyValue.GetType() == typeof(string[]))
+                    {
+                        p.SetValue(this, new string[] { queryStringValue as string });
+                    }
+                    else if (propertyValue.GetType() == typeof(bool))
+                    {
+                        p.SetValue(this, Convert.ToBoolean(queryStringValue));
+                    }
+                }
+            }
         }
     }
 
@@ -661,7 +698,7 @@ namespace CodeClay
                 string textContent = MyUtils.Coalesce(literal.Text, "").ToString().Trim();
                 if (textContent.StartsWith("<Ci"))
                 {
-                    CiPlugin = CiPlugin.CreateCiPlugin(textContent, false);
+                    CiPlugin = CiPlugin.CreateCiPluginFromXml(textContent);
                 }
             }
 

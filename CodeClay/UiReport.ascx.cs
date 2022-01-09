@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data;
 using System.IO;
+using System.Web;
 using System.Xml;
 using System.Xml.Serialization;
 
@@ -18,14 +19,14 @@ namespace CodeClay
         // Properties (PUX)
         // --------------------------------------------------------------------------------------------------
 
-        [XmlElement("Url")]
-        public string Url { get; set; } = "";
+        [XmlElement("Designer")]
+        public bool Designer { get; set; } = false;
+
+        [XmlElement("ReportUrl")]
+        public string ReportUrl { get; set; } = "";
 
         [XmlElement("ReportSQL")]
         public string ReportSQL { get; set; } = "";
-
-        [XmlElement("Designer")]
-        public bool Designer { get; set; } = false;
     }
 
     public partial class UiReport : UiPlugin
@@ -48,7 +49,8 @@ namespace CodeClay
         {
             if (CiReport != null)
             {
-                string url = CiReport.Url;
+                string url = CiReport.ReportUrl;
+                DataRow drParams = GetState();
                 if (!MyUtils.IsEmpty(url))
                 {
                     XtraReport report = new XtraReport();
@@ -67,7 +69,7 @@ namespace CodeClay
                         dxWebDocumentViewer.Visible = false;
 
                         report.Extensions[SerializationService.Guid] = DataSetSerializer.Name;
-                        report.DataSource = GetReportData();
+                        report.DataSource = GetReportData(drParams);
                     }
                     else
                     {
@@ -76,7 +78,7 @@ namespace CodeClay
 
                         dxReportDesigner.Visible = false;
 
-                        report.DataSource = GetReportData();
+                        report.DataSource = GetReportData(drParams);
                     }
                 }
             }
@@ -86,7 +88,7 @@ namespace CodeClay
         {
             if (CiReport != null)
             {
-                string url = CiReport.Url;
+                string url = CiReport.ReportUrl;
                 if (!MyUtils.IsEmpty(url))
                 {
                     XtraReport report = new XtraReport();
@@ -102,24 +104,28 @@ namespace CodeClay
         // Helpers
         // --------------------------------------------------------------------------------------------------
 
-        private DataSet GetReportData()
+        private DataSet GetReportData(DataRow drParams)
         {
             if (CiReport != null)
             {
-                DataSet ds = new DataSet("ReportTable");
+                DataSet ds = new DataSet();
+                string reportSQL = CiReport.ReportSQL;
 
-                DataTable dt = MyWebUtils.GetBySQL(CiReport.ReportSQL, GetState());
-                if (dt != null)
+                if (!MyUtils.IsEmpty(reportSQL))
                 {
-                    dt.TableName = "ReportFields";
+                    DataTable dt = MyWebUtils.GetBySQL(reportSQL, drParams);
+                    if (dt != null)
+                    {
+                        dt.TableName = "ReportFields";
 
-                    if (dt.DataSet != null)
-                    {
-                        ds = dt.DataSet;
-                    }
-                    else
-                    {
-                        ds.Tables.Add(dt);
+                        if (dt.DataSet != null)
+                        {
+                            ds = dt.DataSet;
+                        }
+                        else
+                        {
+                            ds.Tables.Add(dt);
+                        }
                     }
                 }
 

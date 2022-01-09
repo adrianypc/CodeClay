@@ -555,6 +555,27 @@ namespace CodeClay
             return MyWebUtils.IsTrueSQL("select dbo.fnIsAppOk(@CI_UserEmail, @Application, @Role)", dr, 0);
         }
 
+        public static bool IsPuxFile(string puxFile)
+        {
+            string[] puxFileTokens = puxFile.Split('?', '&');
+
+            return (!MyUtils.IsEmpty(puxFile) && !puxFile.Contains(@"\") && puxFileTokens[0].EndsWith(".pux"));
+        }
+
+        public static string GetPuxFileName(string puxFile)
+        {
+            string[] puxFileTokens = puxFile.Split('?', '&');
+
+            string firstToken = puxFileTokens[0];
+
+            if (!MyUtils.IsEmpty(puxFile) && !puxFile.Contains(@"\") && firstToken.EndsWith(".pux"))
+            {
+                return firstToken;
+            }
+
+            return null;
+        }
+
         public static DataRow GetTableDetails(string tableName)
         {
             DataTable dt = new DataTable();

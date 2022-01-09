@@ -161,8 +161,8 @@
     <Hidden>true</Hidden>
     <Mask>None</Mask>
   </CiTextField>
-  <CiTable src="CustomerOrder.B15.pux?ParentID=@ID">
-    <TableName>CustomerOrder.B15</TableName>
+  <CiTable src="fCustomerOrder.A53.pux?ParentID=@ID">
+    <TableName>fCustomerOrder.A53</TableName>
     <CiTextField>
       <FieldName>EditParentID</FieldName>
       <Caption>Parent ID</Caption>
@@ -181,8 +181,8 @@
       <Mask>None</Mask>
     </CiTextField>
   </CiTable>
-  <CiTable src="CustomerOrder.F79.pux?ParentID=@ID">
-    <TableName>CustomerOrder.F79</TableName>
+  <CiTable src="fCustomerOrder.15D.pux?ParentID=@ID">
+    <TableName>fCustomerOrder.15D</TableName>
     <CiTextField>
       <FieldName>EditParentID</FieldName>
       <Caption>Parent ID</Caption>
@@ -201,8 +201,8 @@
       <Mask>None</Mask>
     </CiTextField>
   </CiTable>
-  <CiTable src="CustomerOrder.236.pux?ParentID=@ID">
-    <TableName>CustomerOrder.236</TableName>
+  <CiTable src="fCustomerOrder.D03.pux?ParentID=@ID">
+    <TableName>fCustomerOrder.D03</TableName>
     <CiTextField>
       <FieldName>EditParentID</FieldName>
       <Caption>Parent ID</Caption>
@@ -345,10 +345,10 @@
   <CiMacro>
     <MacroName>CreateInvoice</MacroName>
     <Caption>Create Invoice</Caption>
-    <NavigateUrl>CustomerOrderInvoiceSetup.pux</NavigateUrl>
+    <NavigateUrl>fCustomerOrderInvoicePDF.pux</NavigateUrl>
     <NavigatePos>Popup</NavigatePos>
     <Toolbar>true</Toolbar>
-    <ActionSQL>select 'Edit' as Command,@CustomerOrderNo as CustomerOrderNo</ActionSQL>
+    <ActionSQL>select Command = 'Edit', CustomerOrderNo = @CustomerOrderNo</ActionSQL>
   </CiMacro>
   <CiFieldExitMacro>
     <FieldName>Discount</FieldName>

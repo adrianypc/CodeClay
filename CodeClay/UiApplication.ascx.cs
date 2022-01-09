@@ -256,7 +256,7 @@ namespace CodeClay
         {
             object command = null;
 
-            if (dxClientCommand.Contains(tableName))
+            if (!MyUtils.IsEmpty(tableName) && dxClientCommand.Contains(tableName))
             {
                 command = dxClientCommand[tableName];
             }
@@ -830,7 +830,7 @@ namespace CodeClay
             if (xHomePluginSrc != null)
             {
                 string homePluginSrc = xHomePluginSrc.Value;
-                if (!MyUtils.IsEmpty(homePluginSrc) && !homePluginSrc.EndsWith(".pux"))
+                if (!MyUtils.IsEmpty(homePluginSrc) && !MyWebUtils.IsPuxFile(homePluginSrc))
                 {
                     xHomePluginSrc.Value = homePluginSrc + ".pux";
                 }

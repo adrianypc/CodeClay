@@ -812,47 +812,52 @@ namespace CodeClay
 
         protected override void WriteToDB(DataRow drPluginDefinition)
         {
-            object objFieldID = MyWebUtils.EvalSQL("select FieldID from CiField " +
-                "where AppID = @AppID and TableID = @TableID and FieldName = @FieldName", drPluginDefinition);
+            string fieldName = MyWebUtils.GetStringField(drPluginDefinition, "FieldName");
 
-            if (objFieldID != null)
+            if (!(new string[] { "DummyForInsert", "EditParentID"}).Contains(fieldName))
             {
-                drPluginDefinition["FieldID"] = objFieldID;
-            }
-            else
-            {
-                string insertColumnNames = "@AppID, @TableID, @FieldName, @Caption, @Type, @Width, @InRowKey";
-                string insertSQL = string.Format("?exec spField_ins {0}", insertColumnNames);
+                object objFieldID = MyWebUtils.EvalSQL("select FieldID from CiField " +
+                  "where AppID = @AppID and TableID = @TableID and FieldName = @FieldName", drPluginDefinition);
 
-                drPluginDefinition["FieldID"] = MyWebUtils.EvalSQL(insertSQL, drPluginDefinition, 0);
-            }
+                if (objFieldID != null)
+                {
+                    drPluginDefinition["FieldID"] = objFieldID;
+                }
+                else
+                {
+                    string insertColumnNames = "@AppID, @TableID, @FieldName, @Caption, @Type, @Width, @InRowKey";
+                    string insertSQL = string.Format("?exec spField_ins {0}", insertColumnNames);
 
-            string updateColumnNames = "@AppID, @TableID, @FieldID, @FieldName, @Caption, @Type, @Editable, @AutoBlank, @Mandatory" +
-                ", @Hidden, @Searchable, @Summary, @ForeColor, @RowSpan, @ColSpan, @Width, @HorizontalAlign" +
-                ", @VerticalAlign, @Value, @DropdownSQL, @InsertSQL, @Code, @Description, @TextFieldName" +
-                ", @DropdownWidth, @Folder, @MinValue, @MaxValue, @Columns, @Mask, @NestedMacroID";
-            string updateSQL = string.Format("exec spField_updLong {0}", updateColumnNames);
+                    drPluginDefinition["FieldID"] = MyWebUtils.EvalSQL(insertSQL, drPluginDefinition, 0);
+                }
 
-            MyWebUtils.GetBySQL(updateSQL, drPluginDefinition, 0);
+                string updateColumnNames = "@AppID, @TableID, @FieldID, @FieldName, @Caption, @Type, @Editable, @AutoBlank, @Mandatory" +
+                    ", @Hidden, @Searchable, @Summary, @ForeColor, @RowSpan, @ColSpan, @Width, @HorizontalAlign" +
+                    ", @VerticalAlign, @Value, @DropdownSQL, @InsertSQL, @Code, @Description, @TextFieldName" +
+                    ", @DropdownWidth, @Folder, @MinValue, @MaxValue, @Columns, @Mask, @NestedMacroID";
+                string updateSQL = string.Format("exec spField_updLong {0}", updateColumnNames);
 
-            DataColumnCollection dcPluginDefinition = drPluginDefinition.Table.Columns;
+                MyWebUtils.GetBySQL(updateSQL, drPluginDefinition, 0);
 
-            if (!dcPluginDefinition.Contains("SQLType"))
-            {
-                dcPluginDefinition.Add("SQLType");
-            }
+                DataColumnCollection dcPluginDefinition = drPluginDefinition.Table.Columns;
 
-            if (!dcPluginDefinition.Contains("SQL"))
-            {
-                dcPluginDefinition.Add("SQL");
-            }
+                if (!dcPluginDefinition.Contains("SQLType"))
+                {
+                    dcPluginDefinition.Add("SQLType");
+                }
 
-            MyWebUtils.GetBySQL("exec spFieldSQL_del @AppID, @TableID, @FieldID", drPluginDefinition, 0);
-            foreach (string sqlType in mPropertySQL.Keys)
-            {
-                drPluginDefinition["SQLType"] = sqlType;
-                drPluginDefinition["SQL"] = mPropertySQL[sqlType];
-                MyWebUtils.GetBySQL("exec spFieldSQL_ins @AppID, @TableID, @FieldID, @SQLType, @SQL", drPluginDefinition, 0);
+                if (!dcPluginDefinition.Contains("SQL"))
+                {
+                    dcPluginDefinition.Add("SQL");
+                }
+
+                MyWebUtils.GetBySQL("exec spFieldSQL_del @AppID, @TableID, @FieldID", drPluginDefinition, 0);
+                foreach (string sqlType in mPropertySQL.Keys)
+                {
+                    drPluginDefinition["SQLType"] = sqlType;
+                    drPluginDefinition["SQL"] = mPropertySQL[sqlType];
+                    MyWebUtils.GetBySQL("exec spFieldSQL_ins @AppID, @TableID, @FieldID, @SQLType, @SQL", drPluginDefinition, 0);
+                }
             }
         }
 

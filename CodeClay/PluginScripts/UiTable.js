@@ -75,6 +75,11 @@ function dxCard_BeginCallback(sender, event) {
         command = event.command;
     }
 
+    if (command == "Update" && dxCard.IsNewCardEditing()) {
+        command = "UpdateNew";
+        dxCard.cpCommand = command;
+    }
+
     SetCommand(tableName, command);
 }
 
@@ -184,7 +189,12 @@ function dxGrid_BeginCallback(sender, event) {
         command = event.command;
     }
 
-	SetCommand(tableName, command);
+    if (command == "Update" && dxGrid.IsNewRowEditing()) {
+        command = "UpdateNew";
+        dxGrid.cpCommand = command;
+    }
+
+    SetCommand(tableName, command);
 }
 
 function dxGrid_EndCallback(sender, event) {

@@ -386,7 +386,7 @@ namespace CodeClay
                     {
                         case "src":
                             string filename = xProperty.Value;
-                            if (!MyUtils.IsEmpty(filename) && filename.ToLower().EndsWith(".pux"))
+                            if (MyWebUtils.IsPuxFile(filename))
                             {
                                 filename = filename.Substring(0, filename.Length - 4);
                             }

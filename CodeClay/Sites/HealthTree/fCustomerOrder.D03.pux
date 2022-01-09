@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<CiTable src="fCustomerOrderItems.pux">
-  <TableName>CustomerOrder.B15</TableName>
-  <RowKey>ID,ProductID</RowKey>
+<CiTable src="fCustomerOrderPayment.pux">
+  <TableName>fCustomerOrder.D03</TableName>
+  <RowKey>CustomerOrderNo,ID,PaymentNo</RowKey>
   <CiField>
     <FieldName>DummyForInsert</FieldName>
     <Hidden>true</Hidden>
