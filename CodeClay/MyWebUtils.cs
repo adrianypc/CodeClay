@@ -594,6 +594,24 @@ namespace CodeClay
             return null;
         }
 
+        public static DataRow GetTableDetails(int appID, int tableID)
+        {
+            DataTable dt = new DataTable();
+            dt.Columns.Add("AppID").DefaultValue = appID;
+            dt.Columns.Add("TableID").DefaultValue = tableID;
+
+            DataRow dr = dt.NewRow();
+            dt.Rows.Add(dr);
+
+            DataTable dtResults = MyWebUtils.GetBySQL("?exec spTable_sel @AppID, @TableID", dr, 0);
+            if (MyWebUtils.GetNumberOfRows(dtResults) > 0)
+            {
+                return dtResults.Rows[0];
+            }
+
+            return null;
+        }
+
         public static string GetAuthorisedApp()
         {
             DataTable dt = new DataTable();
@@ -614,6 +632,20 @@ namespace CodeClay
             elem.InnerText = MyUtils.Coalesce(value, "").ToString();
 
             return elem;
+        }
+
+        public static XElement CreateXChild(XElement xParent, string childName, object childValue)
+        {
+            if (xParent != null)
+            {
+                if (!MyUtils.IsEmpty(childValue))
+                {
+                    XElement xChild = new XElement(childName, childValue);
+                    xParent.Add(xChild);
+                }
+            }
+
+            return null;
         }
 
         public static string GetXmlChildValue(XElement xElement, string childName)

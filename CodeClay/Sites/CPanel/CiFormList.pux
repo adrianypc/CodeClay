@@ -94,7 +94,7 @@
     <MacroName>Details</MacroName>
     <Caption>Form Design</Caption>
     <ActionSQL>select @AppID as AppID, @TableID as TableID</ActionSQL>
-    <NavigateUrl>CiFormDetails.pux</NavigateUrl>
+    <NavigateUrl lang="sql">select case when DefaultView = 'Pivot' then 'CiPivotTableDetails.pux' else 'CiFormDetails.pux' end as NavigateUrl from CiTable where AppID = @AppID and TableID = @TableID</NavigateUrl>
     <NavigatePos>NewTab</NavigatePos>
   </CiMacro>
 </CiTable>

@@ -107,14 +107,6 @@
     <Mandatory>true</Mandatory>
     <Hidden>true</Hidden>
   </CiComboField>
-  <CiComboField>
-    <FieldName>Summary</FieldName>
-    <Caption>Summary</Caption>
-    <DropdownSQL>select Code from Dropdown where Category = 'SummType'</DropdownSQL>
-    <Value>None</Value>
-    <Mandatory>true</Mandatory>
-    <Hidden>true</Hidden>
-  </CiComboField>
   <CiTable src="CiFieldSQLList.pux">
     <TableName>FieldSQLList</TableName>
   </CiTable>

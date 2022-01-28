@@ -739,9 +739,27 @@ namespace CodeClay
 
                     foreach (DataRow dr in dtTables.Rows)
                     {
-                        XiTable xiTable = new XiTable();
-                        string tableUrl = xiTable.GetPuxUrl(dr);
-                        xiTable.DownloadFile(dr, tableUrl);
+                        int? appID = MyWebUtils.GetField<int>(dr, "AppID");
+                        int? tableID = MyWebUtils.GetField<int>(dr, "TableID");
+
+                        XiPlugin xiPlugin = null;
+                        if (appID != null && tableID != null)
+                        {
+                            DataRow drTable = MyWebUtils.GetTableDetails(appID.Value, tableID.Value);
+                            string defaultView = MyWebUtils.GetStringField(drTable, "DefaultView");
+
+                            if (defaultView == "Pivot")
+                            {
+                                xiPlugin = new XiPivotTable();
+                            }
+                            else
+                            {
+                                xiPlugin = new XiTable();
+                            }
+                        }
+
+                        string tableUrl = xiPlugin.GetPuxUrl(dr);
+                        xiPlugin.DownloadFile(dr, tableUrl);
                     }
                 }
             }

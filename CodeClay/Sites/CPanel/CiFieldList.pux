@@ -108,16 +108,16 @@
     <Caption>Field Design</Caption>
     <ActionSQL>
       select  @AppID as AppID,
-              @TableID as TableID,
-              @FieldID as FieldID,
-              'Ci' + coalesce(@Type, '') + 'FieldDetails.pux' as NavigateUrl
+      @TableID as TableID,
+      @FieldID as FieldID,
+      'Ci' + coalesce(@Type, '') + 'FieldDetails.pux' as NavigateUrl
       from    Singleton
-      where   @Type not in ('Table', 'Form', 'Memo') or @Type is null
+      where   @Type not in ('Table', 'Form', 'Memo', 'Column', 'Row', 'Data') or @Type is null
       union
       select  @AppID as AppID,
-              NestedTableID as TableID,
-              @FieldID as FieldID,
-              'CiTableDetails.pux' as NavigateUrl
+      NestedTableID as TableID,
+      @FieldID as FieldID,
+      'CiTableDetails.pux' as NavigateUrl
       from    CiField
       where   AppID = @AppID
       and     TableID = @TableID
@@ -125,9 +125,9 @@
       and     @Type = 'Table'
       union
       select  @AppID as AppID,
-              NestedTableID as TableID,
-              @FieldID as FieldID,
-              'CiFormDetails.pux' as NavigateUrl
+      NestedTableID as TableID,
+      @FieldID as FieldID,
+      'CiFormDetails.pux' as NavigateUrl
       from    CiField
       where   AppID = @AppID
       and     TableID = @TableID
@@ -135,11 +135,18 @@
       and     @Type = 'Form'
       union
       select  @AppID as AppID,
-              @TableID as TableID,
-              @FieldID as FieldID,
-              'CiTextFieldDetails.pux' as NavigateUrl
+      @TableID as TableID,
+      @FieldID as FieldID,
+      'CiTextFieldDetails.pux' as NavigateUrl
       from    Singleton
       where   @Type = 'Memo'
+      union
+      select  @AppID as AppID,
+      @TableID as TableID,
+      @FieldID as FieldID,
+      'CiPivotFieldDetails.pux' as NavigateUrl
+      from    Singleton
+      where   @Type in ('Column', 'Row', 'Data')
     </ActionSQL>
     <NavigatePos>Popup</NavigatePos>
     <NavigateUrl lang="sql">select @NavigateUrl as NavigateUrl</NavigateUrl>

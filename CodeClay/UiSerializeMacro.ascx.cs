@@ -68,7 +68,17 @@ namespace CodeClay
             XiPlugin xiPlugin = null;
             if (tableID != null)
             {
-                xiPlugin = new XiTable();
+                DataRow drTableDetails = MyWebUtils.GetTableDetails(appID.Value, tableID.Value);
+                string defaultView = MyWebUtils.GetStringField(drTableDetails, "DefaultView");
+
+                if (defaultView == "Pivot")
+                {
+                    xiPlugin = new XiPivotTable();
+                }
+                else
+                {
+                    xiPlugin = new XiTable();
+                }
             }
             else
             {

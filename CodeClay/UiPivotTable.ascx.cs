@@ -53,6 +53,132 @@ namespace CodeClay
         public bool Wrap { get; set; } = false;
     }
 
+    public class XiPivotField : XiField
+    {
+        // --------------------------------------------------------------------------------------------------
+        // Constructor
+        // --------------------------------------------------------------------------------------------------
+
+        public XiPivotField()
+        {
+            PluginType = typeof(XiPivotField);
+        }
+
+        // --------------------------------------------------------------------------------------------------
+        // Properties
+        // --------------------------------------------------------------------------------------------------
+
+        private bool IsRowKeyChecked { get; set; } = false;
+
+        private Hashtable mPropertySQL = new Hashtable();
+
+        // --------------------------------------------------------------------------------------------------
+        // Methods (Override)
+        // --------------------------------------------------------------------------------------------------
+
+        protected override DataTable GetPluginDefinitions(DataRow drPluginKey)
+        {
+            DataTable dt = MyWebUtils.GetBySQL("?exec spField_sel @AppID, @TableID, null, 'Column,Data,Row'", drPluginKey, 0);
+
+            if (dt != null)
+            {
+                dt.Columns.Add("AreaIndex", typeof(int));
+
+                int rowAreaIndex = 0;
+                int columnAreaIndex = 0;
+
+                foreach (DataRow dr in dt.Rows)
+                {
+                    string type = MyWebUtils.GetStringField(dr, "Type");
+                    switch (type)
+                    {
+                        case "Row":
+                            dr["AreaIndex"] = rowAreaIndex;
+                            rowAreaIndex++;
+                            break;
+
+                        case "Column":
+                            dr["AreaIndex"] = columnAreaIndex;
+                            columnAreaIndex++;
+                            break;
+                    }
+                }
+            }
+
+            return dt;
+        }
+
+        protected override void DownloadDerivedValues(DataRow drPluginDefinition, XElement xPluginDefinition)
+        {
+            if (drPluginDefinition != null && xPluginDefinition != null)
+            {
+                xPluginDefinition.Name = "CiPivotField";
+
+                MyWebUtils.CreateXChild(xPluginDefinition,
+                    "FieldName",
+                    MyWebUtils.GetStringField(drPluginDefinition, "FieldName"));
+
+                MyWebUtils.CreateXChild(xPluginDefinition,
+                    "Caption",
+                    MyWebUtils.GetStringField(drPluginDefinition, "Caption"));
+
+                MyWebUtils.CreateXChild(xPluginDefinition,
+                    "AreaIndex",
+                    MyWebUtils.GetStringField(drPluginDefinition, "AreaIndex"));
+
+                MyWebUtils.CreateXChild(xPluginDefinition,
+                    "Area",
+                    string.Format("{0}Area", MyWebUtils.GetStringField(drPluginDefinition, "Type")));
+
+                MyWebUtils.CreateXChild(xPluginDefinition,
+                    "Hidden",
+                    MyWebUtils.GetField<bool>(drPluginDefinition, "Hidden").ToString());
+
+                MyWebUtils.CreateXChild(xPluginDefinition, "Wrap", "true");
+
+                string mask = MyWebUtils.GetStringField(drPluginDefinition, "Mask");
+                switch (mask)
+                {
+                    case "Link":
+                        MyWebUtils.CreateXChild(xPluginDefinition, "Mask", "Link");
+                        MyWebUtils.CreateXChild(xPluginDefinition, "Computed", "true");
+                        break;
+
+                    case "DateTime":
+                    case "Numeric":
+                        MyWebUtils.CreateXChild(xPluginDefinition, "Mask", mask);
+                        break;
+                }
+
+                MyWebUtils.CreateXChild(xPluginDefinition,
+                    "Value",
+                    MyWebUtils.GetStringField(drPluginDefinition, "Value"));
+
+                string summary = MyWebUtils.GetStringField(drPluginDefinition, "Summary");
+
+                if (summary != "None")
+                {
+                    MyWebUtils.CreateXChild(xPluginDefinition,
+                      "SummaryType",
+                      summary);
+                }
+            }
+        }
+
+        protected override void UploadDerivedValues(DataRow drPluginDefinition, XElement xPluginDefinition)
+        {
+            DataColumnCollection dcPluginColumns = drPluginDefinition.Table.Columns;
+
+            if (drPluginDefinition != null && xPluginDefinition != null)
+            {
+                const string cArea = "Area";
+                string area = xPluginDefinition.Element(cArea).Value;
+                if (!MyUtils.IsEmpty(area) && area.EndsWith(cArea))
+                drPluginDefinition["Type"] = area.Substring(0, area.Length - cArea.Length);
+            }
+        }
+    }
+
     [XmlType("CiPivotTable")]
     public class CiPivotTable : CiTable
     {
@@ -238,26 +364,34 @@ namespace CodeClay
         // Methods (Override)
         // --------------------------------------------------------------------------------------------------
 
-        public override void DownloadFile(DataRow drKey, string puxUrl)
+        public override string GetPuxUrl(DataRow drPluginKey)
         {
-            base.DownloadFile(drKey, puxUrl);
+            string appName = MyWebUtils.GetApplicationName(drPluginKey);
 
-            object oldTableName = MyWebUtils.GetField(drKey, "OldTableName");
-            if (!MyUtils.IsEmpty(oldTableName))
+            if (PluginType != null)
             {
-                string appName = MyWebUtils.GetApplicationName(drKey);
-                string oldPuxUrl = MyWebUtils.MapPath(string.Format("Sites/{0}/{1}.pux", appName, oldTableName));
+                string keyName = "TableName";
+                string keyValue = "";
 
-                if (File.Exists(oldPuxUrl) && oldPuxUrl != puxUrl)
+                DataRow drPluginDefinition = GetPluginDefinition(drPluginKey);
+
+                if (drPluginDefinition != null && drPluginDefinition.Table.Columns.Contains(keyName))
                 {
-                    File.Delete(oldPuxUrl);
+                    object objKeyValue = drPluginDefinition[keyName];
+
+                    if (objKeyValue != null)
+                    {
+                        keyValue = objKeyValue.ToString();
+                    }
+
+                    if (!MyUtils.IsEmpty(appName) && !MyUtils.IsEmpty(keyValue))
+                    {
+                        return MyWebUtils.MapPath(string.Format("Sites/{0}/{1}.pux", appName, keyValue));
+                    }
                 }
             }
-        }
 
-        protected override DataTable GetPluginDefinitions(DataRow drPluginKey)
-        {
-            return MyWebUtils.GetBySQL("?exec spTable_sel @AppID, @TableID", drPluginKey, 0);
+            return null;
         }
 
         protected override List<XElement> GetPluginDefinitions(List<XElement> xElements)
@@ -270,107 +404,24 @@ namespace CodeClay
             return null;
         }
 
-        protected override void DeletePluginDefinitions(DataRow drPluginKey)
-        {
-            MyWebUtils.GetBySQL("exec spField_del @AppID, @TableID", drPluginKey, 0);
-            MyWebUtils.GetBySQL("exec spMacro_del @AppID, @TableID", drPluginKey, 0);
-            MyWebUtils.GetBySQL("exec spSubTable_del @AppID, @TableID", drPluginKey, 0);
-        }
-
         protected override string GetXPropertyName(Type pluginType, string dPropertyName)
         {
             string xPropertyName = base.GetXPropertyName(pluginType, dPropertyName);
 
-            switch (dPropertyName)
+            switch (xPropertyName)
             {
-                case "Caption":
-                    xPropertyName = "TableCaption";
+                case "TableName":
+                case "TableCaption":
+                    // Do nothing
+                    break;
+
+                default:
+                    // Remove other properties belonging to CiTable
+                    xPropertyName = null;
                     break;
             }
 
             return xPropertyName;
-        }
-
-        protected override string GetDPropertyName(string xPropertyName)
-        {
-            string dPropertyName = xPropertyName;
-
-            switch (xPropertyName)
-            {
-                case "DefaultValue":
-                    dPropertyName = "Value";
-                    break;
-
-                case "TableCaption":
-                    dPropertyName = "Caption";
-                    break;
-            }
-
-            return dPropertyName;
-        }
-
-        protected override void WriteToDB(DataRow drPluginDefinition)
-        {
-            MyWebUtils.GetBySQL("exec spTable_updLong " +
-                "@AppID, @TableID, @TableName, @Src, @Caption, @DefaultView, " +
-                "@LayoutUrl, @ColCount, @BubbleUpdate, @QuickInsert, @InsertRowAtBottom, " +
-                "@DoubleClickMacroName",
-                drPluginDefinition,
-                0);
-        }
-
-        protected override void DownloadDerivedValues(DataRow drPluginDefinition, XElement xPluginDefinition)
-        {
-            DataTable dtPrimaryKey = MyWebUtils.GetBySQL("select FieldName from dbo.fnGetFields(@AppID, @TableID, null, null) where InRowKey = 1", drPluginDefinition);
-
-            string primaryKey = "";
-            if (MyWebUtils.GetNumberOfRows(dtPrimaryKey) > 0)
-            {
-                int i = 0;
-                foreach (DataRow drKey in dtPrimaryKey.Rows)
-                {
-                    if (i++ > 0)
-                    {
-                        primaryKey += ",";
-                    }
-
-                    primaryKey += MyWebUtils.GetStringField(drKey, "FieldName");
-                }
-            }
-
-            xPluginDefinition.Add(new XElement("RowKey", primaryKey));
-
-            XAttribute xSrcAttr = xPluginDefinition.Attribute("src");
-            if (xSrcAttr != null)
-            {
-                xSrcAttr.Value += ".pux";
-            }
-
-            XElement xDummyField = new XElement("CiField");
-            xDummyField.Add(new XElement("FieldName", "DummyForInsert"));
-            xDummyField.Add(new XElement("Hidden", true));
-            xPluginDefinition.Add(xDummyField);
-
-            DataTable dtSubTable = MyWebUtils.GetBySQL("select * from dbo.fnGetSubTablesFromSrc(@AppID, @TableID)", drPluginDefinition, 0);
-            if (dtSubTable != null)
-            {
-                foreach (DataRow drSubTable in dtSubTable.Rows)
-                {
-                    string tableName = MyWebUtils.GetStringField(drSubTable, "TableName");
-                    if (!MyUtils.IsEmpty(tableName))
-                    {
-                        XElement xTable = new XElement("CiPivotTable");
-                        xPluginDefinition.Add(xTable);
-
-                        XElement xTableName = new XElement("TableName", tableName);
-                        xTable.Add(xTableName);
-
-                        XElement xHidden = new XElement("Hidden", true);
-                        xTable.Add(xHidden);
-                    }
-                }
-            }
-
         }
 
         protected override void UploadDerivedValues(DataRow drPluginDefinition, XElement xPluginDefinition)
@@ -379,38 +430,19 @@ namespace CodeClay
 
             if (drPluginDefinition != null && xPluginDefinition != null)
             {
-                foreach (XAttribute xProperty in xPluginDefinition.Attributes())
-                {
-                    string xPropertyName = xProperty.Name.ToString();
-                    switch (xPropertyName)
-                    {
-                        case "src":
-                            string filename = xProperty.Value;
-                            if (MyWebUtils.IsPuxFile(filename))
-                            {
-                                filename = filename.Substring(0, filename.Length - 4);
-                            }
-                            drPluginDefinition["src"] = filename;
-                            break;
-                    }
-                }
-
-                foreach (XElement xProperty in xPluginDefinition.Elements())
-                {
-                    string xPropertyName = xProperty.Name.ToString();
-                    switch (xPropertyName)
-                    {
-                        case "TableCaption":
-                            drPluginDefinition["Caption"] = xProperty.Value;
-                            break;
-                    }
-                }
+                drPluginDefinition["TableName"] = Convert.DBNull;
+                drPluginDefinition["DefaultView"] = "Pivot";
             }
+        }
+
+        protected override void DownloadDerivedValues(DataRow drPluginDefinition, XElement xPluginDefinition)
+        {
+            // Do not REMOVE as this empty method negates the functionality of the base class XiTable
         }
 
         protected override List<XiPlugin> GetXiChildPlugins()
         {
-            return new List<XiPlugin>() { new XiField(), new XiMacro(), new XiButtonField() };
+            return new List<XiPlugin>() { new XiPivotField(), new XiMacro() };
         }
     }
 }

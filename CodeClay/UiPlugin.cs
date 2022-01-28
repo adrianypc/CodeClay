@@ -1279,8 +1279,6 @@ namespace CodeClay
             DataTable dtPluginDefinitions = GetPluginDefinitions(drKey);
             dtPluginDefinitions.Rows.Clear();
             DataColumnCollection dcPluginColumns = dtPluginDefinitions.Columns;
-            DataRow drPluginDefinition = dtPluginDefinitions.NewRow();
-            dtPluginDefinitions.Rows.Add(drPluginDefinition);
 
             List<XElement> xPluginDefinitions = GetPluginDefinitions(xElements);
 
@@ -1288,6 +1286,9 @@ namespace CodeClay
             {
                 foreach (XElement xPluginDefinition in xPluginDefinitions)
                 {
+                    DataRow drPluginDefinition = dtPluginDefinitions.NewRow();
+                    dtPluginDefinitions.Rows.Add(drPluginDefinition);
+
                     SetupDefaultValues(drPluginDefinition, xPluginDefinition);
                     SetupKeyValues(drPluginDefinition, drKey);
                     SetupXmlValues(drPluginDefinition, xPluginDefinition);

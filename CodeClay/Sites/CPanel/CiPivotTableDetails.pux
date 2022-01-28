@@ -1,0 +1,136 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<CiTable>
+	<TableName>CiPivotTableDetails</TableName>
+  <TableCaption lang="sql">select 'Pivot Table Design: ' + TableName from CiTable where AppID = @AppID and TableID = @TableID</TableCaption>
+  <DefaultView>Card</DefaultView>
+  <RowKey>AppID,TableID</RowKey>
+  <CiField>
+    <FieldName>AppID</FieldName>
+    <Caption>App ID</Caption>
+    <Hidden>true</Hidden>
+  </CiField>
+  <CiField>
+    <FieldName>AppName</FieldName>
+    <Caption>App Name</Caption>
+    <Hidden>true</Hidden>
+  </CiField>
+  <CiField>
+    <FieldName>ParentTableID</FieldName>
+    <Hidden>true</Hidden>
+  </CiField>
+  <CiTextField>
+    <FieldName>TableID</FieldName>
+    <Caption>Form ID</Caption>
+    <Editable>false</Editable>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>TableName</FieldName>
+    <Caption>Form Name</Caption>
+  </CiTextField>
+  <CiTextField>
+    <FieldName>Caption</FieldName>
+    <Caption>Caption</Caption>
+  </CiTextField>
+  <CiComboField>
+    <FieldName>Src</FieldName>
+    <Caption>Source Table</Caption>
+    <DropdownSQL>select TableName as Code
+      from CiTable T
+      where AppID = @AppID
+      and   TableID != @TableID
+      and   Bound = 1
+      and not exists (select 1 from CiField where AppID = T.AppID and NestedTableID = T.TableID)
+      order by TableName</DropdownSQL>
+    <DropdownWidth>300</DropdownWidth>
+  </CiComboField>
+  <CiComboField>
+    <FieldName>DefaultView</FieldName>
+    <Caption>Default View</Caption>
+    <DropdownSQL>select Code from Dropdown where Category = 'View'</DropdownSQL>
+  </CiComboField>
+  <CiLinkField>
+    <FieldName>TableUrl</FieldName>
+    <Caption>Form Url</Caption>
+    <Editable>false</Editable>
+  </CiLinkField>
+  <CiTable src="CiAttributeSQLList.pux">
+    <TableName>AttributeSQLList</TableName>
+  </CiTable>
+  <CiTable src="CiFieldList.pux">
+    <CiCheckField>
+      <FieldName>Hidden</FieldName>
+      <Caption>Hidden</Caption>
+      <Width>7</Width>
+    </CiCheckField>
+    <CiComboField>
+      <FieldName>Type</FieldName>
+      <Caption>Type</Caption>
+      <DropdownSQL>
+        select Code from Dropdown where Category = 'PFieldType' order by Code
+      </DropdownSQL>
+      <Width>9</Width>
+      <DropdownWidth>100</DropdownWidth>
+      <Editable lang="sql">select 1 from Singleton where @FieldName is null or @FieldName not in ('ParentID', 'ID')</Editable>
+    </CiComboField>
+    <DefaultMacro>
+      <ActionSQL>
+        select  '- New -' as FieldID, 'Column' as Type
+      </ActionSQL>
+    </DefaultMacro>
+    <UpdateMacro>
+      <ActionSQL>exec spField_updShort @AppID, @TableID, @FieldID, @OldFieldID, @FieldName, @Caption, @Type, @Width, @InRowKey, @Editable, @Mandatory, @Hidden, @Searchable</ActionSQL>
+      <ActionSQL>select @AppID as AppID, @TableID as TableID</ActionSQL>
+      <CiSerializeMacro>
+        <Direction>Download</Direction>
+      </CiSerializeMacro>
+    </UpdateMacro>
+  </CiTable>
+  <CiTable src="CiMacroList.pux">
+    <CiComboField>
+      <FieldName>Type</FieldName>
+      <Caption>Type</Caption>
+      <DropdownSQL>
+        select Code = 'Select' from Singleton
+      </DropdownSQL>
+      <Width>10</Width>
+      <DropdownWidth>100</DropdownWidth>
+    </CiComboField>
+    <DefaultMacro>
+      <ActionSQL>
+        select  '- New -' as MacroID, 'Select' as Type
+      </ActionSQL>
+    </DefaultMacro>
+    <InsertMacro>
+      <ActionSQL>exec spMacro_ins @AppID, @TableID, @MacroName, @Caption, @Type</ActionSQL>
+      <ActionSQL>select @AppID as AppID, @TableID as TableID</ActionSQL>
+      <VisibleSQL>select 1 from Singleton where not exists (select 1 from CiMacro where AppID = @AppID and TableID = @TableID)</VisibleSQL>
+      <CiSerializeMacro>
+        <Direction>Download</Direction>
+      </CiSerializeMacro>
+    </InsertMacro>
+  </CiTable>
+  <SelectMacro>
+    <ActionSQL>?exec spTable_sel @AppID, @TableID, false</ActionSQL>
+  </SelectMacro>
+  <UpdateMacro>
+    <ActionSQL>
+      exec spTable_updLong @AppID, @TableID, @TableName, @Src, @Caption, @DefaultView,
+        @LayoutUrl, @ColCount, @BubbleUpdate, @QuickInsert, @InsertRowAtBottom, @DoubleClickMacroName
+    </ActionSQL>
+    <ActionSQL>select @AppID as AppID, @TableID as TableID</ActionSQL>
+    <CiSerializeMacro>
+      <Direction>Download</Direction>
+    </CiSerializeMacro>
+  </UpdateMacro>
+  <CiMacro>
+    <MacroName>UploadPUX</MacroName>
+    <Caption>Upload PUX</Caption>
+    <IconID>arrows_moveup_16x16office2013</IconID>
+    <Toolbar>true</Toolbar>
+    <ActionSQL>
+      select  @AppID as AppID, @TableID as TableID
+    </ActionSQL>
+    <NavigateUrl>SerializeMacro.pux</NavigateUrl>
+    <NavigatePos>Popup|600|200</NavigatePos>
+  </CiMacro>
+</CiTable>

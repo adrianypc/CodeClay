@@ -1,0 +1,49 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<CiTable src="CiFieldDetails.pux">
+  <TableCaption lang="sql">select 'Pivot Field Design: ' + FieldName from fnGetFields(@AppID, @TableID, @FieldID, null)</TableCaption>
+  <CiComboField>
+    <FieldName>Type</FieldName>
+    <Caption>Type</Caption>
+    <DropdownSQL>
+      select Code from Dropdown where Category = 'PFieldType' order by Code
+    </DropdownSQL>
+    <Width>9</Width>
+    <DropdownWidth>100</DropdownWidth>
+    <Editable lang="sql">select 1 from Singleton where @FieldName is null or @FieldName not in ('ParentID', 'ID')</Editable>
+  </CiComboField>
+  <CiCheckField>
+    <FieldName>Editable</FieldName>
+    <Hidden>true</Hidden>
+  </CiCheckField>
+  <CiCheckField>
+    <FieldName>AutoBlank</FieldName>
+    <Hidden>true</Hidden>
+  </CiCheckField>
+  <CiCheckField>
+    <FieldName>Mandatory</FieldName>
+    <Hidden>true</Hidden>
+  </CiCheckField>
+  <CiCheckField>
+    <FieldName>Searchable</FieldName>
+    <Hidden>true</Hidden>
+  </CiCheckField>
+  <CiComboField>
+    <FieldName>Mask</FieldName>
+    <Caption>Mask</Caption>
+    <DropdownSQL>select Code from Dropdown where Category = 'Mask' order by Code</DropdownSQL>
+  </CiComboField>
+  <CiComboField>
+    <FieldName>Summary</FieldName>
+    <Caption>Summary</Caption>
+    <DropdownSQL>select Code from Dropdown where Category = 'SummType' order by Code</DropdownSQL>
+    <Value>None</Value>
+  </CiComboField>
+  <CiTextField>
+    <FieldName>Value</FieldName>
+    <Caption>Default Value</Caption>
+  </CiTextField>
+  <CiTable src="CiFieldSQLList.pux">
+    <TableName>FieldSQLList</TableName>
+    <Hidden>true</Hidden>
+  </CiTable>
+</CiTable>

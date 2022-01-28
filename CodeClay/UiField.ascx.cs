@@ -936,54 +936,6 @@ namespace CodeClay
             return false;
         }
 
-        private void DownloadRowKey(DataRow drPluginDefinition, XElement xPluginDefinition)
-        {
-            if (!IsRowKeyChecked)
-            {
-                IsRowKeyChecked = true;
-
-                DataTable dtParent = drPluginDefinition.Table;
-                XElement xParent = xPluginDefinition.Parent;
-
-                if (dtParent != null && xParent != null)
-                {
-                    XElement xRowKey = xParent.Element("RowKey");
-                    if (xRowKey != null)
-                    {
-                        string rowKey = xRowKey.Value;
-
-                        foreach (DataRow drField in dtParent.Rows)
-                        {
-                            object objInRowKey = drField["InRowKey"];
-                            bool inRowKey = false;
-
-                            if (!MyUtils.IsEmpty(objInRowKey))
-                            {
-                                inRowKey = Convert.ToBoolean(objInRowKey);
-                            }
-
-                            if (inRowKey)
-                            {
-                                if (!MyUtils.IsEmpty(rowKey))
-                                {
-                                    rowKey += ",";
-                                }
-
-                                rowKey += drField["FieldName"];
-                            }
-                        }
-
-                        xRowKey.Value = rowKey;
-
-                        if (MyUtils.IsEmpty(rowKey))
-                        {
-                            xRowKey.Remove();
-                        }
-                    }
-                }
-            }
-        }
-
         private void UploadType(DataRow drPluginDefinition, XElement xPluginDefinition, DataColumnCollection dcPluginColumns)
         {
             if (dcPluginColumns.Contains("Type"))

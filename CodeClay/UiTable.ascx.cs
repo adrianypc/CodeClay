@@ -2489,7 +2489,7 @@ namespace CodeClay
         // Properties
         // --------------------------------------------------------------------------------------------------
 
-        private Hashtable mPropertySQL = new Hashtable();
+        protected Hashtable mPropertySQL = new Hashtable();
 
         // --------------------------------------------------------------------------------------------------
         // Methods (Override)
